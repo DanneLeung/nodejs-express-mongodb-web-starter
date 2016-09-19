@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  .logo
+    .inner
+      a(href="#")
+        //img(src="")
+        h2 鸣泰移动商城
+
+  form#login_form
+    .inner
+      .form_title
+        i.icon.icon-lock
+        span 请输入登录信息
+      .form_content
+        .group.username
+          .form_left
+            i.icon.icon-user
+          .form_right.group_side
+            input.input_text(type="text",name="username",placeholder="请输入账号...")
+        .group.password
+          .form_left
+            i.icon.icon-key
+          .form_right.group_side
+            input.input_text(type="password",name="password",placeholder="请输入密码...")
+        a.get_pass(href="#") 忘记密码
+        .form_submit
+          input.btn_submit_default(type="submit",value="登录")
+  .footer
+    .inner.text_center
+      p 鸣泰科技股份有限公司 版权所有
+

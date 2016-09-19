@@ -1,0 +1,92 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta charset="utf-8"/><meta name="keywords" content="尊行贵宾服务厅"/><meta name="description" content="尊行贵宾服务厅"/><meta name="format-detection" content="telephone=no,email=no"/><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1.0, user-scalable=no, minimal-ui"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="grey"/><meta name="screen-orientation" content="portrait"/><meta name="x5-orientation" content="portrait"/><meta http-equiv="pragma" content="no-cache"/><meta http-equiv="Cache-Control" content="no-cache, must-revalidate"/><link href="#{themeRoot|/images/icon.png" rel="apple-touch-icon-precomposed"/><link href="#{themeRoot|/images/icon.png" rel="Shortcut Icon" type="image/x-icon"/><!--link(rel='stylesheet', href='css/reset.min.css')--><!--link(rel='stylesheet', href='css/ratchet.min.css')--><!--link(rel='stylesheet', href='css/theme-ios.min.c  ss')--><!--link(rel='stylesheet', href='css/weui.min.css')--><link rel="stylesheet" href="css/swiper.min.css"/><!--link(rel='stylesheet', href='css/loaders.min.cs s')--><link rel="stylesheet" href="css/app.min.css"/><link rel="stylesheet" href="css/layout.min.css"/><!-- 自动字体大小适配--><!--script.(function (doc, win) {
+  var docEl = doc.documentElement,
+          resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+          recalc = function () {
+            var clientWidth = docEl.clientWidth;
+            if (!clientWidth) return;
+            docEl.style.fontSize = (24 * clientWidth / 627) + 'px';
+          };
+  if (!doc.addEventListener) return;
+  win.addEventListener(resizeEvt, recalc, false);
+  //doc.addEventListener('DOMContentLoaded', recalc, false);
+  recalc();
+})(document, window);--><title>鸣泰移动商城</title></head><body class="mhome hide-landing"><header id="topheader" style="display:none;" class="topheader"></header><div id="scwrapper" class="scroll-wrapper"><div id="newviewport" class="viewport-new"><div><input id="pageNum" type="hidden" name="pageNum" value="0"/><div id="cardOrder" class="control-content active"><ul id="cardOrderUl" class="table-view"></ul></div><div id="order" class="control-content"><ul id="orderUl" class="table-view"></ul></div></div><div><button onclick="loadOrder()" class="btn btn-block more">加载更多</button></div></div><footer class="jd-footer"><div class="jd-1px-line-up"></div><ul class="jd-footer-links"><li><a href="home.html">danneleung</a></li><li><a href="">反馈</a></li><li><a href="logout.html">退出</a></li><li><a href="javascript:void(0)" onclick="window.scrollTo(0,0);">回到顶部</a></li></ul><div class="jd-1px-line-up"></div><div class="jd-footer-copyright">Copyright &copy; 2013-2016 上海鸣泰信息科技股份有限公司，版权所有.</div></footer></div><script type="text/javascript" src="js/all.min.js"></script><!-- 百度统计代码--><!--script.var _hmt = _hmt || [];
+(function () {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?278190ab2a22211d9b8e0dffbdd1b5f1";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();--><script id="orderList" type="text/html" charset="utf-8"><%if($data.length == 0){%>
+   <li class='table-view-cell'>无订单</li>
+<%}else{%>
+   <%for(var i=0;i<$data.length;i++) { %>
+      <% var m = $data[i]; %>
+      <li class='table-view-cell'>
+         <a class="navigate-right orderDetail" href="orderDetail.html?orderId=<%=m._id%>&memberCardId=<%=m.memberCardId%>">
+            <span class="badge badge-positive">
+            <%if(m.status == '01') {%>待支付
+            <%} else if(m.status == '02') {%>已支付
+            <%} else if(m.status == '03') {%>支付失败
+            <%} else if(m.status == '04') {%>使用中
+            <%} else if(m.status == '05') {%>完成
+            <%} else if(m.status == '06') {%>已退款
+            <%} else if(m.status == '07') {%>已取消
+            <%}%>
+            </span>
+            <div>
+               <h4><small>订单号:</small> <%=m.no%></h4>
+               <%if(m.memberCardNo) {%><p><small>卡号:  <%=m.memberCardNo %></small></p><%}%>
+               <%if(m.viproomId) {%><p><%=m.viproomId.name %></p><%}%>
+               <h4>￥<%=m.amountPaid%></h4>
+            </div>
+         </a>
+      </li>
+   <%}%>
+<%}%>
+</script><script type="text/javascript">function loadOrder(type, cb){
+   var openid = localStorage["user.openid"];
+   if (openid == null) {
+      openid = "oxVEQuC_Gqw6iV4j2HfcbnxHFNlo";
+   }
+   var pageNum = $("#pageNum").val();
+   $.getJSON(baseUrl + '/api/v1/order/find/openid', {'orderType': type, 'pageNum': pageNum, 'openid': openid}, function (data) {
+      if (data.length <= 0){
+         $(".more").hide();
+         return;
+      } else {
+         $(".more").show();
+      }
+      var html = template('orderList', data);
+      if (type == '02') {
+         $('#cardOrderUl').append(html);
+      } else {
+         $('#orderUl').append(html);
+      }
+
+      if (data.length < 10) {
+         $(".more").hide();
+      }
+
+      if ($.isFunction(cb)) {
+         cb();
+      }
+   });
+
+   pageNum++;
+   $("#pageNum").val(pageNum);
+}
+
+$(function ($) {
+   //加载用户头信息
+   loadOrder('02');
+   $("#s1").on('touchend', function (e) {
+      $("#pageNum").val(0);
+      $('#cardOrderUl').html("");
+      loadOrder('02');
+   });
+   $("#s2").on('touchend', function (e) {
+      $("#pageNum").val(0);
+      $('#orderUl').html("");
+      loadOrder('01');
+   });
+});</script></body></html>

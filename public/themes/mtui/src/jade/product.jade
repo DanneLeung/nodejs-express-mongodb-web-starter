@@ -1,0 +1,111 @@
+extends layout
+
+block content
+  script(src="http://cdn.bootcss.com/Swiper/3.3.1/js/swiper.jquery.min.js")
+  link(rel="stylesheet",type="text/css",href="http://cdn.bootcss.com/Swiper/3.3.1/css/swiper.min.css")
+  #pro
+    .pro_top
+      .inner
+        .back.left
+          a(href="#")
+            i.icon.icon-left-open
+        .search.right
+          a(href="#")
+            i.icon.icon-search
+        .clear
+    .banner
+      .floor.new-slider-floor.bdr-bottom
+        .swiper-container
+          .swiper-wrapper
+            .swiper-slide
+              a(href="#")
+                img.img-percent-100.swiper-lazy(src="http://i8.mifile.cn/v1/a1/64556050-c26f-b719-149b-80ed0a5f959e!720x360.jpg")
+
+          .swiper-pagination
+
+    .pro_info.groups
+      .inner
+        .group
+          .pro_title.group_side
+            p 三星 Galaxy C7（SM-C7000）移动联通电信4G手机 双卡双待 送32G内存卡+壳+膜
+            p.price
+              span 699
+              | 元
+          .share
+            a(href="#")
+              i.icon.icon-share
+        .des
+          p 指纹识别 / 全网通双卡双待 / 金属机身 / 4100mAh大电池 / 2GB内存+16GB容量 / 最高支持128GB扩展
+        .type
+          ul
+            li.select
+              a(href="javascript:void(0);") 类型1
+            li
+              a(href="javascript:void(0);") 类型1
+            li.sale_off
+              a(href="javascript:void(0);") 类型1
+            li
+              a(href="javascript:void(0);") 类型1
+            li.clear
+    .info_detaile
+      .tab
+        .tab_title
+          .groups
+            ul.group
+              li.group_side.text_center.select.tab_t_item
+                a(href="#")  概述
+              li.group_side.text_center.tab_t_item
+                a(href="#") 概述
+              li.group_side.text_center.tab_t_item
+                a(href="#") 概述
+              li.group_side.text_center.tab_t_item
+                a(href="#") 概述
+
+        .tab_content
+          .inner
+            .tab_c_item.select
+              .info_img
+                img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+              .info_img
+                img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+              .info_img
+                img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+            .tab_c_item
+              p 22
+            .tab_c_item
+              p 333
+            .tab_c_item
+              p 44
+    .footer.fixed_bottom
+      .inner
+        .group
+          .index
+            a(href="#")
+              i.icon.icon-home
+          .buy.group_side.text_center
+            a(href="#") 立即购买
+          .basket.text_right
+            a(href="#")
+              i.icon.icon-basket-2
+
+
+
+
+
+  block script
+  script(type='text/javascript').
+    var swiper = new Swiper('.new-slider-floor .swiper-container', {
+      pagination: '.new-slider-floor .swiper-pagination',
+      // Disable preloading of all images
+      preloadImages: false,
+      // Enable lazy loading
+      lazyLoading: false
+    });
+    var swiper2 = new Swiper('.seckill-new-container .swiper-container', {
+      slidesPerView: 3.4,
+      centeredSlides: false,
+      paginationClickable: true,
+      spaceBetween: 10,
+      grabCursor: true,
+      lazyLoading: true
+    });

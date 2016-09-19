@@ -1,0 +1,100 @@
+extends layout/default
+
+block header
+  link(rel='stylesheet', type='text/css', href='//static.m.jd.com/home/css/base2013.css?v=14', charset='gbk')
+  link(rel='apple-touch-icon-precomposed', href='http://m.jd.com/images/apple-touch-icon.png')
+
+  link(rel='stylesheet', href='//static.m.jd.com/home/css/newAllOrders2/base.css')
+  link(rel='stylesheet', href='//static.m.jd.com/home/css/newAllOrders2/order.css')
+  link(rel='stylesheet', href='//static.m.jd.com/home/css/newAllOrders2/p-scroll.css')
+  link(rel='stylesheet', href='//static.m.jd.com/home/css/newAllOrders2/order-new.css')
+
+  script(type='text/javascript', src='//static.m.jd.com/home/js/jquery-1.6.2.min.js?v=14')
+  script(type='text/javascript', src='//static.m.jd.com/home/js/html5/common.js?v=14')
+  script(type='text/javascript', src='//static.m.jd.com/home/js/html5/spin.min.js?v=14')
+  // 通用头尾css js add by lizhenyou 2015-4-17
+  link(rel='stylesheet', type='text/css', href='//st.360buyimg.com/common/commonH_B/css/header.css?v=14', charset='utf-8')
+  // add by gqs
+  link(rel='stylesheet', type='text/css', charset='utf-8', href='//st.360buyimg.com/common/commonH_B/css/header.css?v=2.1')
+block main
+  a(name='top')
+  header
+    .coupon-header
+      a#m_common_header_goback(href='javascript:;')
+        span.coupon-header-arrow
+
+      span.coupon-header-font &#x8BA2;&#x5355;&#x4E2D;&#x5FC3;
+
+      a#cancelEntrance(href='javascript:;')
+        span.coupon-header-instruc.ch-fs-c &#x5DF2;&#x53D6;&#x6D88;
+  #mainLayout.common-wrapper(style='')
+    input#sid(type='hidden', value='dbb410453bdccf3de25d398d745e61ce')
+    input#newPayHost(type='hidden', value='p.m.jd.com')
+    input#intlHost(type='hidden', value='m.jd.hk')
+    input#isUseNewOrderDetail(type='hidden', value='true')
+    input#presaleHost(type='hidden', value='v.m.jd.com')
+    input#itemHost(type='hidden', value='item.m.jd.com')
+    input#isBetaOrOnlinePay(type='hidden', value='true')
+
+    .order-tab.bdb-1px
+      ul
+        li#li_orderlist.curr
+          a(href='javascript:;') &#x5168;&#x90E8;&#x8BA2;&#x5355;
+
+        li#li_ordersort
+          a(href='javascript:;') &#x8BA2;&#x5355;&#x5206;&#x7C7B;
+
+    #div_orderlist
+      #allOrders(style='position:relative')
+        #12880274963.m.item.border-1px.mar9
+          .mt.bdb-1px
+            span.i-icon &#x4EAC;&#x4E1C;
+            span.i-info
+              // 完成状态订单
+              a.i-complete(href='javascript:;', name='12880274963')
+              // 非虚拟订单显示删除图标
+              .signet
+              // 完成戳图片
+            div(style='clear:both')
+          .mc
+            a(sign='orderDetail', href='/newAllOrders/queryOrderDetailInfo.action?orderId=12880274963&from=newUserAllOrderList&passKey=3cb0464ba39477f0a47c208f3e089494&sid=dbb410453bdccf3de25d398d745e61ce')
+              .imc-con.bdb-1px
+                // 判断是不是虚拟订单
+                // else 实物订单
+                // 一单多个商品只显示图片
+                #carousel0.c-type-wrap.carousel
+                  ul.step-tab.-type(style='width: 414px; transition-timing-function: cubic-bezier(0.1, 0.57, 0.1, 1); transition-duration: 0ms; transform: translate(0px, 0px) translateZ(0px);')
+                    // 循环商品列表
+                    li
+                      img(src='http://m.360buyimg.com/n4/jfs/t2188/122/2325917893/108525/c051687b/56d16459Nc1457604.jpg!q70.jpg')
+                      // 展示商品图片，单击图片跳转订单详情
+                    // 循环商品列表
+                    li
+                      img(src='http://m.360buyimg.com/n4/jfs/t226/246/1437524040/118506/7f32c4b8/53fb0929N3d98fab4.jpg!q70.jpg')
+                      // 展示商品图片，单击图片跳转订单详情
+                    // 循环商品列表
+                    li
+                      img(src='http://m.360buyimg.com/n4/jfs/t1549/281/1340314636/146906/1522459c/55c4686dN27f8af50.jpg!q70.jpg')
+                      // 展示商品图片，单击图片跳转订单详情
+                    // 循环商品列表
+                    li
+                      img(src='http://m.360buyimg.com/n4/jfs/t1918/310/1647218844/287372/a7e015ae/56d14599N6252b8b3.jpg!q70.jpg')
+                      // 展示商品图片，单击图片跳转订单详情
+                    // 循环商品列表
+                    li
+                      img(src='http://m.360buyimg.com/n4/jfs/t406/91/529154572/74412/fb268c05/54222497Nedb14835.jpg!q70.jpg')
+                      // 展示商品图片，单击图片跳转订单详情
+                    // 循环商品列表
+                    li
+                      img(src='http://m.360buyimg.com/n4/jfs/t1126/151/569922917/119804/ca42d61/55384742Na10c613b.jpg!q70.jpg')
+                      // 展示商品图片，单击图片跳转订单详情
+                // end inner if
+                // end outer if
+                // 实物订单
+
+          .mb.cf
+            span.true-payed &#x5B9E;&#x4ED8;&#x6B3E;:
+            span.imb-num &yen;3117.90
+
+            .imb-btn-box
+              a.imb-btn(sign='buyAgain', name='2', skus='833629@1204885@1787603@2342146@1218900@1813008', href2='http://p.m.jd.com/cart/addWares.action?wareInfos=833629@@1@@@1204885@@1@@@1787603@@1@@@2342146@@1@@@1218900@@1@@@1813008@@1&wareFrom=v') &#x518D;&#x6B21;&#x8D2D;&#x4E70;

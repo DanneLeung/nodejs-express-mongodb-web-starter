@@ -1,0 +1,21 @@
+//
+   Created by danne on 2016/3/24.
+if(releaseProducts)
+  each rp in releaseProducts
+    .floor
+      .floor-title
+        .floor-title-container.bdr-bottom
+          span=rp.title
+          if(rp.products && rp.products.length)
+            | (#{rp.products.length})
+            .title-more-link
+              a(href="#")
+                | 更多...E
+            .clea
+      .floor-container.bdr-bottom
+        ul.floor-item
+          if(rp.products)
+            each item in rp.products
+              li.container-col04.bdr-r
+                a(href="#{item.url.replace('pd_', 'm_').replace('fp_', 'm_')}")
+                  img(src='#{item.thumbImg}',alt='#{item.name}')

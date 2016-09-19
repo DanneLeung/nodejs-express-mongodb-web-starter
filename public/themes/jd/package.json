@@ -1,0 +1,25 @@
+{
+  "name": "JD_Themes",
+  "version": "1.0.0",
+  "description": "JD Themes",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-connect": "^2.3.1",
+    "gulp-jade": "^1.1.0",
+    "gulp-minify-css": "^0.3.0",
+    "gulp-minify-html": "^1.0.4",
+    "gulp-rename": "^1.2.0",
+    "gulp-replace": "^0.5.4",
+    "gulp-rev": "^6.0.1",
+    "gulp-rev-collector": "^1.0.3",
+    "gulp-sass": "^2.3.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.4.2",
+    "gulp-watch": "^4.3.5",
+    "lodash": "^4.11.2",
+    "node-sass": "^3.7.0"
+  }
+}

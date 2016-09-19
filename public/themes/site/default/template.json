@@ -1,0 +1,13 @@
+{
+    "type": "默认",
+    "name": "默认模板",
+    "thumb": "screen.png",
+    "description": "微信站点默认模板",
+    "params": [{
+        "name": "background-color",
+        "value": "#fff"
+    }, {
+        "name": "background-image",
+        "value": "background.png"
+    }]
+}

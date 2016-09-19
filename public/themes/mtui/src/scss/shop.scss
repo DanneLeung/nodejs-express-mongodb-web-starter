@@ -1,0 +1,258 @@
+@import "setting.scss";
+.inner{padding:0 15px;}
+
+.top_search{
+  margin-bottom: 10px;
+  .search_bar{
+    padding: 8px 0;
+    border-bottom: 1px solid #ccc;
+  }
+  a{
+    color: $gray-color;
+  }
+}
+
+.bdr-bottom{
+  position: relative;
+  &.floor {
+    font-size: 0;
+    width: 100%;
+  }
+  img{
+    width: 100%;
+  }
+}
+
+.list_row{
+  padding-bottom: .7rem;
+  background: #eee;
+  padding-top: 15px;
+  border-bottom: 1px solid #fff;
+  .list{
+    background: #fff;
+    margin-top: 2px;
+    img{
+      width: 100%;
+    }
+    .curr_price{font-size:1rem;color:#e62b06;}
+    .old_price{text-decoration: line-through;color:#888;font-size: .6rem;}
+  }
+}
+.limit_buying{
+  margin: 15px 0;
+}
+.list_col{
+  padding-top: 15px;
+  .img{
+    width: 30%;
+    img{width: 100%;}
+  }
+  .pro_title {
+    font-size: .65rem;
+  }
+  .price {
+    font-size: 1rem;
+    color: #e62b06;
+  }
+}
+
+.list_title {
+  width: 50%;
+  border-top: 2px solid #f9c365;
+  border-bottom: 2px solid #f9c365;
+  color: #f17b5f;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 0;
+  margin: 0 auto;
+}
+.more {
+  width: 60%;
+  margin-top: 10px;
+}
+.padd_bottom{padding-bottom:70px;}
+
+#footer {
+  width: 100%;
+  background: #fff;
+  max-width: 640px;
+  a{
+    display: block;
+    padding: 10px 0;
+  }
+  p {
+    font-size: .6rem;
+    line-height: .8rem;
+    color: #555;
+  }
+  .select p{
+    color: $primary-color;
+  }
+}
+
+/*  登录  */
+.logo {
+  border-bottom: 1px solid #E5E5E5;
+  padding: 5px 0;
+  h2 {
+    font-size: 1rem;
+    color: #777676;
+  }
+}
+
+form#login_form {
+  margin: 30px auto;
+  .group{
+    border: 1px solid #ccc;
+    padding: 0 8px;
+    margin: 20px 0 0;
+    border-radius: 5px;
+  }
+  .form_left{
+    color:$gray-color;
+  }
+  .get_pass{
+    line-height: .65rem;
+    font-size: .65rem;
+    color: $primary-color;
+  }
+  .form_submit {
+    width: 60%;
+    margin: 30px auto 10px;
+  }
+}
+
+.footer {
+  color: #bbb;
+  font-size: .7rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 640px;
+}
+
+//产品详情页
+#pro{
+  .pro_top{
+    padding:5px 0;
+    i{color: $gray-color;}
+  }
+  .pro_info{
+    margin-top:0;
+    padding-bottom:15px;
+    .type{
+      li{
+        float:left;margin-right:10px;
+      }
+      a{
+        padding:5px 9px;display: inline-block;color:#999;font-size:.9rem;border: 1px solid #F2F2F2;
+      }
+      li.sale_off{
+        background:#F2F2F2;
+        border: 1px solid #F2F2F2;
+      }
+      li.select a{border: 1px solid red;}
+    }
+  }
+  .pro_title{font-size:.9rem;}
+  .share i{color:$gray-color;}
+  .price{
+    color:red;
+  }
+  .des{
+    font-size:.7rem;
+    color:$gray-color;
+    word-break:break-all;
+    padding:5px 0;
+  }
+  .info_detaile{
+    padding-bottom:56px;
+    .groups:before,.group:before{border-top:0;}
+    .groups:after{border-bottom:0;}
+    li{border-right:1px solid #eee;}
+    li:last-child{border-right:none;}
+    .info_img img{
+      width:100%;
+    }
+  }
+  .footer{
+    padding:8px 0;
+    font-size:1rem;
+    width:100%;
+    max-width: 640px;
+    margin: 0 auto;
+    a{color:$gray-color;}
+    .group:before{
+      border-top: none;
+    }
+    .index, .basket{
+      font-size:1.2rem;
+      width:25%;
+    }
+    .buy{width:100%;padding:5px 0;background: red;border-radius: 5px;}
+    .buy a{color:#fff;}
+  }
+}
+
+//basket
+#basket{
+  .top_bar{
+    padding:10px 0;
+    color: $gray-color;
+  }
+  i{color: $gray-color;}
+  .top_bar .group:before{border-top:none;}
+
+  .goods{
+    .groups{margin-top: 0;}
+    .img{width:20%;}
+    .img img{width:100%;}
+    .info{
+      padding:5px 0;
+      font-size:.9rem;
+    }
+    .price{color:$gray-color;}
+    .num{
+      display: inline-block;
+      border:1px solid #eee;
+    }
+    .num_inner{
+      display: inline-block;
+      width: 1.6rem;
+      height: 1.6rem;
+      position: relative;
+      vertical-align: middle;
+      background-color: #f4f4f4;
+    }
+    .number{background: #fff;padding:0 5px;width:auto;}
+    .disabled{background: #fafafa;}
+    .remove{font-size:1.1rem;margin-right:15px;}
+    .tips{font-size:.7rem;color:$gray-color;padding:15px;}
+
+    padding-bottom: 60px;
+  }
+
+  .footer{
+    font-size:.9rem;
+    a{display: block;}
+    .price span,.price i{
+      color:$primary-color;
+      font-size:16px;
+    }
+    .continue{
+      background: #eee;
+    }
+    .buy{
+      background: $primary-color;
+      a{color: #fff;}
+    }
+    .col_3{
+      height:50px;line-height:50px;
+    }
+    .total p{line-height:1rem;color:$gray-color;}
+    .total .wrap{margin-top:8px;}
+  }
+}
+
+
+

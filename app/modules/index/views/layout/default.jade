@@ -1,0 +1,23 @@
+-var baseUrl = (req.session.contextRoot + req.baseUrl)
+-if (baseUrl.indexOf('http')<0)
+-baseUrl = baseUrl.replace('//','/');
+html
+  head
+    include incs/header
+    link(rel='stylesheet', href='//cdn.bootcss.com/Swiper/3.3.1/css/swiper.min.css')
+    link(rel='stylesheet', href='/themes/jquery-weui/dist/lib/weui.min.css')
+    link(rel='stylesheet', href='/themes/jquery-weui/dist/css/jquery-weui.min.css')
+    link(rel='stylesheet', href='/themes/jquery-weui/dist/css/base.min.css')
+    block header
+  body.mhome.hide-landing
+    header.topheader#topheader(style="display:none;")
+    #scwrapper.scroll-wrapper
+      #newviewport.viewport-new
+        block main
+      include incs/footer
+    //include ../inc/loader
+    //include  ../inc/top
+    script(type='text/javascript', src='//cdn.bootcss.com/zepto/1.1.6/zepto.min.js')
+    script(type='text/javascript', src='http://cdn.bootcss.com/Swiper/3.3.1/js/swiper.jquery.min.js')
+
+    block script

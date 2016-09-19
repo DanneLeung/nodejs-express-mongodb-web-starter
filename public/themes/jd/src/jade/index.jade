@@ -1,0 +1,41 @@
+//
+extends layout/default
+
+block header
+  link(rel='stylesheet', href='css/home.min.css')
+block main
+  // Additional required wrapper
+  .floor.new-slider-floor.bdr-bottom
+    include tmpl/slider
+    include tmpl/quick-entry
+
+  include tmpl/seckill
+
+  //.floor
+    .floor-item
+      .container-col01
+        img(src="//m.360buyimg.com/mobilecms/jfs/t2428/200/2843805310/120494/6cb03ca/56f2347aN1a18b918.jpg!q70.jpg", style="width: 100%;")
+  //include tmpl/brands
+  //include tmpl/floor
+  include tmpl/recom
+  // /.content
+block misc
+  include  inc/top
+block script
+  script(type='text/javascript').
+    var swiper = new Swiper('.new-slider-floor .swiper-container', {
+      pagination: '.new-slider-floor .swiper-pagination',
+      //nextButton: '.swiper-button-next',
+      //prevButton: '.swiper-button-prev',
+      //pagination: '.swiper-pagination',
+      //paginationClickable: true,
+      // Disable preloading of all images
+      preloadImages: false,
+      // Enable lazy loading
+      lazyLoading: false
+    });
+    $(function ($) {
+
+    });
+
+

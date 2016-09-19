@@ -1,0 +1,55 @@
+-var baseUrl = (req.session.contextRoot + req.baseUrl)
+-if (baseUrl.indexOf('http')<0)
+-baseUrl = baseUrl.replace('//','/');
+html
+  head
+    block title
+    style.
+      #flash-message {
+        position: absolute;
+        width: 90%;
+        height: 50px;
+        background: rgba(224, 30, 30, 0.8);
+        left: 5%;
+        top: 30%;
+        color: #fff;
+        line-height: 50px;
+        text-indent: 10px;
+        z-index: 2;
+      }
+
+      #flash-message .alert-success {
+        background: rgba(69, 245, 139, 0.8);
+      }
+
+      #flash-message .close {
+        position: absolute;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 30px;
+        line-height: 50px;
+        right: 10px;
+      }
+
+    include incs/header
+    block header
+  body(style='overflow-x:hidden')
+    block main
+
+    script(type='text/javascript', src='//cdn.bootcss.com/zepto/1.1.6/zepto.min.js')
+    script(type='text/javascript', src='http://res.wx.qq.com/open/js/jweixin-1.0.0.js')
+    script(type='text/javascript', src='#{themeRoot}/dist/js/global.min.js?v=2.1')
+    script(type='text/javascript', src='#{themeRoot}/dist/js/weixin.min.js?v=2.1')
+    script(type='text/javascript', src='#{theme}/dist/js/jquery-weui.min.js')
+
+    include incs/flash
+
+    script.
+      var baseUrl = '#{baseUrl}', contextRoot = "#{contextRoot}";
+      $('#flash-message .close').click(function () {
+        $('#flash-message').remove();
+      });
+
+
+    block script

@@ -1,0 +1,22 @@
+//
+   Created by danne on 2016/3/24.
+if(releases)
+  each rp in releases
+    .select.box
+      .title.center
+        h2 #{rp.title}
+      .contents.weui-row(style="padding:0 15px;")
+        if(rp.products)
+          each item,idx2 in rp.products
+            if idx2 <= 5
+              .weui-col-50
+                a(href="#{item.url}")
+                  if item.stockNum == 0
+                    .saleOff
+                      img(src="#{themeRoot}/dist/images/saleoff.png")
+                  .img
+                    img(src='#{item.thumbImg ? item.thumbImg : (item.middleImgs && item.middleImgs.length ? item.middleImgs[0] : "")}',alt='#{item.name}')
+                  .text.center
+                    span.curr_price 现价：#{item.price}元
+    .more
+      a(href="#{baseUrl}/link/#{rp._id}?s=#{linkproductsite ? linkproductsite._id : ''}&cid=#{req.session.channel ? req.session.channel.identity : ''}") 更多

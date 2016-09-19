@@ -1,0 +1,103 @@
+//
+   Created by danne on 2016/1/15.
+   用户订单页面
+extends layout/default
+//block title
+   h1.title 我的订单
+block title
+
+block back
+   .segmented-control
+      a#s1.control-item.active(href="#cardOrder")
+         | 会籍卡订单
+      a#s2.control-item(href="#order")
+         | 单次服务订单
+block main
+   div
+      input#pageNum(type='hidden' name='pageNum' value='0')
+      #cardOrder.control-content.active
+         ul#cardOrderUl.table-view
+      #order.control-content
+         ul#orderUl.table-view
+   div
+      button.btn.btn-block.more(onclick="loadOrder()")
+       | 加载更多
+block script
+   script#orderList(type='text/html', charset='utf-8').
+      <%if($data.length == 0){%>
+         <li class='table-view-cell'>无订单</li>
+      <%}else{%>
+         <%for(var i=0;i<$data.length;i++) { %>
+            <% var m = $data[i]; %>
+            <li class='table-view-cell'>
+               <a class="navigate-right orderDetail" href="orderDetail.html?orderId=<%=m._id%>&memberCardId=<%=m.memberCardId%>">
+                  <span class="badge badge-positive">
+                  <%if(m.status == '01') {%>待支付
+                  <%} else if(m.status == '02') {%>已支付
+                  <%} else if(m.status == '03') {%>支付失败
+                  <%} else if(m.status == '04') {%>使用中
+                  <%} else if(m.status == '05') {%>完成
+                  <%} else if(m.status == '06') {%>已退款
+                  <%} else if(m.status == '07') {%>已取消
+                  <%}%>
+                  </span>
+                  <div>
+                     <h4><small>订单号:</small> <%=m.no%></h4>
+                     <%if(m.memberCardNo) {%><p><small>卡号:  <%=m.memberCardNo %></small></p><%}%>
+                     <%if(m.viproomId) {%><p><%=m.viproomId.name %></p><%}%>
+                     <h4>￥<%=m.amountPaid%></h4>
+                  </div>
+               </a>
+            </li>
+         <%}%>
+      <%}%>
+
+   script(type='text/javascript').
+      function loadOrder(type, cb){
+         var openid = localStorage["user.openid"];
+         if (openid == null) {
+            openid = "oxVEQuC_Gqw6iV4j2HfcbnxHFNlo";
+         }
+         var pageNum = $("#pageNum").val();
+         $.getJSON(baseUrl + '/api/v1/order/find/openid', {'orderType': type, 'pageNum': pageNum, 'openid': openid}, function (data) {
+            if (data.length <= 0){
+               $(".more").hide();
+               return;
+            } else {
+               $(".more").show();
+            }
+            var html = template('orderList', data);
+            if (type == '02') {
+               $('#cardOrderUl').append(html);
+            } else {
+               $('#orderUl').append(html);
+            }
+
+            if (data.length < 10) {
+               $(".more").hide();
+            }
+
+            if ($.isFunction(cb)) {
+               cb();
+            }
+         });
+
+         pageNum++;
+         $("#pageNum").val(pageNum);
+      }
+
+      $(function ($) {
+         //加载用户头信息
+         loadOrder('02');
+         $("#s1").on('touchend', function (e) {
+            $("#pageNum").val(0);
+            $('#cardOrderUl').html("");
+            loadOrder('02');
+         });
+         $("#s2").on('touchend', function (e) {
+            $("#pageNum").val(0);
+            $('#orderUl').html("");
+            loadOrder('01');
+         });
+      });
+

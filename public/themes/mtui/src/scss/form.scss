@@ -1,0 +1,13 @@
+/* form start*/
+@import 'setting.scss';
+.btn_submit_default {
+  width: 100%;
+  border: 1px solid $primary-color;
+  background: $primary-color;
+  outline: none;
+  padding: 10px 0;
+  border-radius: 5px;
+  font-size: .9rem;
+  color: #fff;
+}
+/* form end*/

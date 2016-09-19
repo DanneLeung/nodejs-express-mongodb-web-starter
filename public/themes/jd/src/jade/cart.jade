@@ -1,0 +1,1862 @@
+doctype html
+html
+  head
+    title
+      | &#x8D2D;&#x7269;&#x8F66;-&#x4EAC;&#x4E1C; &ndash; &#x89E6;&#x5C4F;&#x7248;
+      | -
+      | &#x4EAC;&#x4E1C;&#x89E6;&#x5C4F;&#x7248;
+    meta(charset='utf-8')
+    meta(name='author', content='m.jd.com')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0')
+    meta(name='apple-mobile-web-app-capable', content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style', content='black')
+    meta(name='format-detection', content='telephone=no')
+    meta(http-equiv='Expires', content='-1')
+    meta(http-equiv='Cache-Control', content='no-cache')
+    meta(http-equiv='Pragma', content='no-cache')
+    // 测速埋点
+    script(type='text/javascript').
+      var rTimeArr = [];
+      rTimeArr[0] = {time: new Date()};
+      document.addEventListener("DOMContentLoaded", function () {
+      rTimeArr[1] = {time: new Date(), sTime: "0"};
+      });
+      <!--测速埋点计算页头的css-->
+
+    link(rel='stylesheet', type='text/css', href='//st.360buyimg.com/order/css/base.css?v=20160324', charset='gbk')
+    link(rel='stylesheet', type='text/css', href='//st.360buyimg.com/order/css/extend.css?v=20160324', charset='gbk')
+    link(rel='stylesheet', type='text/css', href='//st.360buyimg.com/order/css/hotel.css?v=20160324', charset='gbk')
+    link(rel='stylesheet', type='text/css', href='//st.360buyimg.com/order/css/airline.css?v=20160324', charset='gbk')
+    link(rel='apple-touch-icon-precomposed', href='//st.360buyimg.com/order/images/apple-touch-icon.png?v=20160324')
+    script(type='text/javascript').
+      rTimeArr[2] = {time: new Date(), sTime: "0"};
+    script(type='text/javascript').
+      rTimeArr[3] = {sTime: new Date()};
+    script(type='text/javascript').
+      window.addEventListener('load', function () {
+      FastClick.attach(document.body);
+      }, false);
+      var _winLocation = window.location.href;//获得当前页面的路径，根据路径规则进行逐页替换
+      var _isWebKit = '__proto__' in {};//是否是webkit内核
+      if (_isWebKit) {//如果是webkit内核，则分模块使用zepto
+      //要使用zeptojs的路径列表，可以做为分模块替换的开关
+      var _locationList = new Array();
+      //活动模块
+      _locationList.push('/activity/proActList');
+      _locationList.push('/activity/proActWareList');
+      _locationList.push('/activity/list');
+      //商品分类模块
+      _locationList.push('/category/');
+      //京东快讯模块
+      _locationList.push('/newslist.html');
+      _locationList.push('/newslist/');
+      _locationList.push('/news/');
+      //机票模块
+      _locationList.push('/airline/');
+      //酒店模块
+      _locationList.push('/hotel/');
+      //团购模块
+      _locationList.push('/tuan/');
+      //首页相关
+      _locationList.push('/hotbrand.html');//品牌馆
+      //商品筛选相关
+      _locationList.push('/ware/expandSort.action');
+      _locationList.push('/ware/categoryFilter.action');
+      _locationList.push('/ware/search.action');
+      _locationList.push('/products/');
+      _locationList.push('/index/getWare.action')//热门特惠
+      _locationList.push('/notice/');//通告模块
+      _locationList.push('/coupons/');//随地惠模块
+      _locationList.push('/chongzhi/');//手机充值模块
+      _locationList.push('/comment/');//手机推荐模块
+      _locationList.push('/pay/');//支付
+      _locationList.push('/order/');//订单
+      _locationList.push('/norder/');//订单
+      //_locationList.push('/market/floorWare.action');//掌上专享
+      var _needReplace = false;
+      //如果当前路径符合要使用的路径规则，则进行替换
+      for (var i = 0; i < _locationList.length; i++) {
+      if (_winLocation.indexOf(_locationList[i]) != -1) {
+      _needReplace = true;
+      break;
+      }
+      }
+      //如果是首页的话，则使用zepto
+      var _tmp = _winLocation.replace(/(^http:\\/\/)|(\/*$)/g, '');
+      if (_tmp.indexOf('/') < 0 || (_tmp.split('/').length <= 2 && _tmp.indexOf('/index') >= 0)) {
+      _needReplace = true;
+      }
+      //如果是商品详情页的话，则使用zepto
+      var _dlocationList = new Array();
+      _dlocationList.push(/\\/product\/([0-9]+)\.html/);
+      _dlocationList.push(/\\/orderComment\/([0-9]+)\.html/);
+      _dlocationList.push(/\\/consultations\/([0-9]+)\.html/);
+      _dlocationList.push(/\\/consultations\/([0-9]+)-([0-9]+)\.html/);
+      _dlocationList.push(/\\/comments\/([0-9]+)\.html/);
+      for (var i = 0, len = _dlocationList.length; i < len; i++) {
+      if (_dlocationList[i].test(_winLocation)) {
+      _needReplace = true;
+      break;
+      }
+      }
+      if (_needReplace) {
+      document.write('<script src="//st.360buyimg.com/order/js/zepto.min.js?v=20160324"><\\/script>');
+      document.write('<script type="text/javascript">window.jQuery=window.Zepto;<\\/script>');
+      } else {
+      document.write('<script src="//st.360buyimg.com/order/js/jquery-1.6.2.min.js?v=20160324"><\\/script>');
+      }
+      } else {//如果是非webkit内核直接使用jquery
+      document.write('<script src="//st.360buyimg.com/order/js/jquery-1.6.2.min.js?v=20160324"><\\/script>');
+      }
+
+    script(type='text/javascript', src='//st.360buyimg.com/order/js/html5/common.js?v=20160324')
+
+    script(type='text/javascript', src='//st.360buyimg.com/order/html/jigsaw/js/libs/fastclick.js?v=20160324')
+
+    script(type='text/javascript', src='//st.360buyimg.com/order/js/html5/spin.min.js?v=20160324')
+
+    script(type='text/javascript').
+      rTimeArr[3].time = new Date();
+      rTimeArr[4] = {sTime: new Date()};
+
+    link(rel='stylesheet', type='text/css', href='//st.360buyimg.com/common/commonH_B/css/header.css', charset='gbk')
+
+    script(src='//st.360buyimg.com/common/commonH_B/js/m_common_header_bottom2.1.js', type='text/javascript')
+
+    script(type='text/javascript').
+      rTimeArr[4].time = new Date();
+  body#body
+    a(name='top')
+    header
+      #m_common_header
+  
+      #jdkey.new-jd-tab(style='display:none')
+        .new-tbl-type
+          a.new-tbl-cell(href='http://m.jd.com/index.html?sid=d09777748c58a49f18338437fc64a829')
+            span.icon &#x9996;&#x9875;
+                    
+            p(style='color:#6e6e6e;') &#x9996;&#x9875;
+              
+          a.new-tbl-cell(href='http://m.jd.com/category/all.html?sid=d09777748c58a49f18338437fc64a829')
+            span.icon2 &#x5206;&#x7C7B;&#x641C;&#x7D22;
+                    
+            p(style='color:#6e6e6e;') &#x5206;&#x7C7B;&#x641C;&#x7D22;
+              
+          a#html5_cart.new-tbl-cell(href='javascript:void(0)')
+            span.icon3 &#x8D2D;&#x7269;&#x8F66;
+                    
+            p(style='color:#6e6e6e;') &#x8D2D;&#x7269;&#x8F66;
+              
+          a.new-tbl-cell(href='/user/home.action?sid=d09777748c58a49f18338437fc64a829')
+            span.icon4 &#x6211;&#x7684;&#x4EAC;&#x4E1C;
+                    
+            p(style='color:#6e6e6e;') &#x6211;&#x7684;&#x4EAC;&#x4E1C;
+    link(href='//st.360buyimg.com/order/css/cart/title-bar.css?v=20160324', media='all', rel='stylesheet', type='text/css')
+    link(href='//st.360buyimg.com/order/css/cart/btn.css?v=20160324', media='all', rel='stylesheet', type='text/css')
+    link(href='//st.360buyimg.com/order/css/cart/checkbox.css?v=20160324', media='all', rel='stylesheet', type='text/css')
+    link(href='//st.360buyimg.com/order/css/cart/spinner.css?v=20160324', media='all', rel='stylesheet', type='text/css')
+    link(href='//st.360buyimg.com/order/css/cart/shopping-cart5.0.css?v=20160324', media='all', rel='stylesheet', type='text/css')
+    #background(style='width:100%;z-index:1001;position:absolute;overflow:hidden;display:none')
+    script(type='text/javascript', src='//st.360buyimg.com/order/js/2015/cart/shop_cart5.0.js?v=20160324', charset='gbk')
+    style.
+      .cart_item_text {
+      font-size: 13px;
+      font-weight: bold;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      }
+      .cart_item_title {
+      font-size: 14px;
+      }
+      .cart_item_gift {
+      font-size: 13px;
+      color: #999;
+      }
+      .cart_item_price {
+      font-size: 12px;
+      }
+      .cart_cutwords {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      }
+    #giftWares11.pop(style='margin-top:45px;margin-bottom:5%;z-index:1005;position: absolute;display:none')
+    #notEmptyCart(style='display:block')
+      // 20150701 安全环境提示信息
+      .jd-safe-mode-box
+        .jd-safe-mode-msg
+          span
+            em
+                        
+            span.msg-safe &#x60A8;&#x6B63;&#x5728;&#x5B89;&#x5168;&#x8D2D;&#x7269;&#x73AF;&#x5883;&#x4E2D;&#xFF0C;&#x8BF7;&#x653E;&#x5FC3;&#x8D2D;&#x7269;
+  
+      .shop-group
+        #shop-1.shop-group-item
+          .shop-title.customize-shtit
+            .item
+              .check-wrapper
+                span#checkShop8888.cart-checkbox.check-wrapper-unit(data-shopid='8888', onclick="selectGroup('8888')")
+                          
+              .shop-title-content
+                span.shop-title-icon
+                  img(src='//st.360buyimg.com/order/images/cart5.0/JDshopTitle.png?v=20160324')
+                                
+                span.shop-title-name &#x4EAC;&#x4E1C;&#x81EA;&#x8425;
+                                
+                input#freeFreightPrice(type='hidden', value='79')
+                                
+                input#vendorPrice(type='hidden', value='3117.9')
+                                
+                #freeFreight.shop-btn-com.title-btn-disabled
+                  span#shop-title-detail-JD.shop-title-8888 &#x60A8;&#x4EAB;&#x53D7;&#x6EE1;79&#x5143;&#x514D;&#x8FD0;&#x8D39;&#x670D;&#x52A1;
+                                      
+                  .right-boundary
+                                      
+                  a.cart-new-btn(onclick='freeFreight();') &#x51D1;&#x5355;&#x514D;&#x8FD0;&#x8D39;
+              
+          ul.shp-cart-list
+            input#833629(type='hidden', name='skuIds', value='833629')
+                    
+            input#selected833629(type='hidden', name='skuIdSelected', value='1')
+                    
+            li#product833629(name='productGroup-1')
+              .items
+                input.editPara(type='hidden', name='editPara', value='{"isPure":true,"shopId":"-1","skuId":"833629","suitId":"","suitNum":"","sType":"","skuNum":"1","venderId":"8888","mainSkuId":"","mainSkuNum":"","limitSkuNum":"200","remainNumInt":"-1","canExtendedWarrenty": false}')
+                                
+                .check-wrapper
+                  span#checkIcon833629.cart-checkbox.group-8888.checked(data-sku='833629@@1', onclick="changeSelected('8888',833629,1)")
+                .shp-cart-item-core.shop-cart-display.cart-noshopping
+                  a.cart-product-cell-1(href="javascript:beWareDetail('833629')")
+                    img.cart-photo-thumb(alt='', src='http://img10.360buyimg.com/n7/jfs/t2188/122/2325917893/108525/c051687b/56d16459Nc1457604.jpg!q70.jpg', onerror='http://misc.360buyimg.com/lib/skin/e/i/error-jd.gif')
+                                            
+                    i
+                                      
+                  .cart-product-cell-2
+                    .cart-product-name
+                      a(href="javascript:beWareDetail('833629')")
+                        span &#x5A01;&#x9AD8;&#xFF08;VSGO&#xFF09;D-15305 &#x5355;&#x53CD;&#x5FAE;&#x5355;&#x7535;&#x76F8;&#x673A;&#x6E05;&#x6D01;&#x517B;&#x62A4;&#x5957;&#x88C5; &#x6570;&#x7801;&#x5355;&#x53CD;&#x76F8;&#x673A;&#x57FA;&#x7840;&#x6E05;&#x6D01;
+                                            
+                    .cart-product-prop.eles-flex
+                      span.prop1 &#x989C;&#x8272;:&#x3010;&#x57FA;&#x7840;&#x7248;&#x3011; &#x673A;&#x8EAB;/&#x5C4F;&#x5E55; &#x666E;&#x901A;&#x6E05;&#x6D01;
+                                            
+                    .cart-product-cell-3
+                      span#price833629.shp-cart-item-price
+                        script.
+                          var html = processPrice('¥29.90');
+                          $("#price833629").html(html);
+                    // price move to here end
+                    .cart-product-cell-5
+                      span.num-cont-show 1
+                                                  
+                      .shop-btn-com
+                        a.cart-new-btn(href="javascript:beSimilar('833629')") &#x67E5;&#x770B;&#x76F8;&#x4F3C;
+                                                        
+                        .right-boundary
+                                                        
+                        a.cart-new-btn.edit-mode-in(href='javascript:void(0);') &#x7F16;&#x8F91;
+                // 比加入时降价信息 begin
+                // 比加入时降价信息 end
+                    
+            li#product183087545(name='productGroup-1')
+              span.promotion-space
+                a#shopping183087545.shp-cart-conditions-link(href="javascript:beMSearchPage('183087545','满599.00、999.00、1599.00可换购商品','1204885',16,'299.0')")
+                  span#gift-info-sign183087545.icon-condition
+                    span
+                      | &#x6362;&#x8D2D;
+                                            
+                    em.promotion-down-arrow-icon
+                                      
+                  span.condition-description
+                    span#sTip183087545
+                      | &#x6D3B;&#x52A8;&#x5546;&#x54C1;&#x5DF2;&#x8D2D;&#x6EE1;1599.00&#x5143;&#xFF0C; &#x60A8;&#x53EA;&#x9700;&#x518D;&#x52A0;&#x4EF7;299.00&#x5143;&#xFF0C;&#x5373;&#x53EF;&#x6362;&#x8D2D;&#x5546;&#x54C1;
+                                  
+                  script.
+                    var oActivity = document.querySelector('#gift-info-sign183087545');
+                    var oLogoTxt = oActivity.nextElementSibling || oActivity.nextSibling;
+                    var _width = oActivity.offsetWidth || 38;
+                    oLogoTxt.style.marginLeft = (_width + 1) + 'px';
+                          
+              .shop-btn-com.promo-spc
+                .right-boundary
+                                
+                a#notGivenGift183087545.cart-new-btn(href="javascript:showChooseGifts('1' ,'183087545','1','13','1204885','1','299.0')")
+                  | &#x6362;&#x8D2D;&#x5546;&#x54C1;
+                          
+              #givenGift183087545.clear
+                          
+              #giftBlackLine183087545
+                          
+              #chooseGifts183087545(style='display: none')
+                input#hidegiftSelectNum183087545(type='hidden', value='0')
+                                
+                input#hidegiftSelectType183087545(type='hidden', value='299.0')
+                                
+                .additional-list-items
+                  .additional-list-header
+                    span.additional-list-header-right
+                      a.btn-jd-red(href="javascript:hideChooseGifts('183087545')") &#x786E;&#x5B9A;
+                    | &#x5DF2;&#x9009;&#x62E9; 
+                    span.highlight
+                      span#giftSelectNum183087545 0
+                      | /3
+                    |  &#x4EF6;
+                                      
+                  .additional-list-wrapper
+                    .additional-list-container
+                      // 所有
+                      .additional-items
+                        .item-wrapper
+                          .additional-item-content
+                            .cart-product-name
+                              a(href='#', style='cursor:default;')
+                                span &#x3010;&#x8D60;&#x54C1;&#x3011;&#x7D22;&#x5C3C;&#xFF08;SONY&#xFF09;PCK-LS1EM &#x6DB2;&#x6676;&#x5C4F;&#x4FDD;&#x62A4;&#x819C;&#xFF08;&#x9002;&#x7528;&#x7D22;&#x5C3C;5100/5000/6000 &#x5FAE;&#x5355;&#x8D34;&#x819C;/&#x4FDD;&#x62A4;&#x819C;&#xFF09;
+                                                                    
+                            .shp-cart-promotion-opt
+                              span.shp-cart-promotion-right
+                                span.shp-cart-item-price &yen;69.00
+                                                                          
+                              span.shp-cart-promotion-left
+                                span.shp-cart-amount 1
+                                                        
+                        .additional-check-wrapper
+                          span#1830875451434306.cart-checkbox(name='gift183087545', data-gift='183087545@@1@@16@@1434306@@1', onclick="selectGifts('183087545','1','16','1434306','1',3)")
+                                                              
+                          input#num1830875451434306(type='hidden', value='1')
+                                                              
+                          input#giftId1830875451434306(type='hidden', value='1434306')
+                                                        
+                        .additional-item-thumb
+                          img.cart-photo-thumb(alt='', src='http://img10.360buyimg.com/n7/jfs/t988/37/569043600/33321/dd75e58c/5530b10eNcbc7ab93.jpg!q70.jpg', onerror='http://misc.360buyimg.com/lib/skin/e/i/error-jd.gif')
+                                                  
+                      .additional-items
+                        .item-wrapper
+                          .additional-item-content
+                            .cart-product-name
+                              a(href='#', style='cursor:default;')
+                                span &#x3010;&#x8D60;&#x54C1;&#x3011;&#x7D22;&#x5C3C;&#xFF08;SONY&#xFF09;NP-FW50 &#x76F8;&#x673A;&#x5145;&#x7535;&#x7535;&#x6C60;&#xFF08;&#x9002;&#x7528;&#x7D22;&#x5C3C;&#x5FAE;&#x5355;/RX10/QX1&#xFF09;
+                                                                    
+                            .shp-cart-promotion-opt
+                              span.shp-cart-promotion-right
+                                span.shp-cart-item-price &yen;269.00
+                                                                          
+                              span.shp-cart-promotion-left
+                                span.shp-cart-amount 1
+                                                        
+                        .additional-check-wrapper
+                          span#183087545548444.cart-checkbox(name='gift183087545', data-gift='183087545@@1@@16@@548444@@1', onclick="selectGifts('183087545','1','16','548444','1',3)")
+                                                              
+                          input#num183087545548444(type='hidden', value='1')
+                                                              
+                          input#giftId183087545548444(type='hidden', value='548444')
+                                                        
+                        .additional-item-thumb
+                          img.cart-photo-thumb(alt='', src='http://img10.360buyimg.com/n7/jfs/t484/209/1311927520/152419/7fe9a9c0/54cb5f12Nf52d85b4.jpg!q70.jpg', onerror='http://misc.360buyimg.com/lib/skin/e/i/error-jd.gif')
+                                                  
+                      .additional-items
+                        .item-wrapper
+                          .additional-item-content
+                            .cart-product-name
+                              a(href='#', style='cursor:default;')
+                                span &#x3010;&#x8D60;&#x54C1;&#x3011;&#x7D22;&#x5C3C;&#xFF08;SONY&#xFF09;LCJ-AR1 &#x840C;&#x840C;&#x5154;&#x8033;&#x6735;&#x76F8;&#x673A;&#x5305;&#xFF08;&#x9002;&#x7528;&#x7D22;&#x5C3C;&#x5FAE;&#x5355;5100/5000&#xFF09;
+                                                                    
+                            .shp-cart-promotion-opt
+                              span.shp-cart-promotion-right
+                                span.shp-cart-item-price &yen;299.00
+                                                                          
+                              span.shp-cart-promotion-left
+                                span.shp-cart-amount 1
+                                                        
+                        .additional-check-wrapper
+                          span#1830875451434408.cart-checkbox(name='gift183087545', data-gift='183087545@@1@@16@@1434408@@1', onclick="selectGifts('183087545','1','16','1434408','1',3)")
+                                                              
+                          input#num1830875451434408(type='hidden', value='1')
+                                                              
+                          input#giftId1830875451434408(type='hidden', value='1434408')
+                                                        
+                        .additional-item-thumb
+                          img.cart-photo-thumb(alt='', src='http://img10.360buyimg.com/n7/jfs/t1006/168/825188867/134930/da86aee/5549c817Nd13f4e46.jpg!q70.jpg', onerror='http://misc.360buyimg.com/lib/skin/e/i/error-jd.gif')
+                          
+              #product1204885.items(name='item183087545')
+                input.editPara(type='hidden', name='editPara', value='{"isPure":false,"shopId":"-1","skuId":"1204885","suitId":"183087545","suitNum":"1","sType":"13","skuNum":"1","venderId":"8888","mainSkuId":"1204885","mainSkuNum":"1","limitSkuNum":"200","remainNumInt":"-1","canExtendedWarrenty":true }')
+                                
+                .check-wrapper
+                  span#checkIcon1204885.cart-checkbox.group-8888.checked(data-sku='183087545@@1@@13@@1204885@@1', onclick="changeSelected('8888','183087545','1','13',1204885,1)")
+                                
+                .shp-cart-item-core.shop-cart-display
+                  input#1204885(type='hidden', name='suitIds', value='1204885')
+                                      
+                  input#selected1204885(type='hidden', name='suitIdSelected', value='1')
+                                      
+                  a.cart-product-cell-1(href="javascript:beWareDetail('1204885')")
+                    img.cart-photo-thumb(alt='', src='http://img10.360buyimg.com/n7/jfs/t226/246/1437524040/118506/7f32c4b8/53fb0929N3d98fab4.jpg!q70.jpg', onerror='http://misc.360buyimg.com/lib/skin/e/i/error-jd.gif')
+                                      
+                  .cart-product-cell-2
+                    .cart-product-name
+                      a(href="javascript:beWareDetail('1204885')")
+                        span &#x7D22;&#x5C3C;&#xFF08;SONY&#xFF09;ILCE-5100L &#x5FAE;&#x5355;&#x5957;&#x673A; &#x767D;&#x8272;&#xFF08;16-50mm&#x955C;&#x5934; 2430&#x4E07;&#x50CF;&#x7D20; a5100/&alpha;5100&#xFF09;
+                                            
+                    .cart-product-prop.eles-flex
+                      span.prop1 &#x989C;&#x8272;:&#x767D;&#x8272;
+                                                  
+                      span.prop2 &#x7248;&#x672C;:16-50mm&#x5957;&#x88C5;
+                    // price move here begin
+                    .cart-product-cell-3
+                      span#price1830875451204885.shp-cart-item-price
+                        script.
+                          var html = processPrice('¥3088.00');
+                          $("#price1830875451204885").html(html);
+                                            
+                    .cart-product-cell-5
+                      span.num-cont-show 1
+                                                  
+                      .shop-btn-com
+                        .right-boundary
+                                                        
+                        a.cart-new-btn.edit-mode-in &#x7F16;&#x8F91;
+                // 比加入时降价信息 begin
+                // 比加入时降价信息 end
+                #chooseYanbao1830875451204885(style='display: none')
+                  .additional-guarantee
+                    .additional-list-header
+                      span.additional-list-header-right
+                        a.btn-jd-red(href="javascript:addYanbao('183087545','1',7,1204885,1)") &#x786E;&#x5B9A;
+                      | &#x9009;&#x62E9;&#x4EAC;&#x4E1C;&#x670D;&#x52A1;
+                                            
+                    .additional-list-wrapper
+                      .additional-list-container
+                        .additional-item-title
+                          | &#x5168;&#x4FDD;&#x670D;&#x52A1;
+                          input(type='hidden', name='brandId1830875451204885', value='306')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2364059',1,306)")
+                            .additional-guarantee-part1
+                              span#18308754512048852364059.cart-checkbox(name='1830875451204885306')
+                                                                          
+                              input#ybId18308754512048852364059(type='hidden', value='2364059')
+                                                                          
+                              input#num18308754512048852364059(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x4E3B;&#x63A8;&#x65E0;&#x7406;&#x7531;&#x4FDD;&#x4FEE;3&#x5E74;
+                                                                                
+                                strong &#xFFE5;369.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2365217',1,306)")
+                            .additional-guarantee-part1
+                              span#18308754512048852365217.cart-checkbox(name='1830875451204885306')
+                                                                          
+                              input#ybId18308754512048852365217(type='hidden', value='2365217')
+                                                                          
+                              input#num18308754512048852365217(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x65E0;&#x7406;&#x7531;&#x4FDD;&#x4FEE;4&#x5E74;
+                                                                                
+                                strong &#xFFE5;479.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2364583',1,306)")
+                            .additional-guarantee-part1
+                              span#18308754512048852364583.cart-checkbox(name='1830875451204885306')
+                                                                          
+                              input#ybId18308754512048852364583(type='hidden', value='2364583')
+                                                                          
+                              input#num18308754512048852364583(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x65E0;&#x7406;&#x7531;&#x4FDD;&#x4FEE;5&#x5E74;
+                                                                                
+                                strong &#xFFE5;619.00
+                                                                    
+                            .clear
+                                                        
+                        .additional-item-title
+                          | &#x5EF6;&#x957F;&#x4FDD;&#x4FEE;
+                          input(type='hidden', name='brandId1830875451204885', value='301')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2255181',1,301)")
+                            .additional-guarantee-part1
+                              span#18308754512048852255181.cart-checkbox(name='1830875451204885301')
+                                                                          
+                              input#ybId18308754512048852255181(type='hidden', value='2255181')
+                                                                          
+                              input#num18308754512048852255181(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x5EF6;&#x957F;&#x4FDD;&#x4FEE;1&#x5E74;
+                                                                                
+                                strong &#xFFE5;119.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2252699',1,301)")
+                            .additional-guarantee-part1
+                              span#18308754512048852252699.cart-checkbox(name='1830875451204885301')
+                                                                          
+                              input#ybId18308754512048852252699(type='hidden', value='2252699')
+                                                                          
+                              input#num18308754512048852252699(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x5EF6;&#x957F;&#x4FDD;&#x4FEE;2&#x5E74;
+                                                                                
+                                strong &#xFFE5;239.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2364045',1,301)")
+                            .additional-guarantee-part1
+                              span#18308754512048852364045.cart-checkbox(name='1830875451204885301')
+                                                                          
+                              input#ybId18308754512048852364045(type='hidden', value='2364045')
+                                                                          
+                              input#num18308754512048852364045(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x8D85;&#x957F;&#x4FDD;&#x4FEE;2&#x5E74;
+                                                                                
+                                strong &#xFFE5;109.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2363068',1,301)")
+                            .additional-guarantee-part1
+                              span#18308754512048852363068.cart-checkbox(name='1830875451204885301')
+                                                                          
+                              input#ybId18308754512048852363068(type='hidden', value='2363068')
+                                                                          
+                              input#num18308754512048852363068(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x8D85;&#x957F;&#x4FDD;&#x4FEE;3&#x5E74;
+                                                                                
+                                strong &#xFFE5;179.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2363034',1,301)")
+                            .additional-guarantee-part1
+                              span#18308754512048852363034.cart-checkbox(name='1830875451204885301')
+                                                                          
+                              input#ybId18308754512048852363034(type='hidden', value='2363034')
+                                                                          
+                              input#num18308754512048852363034(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x8D85;&#x957F;&#x4FDD;&#x4FEE;4&#x5E74;
+                                                                                
+                                strong &#xFFE5;249.00
+                                                                    
+                            .clear
+                                                        
+                        .additional-item-title
+                          | &#x6D3B;&#x52A8;&#x4FC3;&#x9500;
+                          input(type='hidden', name='brandId1830875451204885', value='20')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2252189',1,20)")
+                            .additional-guarantee-part1
+                              span#18308754512048852252189.cart-checkbox(name='183087545120488520')
+                                                                          
+                              input#ybId18308754512048852252189(type='hidden', value='2252189')
+                                                                          
+                              input#num18308754512048852252189(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x7279;&#x60E0;&#x5EF6;&#x957F;&#x4FDD;&#x4FEE;1&#x5E74;
+                                                                                
+                                strong &#xFFE5;69.00
+                                                                    
+                            .clear
+                                                        
+                        .additional-item-title
+                          | &#x610F;&#x5916;&#x4FDD;&#x62A4;
+                          input(type='hidden', name='brandId1830875451204885', value='41')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2253113',1,41)")
+                            .additional-guarantee-part1
+                              span#18308754512048852253113.cart-checkbox(name='183087545120488541')
+                                                                          
+                              input#ybId18308754512048852253113(type='hidden', value='2253113')
+                                                                          
+                              input#num18308754512048852253113(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x610F;&#x5916;&#x4FDD;&#x62A4;1&#x5E74;
+                                                                                
+                                strong &#xFFE5;149.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2256366',1,41)")
+                            .additional-guarantee-part1
+                              span#18308754512048852256366.cart-checkbox(name='183087545120488541')
+                                                                          
+                              input#ybId18308754512048852256366(type='hidden', value='2256366')
+                                                                          
+                              input#num18308754512048852256366(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x610F;&#x5916;&#x4FDD;&#x62A4;2&#x5E74;
+                                                                                
+                                strong &#xFFE5;249.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('183087545','1',7,1204885,1,'2256479',1,41)")
+                            .additional-guarantee-part1
+                              span#18308754512048852256479.cart-checkbox(name='183087545120488541')
+                                                                          
+                              input#ybId18308754512048852256479(type='hidden', value='2256479')
+                                                                          
+                              input#num18308754512048852256479(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x7279;&#x60E0;&#x610F;&#x5916;&#x4FDD;&#x62A4;1&#x5E74;
+                                                                                
+                                strong &#xFFE5;139.00
+                                                                    
+                            .clear
+                                
+                #givenYanbao1830875451204885
+                                
+                .shp-cart-gift-list
+                  div
+                    a.shp-cart-gift-list(href='javascript:beGiftDetail(2228627);')
+                      | [&#x8D60;&#x54C1;] &#x706B;&#x67F4;&#x4EBA; MatchstickMen FC-6075&#x5FAE;&#x5355;&#x76F8;&#x673A;&#x5305;
+                      i.num-cont-show 1
+                                      
+                  div
+                    a.shp-cart-gift-list(href='javascript:beGiftDetail(1787603);')
+                      | [&#x8D60;&#x54C1;] &#x91D1;&#x58EB;&#x987F;&#xFF08;Kingston&#xFF09;16GB 80MB/s SD Class10 UHS-I&#x9AD8;&#x901F;&#x5B58;&#x50A8;&#x5361;
+                      i.num-cont-show 1
+                                      
+                  div
+                    a.shp-cart-gift-list(href='javascript:beGiftDetail(1218900);')
+                      | [&#x8D60;&#x54C1;] &#x9510;&#x739B;&#xFF08;EIRMAI&#xFF09;U20 &#x5355;&#x53CD;&#x5FAE;&#x5355;&#x76F8;&#x673A;&#x955C;&#x5934;&#x64E6;&#x955C;&#x7EB8; &#x6E05;&#x6D01;&#x7EB8; &#x9664;&#x5C18;&#x7EB8; &#x955C;&#x5934;&#x7EB8;&#x5DFE;1&#x672C;50&#x5F20; &#x6570;&#x7801;&#x76F8;&#x673A;&#x517B;&#x62A4;&#x5355;&#x53CD;&#x955C;&#x5934;&#x6E05;&#x6D01;
+                      i.num-cont-show 1
+                                      
+                  div
+                    a.shp-cart-gift-list(href='javascript:beGiftDetail(2342146);')
+                      | [&#x8D60;&#x54C1;] &#x5A01;&#x9AD8;&#xFF08;VSGO&#xFF09;D-15309 &#x5355;&#x53CD;&#x76F8;&#x673A;&#x955C;&#x5934;&#x6E05;&#x6D01;&#x5E03;&#x6E7F;&#x5DFE; &#x5149;&#x5B66;&#x6E05;&#x6D01;&#x5957;&#x88C5;&#x968F;&#x884C;&#x88C5;
+                      i.num-cont-show 1
+                          
+              #shopfooter183087545.shop-footer
+                .diver-hr-dashed
+                                
+                span.shop-footer-total.font13
+                  | &#x5C0F;&#x8BA1;:
+                  i &yen;3088.00
+                    
+            input#2178964(type='hidden', name='skuIds', value='2178964')
+                    
+            input#selected2178964(type='hidden', name='skuIdSelected', value='0')
+                    
+            li#product2178964(name='productGroup-1')
+              .items
+                input.editPara(type='hidden', name='editPara', value='{"isPure":true,"shopId":"-1","skuId":"2178964","suitId":"","suitNum":"","sType":"","skuNum":"1","venderId":"8888","mainSkuId":"","mainSkuNum":"","limitSkuNum":"200","remainNumInt":"-1","canExtendedWarrenty": true}')
+                                
+                .check-wrapper
+                  span#checkIcon2178964.cart-checkbox.group-8888(data-sku='2178964@@1', onclick="changeSelected('8888',2178964,1)")
+                                
+                .shp-cart-item-core.shop-cart-display
+                  a.cart-product-cell-1(href="javascript:beWareDetail('2178964')")
+                    img.cart-photo-thumb(alt='', src='http://img10.360buyimg.com/n7/jfs/t2227/364/1999411013/155065/5846ffaf/56989ce9Nee51fcbb.jpg!q70.jpg', onerror='http://misc.360buyimg.com/lib/skin/e/i/error-jd.gif')
+                                      
+                  .cart-product-cell-2
+                    .cart-product-name
+                      a(href="javascript:beWareDetail('2178964')")
+                        span &#x7F8E;&#x7684; (Midea) M1-L202B &#x5FAE;&#x6CE2;&#x7089;20L
+                                            
+                    .cart-product-prop.eles-flex
+                      span.prop1 &#x989C;&#x8272;:20L&#x5FAE;&#x6CE2;&#x7089;&#xFF01;
+                                                  
+                      span.prop2 &#x7248;&#x672C;:1
+                                            
+                    .cart-product-cell-3
+                      span#price2178964.shp-cart-item-price
+                        script.
+                          var html = processPrice('¥399.00');
+                          $("#price2178964").html(html);
+                    // price move to here end
+                    .cart-product-cell-5
+                      span.num-cont-show 1
+                                                  
+                      .shop-btn-com
+                        .right-boundary
+                                                        
+                        a.cart-new-btn.edit-mode-in(href='javascript:void(0);') &#x7F16;&#x8F91;
+                // 比加入时降价信息 begin
+                // 比加入时降价信息 end
+                #chooseYanbao2178964(style='display: none')
+                  .additional-guarantee
+                    .additional-list-header
+                      span.additional-list-header-right
+                        a.btn-jd-red(href="javascript:addYanbao('','1',7,2178964,1)") &#x786E;&#x5B9A;
+                      | &#x9009;&#x62E9;&#x4EAC;&#x4E1C;&#x670D;&#x52A1;
+                                            
+                    .additional-list-wrapper
+                      .additional-list-container
+                        .additional-item-title
+                          | &#x5168;&#x4FDD;&#x670D;&#x52A1;
+                          input(type='hidden', name='brandId2178964', value='306')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2363974',1,306)")
+                            .additional-guarantee-part1
+                              span#21789642363974.cart-checkbox(name='2178964306')
+                                                                          
+                              input#ybId21789642363974(type='hidden', value='2363974')
+                                                                          
+                              input#num21789642363974(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x4E3B;&#x63A8;&#x65E0;&#x7406;&#x7531;&#x4FDD;&#x4FEE;3&#x5E74;
+                                                                                
+                                strong &#xFFE5;79.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2363268',1,306)")
+                            .additional-guarantee-part1
+                              span#21789642363268.cart-checkbox(name='2178964306')
+                                                                          
+                              input#ybId21789642363268(type='hidden', value='2363268')
+                                                                          
+                              input#num21789642363268(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x65E0;&#x7406;&#x7531;&#x4FDD;&#x4FEE;4&#x5E74;
+                                                                                
+                                strong &#xFFE5;109.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2363906',1,306)")
+                            .additional-guarantee-part1
+                              span#21789642363906.cart-checkbox(name='2178964306')
+                                                                          
+                              input#ybId21789642363906(type='hidden', value='2363906')
+                                                                          
+                              input#num21789642363906(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x65E0;&#x7406;&#x7531;&#x4FDD;&#x4FEE;5&#x5E74;
+                                                                                
+                                strong &#xFFE5;139.00
+                                                                    
+                            .clear
+                                                        
+                        .additional-item-title
+                          | &#x5EF6;&#x957F;&#x4FDD;&#x4FEE;
+                          input(type='hidden', name='brandId2178964', value='103')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2243562',1,103)")
+                            .additional-guarantee-part1
+                              span#21789642243562.cart-checkbox(name='2178964103')
+                                                                          
+                              input#ybId21789642243562(type='hidden', value='2243562')
+                                                                          
+                              input#num21789642243562(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x5EF6;&#x957F;&#x4FDD;&#x4FEE;1&#x5E74;
+                                                                                
+                                strong &#xFFE5;59.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2243528',1,103)")
+                            .additional-guarantee-part1
+                              span#21789642243528.cart-checkbox(name='2178964103')
+                                                                          
+                              input#ybId21789642243528(type='hidden', value='2243528')
+                                                                          
+                              input#num21789642243528(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x5EF6;&#x957F;&#x4FDD;&#x4FEE;2&#x5E74;
+                                                                                
+                                strong &#xFFE5;79.00
+                                                                    
+                            .clear
+                                                        
+                        .additional-item-title
+                          | &#x6D3B;&#x52A8;&#x4FC3;&#x9500;
+                          input(type='hidden', name='brandId2178964', value='20')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2243486',1,20)")
+                            .additional-guarantee-part1
+                              span#21789642243486.cart-checkbox(name='217896420')
+                                                                          
+                              input#ybId21789642243486(type='hidden', value='2243486')
+                                                                          
+                              input#num21789642243486(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x7279;&#x60E0;&#x5EF6;&#x957F;&#x4FDD;&#x4FEE;1&#x5E74;
+                                                                                
+                                strong &#xFFE5;12.12
+                                                                    
+                            .clear
+                                                        
+                        .additional-item-title
+                          | &#x53EA;&#x6362;&#x4E0D;&#x4FEE;
+                          input(type='hidden', name='brandId2178964', value='106')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2244367',1,106)")
+                            .additional-guarantee-part1
+                              span#21789642244367.cart-checkbox(name='2178964106')
+                                                                          
+                              input#ybId21789642244367(type='hidden', value='2244367')
+                                                                          
+                              input#num21789642244367(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x53EA;&#x6362;&#x4E0D;&#x4FEE;1&#x5E74;
+                                                                                
+                                strong &#xFFE5;59.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2244323',1,106)")
+                            .additional-guarantee-part1
+                              span#21789642244323.cart-checkbox(name='2178964106')
+                                                                          
+                              input#ybId21789642244323(type='hidden', value='2244323')
+                                                                          
+                              input#num21789642244323(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x53EA;&#x6362;&#x4E0D;&#x4FEE;2&#x5E74;
+                                                                                
+                                strong &#xFFE5;99.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2244293',1,106)")
+                            .additional-guarantee-part1
+                              span#21789642244293.cart-checkbox(name='2178964106')
+                                                                          
+                              input#ybId21789642244293(type='hidden', value='2244293')
+                                                                          
+                              input#num21789642244293(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x7279;&#x60E0;&#x53EA;&#x6362;&#x4E0D;&#x4FEE;2&#x5E74;
+                                                                                
+                                strong &#xFFE5;69.00
+                                                                    
+                            .clear
+                                                        
+                        .additional-item-title
+                          | &#x610F;&#x5916;&#x670D;&#x52A1;
+                          input(type='hidden', name='brandId2178964', value='253')
+                                                        
+                        .items
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2214952',1,253)")
+                            .additional-guarantee-part1
+                              span#21789642214952.cart-checkbox(name='2178964253')
+                                                                          
+                              input#ybId21789642214952(type='hidden', value='2214952')
+                                                                          
+                              input#num21789642214952(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount 1&#x5E74;&#x65E0;&#x7406;&#x7531;&#x6362;&#x65B0;&#x4EC5;&#x9700;100&#x5143;
+                                                                                
+                                strong &#xFFE5;49.00
+                                                                    
+                            .clear
+                                                              
+                          .additional-guarantee-item(onclick="selectYanbao('','1',7,2178964,1,'2214966',1,253)")
+                            .additional-guarantee-part1
+                              span#21789642214966.cart-checkbox(name='2178964253')
+                                                                          
+                              input#ybId21789642214966(type='hidden', value='2214966')
+                                                                          
+                              input#num21789642214966(type='hidden', value='1')
+                                                                    
+                            a.additional-guarantee-part2(href='#')
+                              img.cart-photo-thumb(alt='', src='http://m.360buyimg.com/mobilecms/jfs/t196/217/837525365/2287/419b0204/539ab245N12796e80.jpg')
+                                                                    
+                            .additional-guarantee-part3
+                              div
+                                span.shp-cart-amount &#x7B2C;2&#x5E74;&#x65E0;&#x7406;&#x7531;&#x6362;&#x65B0;&#x4EC5;&#x9700;100&#x5143;
+                                                                                
+                                strong &#xFFE5;65.00
+                                                                    
+                            .clear
+                                
+                #givenYanbao2178964
+    #emptyCart(style='display:none')
+      .shp-cart-empty
+        .empty-sign.cart-empty-pic
+        
+        .empty-warning-text
+          | &#x8D2D;&#x7269;&#x8F66;&#x8FD8;&#x662F;&#x7A7A;&#x7684;&#xFF0C;&#x53BB;&#x6311;&#x51E0;&#x4EF6;&#x4E2D;&#x610F;&#x7684;&#x5546;&#x54C1;&#x5427;&#xFF01;
+        
+        .empty-btn-wrapper
+          a.btn-jd-darkred.btn-large(href='javascript:beWalk()') &#x53BB;&#x901B;&#x901B;
+    #indexToTop.bottom-to-top.J_ping(report-eventid='MHome_BacktoTop', page_name='index')
+      img(src='//st.360buyimg.com/order/images/cart/scroll-to-top-icon.png?v=20160324', style='width: 100%;')
+    .shopping-guess-container
+      #guessID.shopping-guess
+        span.shopping-guess-title
+          span.shopping-guess-icon
+            img(src='//st.360buyimg.com/order/images/cart/shopping-guess-icon.png?v=20160324')
+          | &#x731C;&#x4F60;&#x559C;&#x6B22;
+        
+        #guessing.shopping-guess-cover
+          ul#guessList.jd-slider-container.shopping-guess-list
+    script(type='text/javascript', src='//st.360buyimg.com/order/js/2015/cart/guessYouLike5.0.js?v=20160324')
+    script(type='text/javascript', src='//st.360buyimg.com/order/js/2015/cart/jdslider5.0.js?v=20160324')
+    script(type='text/javascript').
+      var singleSkuIds = $("input[name='skuIds']");
+      var suitSkuIds = $("input[name='suitIds']");
+      var skuIds = "";
+      for (var i = 0; i < singleSkuIds.length; i++) {
+      if (skuIds == "") {
+      skuIds += singleSkuIds.get(i).value;
+      } else {
+      skuIds = skuIds + "," + singleSkuIds.get(i).value;
+      }
+      }
+      for (var i = 0; i < suitSkuIds.length; i++) {
+      if (skuIds == "") {
+      skuIds += suitSkuIds.get(i).value;
+      } else {
+      skuIds = skuIds + "," + suitSkuIds.get(i).value;
+      }
+      }
+      $(function () {
+      /*
+      * 猜你喜欢
+      * */
+      guessProductList({
+      containerID: 'guessList',
+      url: '/cart/guessYouLike.json?skuIds=' + skuIds + '+&sid=' + "d09777748c58a49f18338437fc64a829",
+      maxCount: 12,
+      spread: true,
+      callBack: function () {
+      $('#guessing').jdSlider({
+      lineNum: 1,
+      fitToScreen: true,
+      marginLeft: 15
+      });
+      }
+      });
+      });
+    #payment_p(style='display:block')
+      #paymentp
+  
+      #payment.payment-total-bar.payment-total-bar-new.box-flex-f
+        .shp-chk.shp-chk-new.box-flex-c
+          span#checkIcon-1.cart-checkbox(onclick='checkAllHandler();')
+              
+          span.cart-checkbox-text &#x5168;&#x9009;
+        
+        .shp-cart-info.shp-cart-info-new.box-flex-c
+          strong#shpCartTotal.shp-cart-total(data-fsizeinit='14')
+            | &#x5408;&#x8BA1;:
+            span#cart_realPrice.bottom-bar-price  &yen;3117.90
+              
+          span#saleOffNew.sale-off.sale-off-new.bottom-total-price(data-fsizeinit='10')
+            | &#x603B;&#x989D;:
+            span#cart_oriPrice.money-unit-bf 3117.90
+            | &#x7ACB;&#x51CF;:
+            span#cart_rePrice.money-unit-bf 0.00
+        
+        a#submit.btn-right-block.btn-right-block-new.box-flex-c
+          | &#x53BB;&#x7ED3;&#x7B97;
+          span#checkedNum (2)
+    #mask(style='visibility: hidden')
+      #mask-wraper
+        #mask-con
+    input#newOrderServer(type='hidden', value='')
+    input#cartNum(type='hidden', value='8')
+    input#limitWareNum(type='hidden', value='1000')
+    input#limitCartNum(type='hidden', value='50')
+    input#limitBookNum(type='hidden', value='1000')
+    input#limitNotBookNum(type='hidden', value='200')
+    input#resourceType(type='hidden', value='')
+    input#resourceValue(type='hidden', value='')
+    input#sid(type='hidden', value='d09777748c58a49f18338437fc64a829')
+    input#submitType(type='hidden', value='')
+    input#isOpenFreeFreight(type='hidden', value='true')
+    script.
+      var cartUse = 'true';
+      var shopCart;
+      $(document).ready(function () {
+      backToTop();
+      document.getElementById("background").style.height = document.getElementById("body").scrollHeight + 20 + "px";
+      judgeSubmit('2', '0', '2');
+      calcShopCheck({
+      "jdShopIcon": "http://m.360buyimg.com/mobilecms/jfs/t1231/108/109612036/1400/16a62ae2/54ffad78Nf7478bf1.png",
+      "popShopIcon": "http://m.360buyimg.com/mobilecms/jfs/t910/75/103464989/1676/81f7c380/54ffdd4cN54a18ddc.png",
+      "vendors": [{
+      "vendorId": 8888,
+      "vendorType": 99,
+      "shopId": -1,
+      "shopName": "京东自营",
+      "vendorPrice": 3117.9,
+      "sorted": [{
+      "itemType": 1,
+      "item": {
+      "Name": "威高（VSGO）D-15305 单反微单电相机清洁养护套装 数码单反相机基础清洁",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t2188/122/2325917893/108525/c051687b/56d16459Nc1457604.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "833629",
+      "IdForOldVersion": 833629,
+      "Point": 0,
+      "PriceShow": "¥29.90",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 29.9,
+      "AwardType": 0,
+      "CheckType": 1,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "无货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"a": "颜色:【基础版】 机身/屏幕 普通清洁"}
+      }
+      }, {
+      "itemType": 12,
+      "item": {
+      "NeedMoney": 1599,
+      "Num": 1,
+      "Skus": [{
+      "Name": "索尼（SONY）ILCE-5100L 微单套机 白色（16-50mm镜头 2430万像素 a5100/α5100）",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t226/246/1437524040/118506/7f32c4b8/53fb0929N3d98fab4.jpg!q70.jpg",
+      "Discount": 511,
+      "Id": "1204885",
+      "IdForOldVersion": 1204885,
+      "Point": 0,
+      "PriceShow": "¥3088.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 3599,
+      "AwardType": 0,
+      "CheckType": 1,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [{
+      "Name": "火柴人 MatchstickMen FC-6075微单相机包",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t2149/191/1339125246/302263/958b675c/56975b14Nc3e61721.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "2228627",
+      "IdForOldVersion": 2228627,
+      "Point": 0,
+      "PriceShow": "¥0.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 0,
+      "AwardType": 2,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"b": "版本:FC-6075"}
+      }, {
+      "Name": "金士顿（Kingston）16GB 80MB/s SD Class10 UHS-I高速存储卡 ",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t1549/281/1340314636/146906/1522459c/55c4686dN27f8af50.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "1787603",
+      "IdForOldVersion": 1787603,
+      "Point": 0,
+      "PriceShow": "¥0.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 0,
+      "AwardType": 2,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"b": "版本:16GB", "a": "颜色:80MB/S"}
+      }, {
+      "Name": "锐玛（EIRMAI）U20 单反微单相机镜头擦镜纸 清洁纸 除尘纸 镜头纸巾1本50张 数码相机养护单反镜头清洁",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t406/91/529154572/74412/fb268c05/54222497Nedb14835.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "1218900",
+      "IdForOldVersion": 1218900,
+      "Point": 0,
+      "PriceShow": "¥0.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 0,
+      "AwardType": 2,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"b": "版本:U20镜头纸"}
+      }, {
+      "Name": "威高（VSGO）D-15309 单反相机镜头清洁布湿巾 光学清洁套装随行装",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t1918/310/1647218844/287372/a7e015ae/56d14599N6252b8b3.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "2342146",
+      "IdForOldVersion": 2342146,
+      "Point": 0,
+      "PriceShow": "¥0.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 0,
+      "AwardType": 2,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"a": "颜色:【经典版】 无尘清洁独立随行装"}
+      }],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [{
+      "id": 183087545,
+      "title": "满599.00、999.00、1599.00可换购商品",
+      "type": 10,
+      "checkType": 1
+      }, {"id": -300, "title": "不使用活动优惠", "type": 10, "checkType": 0}],
+      "propertyTags": {"b": "版本:16-50mm套装", "a": "颜色:白色"}
+      }],
+      "Gifts": [],
+      "RePrice": 0,
+      "Price": 3088,
+      "Discount": 0,
+      "Id": 183087545,
+      "PriceShow": "¥3088.00",
+      "Point": 0,
+      "AddMoney": 299,
+      "CanSelectedGiftNum": 3,
+      "STip": "活动商品已购满1599.00元， 您只需再加价299.00元，即可换购商品",
+      "SType": 16,
+      "CheckType": 1,
+      "CanSelectGifts": [{
+      "Name": "索尼（SONY）PCK-LS1EM 液晶屏保护膜（适用索尼5100/5000/6000 微单贴膜/保护膜）",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t988/37/569043600/33321/dd75e58c/5530b10eNcbc7ab93.jpg!q70.jpg",
+      "Discount": 10,
+      "Id": "1434306",
+      "IdForOldVersion": 1434306,
+      "Point": 0,
+      "PriceShow": "¥69.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 79,
+      "AwardType": 4,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "giftMsg": "",
+      "canSelectPromotions": [],
+      "propertyTags": {"b": "版本:APS-C微单保护膜"}
+      }, {
+      "Name": "索尼（SONY）NP-FW50 相机充电电池（适用索尼微单/RX10/QX1）",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t484/209/1311927520/152419/7fe9a9c0/54cb5f12Nf52d85b4.jpg!q70.jpg",
+      "Discount": 71,
+      "Id": "548444",
+      "IdForOldVersion": 548444,
+      "Point": 0,
+      "PriceShow": "¥269.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 340,
+      "AwardType": 4,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "giftMsg": "",
+      "canSelectPromotions": [],
+      "propertyTags": {"b": "版本:FW50电池"}
+      }, {
+      "Name": "索尼（SONY）LCJ-AR1 萌萌兔耳朵相机包（适用索尼微单5100/5000）",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t1006/168/825188867/134930/da86aee/5549c817Nd13f4e46.jpg!q70.jpg",
+      "Discount": 50,
+      "Id": "1434408",
+      "IdForOldVersion": 1434408,
+      "Point": 0,
+      "PriceShow": "¥299.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 349,
+      "AwardType": 4,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "giftMsg": "",
+      "canSelectPromotions": [],
+      "propertyTags": {"b": "版本:女生超爱兔耳朵"}
+      }],
+      "suitType": 10,
+      "linkUrl": "http://sale.jd.com/act/OplHnjVa2ef.html",
+      "promotionId": "183087545",
+      "specialId": "0"
+      }
+      }, {
+      "itemType": 1,
+      "item": {
+      "Name": "美的 (Midea) M1-L202B 微波炉20L",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t2227/364/1999411013/155065/5846ffaf/56989ce9Nee51fcbb.jpg!q70.jpg",
+      "Discount": 200,
+      "Id": "2178964",
+      "IdForOldVersion": 2178964,
+      "Point": 0,
+      "PriceShow": "¥399.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 599,
+      "AwardType": 0,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"b": "版本:1", "a": "颜色:20L微波炉！"}
+      }
+      }],
+      "couponsNum": 0
+      }, {
+      "vendorId": 31927,
+      "vendorType": 0,
+      "shopId": 30780,
+      "shopName": "灿丽家居灯饰旗舰店",
+      "sorted": [{
+      "itemType": 9,
+      "item": {
+      "NeedMoney": 500,
+      "Num": 1,
+      "Skus": [{
+      "Name": "灿丽简约宜家卧室壁灯床头灯实木现代中式过道走廊玄关创意壁灯具 单头 送LED光源",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t616/279/1169684143/238030/906a1340/54b4d357N7888661c.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "1450526520",
+      "IdForOldVersion": 1450526520,
+      "Point": 0,
+      "PriceShow": "¥75.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 75,
+      "AwardType": 0,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [{
+      "id": 2422871616,
+      "title": "满500.00减50.00,满1500.00减200.00,满3000.00减400.00",
+      "type": 10,
+      "checkType": 1
+      }, {"id": -300, "title": "不使用活动优惠", "type": 10, "checkType": 0}],
+      "propertyTags": {"a": "颜色:单头 送LED光源"}
+      }],
+      "Gifts": [],
+      "RePrice": 0,
+      "Price": 75,
+      "Discount": 0,
+      "Id": 2422871616,
+      "PriceShow": "¥0.00",
+      "Point": 0,
+      "STip": "满500.00元，即享优惠",
+      "SType": 11,
+      "CheckType": 0,
+      "CanSelectGifts": [],
+      "suitType": 10,
+      "promotionId": "2422871616",
+      "specialId": "0"
+      }
+      }],
+      "couponsNum": 0
+      }, {
+      "vendorId": 106624,
+      "vendorType": 0,
+      "shopId": 104833,
+      "shopName": "灯先生旗舰店",
+      "sorted": [{
+      "itemType": 1,
+      "item": {
+      "Name": "灯先生 现代过道 中式壁灯阳台灯户外壁灯LED墙壁灯实木灯走廊灯卧室灯　工程灯 壁灯-不含光源",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t1366/110/1002602811/245875/acb6a03/55b6ee47N5e6ec05d.jpg!q70.jpg",
+      "Discount": 147,
+      "Id": "1503625363",
+      "IdForOldVersion": 1503625363,
+      "Point": 0,
+      "PriceShow": "¥98.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 245,
+      "AwardType": 0,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"a": "颜色:壁灯-不含光源"}
+      }
+      }, {
+      "itemType": 1,
+      "item": {
+      "Name": "灯先生 简约现代中式实木小壁灯LED墙壁过道灯客厅卧室床头灯壁灯 壁灯-不含光源",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t1051/186/223664762/263163/49659e43/551a4461Nc9dbce68.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "1503679963",
+      "IdForOldVersion": 1503679963,
+      "Point": 0,
+      "PriceShow": "¥99.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 99,
+      "AwardType": 0,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"a": "颜色:壁灯-不含光源"}
+      }
+      }],
+      "couponsNum": 0
+      }, {
+      "vendorId": 111533,
+      "vendorType": 0,
+      "shopId": 108797,
+      "shopName": "恒焱灯饰官方旗舰店",
+      "sorted": [{
+      "itemType": 1,
+      "item": {
+      "Name": "恒焱 现代简约创意个性卧室床头过道走廊LED壁灯装饰灯 门厅灯 黑色 18CM小号 8W",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t739/287/1383853203/448463/b70caa9d/5538a1d3N41fcee2b.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "1533674935",
+      "IdForOldVersion": 1533674935,
+      "Point": 0,
+      "PriceShow": "¥168.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 168,
+      "AwardType": 0,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [],
+      "propertyTags": {"b": "尺码:18CM小号 8W", "a": "颜色:黑色"}
+      }
+      }],
+      "couponsNum": 3
+      }, {
+      "vendorId": 36559,
+      "vendorType": 0,
+      "shopId": 34691,
+      "shopName": "家居就建材家居旗舰店",
+      "sorted": [{
+      "itemType": 9,
+      "item": {
+      "NeedMoney": 399,
+      "Num": 1,
+      "Skus": [{
+      "Name": "雷士 壁灯 床头灯(卧室床头壁灯 nub1130-1)",
+      "Tags": [],
+      "Num": 1,
+      "ImgUrl": "jfs/t754/198/1302528069/118011/58bf9d3f/5530692bN30517036.jpg!q70.jpg",
+      "Discount": 0,
+      "Id": "1019563424",
+      "IdForOldVersion": 1019563424,
+      "Point": 0,
+      "PriceShow": "¥66.00",
+      "PriceImg": "",
+      "RePrice": 0,
+      "Price": 66,
+      "AwardType": 0,
+      "CheckType": 0,
+      "targetId": 0,
+      "isBook": false,
+      "isYb": false,
+      "Gifts": [],
+      "stockState": "有货",
+      "remainNum": "",
+      "remainNumInt": -1,
+      "canSelectPromotions": [{
+      "id": 2343789544,
+      "title": "满399.00减10.00,满699.00减30.00,满999.00减50.00",
+      "type": 10,
+      "checkType": 1
+      }, {"id": -300, "title": "不使用活动优惠", "type": 10, "checkType": 0}],
+      "propertyTags": {}
+      }],
+      "Gifts": [],
+      "RePrice": 0,
+      "Price": 66,
+      "Discount": 0,
+      "Id": 2343789544,
+      "PriceShow": "¥0.00",
+      "Point": 0,
+      "STip": "满399.00元，即享优惠",
+      "SType": 11,
+      "CheckType": 0,
+      "CanSelectGifts": [],
+      "suitType": 10,
+      "promotionId": "2343789544",
+      "specialId": "0"
+      }
+      }],
+      "couponsNum": 0
+      }],
+      "specialId": 0,
+      "Num": 8,
+      "cartNum": 8,
+      "checkedWareNum": 2,
+      "limitCartNum": 50,
+      "limitWareNum": 1000,
+      "limitBookNum": 1000,
+      "limitNotBookNum": 200,
+      "RePrice": 0,
+      "Price": 3117.9,
+      "IsEmpty": false,
+      "PriceShow": "¥3117.90",
+      "Skus": [],
+      "Suits": [],
+      "Gifts": [],
+      "tip_1": "",
+      "tip_2": "",
+      "freeFreight": 79,
+      "resultCode": "",
+      "userGradeMessage": "您享受满79元免运费服务",
+      "GlobalNum": 0,
+      "LocalNum": 2
+      });
+      //重新设置字体大小
+      /* resizePriseFontSize();
+      resizeBottomPriseFontSize();
+      resizeBottomTotalFontSize();*/
+      //判断屏幕旋转
+      //doOnOrientationChange();
+      //购物车ABTest A（5.0）埋点
+      pingClick("true", "MShopcart_Atest", "", "", "");
+      /* 编辑模式js片段 begin */
+      shopCart = new ShopCart();
+      //计算所有店铺title自适应宽度
+      shopCart.computeTitleName(document, '.shop-title-content');
+      window.addEventListener('resize', function () {
+      shopCart.computeTitleName(document, '.shop-title-content');
+      });
+      shopCart.singleProductEdit();
+      shopCart.pckProductsEdit();
+      /* 编辑模式js片段 end */
+      shopCart._setStrAutoWidth('#shpCartTotal', 0);
+      shopCart._setStrAutoWidth('#saleOffNew', 2);
+      });
+    div(style='display:none;')
+      img(src='/ja.jsp?&utmn=833316987&utmr=http%3A%2F%2Flocalhost%3A5000%2F&utmp=%2Fcart%2Fcart.action%3F&guid=ON&jav=html5&pin=2yw7XKSYXJXKY7JSnO7CTA==&utmac=MO-J2011-1')
+    script(type='text/javascript').
+      var jap = {
+      siteId: 'MO-J2011-1',
+      topic: 'traffic-jdm',
+      account: '',
+      skuid: '',
+      shopid: '',
+      orderid: '',
+      adsCookieName: 'mt_subsite',
+      jumpAppEnable: 1,
+      __cookie_jda: '__tra',
+      __cookie_jdb: '__trb',
+      __cookie_jdc: '__trc',
+      __cookie_jdu: '__tru',
+      __cookie_jdv: '__trv'
+      };
+      (function () {
+      var ja = document.createElement('script');
+      ja.type = 'text/javascript';
+      ja.async = true;
+      //ja.src = ('https:' == document.location.protocol ? 'https://miscssl' : 'http://misc') + '.360buyimg.com/jdf/1.0.0/unit/ja/1.0.0/ja.js';
+      ja.src = '//misc.360buyimg.com/jdf/1.0.0/unit/ja/1.0.0/ja.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(ja, s);
+      })();
+    script(type='text/javascript').
+      rTimeArr[8] = {sTime: new Date()};
+    script(type='text/javascript', src='//h5.m.jd.com/active/track/mping.min.js')
+    script(type='text/javascript').
+      try {
+      var pv = new MPing.inputs.PV();   //构造pv 请求
+      var mping = new MPing();        //构造上报实例
+      mping.send(pv);                //上报pv
+      } catch (e) {
+      }
+    script(type='text/javascript').
+      rTimeArr[8].time = new Date();
+    script(src='//st.360buyimg.com/order/js/2014/module/plugIn/downloadAppPlugIn.js?v=20160324', type='text/javascript')
+    script(src='//h5.m.jd.com/active/reporttime/reportTime.min.js', type='text/javascript')
+    script(type='text/javascript').
+      $("#unsupport").hide();
+      if (!testLocalStorage()) { //not support html5
+      if (0 != 0 && !$clearCart && !$teamId) {
+      $("#html5_cart_num").text(0 > 0 > 0);
+      }
+      } else {
+      updateToolBar('');
+      }
+      $("#html5_cart").click(function () {
+      //	syncCart('d09777748c58a49f18338437fc64a829',true);
+      location.href = '/cart/cart.action';
+      });
+      function reSearch() {
+      var depCity = window.sessionStorage.getItem("airline_depCityName");
+      if (testSessionStorage() && isNotBlank(depCity) && !/^\\s*$/.test(depCity) && depCity != "") {
+      var airStr = '<form action="/airline/list.action" method="post" id="reseach">'
+      + '<input type="hidden" name="sid"  value="d09777748c58a49f18338437fc64a829"/>'
+      + '<input type="hidden" name="depCity" value="' + window.sessionStorage.getItem("airline_depCityName") + '"/>'
+      + '<input type="hidden" name="arrCity" value="' + window.sessionStorage.getItem("airline_arrCityName") + '"/>'
+      + '<input type="hidden" name="depDate" value="' + window.sessionStorage.getItem("airline_depDate") + '"/>'
+      + '<input type="hidden" name="depTime" value="' + window.sessionStorage.getItem("airline_depTime") + '"/>'
+      + '<input type="hidden" name="classNo" value="' + window.sessionStorage.getItem("airline_classNo") + '"/>'
+      + '</form>';
+      $("body").append(airStr);
+      $("#reseach").submit();
+      } else {
+      window.location.href = '/airline/index.action?sid=d09777748c58a49f18338437fc64a829';
+      }
+      }
+      //banner 关闭点击
+      $('.div_banner_close').click(function () {
+      $('#div_banner_header').unbind('click');
+      jQuery.post('/index/addClientCookieVal.json', function (d) {
+      $('#div_banner_header').slideUp(500);
+      });
+      });
+      //banner 下载点击
+      $('.div_banner_download').click(function () {
+      var downloadUrl = $(this).attr('url');
+      jQuery.post('/index/addClientCookieVal.json', function (d) {
+      window.location.href = downloadUrl;
+      });
+      });
+      window._clientVersion_ = '';
+      $(document).ready(function () {
+      var _loadScript = function (url, options, cb) {
+      var script = document.createElement("script");
+      var def = {
+      type: "text/javascript",
+      charset: "utf-8"
+      }
+      options = options || {}
+      for (var i in options) {
+      def[i] = options[i];
+      }
+      script.src = url;
+      for (var i in def) {
+      script.setAttribute(i, def[i]);
+      }
+      script.addEventListener("load", function () {
+      cb && cb();
+      }, false)
+      document.getElementsByTagName("head")[0].appendChild(script);
+      }
+      if ($(".download-con").length || $("#clientArea").length) {
+      _loadScript("//st.360buyimg.com/order/js/2013/installapp.min.js?v=20160324", {}, function () {
+      $("#clientArea").length && downcheck($("#clientArea"), false);
+      });
+      }
+      })
+      window.onload = function () {
+      $('#openJD').downloadAppPlugIn(null, {
+      DOWN_IPAD: 'https://itunes.apple.com/cn/app/jing-dong-du-shu/id506583396?mt=8',
+      DOWN_APP_IOS: 'https://itunes.apple.com/cn/app/jing-dong-du-shu/id506583396?mt=8',
+      DOWN_APP_URL: 'http://item.m.jd.com/download/downApp.html',
+      INTENT_URL: 'openapp.jdebook://communication?params={\\'type\':\'1\'}'
+      })
+      $('#close').downloadAppPlugInClose('down_app');
+      }
+    // 通用头 显示
+    script.
+      function loadHB() {
+      var sid = 'd09777748c58a49f18338437fc64a829';
+      var option = {
+      useDefaultImp: false
+      };
+      var mchb = new MCommonHeaderBottom();
+      //通用头
+      /*
+      参数说明：
+      名称						必填项(Y,N)			描述
+      hrederId			|		Y		|	显示divId
+      title				|		N		|	显示头信息
+      sid					|		N		|	m版sid串  (可取'')
+      isShowShortCut 		| 		N		|	初始化时候是否显示快捷键，不显示
+      selectedShortCut	|		N		|	初始化时候显示选择第几个快捷键 (1:首页, 2:分类搜索, 3:购物车, 4:我的京东) 默认不选中
+      onClickGoback		|		N		|	点击返回触发事件
+      onClickJdkey		|		N		|	点击显示隐藏快捷键触发事件
+      onClickIndex		|		N		|	点击首页触发事件
+      onClickSearch		|		N		|	点击搜索触发事件
+      onClickCart			|		N		|	点击购物车触发事件
+      onClickHome			|		N		|	点击home触发事件
+      var headerArg = {hrederId : 'm_common_header', sid : sid, isShowShortCut : false, selectedShortCut : '3',
+      onClickGoback:function(){alert('onClickGoback')},
+      onClickJdkey:function(){alert('onClickJdkey')},
+      onClickIndex:function(){alert('onClickIndex')},
+      onClickSearch:function(){alert('onClickCart')},
+      onClickCart:function(){alert('onClickCart')},
+      onClickHome:function(){alert('onClickHome')},};
+      */
+      var title = "购物车";
+      var headerArg = {
+      hrederId: 'm_common_header',
+      title: title,
+      sid: sid,
+      isShowShortCut: false,
+      selectedShortCut: getShortCutValue()
+      }
+      mchb.header(headerArg);
+      function getShortCutValue() {
+      /**
+      * 只有在购物车页面时，才显示到导航中的“购物车”为选中状态。
+      */
+      return window.location.pathname.indexOf("/cart/cart.action") >= 0 ? '3' : '';
+      };
+      //通用尾
+      /*
+      参数说明：
+      名称						必填项(Y,N)			描述
+      bottomId			|		Y		|	显示divId
+      sid					|		N		|	m版sid串  (可取'')
+      pin			 		| 		Y		|	用户pin (登录pin不为空，未登录为'')
+      toPcSkipurl			|		Y		|	跳转pc版url
+      footerPlatforms		|		Y		|	配置跳转快捷键参数插件
+      默认提供4种快捷配置
+      enum0 ：none 0个
+      enum2 : 客户端 1个
+      enum3 : 标准版 触屏版 客户端 3 个
+      enum4 : 标准版 触屏版 电脑版 客户端 4个
+      自定义参数说明
+      id:唯一标识, name:名称(standard 标准版,touchscreen 触屏版 ,pc
+      pc版,apps app版) href:跳转的url ,onClickX 点击事件
+      downloadAppPlugIn	|		N		|	配置跳转app参数 (包含：parameters,otherApp参数)
+      具体详见 http://st.360buyimg.com/m/js/2014/module/plugIn/downloadAppPlugIn.src.js
+      */
+      var pin = 'danneleung';
+      var toPcSkipurl = 'http://www.jd.com/#m'; //跳转电脑版url
+      var footerPlatforms4 = mchb.platformEnum(toPcSkipurl, sid).enum3_1;//标准版 触屏版 电脑版 客户端 4个
+      var bottomArg = {bottomId: 'm_common_bottom', sid: sid, pin: pin, footerPlatforms: footerPlatforms4};
+      mchb.bottom(bottomArg);
+      //        var footerPlatforms5 = [ {id:1, name:'standard', href:'http://wap.jd.com/index.html?v=w&sid=' + sid, onClickX:function(){alert('自定义事件,我要去标准版')}},
+      //            {id:2, name:'touchscreen', href:'', onClickX:function(){alert('自定义事件,我是触屏版');}},
+      //            {id:3, name:'pc', href:'http://www.jd.com/#m', onClickX:function(){alert('goToPc');}},
+      //            {id:4, name:'apps', href:'', onClickX:function(){alert('自定义点击事件,并默认执行下载app事件');}}
+      //        ];//自定义
+      //        var bottomArg = {bottomId : 'm_common_bottom5', sid : sid, pin : pin ,footerPlatforms : footerPlatforms5};
+      //        mchb.bottom(bottomArg);
+      //通用提示下载京东客户端
+      /*
+      参数说明：
+      名称						必填项(Y,N)			描述
+      tipId				|		Y		|	显示divId
+      sid					|		N		|	m版sid串  (可取'')
+      isfloat 			| 		N		|	是否是悬浮窗 (true:悬浮,false:不悬浮)
+      isAlwayShow			| 		N		|	是否显示,true:并不受到 24小时 点击 关闭X 的影响。 默认：false
+      copyWrite			|		N		|	文案 富文本 支持，不建议太长可能会导致样式变形。eg:客户端首单返5元<br>更多特价商品等你抢
+      location			|		N		|	停靠位置,(取值范围：'bottom:0px;':靠近底端  ，'top:0px;':靠近顶端)
+      onClickTrynow		|		N		|	点击下载触发事件
+      onClickTipX			|		N		|	点击关闭X触发事件
+      downloadAppPlugIn	|		N		|	配置跳转app参数 (包含：parameters,otherApp参数)
+      具体详见 http://st.360buyimg.com/m/js/2014/module/plugIn/downloadAppPlugIn.src.js
+      */
+      var tipArg = {
+      tipId: 'm_common_tip', sid: sid, isfloat: true, isAlwayShow: true,
+      copyWrite: '自己自定义的文案<br>返卷100哦！',
+      onClickTrynow: function () {
+      },
+      onClickTipX: function () {
+      alert("自定义点击事件,并默认执行关闭app事件")
+      }
+      };
+      mchb.jdTip(tipArg);
+      var tipArg2 = {
+      tipId: 'm_common_tip_no_float', sid: sid, isfloat: false, isAlwayShow: true,
+      onClickTrynow: function () {
+      },
+      onClickTipX: function () {
+      alert("自定义点击事件,并默认执行关闭app事件")
+      }
+      };
+      mchb.jdTip(tipArg2);
+      }
+      loadHB();

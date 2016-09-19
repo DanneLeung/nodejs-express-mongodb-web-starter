@@ -1,0 +1,25 @@
+#fixedtop.showfixedtop(search_land_searchtransformation_show='true')
+  a#layout_top(name='top')
+  #index_search_main.jd-header-home-wrapper(search_land_searchtransformation_show='true')
+    #index_search_head.jd-search-container.on-blur
+      .jd-search-box-cover(style='opacity: 0;')
+      .jd-search-box
+        .jd-search-tb
+          .jd-search-icon
+            span.jd-search-icon-logo
+              i.jd-sprite-icon
+            span#index_search_bar_cancel.jd-search-icon-cancel
+              i.jd-sprite-icon
+          form#index_searchForm.jd-search-form(action='/ware/search.action')
+            .jd-search-form-box
+              span.jd-search-form-icon.jd-sprite-icon
+              .jd-search-form-input
+                input(type='hidden', name='sid', value='bd74c4ebe2ddb6f248780d6772f651fc')
+                input#index_newkeyword.hilight1(type='text', maxlength='20', autocomplete='off', name='keyword', value='', placeholder='搜索京东商品/店铺')
+                input#index_category(name='catelogyList', type='text', style='display:none')
+              a#index_clear_keyword.jd-search-icon-close.jd-sprite-icon(href='javascript:void(0);')
+              a#index_search_submit.jd-search-form-action(href='javascript:void(0)')
+                span.jd-sprite-icon
+          .jd-search-login.login-ing
+            a#index_searchLogin.J_ping(href='https://passport.m.jd.com/user/login.action?returnurl=http://m.jd.com?indexloc=1', page_name='index', report-eventparam='', report-eventid='MHome_Login')
+              span.jd-search-icon-login &#x767B;&#x5F55;

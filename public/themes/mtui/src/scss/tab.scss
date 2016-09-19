@@ -1,0 +1,8 @@
+/* tab start*/
+@import 'setting.scss';
+.tab {
+  .tab_t_item.select a{color:$primary-color;}
+  .tab_c_item{display: none;}
+  .tab_c_item.select{display: block}
+}
+/* tab end*/

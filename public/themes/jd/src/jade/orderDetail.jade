@@ -1,0 +1,96 @@
+//
+   Created by danne on 2016/1/15.
+   用户订单页面
+extends layout/default
+block title
+  h1.title 订单详情
+block header
+  style(type='text/css').
+    .qrCode {
+      text-align: center;
+      padding: 50px;
+      margin: 0 auto;
+    }
+
+    .card {
+      padding: 10px;
+    }
+
+block main
+  .block-white
+    div
+      #order
+
+  div#useModal.modal
+    header.bar.bar-nav
+      a.icon.icon-close.pull-right(href="#useModal")
+      h1.title 扫码进入
+    div.content
+      div.qrCode#qrCode
+
+
+block script
+  script(type='text/javascript' src='js/jquery.qrcode.js')
+  script#orderDetail(type='text/html', charset='utf-8').
+    <div class="card">
+      <h4><small>订单号:  </small><%=$data.no%></h4>
+      <h4>手机: <%=$data.phone%></h4>
+      <h4>使用者: <%=$data.useName%></h4>
+      <h4>卡号: <%=$data.memberCardNo%></h4>
+      <h4>金额: ￥<%=$data.amount%></h4>
+      <h4>时间: <%=$data.createdAt%></h4>
+      <%if($data.status == '01') {%>
+        <a class="btn btn-block" href="paySelect.html?orderId=<%=$data._id%>">支付</a>
+        <button class="btn btn-negative btn-block" onclick="cancelOrder('<%=$data._id%>')">取消订单</button>
+      <%} else if($data.status == '02') {%>
+        <%if($data.orderType == '02') {%>
+        <a class="btn btn-positive btn-block" href="#useModal">使用</a>
+        <%}%>
+      <button class="btn btn-negative btn-block" onclick="cancelOrder('<%=$data._id%>')">取消订单</button>
+      <%} else if($data.status == '03') {%>
+      <%} else if($data.status == '04') {%>
+      <%} else if($data.status == '05') {%>
+      <%} else if($data.status == '06') {%>
+    <%}%>
+    </div>
+
+  script(type='text/javascript').
+
+    /**
+     * 加载订单
+     */
+    function loadOrderDetail(cb) {
+      var orderId = getQueryString('orderId');
+      $.getJSON(baseUrl + '/api/v1/order/find/orderId', {'orderId': orderId}, function (data) {
+        var html = template('orderDetail', data);
+        $('#order').append(html);
+        if ($.isFunction(cb)) {
+          cb();
+        }
+      })
+    }
+
+    /**
+     * 取消订单
+     */
+    function cancelOrder(orderId) {
+      $.getJSON(baseUrl + '/api/v1/order/find/cancelOrder', {'orderId': orderId}, function (data) {
+        if (data == "success") {
+          window.location = "order.html"
+        }
+      })
+    }
+
+    var url = baseUrl + "/api/v1/once/order/use?openid=" + localStorage["user.openid"] + "&memberCardId=" + getQueryString('memberCardId');
+    //长连接转短连接
+    W.getShortUrl(url, function (shortUrl) {
+      $("#qrCode").qrcode({
+        width: 300,
+        height: 300,
+        text: shortUrl
+      });
+    });
+
+    Zepto(function ($) {
+      loadOrderDetail();
+    });

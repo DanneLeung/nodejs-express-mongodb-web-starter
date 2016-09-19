@@ -1,0 +1,49 @@
+extends layout/default
+block header
+  link(rel='stylesheet', href='#{theme}/css/login.css')
+block main
+  header#header(style='display:block;')
+    span.icon.icon-goback
+    |     京东登录
+
+  section.page
+    .wrap.loginPage
+      .input-container
+        input#username.acc-input.username.txt-input.J_ping(type='text', placeholder='用户名/邮箱/已验证手机', autocomplete='off', onkeyup='CtoH(this);', report-eventid='MLoginRegister_Username')
+        i.icon.icon-clear
+      .input-container
+        input#password.acc-input.password.txt-input.J_ping(type='password', placeholder='请输入密码', autocomplete='off', report-eventid='MLoginRegister_Password', onkeyup='CtoH(this);')
+        i.icon.icon-clear
+        label.label-checkbox.J_ping(for='onOff_pwd', report-eventid='MLoginRegister_Plaintext')
+          input#onOff_pwd(type='checkbox')
+          .checkbtn
+            span.b-text abc
+            span.b-pwd ...
+      #input-code.input-container(style='display:;')
+        input#code.acc-input.imgverify.txt-input(type='text', placeholder='请输入验证码', autocomplete='off', onkeyup='CtoH(this);', size='11', maxlength='6')
+        span.code-box
+          img#imgCode(src='/cgi-bin/m/authcode?mod=login', alt='')
+        i.icon.icon-clear
+      .notice  
+      a#loginBtn.btn.J_ping(href='javascript:;', report-eventid='MLoginRegister_Login') 登 录
+      label.remberme.J_ping(for='remberme', report-eventid='MLoginRegister_AutoLogin')
+        input#remberme(type='checkbox', checked='')
+        span.icon.icon-rember
+        |             一个月内免登录
+      .quick-nav.clearfix
+        a.J_ping.findpwd(href='javascript:;', report-eventid='MLoginRegister_FindPassword')
+          i.icon.icon-clock
+          | 找回密码
+        a.J_ping.quickReg(href='javascript:;', report-eventid='MLoginRegister_PhoneRegister')
+          i.icon.icon-reg
+          | 快速注册
+      .quick-login
+        h4 其他登录方式
+        a.J_ping.quick-qq(href='javascript:;', report-eventid='MLoginRegister_QQLogin')
+          i.icon.icon-qq
+          br
+          | QQ
+        a.J_ping.quick-wx(href='javascript:;', report-eventid='MLoginRegister_WxLogin', style='display:none')
+          i.icon.icon-wx
+          br
+          | 微信

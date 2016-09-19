@@ -1,0 +1,152 @@
+//
+   Created by Renee on 2016/8/5.
+
+extends layout
+
+block content
+  script(src="http://cdn.bootcss.com/Swiper/3.3.1/js/swiper.jquery.min.js")
+  link(rel="stylesheet",type="text/css",href="http://cdn.bootcss.com/Swiper/3.3.1/css/swiper.min.css")
+  #main
+    .top
+      .top_search
+        .inner
+          .search_bar
+            a(href="#")
+              i.icon.icon-search
+              span 搜索更多商品
+
+      .floor.new-slider-floor.bdr-bottom
+        .swiper-container
+          .swiper-wrapper
+            .swiper-slide
+              a(href="#")
+                img.img-percent-100.swiper-lazy(src="http://i8.mifile.cn/v1/a1/64556050-c26f-b719-149b-80ed0a5f959e!720x360.jpg")
+            .swiper-slide
+              a(href="#")
+                img.img-percent-100.swiper-lazy(src="http://i8.mifile.cn/v1/a1/64556050-c26f-b719-149b-80ed0a5f959e!720x360.jpg")
+            .swiper-slide
+              a(href="#")
+                img.img-percent-100.swiper-lazy(src="http://i8.mifile.cn/v1/a1/64556050-c26f-b719-149b-80ed0a5f959e!720x360.jpg")
+
+          .swiper-pagination
+
+    //---------------------- 横排列表 -----------------------
+    .list_row.full_img
+      .list_title.text_center
+        h3 限时抢购
+      .box_wrap.limit_buying
+        .col_3.list
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .price.text_center
+            span.curr_price
+              i.icon.icon-yen
+              | 88
+            span.old_price
+              i.icon &#xf157;
+              | 100
+        .col_3.list
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .price.text_center
+            span.curr_price 88元
+            span.old_price 100元
+        .col_3.list
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .price.text_center
+            span.curr_price 88元
+            span.old_price 100元
+        .col_3.list
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .price.text_center
+            span.curr_price 88元
+            span.old_price 100元
+        .col_3.list
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .price.text_center
+            span.curr_price 88元
+            span.old_price 100元
+        .col_3.list
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .price.text_center
+            span.curr_price 88元
+            span.old_price 100元
+      .more.text_center
+        a.btn(href="#") 更多
+
+    //竖排列表
+    .list_col.full_img
+      .list_title.text_center
+        h3 华夏优选
+      .groups
+        a.group(href="product.html")
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .group_side.info
+            .pro_title 三星 Galaxy C7（SM-C7000）移动联通电信4G手机 双卡双待 送32G内存卡+壳+膜
+            .price
+              i.icon.icon-yen
+              | 299
+        a.group
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .group_side.info
+            .pro_title 三星 Galaxy C7（SM-C7000）移动联通电信4G手机 双卡双待 送32G内存卡+壳+膜
+            .price
+              i.icon.icon-yen
+              | 299
+        a.group
+          .img
+            img(src="http://image1.buy.ccb.com/images/48096737/1463461727311_3.jpg")
+          .group_side.info
+            .pro_title 三星 Galaxy C7（SM-C7000）移动联通电信4G手机 双卡双待 送32G内存卡+壳+膜
+            .price
+              i.icon.icon-yen
+              | 299
+
+
+      .more.text_center
+        a.btn 更多
+
+    .padd_bottom
+    //footer
+    #footer.fixed_bottom
+      .box_wrap
+        .col_3.text_center.select
+          a(href="#")
+            p
+              i.icon.icon-home
+            p 商城
+        .col_3.text_center
+          a(href="#")
+            p
+              i.icon.icon-basket-2
+            p 购物车
+        .col_3.text_center
+          a(href="login.html")
+            p
+              i.icon.icon-user-1
+            p 我的
+
+  block script
+  script(type='text/javascript').
+    var swiper = new Swiper('.new-slider-floor .swiper-container', {
+      pagination: '.new-slider-floor .swiper-pagination',
+      // Disable preloading of all images
+      preloadImages: false,
+      // Enable lazy loading
+      lazyLoading: false
+    });
+    var swiper2 = new Swiper('.seckill-new-container .swiper-container', {
+      slidesPerView: 3.4,
+      centeredSlides: false,
+      paginationClickable: true,
+      spaceBetween: 10,
+      grabCursor: true,
+      lazyLoading: true
+    });
+

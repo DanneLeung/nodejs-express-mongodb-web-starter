@@ -1,0 +1,15 @@
+//
+   Created by danne on 2016/1/15.
+   扫码进入休息室页面
+
+html
+  head
+    include inc/header
+  title 扫码洗衣
+  head
+  body
+      div#qr
+    script(type='text/javascript', src='js/all.min.js')
+    script(type='text/javascript').
+     var url = "http://xcesys.com:4000/api/v1/once/order/use?id=56971cf8b35a0ec00cd027d9";
+     $("#qr").qrcode(url);

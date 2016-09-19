@@ -1,0 +1,31 @@
+#settingsModal.modal
+  header.bar.bar-nav
+    a.icon.icon-close.pull-right(href='#settingsModal')
+    h1.title 账户设定
+  .content
+    form.input-group
+      .input-row
+        label 移动电话
+        input(type='tel',name="mobile", id="phone" placeholder='移动电话')
+      .input-row
+        label 真实姓名
+        input(type='text', name="fullName" id="name" placeholder='真实姓名')
+      .input-row
+        label 电子邮件
+        input(type='email',name="email", id="email" placeholder='Email')
+    //h5.content-padded 应用设定
+    //ul.table-view
+    //  li.table-view-cell.media
+    //    span.media-object.pull-left.icon.icon-sound
+    //    .media-body
+    //      | Enable sounds
+    //    .toggle
+    //      .toggle-handle
+    //  li.table-view-cell.media
+    //    span.media-object.pull-left.icon.icon-person
+    //    .media-body
+    //      | Parental controls
+    //    .toggle
+    //      .toggle-handle
+    .content-padded
+      button#save.btn.btn-positive.btn-block 保存

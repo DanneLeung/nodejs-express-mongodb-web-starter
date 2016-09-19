@@ -1,0 +1,26 @@
+.floor
+  .seckill-floor.bdr-bottom
+    .title-wrap
+      span.seckill-icon
+      h2.seckill-title 限时抢购
+      #seckill_time.seckill-timer
+        span.seckill-time.seckill-time-left 0
+        span.seckill-time.seckill-time-right 0
+        span.seckill-time-separator :
+        span.seckill-time.seckill-time-left 1
+        span.seckill-time.seckill-time-right 0
+        span.seckill-time-separator :
+        span.seckill-time.seckill-time-left 2
+        span.seckill-time.seckill-time-right 4
+      span#seckill_loading
+
+      a.seckill-more-link.J_ping(href='seckillList.html')
+        span.seckill-more-icon
+        span.seckill-more &#x66F4;&#x591A;&#x79D2;&#x6740;
+
+    #seckill.seckill-new-container
+      .swiper-container
+        include seckillList
+
+block script
+

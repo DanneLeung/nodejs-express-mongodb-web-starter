@@ -1,0 +1,37 @@
+extends layout
+block header
+  title 提交注册认证信息
+
+block main
+  .hd
+    .text-center(style="text-align:center")
+      img#headimgurl(src="",style='width:60px;height:60px;border-radius:50%;')
+      h4#nickname 未知用户
+      h4 验证码：#{captcha ? captcha : ''}, 验证： #{b}
+  .bd
+    form#registerForm(action='#{baseUrl}/go', method='post')
+      input(type='hidden', name='_csrf', value=_csrf)
+      input#openid(type='hidden', name='openid')
+      .weui_cells.weui_cells_form
+        .weui_cell.weui_vcode
+          .weui_cell_hd
+            label.weui_label 验证码:
+              span.required *
+          .weui_cell_bd.weui_cell_primary
+            input.weui_input(type='text',name='captcha', placeholder='请输入验证码')
+          .weui_cell_ft
+            //i.weui_icon_warn
+            img#captchaImg
+        .weui_cell
+          button.weui_btn.weui_btn_primary(type="submit") 提交
+// /.form-box
+// /.register-box
+block script
+  script.
+    $(document).ready(function () {
+      $('#captchaImg').attr('src', contextRoot + '/captcha/cap?' + Date.now()).on('click', function () {
+        $(this).attr('src', contextRoot + '/captcha/cap?' + Date.now());
+      });
+
+    });
+  //script(src="#{baseUrl}/register.js")
