@@ -1,0 +1,25 @@
+if errors && errors.length
+  #flash-message
+    .alert.alert-danger.animated.fadeIn
+      button.close(type='button', data-dismiss='alert') ×
+      for err in errors
+        div= err
+
+if info && info.length
+  #flash-message
+    .alert.alert-info.animated.fadeIn
+      button.close(type='button', data-dismiss='alert') ×
+      for i in info
+        div= i
+
+if success && success.length
+  #flash-message
+    .alert.alert-success.animated.fadeIn
+      button.close(type='button', data-dismiss='alert') ×
+      for s in success
+        div=s
+  script.
+    setTimeout(function() {
+      $('#flash-message').fadeOut();
+    },3000);
+    

@@ -10,6 +10,9 @@ var crypto = require('crypto');
 
 var MemberSchema = mongoose.Schema({
   //TODO:会员可能对应多个微信用户id，需要使用unionid识别
+  channel: {type: ObjectId, ref: 'Channel'},//所属渠道
+  wechatId: {type: ObjectId, ref: 'WechatFans'},//微信用户ID
+  branch: {type: ObjectId, ref: 'Branch'},//所属网点(支行)
   group: {type: ObjectId, ref: 'MemberGroup'},//分组
   wechatCheckFlag: {type: String, trim: true, default: '0'},//用户微信端验证手机号,关联粉丝，关联成功设置为1
   openid: {type: String, trim: true, default: ''},//微信公众号openid，有unionid时使用unionid

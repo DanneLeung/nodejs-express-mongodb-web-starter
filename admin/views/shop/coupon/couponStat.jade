@@ -1,0 +1,157 @@
+//
+   Created by pc on 2015/10/27.
+extends layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet",href="/themes/default/plugins/daterangepicker/daterangepicker-bs3.css")
+  link( rel="stylesheet" href="/themes/default/plugins/select2/select2.min.css")
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 券的统计
+        .panel-tools.pull-right
+          a.btn.btn-primary.btn-sm(href="/shop/coupon/exportStatList" title="导出结果集")
+            i.fa.fa-cloud-download
+
+    .panel-body
+      form#searchForm.form-inline.text-right(name="searchForm")
+        .form-group.col-md-3
+          label.control-label.col-md-4(for="company")  公司:
+          .col-md-7
+            select#company.form-control(name='company' style="width: 100%;")
+        .form-group.col-md-3
+          label.control-label.col-md-4(for="coupon")  券名称:
+          .col-md-7
+            select#coupon.form-control(name='coupon' style="width: 100%;")
+        .form-group.col-md-5
+          label.control-label.col-md-3(for="times")  时间:
+          .col-md-8
+            input#times.form-control(name='times',placeholder='按时间段' style="width: 100%;")
+        a#search.btn.btn-default.btn-sm(title='查询')
+          i.fa.fa-search
+          span 查询
+
+
+      #tableWrapper(style="display:none")
+        table#couponStatList.table.table-hover.table-striped.table-responsive
+          thead
+            th 券名称
+            th 券面值
+            th 券售价
+            th 公司名称
+            th 未领取数
+            th 已领取数
+            th 已使用数
+            th 总数
+          tbody
+
+
+    #importInfo.modal.fade(tabindex='-1', role='dialog')
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header
+            button.close(type="button", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h4.modal-title 正在统计信息，请等待......
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src="/themes/default/plugins/daterangepicker/daterangepicker.js")
+  script(src='/themes/default/plugins/select2/select2.full.js')
+  script.
+    $(document).ready(function () {
+      initSelect2("#company", "/shop/coupon/stat/getCompany");
+      //initSelect2("#branch", "/shop/coupon/stat/getBranch");
+      initSelect2("#coupon", "/shop/coupon/stat/getCoupon");
+      $("#importInfo").modal("show");
+      $('#times').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 10,
+        format: 'YYYY-MM-DD HH:mm:ss'
+      });
+
+
+      var opts = {
+        language: {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        searching: true,
+        lengthChange: true,
+        serverSide: true,
+        autoWidth: false,
+        select: true,
+        stateSave: true
+      };
+      var t = $('#couponStatList').DataTable($.extend(opts, {
+        ajax: {url: '/shop/coupon/stat/datatable'},
+        columnDefs: [],
+        columns: [
+          {data: "coupon.name", defaultContent: ''},
+          {data: "coupon.value", defaultContent: '', 'class': 'text-center'},
+          {
+            data: "coupon.price",
+            defaultContent: '',
+            'class': 'text-right',
+            render: function (data, type, full) {
+              return data ? data.toFixed(2) : "0.00"
+            }
+          },
+          {data: "company.fullname", defaultContent: ''},
+          {data: "noGain", defaultContent: '', 'class': 'text-center'},
+          {data: "gain", defaultContent: '', 'class': 'text-center'},
+          {data: "used", defaultContent: '', 'class': 'text-center'},
+          {data: "total", defaultContent: '', 'class': 'text-center'}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+        $("#importInfo").modal("hide");
+      });
+
+
+    });
+    $("#search").on('click', function () {
+      $("#importInfo").modal("show");
+      var data = $("#searchForm").serialize();
+      var TT = $('#couponStatList').DataTable();
+      TT.ajax.url('/shop/coupon/stat/datatable?' + data + '').load(function () {
+        $("#importInfo").modal("hide");
+      });
+    });
+    //select2的使用
+    function initSelect2(selectId, url) {
+      $(selectId).select2({
+        ajax: {
+          url: url,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },
+          cache: true
+        },
+        escapeMarkup: function (markup) {
+          return markup;
+        },
+        minimumInputLength: 1,
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection
+      });
+    }
+    function formatRepo(repo) {
+      return repo.text
+    }
+    function formatRepoSelection(repo) {
+      return repo.text
+    }
+
+

@@ -1,0 +1,137 @@
+//
+   Created by yu869 on 2016/3/8.
+
+extends ../../layouts/default
+block header
+   link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+   link(href="/themes/default/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+   style.
+      .table > tbody > tr > td {
+         vertical-align: middle;
+      }
+//应用的page title
+block pageTitle
+   h1 支付方式管理
+      small 添加，删除，更新系统中的支付方式
+block main
+   .panel
+      .panel-heading.with-border
+         h3.panel-title 支付方式
+         .panel-tools
+            a.btn.btn-sm.btn-default(href="/setting/payment/add" title="添加支付方式")
+               i.fa.fa-plus
+         form.form-inline
+            .form-group
+               label.control-label(for="name")  名称:
+               input#name.form-control.required(name='name', value="#{querys ? querys.name : ''}",placeholder='名称')
+            .form-group
+               label.control-label(for="enable")  是否可用:
+               select#enable.form-control.required(name='enable')
+                  option(value="") 请选择
+                  option(value="01") 可用
+                  option(value="00") 不可用
+            a#search.btn.btn-default.btn-sm(title='搜索')
+               i.fa.fa-search
+               span 搜索
+      .panel-body
+         #tableWrapper(style="display:none")
+            table#paymentList.table.table-bordered.table-hover.table-striped
+               thead
+                  th 名称
+                  th 证书地址
+                  th 可用
+                  th 说明
+                  th.text-center(width="100") 操作
+               tbody
+            form#paymentDelForm(method='post', style='display:none', action='/setting/payment/del')
+               input#ids(type='hidden',name='ids')
+               input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            form#paymentDisableForm(method='post', style='display:none', action='/setting/payment/enableOrDisable')
+               input#ids(type='hidden',name='ids')
+               input#_csrf(type='hidden', name='_csrf', value=_csrf)
+//应用添加的脚本在scripts block中定义
+block scripts
+   script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+   script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+   script.
+      $(document).ready(function () {
+         var opts = {
+            "language": {
+               "url": "/themes/default/plugins/datatables/Chinese.json"
+            },
+            autoWidth: false,
+            lengthChange: false,
+            searching: false,
+            processing: false,
+            scrollX: true,
+            serverSide: true,
+            deferRender: true
+         };
+         var t = $('#paymentList').DataTable($.extend(opts, {
+            ajax: {url: '/setting/payment/dataTable'},
+            order: [[0, 'asc']],
+            columnDefs: [
+               {
+                  targets: 0, visible: true, sortable: false, className: 'text-center',
+                  render: function (data, type, row) {
+                    return "<a href='/setting/payment/paymentEdit?id="+row._id+"&type=view'>"+row.name+"</a>"
+                  }
+               },
+               {
+                  targets: 2, visible: true, sortable: false, className: 'text-center',
+                  render: function (data, type, row) {
+                     var enable = row.enable;
+                     if (enable == "01") {
+                        return "<a class='btn btn-default btn-xs enableOrDisable'><i class='fa fa-toggle-on'></i> 可用</a>"
+                     } else {
+                        return "<a class='btn btn-default btn-xs enableOrDisable'><i class='fa fa-toggle-off'></i> 不可用</a>"
+                     }
+                  }
+               },
+               {
+                  targets: -1, visible: true, sortable: false, className: 'text-center',
+                  render: function (data, type, row) {
+                     return "<a class='btn btn-default btn-xs edit' href='/setting/payment/paymentEdit?id=" + row._id + "&type=edit'><i class='fa fa-edit'></i></a>"
+                             + " <button class='btn btn-default btn-xs del' type='button'><i class='fa fa-trash-o'></i></button>";
+                  }
+               }
+            ],
+            columns: [
+               {data: "name", defaultContent: ''},
+               {data: "certificate", defaultContent: ''},
+               {data: "enable", defaultContent: ''},
+               {data: "description", defaultContent: ''},
+               {data: ""}
+            ]
+         })).on('draw.dt', function () {
+            $('#tableWrapper').fadeIn();
+         });
+
+         $('#paymentList').on('click', 'button.del', function () {
+            var id = t.row($(this).parents('tr')).data()._id;
+            $("#paymentDelForm #ids").val(id);
+            if (id) {
+               bootbox.confirm("确定要删除数据吗?", function (result) {
+                  if (result) {
+                     $("#paymentDelForm").submit();
+                  }
+               });
+            }
+         });
+
+         $("#paymentList").on('click', 'a.enableOrDisable', function () {
+            var id = t.row($(this).parents('tr')).data()._id;
+            $("#paymentDisableForm #ids").val(id);
+            if (id) {
+               $("#paymentDisableForm").submit();
+            }
+         });
+
+         $('#search').on("click", function (e) {
+            var name = $('#name').val();
+            var enable = $('#enable').val();
+            var TT = $('#paymentList').DataTable();
+            TT.ajax.url('/setting/payment/dataTable?name=' + name + '&enable=' + enable).load();
+         });
+
+      });

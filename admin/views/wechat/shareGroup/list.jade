@@ -1,0 +1,81 @@
+//
+   Created by pc on 2015/10/27.
+extends ../layout
+
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet",href="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.css")
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 分享数据统计
+        .panel-tools.pull-right
+          a.btn.btn-primary.btn-sm(href="/wechat/shareGroup/export")
+            i.fa.fa-plus.fa-fw
+            | 导出
+    .panel-body
+      .margin-bottom
+        form.form-inline(action='/wechat/shareGroup/groupData' method='post')
+          .form-group
+            label 统计时段：
+            input#rangeTime.form-control(type='text' name='dateRange' placeholder='选择时间范围' readonly style="width:300px")
+          .form-group
+            button.btn.btn-primary(type="submit") 统计
+      #tableWrapper(style="display:none")
+        table#whiteList.table.table-hover.table-striped.table-responsive
+          thead
+            th 昵称
+            th 转发次数
+            th 统计时段
+            th 操作
+          tbody
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.js")
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#whiteList').DataTable($.extend(opts, {
+        ajax: {url: '/wechat/shareGroup/datatable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: true, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group'> <a class='btn btn-default btn-sm' title='明细' href='/wechat/shareGroup/detail/" + row._id + "'><i class='fa fa-group'></i></a>";
+            }
+          }
+        ],
+        columns: [
+          {data: "nickname", defaultContent: ''},
+          {data: "count", defaultContent: ''},
+          {data: "shareDateRange", defaultContent: ''},
+          {data: ""},
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      $("#rangeTime").daterangepicker({
+        timePicker: true,
+        timePicker24Hour: false,
+        timePickerIncrement: 10,
+        locale: {format: 'YYYY-MM-DD'}
+      });
+    })

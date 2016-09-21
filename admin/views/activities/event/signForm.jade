@@ -1,0 +1,85 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ../layout
+block header
+  link( rel="stylesheet",href="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.css")
+  link(href="/themes/default/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+block main
+  .panel
+    .panel-heading
+      h3.panel-title
+        span.text-info #{event.name}
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href='/activities/event')
+            i.fa.fa-reply
+    .panel-body
+      if !event.isNew
+        form#userDelForm(method='post', style='display:none', action='/activities/event/del')
+          input#ids(type='hidden',name='ids',value="#{event._id}")
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+      form#signForm.form-horizontal(method="post",action="/activities/event/save/#{eventId}")
+
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        each f in event.formfield
+          .form-group
+            if f.required == 1
+              if f.other == 0
+                if f.type == 'checkbox' || f.type == 'radio'
+                  label.control-label.col-sm-3.required #{f.label}：
+                  .col-xs-3.col-sm-4
+                    each item in f.range
+                      input.requried.form-control(type="#{f.type}",name="#{f.name}",value="#{item}",requried)
+                      i &nbsp;
+                      span #{item}&nbsp;&nbsp;&nbsp;&nbsp;
+                if f.type == 'select'
+                  label.control-label.col-sm-3.required #{f.label}：
+                    .col-xs-3.col-sm-4
+                      select.requried.form-control(name="#{f.name}")
+                        each item in f.range
+                          option(value="#{item}") #{item}
+              else
+                label.control-label.col-sm-3.required #{f.label}：
+                .col-xs-3.col-sm-4
+                  input.requried.form-control(type="#{f.type}",name="#{f.name}",placeholder="#{f.range.toString().replace(/,/g, '-')}")
+
+            else
+              if f.other == 0
+                if f.type == 'checkbox' || f.type == 'radio'
+                  label.control-label.col-sm-3 #{f.label}：
+                  .col-xs-3.col-sm-4
+                    each item in f.range
+                      input.form-control(type="#{f.type}",name="#{f.name}",value="#{item}",requried)
+                      i &nbsp;
+                      span #{item}&nbsp;&nbsp;&nbsp;&nbsp;
+                if f.type == 'select'
+                  label.control-label.col-sm-3 #{f.label}：
+                  .col-xs-3.col-sm-4
+                    select.requried.form-control
+                      each item in f.range
+                        option(value="#{item}") #{item}
+              else
+                label.control-label.col-sm-3 #{f.label}：
+                .col-xs-3.col-sm-4
+                  input.requried.form-control(type="#{f.type}",name="#{f.name}",placeholder="#{f.range.toString().replace(/,/g, '-')}")
+
+
+        .form-actions.text-center
+          button.btn.btn-primary(type="submit") 保存
+
+block scripts
+  script(src="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.js")
+  script(src="/themes/default/plugins/uploadify/jquery.uploadify.min.js")
+  script(src="/themes/default/plugins/uploadify/dora.public.js")
+
+  script.
+
+    jQuery.validator.addMethod("telphone", function (value, element) {
+      var length = value.length;
+      var mobile = /^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$/;
+      return this.optional(element) || (length == 11 && mobile.test(value));
+    }, "请正确填写您的手机号码");
+    $(function () {
+      $('#signForm').validate();
+    });

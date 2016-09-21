@@ -1,0 +1,122 @@
+//
+   Created by danne on 2015/10/29.
+extends ../../layouts/default
+block header
+//应用的page title
+block pageTitle
+  if viewType == 'add'
+    h1 权限信息新增
+      small 添加权限信息
+  if viewType == 'edit'
+    h1 权限信息编辑
+      small 编辑权限信息
+  if viewType == 'view'
+    h1 权限信息查看
+      small 查看权限信息
+
+block main
+  .panel
+    .panel-heading.with-border
+      if viewType == 'add'
+        h3.panel-title 添加权限信息
+      if viewType == 'edit'
+        h3.panel-title 编辑权限信息
+      if viewType == 'view'
+        h3.panel-title 查看权限信息
+
+      .panel-tools
+        a.btn.btn-sm.btn-default(href='/system/permission' title="返回")
+          i.fa.fa-reply
+        | &nbsp;
+        if viewType == 'add'
+          button#save.btn.btn-sm.btn-default(title="保存后新增")
+            i.fa.fa-save
+        if viewType == 'edit'
+          button#save.btn.btn-sm.btn-default(title="保存")
+            i.fa.fa-save
+
+        | &nbsp;
+        if viewType == 'view' || viewType == 'edit'
+          button#del.btn.btn-sm.btn-default.del(title="删除")
+            i.fa.fa-trash
+      //&nbsp;
+      //button.btn.btn-box-tool(data-widget="collapse")
+      //  i.fa.fa-minus
+    .panel-body
+      div#permissionEdit.row
+        .col-md-12
+          if viewType == 'edit'
+            form#permissionDelForm(method='post', style='display:none', action='/system/permission/del')
+              input#ids(type='hidden',name='ids',value="#{permission._id}")
+              input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+          form#permissionForm.form-horizontal(name='permissionForm', action='/system/permission/save', method='post')
+            if viewType == 'edit'
+              input#id(type='hidden', name='id', value="#{permission._id}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+
+            .form-group
+              label.control-label.col-md-3.required 名称：
+              .controls.col-md-9
+                input#name.form-control.required(name='name', value="#{permission != null ? permission.name : ''}")
+
+            .form-group
+              label.control-label.col-md-3 URL前缀：
+              .controls.col-md-9
+                input#urlPrefix.form-control(name='urlPrefix', value="#{urlPrefix ? urlPrefix : ''}")
+
+            .form-group
+              label.control-label.col-md-3.required  主题：
+              .controls.col-md-9
+                input#subject.form-control.required(name='subject', value="#{permission != null ? permission.subject : ''}")
+
+            .form-group
+              label.control-label.col-md-3.required 操作：
+              .controls.col-md-9
+                input#action.form-control.required(name='action', value="#{permission != null ? permission.action : ''}")
+
+            .form-group
+              label.control-label.col-md-3.required URL：
+              .controls.col-md-9
+                input#url.form-control.required(name='url', value="#{permission != null ? permission.url : ''}")
+                p.help-block 通常由"URL前缀"+"主题"+"操作"组成，可自定义
+
+            .form-group
+              label.control-label.col-md-3 描述：
+              .controls.col-md-9
+                input#description.form-control(name='description', value="#{permission != null ? permission.description : ''}")
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      var form = $('#permissionForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          name: {
+            required: true,
+            remote: '/system/permission/checkname?oldName=#{permission ? permission.name : ''}'
+          }
+        },
+        messages: {
+          name: {
+            remote: '该权限已存在!'
+          }
+        }
+      });
+      $("input[name='urlPrefix'], input[name='subject'], input[name='action']").change(function (e) {
+        $("input[name='url']").val("/" + $("input[name='urlPrefix']").val() + "/" + $("input[name='subject']").val() + "/" + $("input[name='action']").val());
+      });
+      $('#del').on('click', function () {
+        bootbox.confirm("确定要删除数据吗?", function (result) {
+          if (result) {
+            $("#permissionDelForm").submit();
+          }
+        });
+      });
+    });

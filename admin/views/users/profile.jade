@@ -1,0 +1,401 @@
+extends ../layouts/default
+block pageTitle
+  h1 个人资料
+block main
+  .row
+    .col-md-3
+      // Profile Image
+      .panel
+        .panel-body.panel-profile
+          img.profile-user-img.img-responsive.img-circle(src='#{user.photo_profile ? user.photo_profile : "/themes/default/dist/img/avatar.png"}', alt='头像')
+          h3.profile-username.text-center #{user.username}
+          //p.text-muted.text-center Software Engineer
+          ul.list-group
+            li.list-group-item
+              a(href="#") 编辑资料
+                span.pull-right.fa.fa-angle-right
+            li.list-group-item(data-toggle='modal' data-target='#editPassword' aria-label='Left Align')
+              span(style='color:#72ACE3') 修改密码
+                span.pull-right.fa.fa-angle-right
+            li.list-group-item(data-toggle='modal' data-target='#resetPassword' aria-label='Left Align')
+              span(style='color:#72ACE3') 重置密码
+                span.pull-right.fa.fa-angle-right
+            li.list-group-item
+              a(href="#") 系统消息
+                span.pull-right.fa.fa-angle-right
+        // /.panel-body
+      // /.panel
+      // About Me Box
+      //.panel
+        .panel-heading.with-border
+          h3.panel-title About Me
+        // /.panel-heading
+        .panel-body
+          strong
+            i.fa.fa-book.margin-r-5
+            |  Education
+          p.text-muted
+            | B.S. in Computer Science from the University of Tennessee at Knoxville
+          hr
+          strong
+            i.fa.fa-map-marker.margin-r-5
+            |  Location
+          p.text-muted Malibu, California
+          hr
+          strong
+            i.fa.fa-pencil.margin-r-5
+            |  Skills
+          p
+            span.label.label-danger UI Design
+            span.label.label-success Coding
+            span.label.label-info Javascript
+            span.label.label-warning PHP
+            span.label.label-primary Node.js
+          hr
+          strong
+            i.fa.fa-file-text-o.margin-r-5
+            |  Notes
+          p
+            | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim neque.
+        // /.panel-body
+      // /.panel
+    // /.col
+    .col-md-9
+      .nav-tabs-custom
+        ul.nav.nav-tabs
+          li.active
+            a(href='#settings', data-toggle='tab') 编辑资料
+          //li.active
+            a(href='#activity', data-toggle='tab') Activity
+          //li
+            a(href='#timeline', data-toggle='tab') Timeline
+        .tab-content
+          // /.tab-pane
+          #settings.tab-pane.active
+            form#profileForm.form-horizontal(method="post",action="/#{user.username}/update")
+              input#userId(type="hidden",name="id",value="#{user._id}")
+              input(type='hidden', name='_csrf', value=_csrf)
+              .form-group
+                label.col-sm-2.control-label(for='username') 用户名：
+                .col-sm-10
+                  input#username.form-control(type='text', placeholder='登录用户名',disabled="disabled",value="#{user.username}")
+              .form-group
+                label.col-sm-2.control-label(for='email') 电子邮件：
+                .col-sm-10
+                  input#email.form-control(type='email', placeholder='电子邮件',name="email",value="#{user.email}")
+              .form-group
+                label.col-sm-2.control-label(for='fullname') 姓名：
+                .col-sm-10
+                  input#fullname.form-control(type='text', placeholder='真实姓名',name="fullname",value="#{user.fullname}")
+              .form-group
+                label.col-sm-2.control-label(for='photo_profile') 头像URL：
+                .col-sm-10
+                  input#photo_profile.form-control(type='text', placeholder='头像URL',name="photo_profile",value="#{user.photo_profile}")
+              //.form-group
+                .col-sm-offset-2.col-sm-10
+                  .checkbox
+                    label
+                      input(type='checkbox')
+                      |  I agree to the
+                      a(href='#') terms and conditions
+              .form-group
+                .col-sm-offset-2.col-sm-10
+                  button.btn.btn-danger(type='submit') 保  存
+
+
+
+    #editPassword.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .container
+            .modal-body
+              .row.clearfix
+                .col-md-6.column
+                  h3 修改密码
+                  form#editPasswordForm.form-horizontal(action='/system/user/editPassword',method='post')
+                    input#_csrf(type='hidden', name='_csrf', value=_csrf)
+                    input#userId(type='hidden',name='userId',value='#{user._id}')
+                    .form-group
+                      label.col-sm-2.control-label(for='oldPwd') 原密码：
+                      .col-sm-10
+                        input#oldPasswrord.form-control(type='password',name='oldPwd', placeholder='原密码',value="")
+                    .form-group
+                      label.col-sm-2.control-label(for='newPwd') 新密码：
+                      .col-sm-10
+                        input#newPassword.form-control(type='password',name='newPwd', placeholder='新密码',value="")
+                    .form-group
+                      label.col-sm-2.control-label(for='affirmPwd') 确认密码：
+                      .col-sm-10
+                        input#affirmPassword.form-control(type='password', placeholder='请与新密码一致',name="affirmPwd",value="")
+                    br
+                    .center-block.pull-right
+                      | &nbsp;&nbsp;&nbsp;
+                      button.btn.btn-primary(type='button', data-dismiss='modal', aria-hidden='false') 取消
+                      | &nbsp;&nbsp;&nbsp;
+                      button.btn.btn-success(type='submit') 确定
+    #resetPassword.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .container
+            .modal-body
+              .row.clearfix
+                .col-md-6.column
+                  h3 重置密码
+                  form#resetPasswordForm.form-horizontal(action='/system/user/resetPassword',method='post')
+                    input#_csrf(type='hidden', name='_csrf', value=_csrf)
+                    input#userId(type='hidden',name='userId',value='#{user._id}')
+                    .form-group
+                      label.col-sm-2.control-label(for='password') 密码：
+                      .col-sm-10
+                        input#password.form-control(type='password',name='oldPwd', placeholder='请输入密码',value="")
+                    br
+                    .center-block.pull-right
+                      | &nbsp;&nbsp;&nbsp;
+                      button.btn.btn-primary(type='button', data-dismiss='modal', aria-hidden='false') 取消
+                      | &nbsp;&nbsp;&nbsp;
+                      button.btn.btn-success(type='submit') 确定
+          //#activity.active.tab-pane
+            // Post
+            .post
+              .user-block
+                img.img-circle.img-bordered-sm(src='../../themes/default/dist/img/user1-128x128.jpg', alt='user image')
+                span.username
+                  a(href='#') Jonathan Burke Jr.
+                  a.pull-right.btn-box-tool(href='#')
+                    i.fa.fa-times
+                span.description Shared publicly - 7:30 PM today
+              // /.user-block
+              p
+                | Lorem ipsum represents a long-held tradition for designers,
+                | typographers and the like. Some people hate it and argue for
+                | its demise, but others ignore the hate as they create awesome
+                | tools to help create filler text for everyone from bacon lovers
+                | to Charlie Sheen fans.
+              ul.list-inline
+                li
+                  a.link-black.text-sm(href='#')
+                    i.fa.fa-share.margin-r-5
+                    |  Share
+                li
+                  a.link-black.text-sm(href='#')
+                    i.fa.fa-thumbs-o-up.margin-r-5
+                    |  Like
+                li.pull-right
+                  a.link-black.text-sm(href='#')
+                    i.fa.fa-comments-o.margin-r-5
+                    |  Comments
+                    |                         (5)
+              input.form-control.input-sm(type='text', placeholder='Type a comment')
+            // /.post
+            // Post
+            .post.clearfix
+              .user-block
+                img.img-circle.img-bordered-sm(src='../../themes/default/dist/img/user7-128x128.jpg', alt='User Image')
+                span.username
+                  a(href='#') Sarah Ross
+                  a.pull-right.btn-box-tool(href='#')
+                    i.fa.fa-times
+                span.description Sent you a message - 3 days ago
+              // /.user-block
+              p
+                | Lorem ipsum represents a long-held tradition for designers,
+                | typographers and the like. Some people hate it and argue for
+                | its demise, but others ignore the hate as they create awesome
+                | tools to help create filler text for everyone from bacon lovers
+                | to Charlie Sheen fans.
+              form.form-horizontal
+                .form-group.margin-bottom-none
+                  .col-sm-9
+                    input.form-control.input-sm(placeholder='Response')
+                  .col-sm-3
+                    button.btn.btn-danger.pull-right.btn-block.btn-sm(type='submit') Send
+            // /.post
+            // Post
+            .post
+              .user-block
+                img.img-circle.img-bordered-sm(src='../../themes/default/dist/img/user6-128x128.jpg', alt='User Image')
+                span.username
+                  a(href='#') Adam Jones
+                  a.pull-right.btn-box-tool(href='#')
+                    i.fa.fa-times
+                span.description Posted 5 photos - 5 days ago
+              // /.user-block
+              .row.margin-bottom
+                .col-sm-6
+                  img.img-responsive(src='../../themes/default/dist/img/photo1.png', alt='Photo')
+                // /.col
+                .col-sm-6
+                  .row
+                    .col-sm-6
+                      img.img-responsive(src='../../themes/default/dist/img/photo2.png', alt='Photo')
+                      br
+                      img.img-responsive(src='../../themes/default/dist/img/photo3.jpg', alt='Photo')
+                    // /.col
+                    .col-sm-6
+                      img.img-responsive(src='../../themes/default/dist/img/photo4.jpg', alt='Photo')
+                      br
+                      img.img-responsive(src='../../themes/default/dist/img/photo1.png', alt='Photo')
+                    // /.col
+                  // /.row
+                // /.col
+              // /.row
+              ul.list-inline
+                li
+                  a.link-black.text-sm(href='#')
+                    i.fa.fa-share.margin-r-5
+                    |  Share
+                li
+                  a.link-black.text-sm(href='#')
+                    i.fa.fa-thumbs-o-up.margin-r-5
+                    |  Like
+                li.pull-right
+                  a.link-black.text-sm(href='#')
+                    i.fa.fa-comments-o.margin-r-5
+                    |  Comments
+                    |                         (5)
+              input.form-control.input-sm(type='text', placeholder='Type a comment')
+            // /.post
+          // /.tab-pane
+          //#timeline.tab-pane
+            // The timeline
+            ul.timeline.timeline-inverse
+              // timeline time label
+              li.time-label
+                span.bg-red
+                  | 10 Feb. 2014
+              // /.timeline-label
+              // timeline item
+              li
+                i.fa.fa-envelope.bg-blue
+                .timeline-item
+                  span.time
+                    i.fa.fa-clock-o
+                    |  12:05
+                  h3.timeline-header
+                    a(href='#') Support Team
+                    |  sent you an email
+                  .timeline-body
+                    | Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
+                    | weebly ning heekya handango imeem plugg dopplr jibjab, movity
+                    | jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
+                    | quora plaxo ideeli hulu weebly balihoo...
+                  .timeline-footer
+                    a.btn.btn-primary.btn-xs Read more
+                    a.btn.btn-danger.btn-xs Delete
+              // END timeline item
+              // timeline item
+              li
+                i.fa.fa-user.bg-aqua
+                .timeline-item
+                  span.time
+                    i.fa.fa-clock-o
+                    |  5 mins ago
+                  h3.timeline-header.no-border
+                    a(href='#') Sarah Young
+                    |  accepted your friend request
+              // END timeline item
+              // timeline item
+              li
+                i.fa.fa-comments.bg-yellow
+                .timeline-item
+                  span.time
+                    i.fa.fa-clock-o
+                    |  27 mins ago
+                  h3.timeline-header
+                    a(href='#') Jay White
+                    |  commented on your post
+                  .timeline-body
+                    | Take me to your leader!
+                    | Switzerland is small and neutral!
+                    | We are more like Germany, ambitious and misunderstood!
+                  .timeline-footer
+                    a.btn.btn-warning.btn-flat.btn-xs View comment
+              // END timeline item
+              // timeline time label
+              li.time-label
+                span.bg-green
+                  | 3 Jan. 2014
+              // /.timeline-label
+              // timeline item
+              li
+                i.fa.fa-camera.bg-purple
+                .timeline-item
+                  span.time
+                    i.fa.fa-clock-o
+                    |  2 days ago
+                  h3.timeline-header
+                    a(href='#') Mina Lee
+                    |  uploaded new photos
+                  .timeline-body
+                    img.margin(src='http://placehold.it/150x100', alt='...')
+                    img.margin(src='http://placehold.it/150x100', alt='...')
+                    img.margin(src='http://placehold.it/150x100', alt='...')
+                    img.margin(src='http://placehold.it/150x100', alt='...')
+              // END timeline item
+              li
+                i.fa.fa-clock-o.bg-gray
+
+          // /.tab-pane
+        // /.tab-content
+      // /.nav-tabs-custom
+    // /.col
+  // /.row
+// /.content
+block scripts
+  script(src='//cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js')
+  script(src='//cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min.js')
+  script(src='/themes/default/plugins/jquery-validation/dist/jquery.validate.messages_zh.js')
+  script(src='/themes/default/plugins/setup_validation.js')
+  // AdminLTE for demo purposes
+  script.
+    $(document).ready(function () {
+      $("#profileForm").on("submit", function (e) {
+        var _this = this;
+        e.preventDefault();
+        $.ajax({
+          url: $(_this).attr("action"),
+          method: "POST",
+          data: $(_this).serialize(),
+          dataType: "json",
+          success: function (data) {
+            if (data.success) {
+              bootbox.alert(data.msg);
+              $(document).find('.user-image, .profile-user-img, .img-circle').attr('src', $("#photo_profile").val());
+            }
+          },
+          error: function (err) {
+            bootbox.alert(err);
+          }
+        })
+        ;
+      });
+      $("#resetPasswordForm").validate({
+        rules: {
+          oldPwd: {
+            required: true,
+            remote:"/system/user/virtualPwd"
+          }
+        },
+        messages: {
+          oldPwd: {required:"请输入密码",remote:"密码错误"}
+        }
+      });
+      $("#editPasswordForm").validate({
+        rules: {
+          oldPwd: {
+            required: true,
+            remote:"/system/user/virtualPwd"
+          },newPwd: {
+            required: true
+          },affirmPwd: {
+            required: true,
+            equalTo: "#newPassword"
+          }
+        },
+        messages: {
+          oldPwd: {required:"请输入原密码",remote:"密码错误"},
+          newPwd: {required:"请输入新密码"},
+          affirmPwd: {required:"请输入确认密码",equalTo:"请确保确认密码和新密码一致"}
+        }
+      });
+    });

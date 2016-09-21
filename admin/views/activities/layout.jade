@@ -1,0 +1,83 @@
+//
+   Created by pc on 2015/10/27.
+
+extends ../layouts/layout-wechat
+//应用的page title
+block pageTitle
+  h1 互动活动
+    small Html5站点，微信站点互动活动管理
+block left
+  .panel.panel-default
+    .panel-heading(data-widget='collapse')
+      h4.panel-title 活动管理
+      .panel-tools.pull-right
+        span.btn.btn-box-tool(type='button')
+          i.fa.fa-caret-down
+    .panel-body.no-padding.list-group
+      a.list-group-item(class="#{isActive('/activities/index')}",href="/activities/index")
+        i.fa.fa-list.fa-fw
+        | 活动列表
+      a.list-group-item(class="#{isActive('/activities/award')}",href="/activities/award/list")
+        i.fa.fa-list.fa-fw
+        | 奖品库
+      a.list-group-item(class="#{isActive('/activities/whitelist')}",href="/activities/whitelist")
+        i.fa.fa-list.fa-fw
+        | 白名单
+      //- a.list-group-item(class="#{isActive('/activities/stats')}",href="/activities/stats")
+      //-   i.fa.fa-list.fa-fw
+      //-   | 统计报表
+
+  .panel.panel-default(style='margin-bottom:0;')
+    .panel-heading(data-widget='collapse')
+      h4.panel-title 互动应用
+      .panel-tools.pull-right
+        span.btn.btn-box-tool(type='button')
+          i.fa.fa-caret-down
+    .panel-body.no-padding.list-group
+      a.list-group-item(class="#{isActive('/activities/sign')}",href="/activities/sign")
+        i.fa.fa-gift.fa-fw
+        | 签到有礼
+      //a.list-group-item(class="#{isActive('/activities/vote')}",href="/activities/vote")
+      //  i.fa.fa-list.fa-fw
+      //  | 线上投票
+      //a.list-group-item(class="#{isActive('/activities/survey')}",href="/activities/survey")
+      //  i.fa.fa-list.fa-fw
+      //  | 微信调研
+
+      a.list-group-item(class="#{isActive('/activities/event')}",href="/activities/event")
+        i.fa.fa-list.fa-fw
+        | 报名表单
+
+      .list-group-item.disabled 答题闯关
+      a.list-group-item(class="#{isActive('/activities/quiz/pool')}",href="/activities/quiz/pool")
+        i.fa.fa-list.fa-fw
+        | 题库
+      a.list-group-item(class="#{isActive('/activities/quiz/run')}",href="/activities/quiz/run")
+        i.fa.fa-list.fa-fw
+        | 闯关
+
+  .panel.panel-default(style='margin-top:0;margin-bottom:0;')
+    .panel-heading(data-widget='collapse')
+      h4.panel-title 互动游戏
+      .panel-tools.pull-right
+        span.btn.btn-box-tool(type='button')
+          i.fa.fa-caret-down
+    .panel-body.no-padding.list-group
+      //a.list-group-item(class="#{isActive('/activities/sketch')}",href="/activities/sketch")
+        i.fa.fa-gift.fa-fw
+        | 刮刮卡
+      //a.list-group-item(class="#{isActive('/activities/rouding')}",href="/activities/rouding")
+        i.fa.fa-gift.fa-fw
+        | 大转盘
+      a.list-group-item(class="#{isActive('/activities/lucky9')}",href="/activities/lucky9")
+        i.fa.fa-gift.fa-fw
+        | 九宫格
+      //a.list-group-item(class="#{isActive('/activities/9cub')}",href="/activities/9cub")
+        i.fa.fa-gift.fa-fw
+        | 老虎机
+      //a.list-group-item(class="#{isActive('/activities/russia')}",href="/activities/russia")
+        i.fa.fa-gift.fa-fw
+        | 轮盘赌
+      //a.list-group-item.text-center(href="#",title="添加活动应用")
+        i.fa.fa-plus.fa-fw
+        | &nbsp;&nbsp;添加应用

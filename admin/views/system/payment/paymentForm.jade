@@ -1,0 +1,157 @@
+//
+   Created by danne on 2015/10/29.
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker3.min.css")
+//应用的page title
+block pageTitle
+  if payment.isNew
+    h1 支付方式新增
+      small 添加支付方式信息
+block main
+  .panel
+    .panel-heading.with-border
+      if payment.isNew
+        h3.panel-title 添加支付方式信息
+      .panel-tools
+        a.btn.btn-box-tool.btn-default(href='/system/payment')
+          i.fa.fa-reply
+          span  返回
+        | &nbsp;
+        if payment.isNew || !payment.isNew
+          button#save.btn.btn-box-tool.btn-default
+            i.fa.fa-save
+            span  保存
+        | &nbsp;
+      //button.btn.btn-box-tool(data-widget="collapse")
+      //  i.fa.fa-caret-left
+    .panel-body
+      div#userEdit.row
+        .col-md-12
+          form#paymentForm.form-horizontal(name='paymentForm', action='/system/payment/save', method='post',enctype='multipart/form-data')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+            .form-group
+              label.control-label.col-md-3.required 支付方式：
+              .controls.col-md-9
+                select#paymentMethod.form-control.required(name='paymentMethod')
+                  option(value="") 请选择可用支付方式
+            .form-group
+              label.control-label.col-sm-3 支付证书：
+              .col-sm-9
+                input#certificate.form-control(type="file",name='certificate')
+            .canModifyParams
+
+            .form-group
+              label.control-label.col-md-3 可用：
+              .controls.col-md-9
+                label
+                  input.mini(type='checkbox')
+                  input#enable(type='hidden' name='enable')
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='/themes/default/plugins/datepicker/bootstrap-datepicker.js')
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    $(document).ready(function () {
+
+      //图片上传
+      $(".form-group").find(':file').filestyle({buttonText: '上传证书'});
+
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+
+      // 加载可用支付方式
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/system/payment/getEnablePayment',
+        data: {}, //要传递的数据
+        success: function (data) { //成功
+          if (data) {
+            $.each(data, function (i, e) {
+              $("#paymentMethod").append("<option value='" + e._id + "'>" + e.name + "</option>");
+            });
+          }
+        }
+      });
+
+      $("#paymentForm").validate({
+        rules: {
+          paymentMethod: {
+            required: true,
+            remote: '/system/payment/checkPaymentExist'
+          }
+        },
+        messages: {
+          paymentMethod: {remote: "该支付方式已配置"},
+        }
+      });
+
+      $("#paymentMethod").on('change', function () {
+        $(".canModifyParams").html("");
+        var id = $(this).val();
+        $.ajax({
+          type: 'get', //数据发送方式
+          url: '/system/payment/getCanModifyParams',
+          data: {"id": id}, //要传递的数据
+          success: function (data) { //成功
+            if (data) {
+              var html = "";
+              $.each(data, function (i, item) {
+
+                var isRequired = item.isRequired;
+                var isChecked = item.isChecked;
+
+                if (isRequired == '01') {
+                  html = html + '<div class="form-group">' +
+                          '<label class="control-label col-md-3 required">' + item.paramName + '：';
+                } else {
+                  html = html + '<div class="form-group">' +
+                          '<label class="control-label col-md-3">' + item.paramName + '：';
+                }
+
+                html = html + '</label><div class="controls col-md-9">';
+                if(isChecked == '01'){
+                  if (isRequired == '01') {
+                    html = html + '<input id="' + item._id + '" name="' + item._id + '" value="' + item.paramValue + '" class="form-control required">'
+                  } else {
+                    html = html + '<input id="' + item._id + '" name="' + item._id + '"  value="' + item.paramValue + '" class="form-control">'
+                  }
+
+                }else{
+                  if (isRequired == '01') {
+                    html = html + '<input id="' + item._id + '" name="' + item._id + '" readonly="true" value="' + item.paramValue + '" class="form-control">'
+                  } else {
+                    html = html + '<input id="' + item._id + '" name="' + item._id + '" readonly="true" value="' + item.paramValue + '" class="form-control">'
+                  }
+
+                }
+
+                html = html + '</div></div>';
+              })
+
+              $(".canModifyParams").append(html);
+            }
+          }
+        });
+      })
+
+      // 保存
+      $('#save').on('click', function () {
+        var enable = $(".mini").is(":checked");
+        if (enable) {
+          $("#enable").val("01");
+        } else {
+          $("#enable").val("00");
+        }
+        var form = $("#paymentForm");
+        if (form.valid()) {
+          form.submit();
+        }
+      });
+
+    });

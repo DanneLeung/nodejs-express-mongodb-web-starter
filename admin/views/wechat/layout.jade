@@ -1,0 +1,60 @@
+extends ../layouts/layout-wechat
+//应用的page title
+block pageTitle
+  h1 微信公众号管理
+//block left
+  .panel.panel-default(style="")
+    .panel-heading(data-widget='collapse')
+      h4.panel-title 功能
+      .panel-tools.pull-right
+        span.btn.btn-box-tool
+          i.fa.fa-caret-down
+    //.panel-body.no-padding
+    .panel-body.no-padding.list-group
+      a.list-group-item(href="/wechat/mgmt/sendmsg",class='#{isActive("/wechat/mgmt/sendmsg")}')
+        i.fa.fa-fw.fa-msg
+        | 群发消息
+      a.list-group-item(href="/wechat/mgmt/menu/designer",class='#{isActive("/wechat/mgmt/menu")}')
+        i.fa.fa-fw.fa-list
+        | 自定义菜单
+      a.list-group-item(href="/wechat/mgmt/autoreply",class='#{isActive("/wechat/mgmt/autoreply/")}')
+        i.fa.fa-fw.fa-reply
+        | 自定义回复
+        
+  .panel.panel-default(style="")
+    .panel-heading(data-widget='collapse')
+      h4.panel-title 管理
+      .panel-tools.pull-right
+        span.btn.btn-box-tool
+          i.fa.fa-caret-down
+    .panel-body.no-padding.list-group
+      a.list-group-item(class="#{isActive('/wechat/fans')}",href="/wechat/fans")
+        i.fa.fa-user.fa-fw
+        | 用户管理
+      a.list-group-item(href="/wechat/messages")
+        i.fa.fa-fw
+        | 消息管理
+      a.list-group-item(href="/wechat/media")
+        i.fa.fa-fw
+        | 素材管理
+      a.list-group-item(href="/wechat/msgTemplate/list")
+        i.fa.fa-fw
+        | 模板管理
+
+  .panel.panel-default(style="")
+    .panel-heading(data-widget='collapse')
+      h4.panel-title 高级功能
+      .panel-tools.pull-right
+        span.btn.btn-box-tool
+          i.fa.fa-caret-down
+    .panel-body.no-padding.list-group
+      a.list-group-item(class="#{isActive('/wechat/qrcode/list')}",href='/wechat/qrcode/list')
+        | 二维码管理
+      a.list-group-item(class="#{isActive('/wechat/branding/index')}",href='/wechat/branding/index')
+        | 微信推广管理
+      a.list-group-item(class="#{isActive('/wechat/branding/qrcodeList')}",href='/wechat/branding/qrcodeList')
+        | 微信推广网点二维码
+      a.list-group-item(class="#{isActive('/wechat/qrcode/transfer')}",href='/wechat/qrcode/transfer')
+        | 长链接二维码
+      a.list-group-item(class="#{isActive('/wechat/shortUrl/list')}",href='/wechat/shortUrl/list')
+        | 长链接转短链接=======

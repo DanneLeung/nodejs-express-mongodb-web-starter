@@ -1,0 +1,234 @@
+//
+   Created by pc on 2015/10/27.
+
+extends layout
+block pageTitle
+  h1 添加商品
+
+block main
+  .panel
+    .panel-heading
+      .panel-title 编辑商品
+      .panel-tools
+        a.btn.btn-sm.btn-default(href='/shop/product/' title='返回')
+          i.fa.fa-reply
+        button#save.btn.btn-sm.btn-default(type='button',title='保存')
+          i.fa.fa-save
+    .panel-body
+      if product.isNew
+        p.alert.alert-info SKU是保存产品之后才可设置
+      form#productForm.form-horizontal(method="post",action="/shop/product/save",enctype="multipart/form-data")
+        input#id(type='hidden', name='id', value="#{product._id}")
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+        ul.nav.nav-tabs
+          li.active
+            a(href="#list",data-toggle="tab") 基本
+          li
+            a(href="#data",data-toggle="tab") 数据
+          if !product.isNew
+            li
+              a(href="#sku",data-toggle="tab") SKU
+          li
+            a(href="#attrs",data-toggle="tab") 属性
+          li
+            a(href="#images",data-toggle="tab") 图片
+          li
+            a(href="#price",data-toggle="tab") 价格
+          li
+            a(href="#text",data-toggle="tab") 详情
+        .tab-content.content-padded
+          #list.tab-pane.active
+            include incs/pd_base
+          #data.tab-pane
+            include incs/pd_data
+          if !product.isNew
+            #sku.tab-pane
+              include incs/pd_sku
+          #attrs.tab-pane
+            include incs/pd_attrs
+          #images.tab-pane
+            include incs/pd_images
+          #price.tab-pane
+            include incs/pd_price
+          #text.tab-pane
+            include incs/pd_text
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  //script(src='/themes/default/plugins/datepicker/bootstrap-datepicker.js')
+  script(src="/themes/default/plugins/ueditor/ueditor.config.js")
+  script(src="/themes/default/plugins/ueditor/ueditor.all.js")
+  script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/locale/zh-cn.js')
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    $(document).ready(function () {
+      var valuejs = JSON.parse('!{valuejs ? valuejs : "null"}');
+      var groupJs = JSON.parse('!{groupJs ? groupJs : "null"}');
+
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+
+      var ueOpts = {
+        initialFrameHeight: 500,
+        serverUrl: contextRoot + 'api/ueditor',
+        autoHeightEnabled: true,
+        autoFloatEnabled: true
+      };
+      var ue = UE.getEditor('description', ueOpts);
+
+      $(".form-group").find(':file').filestyle({buttonText: '上传图片'});
+
+      select("#lengthClass", "length", "#{product.size ? product.size.lengthClass : ''}");
+      select("#weightClass", "weight", "#{product.weight ? product.weight.weightClass : ''}");
+      selectGroup();
+      var form = $('#productForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      //validator
+      form.validate({
+        rules: {
+          no: {
+            required: true,
+            remote: '/shop/product/checkNo?oldNo=#{product ? product.no : ''}'
+          }, name: {
+            required: true
+          }, model: {
+            required: true
+          }
+        },
+        messages: {
+          no: {
+            remote: '产品编号已存在'
+          }, name: {
+            required: '产品名称不能为空'
+          }, model: {
+            required: '产品型号'
+          }
+        }
+      });
+
+      //添加SKU的动作
+      $("#addSku").on('click', function () {
+        addSku(valuejs);
+      });
+
+      //添加属性的动作
+      $("#addAttributes").on('click', function () {
+        addAttributes(groupJs);
+      });
+
+      //添加附图
+      $("#addImages").on('click', function () {
+        addImages();
+      });
+
+    });
+    function selectGroup() {
+      //控制属性下拉框的值的变化
+      $(".selectGroup").change(function (e) {
+        var groupId = $(this).val();
+        var divs = $(this).parent().next();
+        attrGroup(groupId, divs);
+      });
+    }
+
+    //获取单位信息
+    function select(htmlId, type, id) {
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/shop/unit/getUnits',
+        data: {type: type}, //要传递的数据
+        success: function (data) { //成功
+          if (data) {
+            $.each(data, function (i, e) {
+              if (e._id == id) {
+                $(htmlId).append("<option value='" + e._id + "' selected>" + e.title + "</option>");
+              } else {
+                $(htmlId).append("<option value='" + e._id + "'>" + e.title + "</option>");
+              }
+            });
+          }
+        }
+      });
+    }
+    //获取单位信息
+    function attrGroup(groupId, divs) {
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/shop/product/attribute/getAttributes',
+        data: {groupId: groupId}, //要传递的数据
+        success: function (data) { //成功
+          if (data) {
+            divs.html("");
+            $.each(data, function (i, e) {
+              divs.append("<div class='col-sm-12'><input class='form-control' name='" + e._id + "' value='' placeholder='" + e.name + "'/></div>");
+            });
+          } else {
+            bootbox.alert("给分组中没有属性的数据！请进入属性分组添加属性！");
+          }
+        }
+      });
+    }
+    //添加sku的页面
+    function addSku(valueArr) {
+      if (valueArr == null) {
+        bootbox.alert("您的产品中的选项未添加！");
+        return false;
+      }
+      var len = 12 / valueArr.length;
+      var html = "<div class='alert'>";
+      html += "<div class='col-sm-5'>"
+      $.each(valueArr, function (i, arr) {
+        html += "<div class='col-sm-" + len + "'><select name='value" + i + "' class='option form-control'>"
+        $.each(arr.value, function (j, e) {
+          html += "<option value='" + e._id + "'>" + e.name + "</option>"
+        });
+        html += "</select></div>"
+      });
+      html += "</div>"
+      html += "<div class='col-sm-6'>"
+        + "<div class='col-sm-3'><input class='form-control' name='skuQuantity' value='0' placeholder='数量'/></div>"
+        + "<div class='col-sm-3'><input class='form-control' name='skuPrices' value='0' placeholder='价格+/-'/></div>"
+        + "<div class='col-sm-3'><input class='form-control' name='skuPoints' value='0' placeholder='积分+/-'/></div>"
+        + "<div class='col-sm-3'><input class='form-control' name='skuWeight' value='0' placeholder='重量+/-'/></div></div>";
+      html += "<div class='col-sm-1 form-group'><button class='close' data-dismiss='alert' aria-label='Close' type='button'>" +
+        "<span aria-hidden='true'></span>&times;</button></div></div>"
+      $("#Body").append(html)
+    }
+    //添加属性的页面元素
+    function addAttributes(groupJs) {
+      if (groupJs == null) {
+        bootbox.alert("属性分组还没有新建！");
+        return false;
+      }
+      var html = "<div class='alert'>";
+      html += "<div class='col-sm-5'><select name='group' class='form-control selectGroup'>"
+      html += "<option value=''>-请选择-</option>";
+      $.each(groupJs, function (j, e) {
+        html += "<option value='" + e._id + "'>" + e.name + "</option>";
+      });
+      html += "</select></div>";
+      html += "<div id='attrValue' class='col-sm-6'>"
+        + "<div class='col-sm-12'><input class='form-control' name='value' value='' placeholder='属性值'/></div></div>";
+      html += "<div class='col-sm-1 form-group'><button class='close' data-dismiss='alert' aria-label='Close' type='button'>" +
+        "<span aria-hidden='true'></span>&times;</button></div>";
+      $("#attrBody").append(html)
+      selectGroup();
+    }
+    //添加属性的页面元素
+    function addImages() {
+      var html = "<div class='col-sm-12'>";
+      html += "<div class='alert'>";
+      html += "<div class='col-sm-5'>"
+      html += "<div class='col-sm-6 col-xs-12'><div class='input-group'><img class='img-responsive img-thumbnail' src=''  width='200'/></div></div></div>"
+        + "<div class='col-sm-6'><input class='form-control' name='images' type='file'/></div>";
+      html += "<div class='col-sm-1 form-group'><button class='close' data-dismiss='alert' aria-label='Close' type='button'>" +
+        "<span aria-hidden='true'></span>&times;</button></div></div></div>";
+      $("#imagesBody").append(html);
+      $(".form-group").find(':file').filestyle({buttonText: '上传图片'});
+    }

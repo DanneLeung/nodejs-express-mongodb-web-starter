@@ -1,0 +1,48 @@
+extends ../layouts/default
+block header
+
+block main
+  .register-box
+    .register-logo
+      a(href='/')
+        b 九宫格
+          | <br>自助服务平台
+    .register-box-body
+      p.login-box-msg
+      form#registerForm(action='/checkForgetPass', method='post')
+        input(type='hidden', name='_csrf', value=_csrf)
+        .form-group.has-feedback
+          label(for="username") 登录手机号:
+            span.required *
+          input.form-control(type='test',name="username" placeholder='登录手机号')
+          span.glyphicon.glyphicon-user.form-control-feedback
+
+        .form-group.has-feedback
+          label(for="email") 安全邮箱:
+            span.required *
+          input.form-control(type='email',name="email" placeholder='安全邮箱')
+          span.glyphicon.glyphicon-user.form-control-feedback
+
+        .form-group.has-feedback
+          button.btn.btn-primary.btn-block.btn-flat(type='submit') 修改
+          // /.col
+      p
+        i.fa.fa-info
+        a.text-center(href='/login') &nbsp; &nbsp;我已经注册过账户，直接登录
+    // /.form-box
+  // /.register-box
+block scripts
+  script.
+    $(function () {
+      $("#registerForm").validate({
+        rules: {
+          username: {
+            required: true
+          },
+          email: {
+            required: true,
+            emailCN: true
+          }
+        }
+      });
+    });

@@ -1,0 +1,29 @@
+-var baseUrl = (req.session.contextRoot + req.baseUrl)
+-if (baseUrl.indexOf('http')<0)
+  -baseUrl = baseUrl.replace('//','/');
+doctype html
+html.app(lang='en')
+  head
+    include incs/header
+    // iCheck
+    link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
+    block header
+
+  body.register-page.hold-transition.skin-black
+    include incs/flash
+    block main
+
+    // REQUIRED JS SCRIPTS jQuery 2.1.4
+    script(src='//cdn.bootcss.com/jquery/2.2.1/jquery.min.js')
+    script(src='//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js')
+    // Bootstrap 3.3.5
+    script(src='//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js')
+    // iCheck
+    script(src='//cdn.bootcss.com/iCheck/1.0.2/icheck.min.js')
+    script(src='//cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min.js')
+    script(src='/themes/default/plugins/jquery-validation/dist/jquery.validate.messages_zh.js')
+    script(src='/themes/default/plugins/setup_validation.js')
+
+    // bootbox
+    script(src='//cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js')
+    block scripts

@@ -1,0 +1,191 @@
+//
+   Created by danne on 2015/10/24.
+extends layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet" href="/themes/default/plugins/datatables/select.bootstrap.min.css" type="text/css")
+
+//应用的page title
+block pageTitle
+  h1 系统会员行为管理
+    small 添加，删除，更新系统中会员行为
+
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 会员行为
+      .pull-right.panel-tools
+        a.btn.btn-sm.btn-default(href="/member/action/add",title="添加行为")
+          i.fa.fa-plus
+        | &nbsp;
+        a#setAction.btn.btn-sm.btn-default(title="配置行为")
+          i.fa.fa-cog
+    .panel-body
+      #tableWrapper(style="display:none;")
+        table#actionList.table.table-hover
+          thead
+            th 标识
+            th 名称
+            th 积分
+            th 描述
+            th.text-center 操作
+          tbody
+    #topProductModal.modal.fade.text-center(tabindex="-1", role="dialog", aria-labelledby="topProductModal", aria-hidden='true')
+      .modal-dialog.modal-lg(style="display: inline-block; width: 45%;")
+        .modal-content
+          .modal-header
+            button.close(type="button",data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h3.text-left
+              span 系统预算积分规则
+          .modal-body
+
+            table#systemActionList.table.table-bordered.table-hover.table-striped.text-left
+              thead
+                //th
+                  //input#selectAll(type="checkbox" title="全选")
+                th 标识
+                th 名称
+                th.text-right 积分
+                th 描述
+              tbody
+
+          .modal-footer
+            .center-block.pull-right
+            botton#setActionBtn.btn.btn-primary(type="button") 确定
+      //删除行为信息
+      form#delForm(method='post', style='display:none', action='/member/action/del')
+        input#ids(type='hidden',name='ids')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      //配置渠道的行为信息
+      form#setActionForm(method='post', style='display:none', action='/member/action/setAction')
+        input#actionIds(type='hidden',name='actionIds')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='/themes/default/plugins/datatables/dataTables.select.min.js')
+  script.
+    $(document).ready(function () {
+
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: false,
+        searching: true,
+        processing: false,
+        serverSide: true,
+        deferRender: true
+
+      };
+      var t = $('#actionList').DataTable($.extend(opts, {
+        ajax: {url: '/member/action/datatable'},
+        order: [[0, 'asc']],
+        columnDefs: [
+          //{targets: 0, visible: true, sortable: false, searchable: false, className: 'text-right', defaultContent: ''},
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group'><a class='btn btn-sm edit' href='/member/action/edit?id=" + row._id + "'><i class='fa fa-edit'></i></a>"
+                      + " <a class='btn btn-sm del' href='javascript:void(0);'><i class='fa fa-trash-o'></i></a></div>";
+            }
+          }
+        ],
+        columns: [
+          //{data: ""},
+          {data: "code"},
+          {data: "name"},
+          {data: "score", className: 'text-center'},
+          {data: "description", defaultContent: ''},
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      var opt = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: false,
+        searching: true,
+        processing: false,
+        select: true,
+        serverSide: true,
+        deferRender: true
+
+      };
+      var tt = $('#systemActionList').DataTable($.extend(opt, {
+        ajax: {url: '/member/action/datatables'},
+        order: [[1, 'asc']],
+        columnDefs: [],
+        columns: [
+         /* {
+            data: "_id", sortable: false, render: function (data, type, row) {
+            return '<input type="hidden" class="select" name="Ids" value="' + data + '">';
+          }
+          },*/
+          {data: "code", defaultContent: ''},
+          {
+            data: "name", defaultContent: '', render: function (data, type, full, meta) {
+            return data;
+          }
+          },
+          {
+            data: "score", defaultContent: '', render: function (data, type, full, meta) {
+            return data ? data + "分" : "";
+          }
+          },
+          {data: "description", defaultContent: ''}
+        ]
+      }));;
+
+
+      //      t.on('order.dt search.dt page.dt', function () {
+      //        t.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+      //          cell.innerHTML = i + 1;
+      //        });
+      //      }).draw();
+      $('#actionList').on('click', '.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+      // 全选
+      $("#selectAll").on("click", function (e) {
+        alert('1');
+       // $(this).parents("table").find("tbody").prop("class", 'selected');
+        alert($(this).parents("table").find("tbody"));
+      });
+      //设置积分行为
+      $("#setAction").on("click", function (e) {
+        $("#topProductModal").modal("show");
+      });
+
+      // 移除产品从发布信息中
+      $("#setActionBtn").on("click", function (e) {
+        var len = $('#systemActionList').find(":checkbox[name='Ids']:checked").length;
+        if (len > 0) {
+          var ids = [];
+          $('#systemActionList').find(":checkbox[name='Ids']:checked").each(function (e) {
+            ids.push($(this).val())
+          });
+          $('#actionIds').val(ids);
+          $("#setActionForm").submit();
+        } else {
+          bootbox.alert("请选择产品");
+        }
+      });
+
+
+    });

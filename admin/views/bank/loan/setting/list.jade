@@ -1,0 +1,111 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ../layout
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 贷款产品首页设置
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href="/bank/loan/addloadtype" title="添加设置")
+            i.fa.fa-plus.fa-fw
+    .panel-body
+      table#tableWrapper.table.table-hover.table-striped.table-responsive(style="display:none;")
+        thead
+          th 标题
+          th.text-center 创建日期
+          th.text-center 需关注
+          th 操作
+        tbody
+
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='#{theme}/js/jquery.qrcode.min.js')
+
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#tableWrapper').DataTable($.extend(opts, {
+        ajax: {url: '/bank/loan/setting/datatable'},
+        order: [[0, 'desc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group'> <a class='btn btn-default btn-sm' title='编辑分类' href='/bank/loan/type/edit/" + row._id + "'><i class='fa fa-pencil'></i></a>"
+                + "<a class='btn btn-default btn-sm del' title='删除分类'><i class='fa fa-trash'></i></a>"
+                + "</div>";
+            }
+          }
+        ],
+        columns: [
+          {data: "type", visible: true},
+          {
+            data: "createdAt", defaultContent: '',
+            class: "text-center",
+            render: function (data, type, full, meta) {
+              return moment(data).format("YYYY-MM-DD HH:mm");
+            }
+          },
+          {
+            data: 'sort',
+            defaultContent: '',
+            class: "text-center"
+          },
+          {
+            data: "enabled",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              if(data) {
+                return "<a class='btn btn-sm key' title='激活/取消激活' href='/bank/loan/type/enabled/" + full._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                return "<a class='btn btn-sm key' title='激活/取消激活' href='/bank/loan/type/enabled/" + full._id + "'><i class='fa fa-square-o'/></a>"
+              }
+            }
+          },
+          {data: ""},
+          {
+            data: "parent.name", visible: false,
+            render: function (data, type, full, meta) {
+              if (!data) {
+                return '';
+              } else {
+                return data;
+              }
+            }
+          },
+          {data: "name", visible: false}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      $('#tableWrapper').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        console.log(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?若是父级，则关联的子级将一起删除！", function (result) {
+            if (result) {
+              window.location.href = '/bank/loan/type/del/' + id;
+            }
+          });
+        }
+      });
+    })
+

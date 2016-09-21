@@ -1,0 +1,60 @@
+//
+   Created by yu869 on 2016/3/16.
+   找回密码第二步
+
+extends ../layouts/front
+block header
+block main
+  .login-box
+    .login-logo
+      a(href='/')
+        b 九宫格
+        | <br>自助服务平台
+    // /.login-logo
+    .login-box-body
+      p.login-box-msg 请输入手机号或邮箱地址找回密码
+        form#resetForm(method='post')
+          input(type='hidden', name='_csrf', value=_csrf)
+          .form-group.has-feedback
+            input#username.form-control(type='text', placeholder='输入用户名', name="username")
+            span.glyphicon.glyphicon-user.form-control-feedback
+          .form-group.has-feedback
+            input#value.form-control(type='text', placeholder='输入手机号或邮箱地址', name="value")
+            span.glyphicon.glyphicon-envelope.form-control-feedback
+          a#reset.btn.btn-primary.btn-block.btn-flat 发送验证码
+    // /.login-box-body
+  // /.login-box
+block scripts
+  script.
+    $(function () {
+      $("#resetForm").validate({
+        rules: {
+          value: {
+            required: true
+          },
+          username: {
+            required: true
+          }
+        }
+      });
+
+      $("#reset").on('click', function () {
+        var form = $("#resetForm");
+        if (form.valid()) {
+          var value = $("#value").val();
+          var length = value.length;
+          var mobile = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+          var email = /^([a-zA-Z0-9_-]{4,18})+@([a-zA-Z0-9])+((\.[a-zA-Z0-9]{2,3}){1,2})$/;
+
+          if (mobile.test(value) && length == 11) {
+            form.attr("action", "/user/resetBySMS");
+            form.submit();
+          } else if (email.test(value)) {
+            form.attr("action", "/user/resetByEmail");
+            form.submit();
+          } else {
+            bootbox.alert("输入格式错误");
+          }
+        }
+      })
+    });

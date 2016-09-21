@@ -1,0 +1,352 @@
+//
+   Created by xingjie201 on 2016/4/25.
+//
+   Created by pc on 2015/10/27.
+
+extends ../layout
+block header
+  style(media="screen").
+    .nav-tabs-custom > .tab-content {
+      padding: 15px;
+    }
+
+    .panel-group {
+      clear: both;
+      margin-bottom: 20px;
+      position: relative;
+      margin-right: 15px;
+    }
+
+    .panel-group .panel {
+      margin-bottom: 0;
+      border-radius: 4px;
+    }
+
+    .panel-group .panel + .panel {
+      border-radius: 0;
+      margin-top: 0;
+      border-top: 0;
+    }
+
+    .panel-group img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: inline-block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .panel-group .panel:first-child .img {
+      overflow: hidden;
+      position: relative;
+      height: 160px;
+      background-color: #ececec;
+      color: #c0c0c0;
+      text-align: center;
+      line-height: 132px;
+    }
+
+    .panel-group .panel:first-child .img img {
+      max-height: 160px;
+      max-width: 100%;
+      vertical-align: middle;
+    }
+
+    .panel-group .panel:first-child .img span {
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 28px;
+      line-height: 28px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 0 10px;
+    }
+
+    .panel-group .panel:first-child {
+      margin: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .panel-group .panel + .panel .panel-body {
+      height: 104px;
+      padding-right: 105px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-group .panel + .panel .text h4 {
+      word-break: break-all;
+      font-size: 14px;
+      line-height: 1.5em;
+      height: 54px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .panel-group .panel + .panel .img {
+      float: right;
+      position: absolute;
+      right: 15px;
+      top: 12px;
+      height: 80px;
+      width: 80px;
+      background-color: #ececec;
+      color: #c0c0c0;
+      line-height: 80px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+block pageTitle
+  h1 素材管理
+block main
+  .nav-tabs-custom
+    ul#myTab.nav.nav-tabs
+      li.active
+        a(href="#imageTab" data-id="image" data-toggle="tab") 图片素材
+      li
+        a(href="#newsTab" data-id="news" data-toggle="tab") 图文素材
+      li
+        a(href="#voiceTab" data-id="voice" data-toggle="tab") 语音素材
+      li
+        a(href="#videoTab" data-id="video" data-toggle="tab") 视频素材
+      //li.dropdown.open
+        a.dropdown-toggle(data-toggle='dropdown', href='#', aria-expanded='true')
+          | 操作
+          span.caret
+        ul.dropdown-menu
+          li(role='presentation')
+            a(role='menuitem', tabindex='-1', href='#') Action
+          li(role='presentation')
+            a(role='menuitem', tabindex='-1', href='#') Another action
+          li(role='presentation')
+            a(role='menuitem', tabindex='-1', href='#') Something else here
+          li.divider(role='presentation')
+          li(role='presentation')
+            a(role='menuitem', tabindex='-1', href='#') Separated link
+
+
+      //li.pull-right
+        a.btn.btn-sm.btn-success(href='#')
+          i.fa.fa-plus.fa-fw
+          | 添加素材
+    #myTabContent.tab-content
+      #imageTab.tab-pane.fade.in.active.clearfix
+        .margin-bottom
+          a.btn.btn-primary.sync(data-type="image") 同步公众号图片素材
+          a.btn.btn-primary.margin-l-10
+            i.fa.fa-plus.fa-fw
+            | 新增永久图片素材
+        #imageList
+      #newsTab.tab-pane.fade.clearfix
+        .margin-bottom
+          a.btn.btn-primary.sync(data-type="news") 同步公众号图文素材
+          a.btn.btn-primary.margin-l-10
+            i.fa.fa-plus.fa-fw
+            | 新增永久图文素材
+        #newsList
+      #voiceTab.tab-pane.fade.clearfix
+        .margin-bottom
+          a.btn.btn-primary.sync(data-type="voice") 同步公众号语音素材
+          a.btn.btn-primary.margin-l-10
+            i.fa.fa-plus.fa-fw
+            | 新增语音素材
+
+        #voiceList
+      #videoTab.tab-pane.fade.clearfix
+        .margin-bottom
+          a.btn.btn-primary.sync(data-type="video") 同步公众号视频素材
+          a.btn.btn-primary.margin-l-10
+            i.fa.fa-plus.fa-fw
+            | 新增视频素材
+        #videoList
+block scripts
+  script(src='#{theme}/js/util.js')
+  script.
+    var buttons = {};
+    $(document).ready(function () {
+      $('.sync').on('click', function (e) {
+        var type = $(this).data('type');
+        syncMedia(type);
+      });
+      getMedia("image");
+      getMedia("news");
+      getMedia("voice");
+      getMedia("video");
+
+      //$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        //var dataId = $(e.target).attr("data-id"); // 激活的标签页数据ID
+        //getMedia(dataId);
+      //})
+    })
+    //获取素材信息
+    function getMedia(type) {
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/wechat/media/getMedia',
+        data: {type: type}, //要传递的数据
+        success: function (data) { //成功
+          if (data.code == "1") {
+            switch (type) {
+              case "image":
+                imgHtml(type, data.meg);
+                break;
+              case "news":
+                newsHtml(type, data.meg);
+                break;
+              case "voice":
+                voiceHtml(type, data.meg);
+                break;
+              case "video":
+                videoHtml(type, data.meg);
+                break;
+              default :
+                break;
+            }
+          } else {
+            bootbox.alert(data.meg);
+          }
+        }
+      });
+    }
+
+
+    //删除素材的信息
+    function removeMedia(mediaId, type) {
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/wechat/media/removeMedia',
+        data: {mediaId: mediaId}, //要传递的数据
+        success: function (data) { //成功
+          util.message(data.msg);
+          if (data && data.code == '1') {
+            getMedia(type);
+          }
+        }
+      });
+    }
+    //获取素材视频的信息
+    function syncMedia(type) {
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/wechat/media/syncMedia',
+        data: {type: type}, //要传递的数据
+        success: function (data) { //成功
+          if (data && data.code) {
+            util.message('同步微信公众号素材成功完成!', '/wechat/media#' + type + 'Tab');
+          } else {
+            util.message('同步微信公众号素材成功完成!');
+          }
+        }
+      });
+    }
+    //获取素材视频的信息
+    function getMaterial(mediaId, callback) {
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/wechat/media/getMaterial/' + mediaId,
+        data: {type: 'video'}, //要传递的数据
+        success: function (data) { //成功
+          if (data) {
+            callback(null, data);
+          }
+        }
+      });
+    }
+
+    //********************************************//
+    //** 素材视图的展示和操作                    **//
+    //**  开始                                  **//
+    //********************************************//
+
+    //图片视图
+    function imgHtml(type, data) {
+      $("#imageList").html("");
+      $.each(data, function (i, e) {
+        var html =
+                '<div class="pull-left" style="width: 200px;height: 160px; margin: 0 15px 15px 0;">' +
+                '<button class="pull-right" onclick=removeMedia("' + e.media_id + '","' + type + '")>&times;</button>' +
+                ' <div class="panel panel-default">' +
+                '   <div class="panel-body" style="height:160px;text-align: center">' +
+                '     <img style="max-width: 100%;max-height: 100%" src="/wechat/media/getMaterial/' + e.media_id + '" alt="' + e.name + '">' +
+                '   </div>' +
+                ' </div>' +
+                '</div>';
+        $("#imageList").append(html)
+      })
+    }
+    //图文视图
+    function newsHtml(type, data) {
+      $("#newsList").html("");
+      $.each(data, function (j, e) {
+        var html = "";
+        var news = e.content.news_item;
+        html += '<div class="pull-left" style="width: 300px;">' +
+                '<button class="pull-right" onclick=removeMedia("' + e.media_id + '","' + type + '")>&times;</button>' +
+                '<div class="panel-group"> ';
+        $.each(news, function (i, e) {
+          if (i == 0) {
+            html += '<div class="panel panel-default">' +
+                    '   <div class="panel-body">' +
+                    '     <div class="img">' +
+                    '       <img style="height:100%;" src="/wechat/media/getMaterial/' + e.thumb_media_id + '" alt="' + e.title + '">' +
+                    '       <span class="text-left">' + e.title + '</span>' +
+                    '     </div>' +
+                    '   </div>' +
+                    '</div>';
+          } else {
+            html += '<div class="panel panel-default">' +
+                    ' <div class="panel-body">' +
+                    '   <div class="text"><h4>' + e.digest + '</div></h4>' +
+                    '   <div class="img"><img src="/wechat/media/getMaterial/' + e.thumb_media_id + '" alt="' + e.title + '" width="80px" height="80px"></div>' +
+                    ' </div>' +
+                    '</div>';
+          }
+        })
+        html += '</div></div>';
+        $("#newsList").append(html)
+      })
+    }
+    //语音视图
+    function voiceHtml(type, data) {
+      $("#voiceList").html("");
+      $.each(data, function (i, e) {
+        var html = "";
+        html += '<div class="dropup col-md-6"><button class="pull-right" onclick=removeMedia("' + e.media_id + '","' + type + '")>&times;</button>' +
+                '<label class="col-md-12"><audio controls="controls">' +
+                '<source src="/wechat/media/getMaterial/' + e.media_id + '" type="audio/ogg">' +
+                '<source src="/wechat/media/getMaterial/' + e.media_id + '" type="audio/mpeg">' +
+                'Your browser does not support the audio element.</audio></label>';
+        html += '</div>';
+        $("#voiceList").append(html)
+      })
+    }
+    //视频视图
+    function videoHtml(type, data) {
+      $("#videoList").html("");
+      $.each(data, function (i, e) {
+        var html = "";
+        getMaterial(e.media_id, function (err, video) {
+          html += '<div class="dropup text-left col-md-6"><button class="pull-right" onclick=removeMedia("' + e.media_id + '","' + type + '")>&times;</button>' +
+                  '<label class="text-left col-md-12">' + video.title + '</label>' +
+                  '<video controls="controls" width="320" height="240">' +
+                  '<source src="' + video.down_url + '" type="video/ogg">' +
+                  '<source src="' + video.down_url + '" type="video/mp4">' +
+                  'Your browser does not support the video tag.</video>' +
+                  '<div class="col-md-12" ><label class="text-left col-md-8">' + video.description + '</label>' +
+                  '</div>';
+          html += '</div>';
+          $("#videoList").append(html)
+        })
+      })
+    }
+
+    //********************************************//
+    //** 素材视图的展示和操作                    **//
+    //**  结束                                  **//
+    //********************************************//

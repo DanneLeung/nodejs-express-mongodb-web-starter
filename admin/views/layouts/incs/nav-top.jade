@@ -1,0 +1,57 @@
+header.main-header
+  nav.navbar.navbar-static-top
+    .container-fluid
+      .navbar-header
+        button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar-collapse', aria-expanded='true')
+          i.fa.fa-bars
+        if(req.session.channel && req.session.channel.logo)
+          a.navbar-brand(href='/',style="padding:0")
+            img(src="#{staticRoot + (req.session.channel.logo)}",style="height:50px;")
+        else
+          a.navbar-brand(href='/')
+            b #{req.session.channel ? req.session.channel.channelName : appName}
+
+      // Collect the nav links, forms, and other content for toggling
+      #navbar-collapse.collapse.navbar-collapse
+        ul.nav.navbar-nav
+          if(req.session.menus)
+            each m in req.session.menus
+              if m.topNav
+                if(!m.children.length)
+                  li(class="#{isActive(m.link)}")
+                    a(href='#{m.link}')
+                      if(m.iconClass)
+                        i(class="#{m.iconClass} fa-fw")
+                      | #{m.title}
+                else
+                  li.dropdown(class="#{isActive(m.link)}")
+                    -var hasChildren = false;
+                    // 是否有可显示的子节点
+                    each a in m.children
+                      if a.topNav
+                        - hasChildren = true;
+
+                    if(!hasChildren)
+                      a(href='#{m.link}')
+                        if(m.iconClass)
+                          i(class="#{m.iconClass} fa-fw")
+                        | #{m.title}
+                    else
+                      a.dropdown-toggle(href='#', data-toggle='dropdown')
+                        if(m.iconClass)
+                          i(class="#{m.iconClass} fa-fw")
+                        | #{m.title}
+                        span.caret
+                      ul.dropdown-menu(role='menu')
+                        each a in m.children
+                          if a.topNav
+                            li(class="#{isActive(a.link)}")
+                              a(href='#{a.link}')
+                                if(a.iconClass)
+                                  i(class="#{a.iconClass} fa-fw")
+                                else
+                                  i.fa.fa-fw
+                                | #{a.title}
+
+
+        include nav-top-right

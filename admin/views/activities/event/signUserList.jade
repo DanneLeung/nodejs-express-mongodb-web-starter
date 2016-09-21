@@ -1,0 +1,121 @@
+//
+   Created by pc on 2015/10/27.
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet",href="/themes/default/plugins/daterangepicker/daterangepicker-bs3.css")
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title #{event.name} 限制人数：#{event.limit}
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href='/activities/event')
+            i.fa.fa-reply
+    .panel-body
+      .col-sm-12
+        form#positionForm.form-horizontal(method='post', action='/activities/event/exportCsv/#{event._id}')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+          .form-group
+            label.control-label.col-md-2.text-right 选择时间:
+            .col-sm-4
+              input#dateTime.form-control.pull-right(type='text',name="dateTime",value="")
+              p.help-block 注意：不选择时间，默认导出昨天的数据
+            a#exportCsv.btn.btn-primary.btn-sm(title='导出用户数据')
+              i.fa.fa-cloud-download
+
+      #tableWrapper(style="display:none;")
+        table#usersList.table.table-hover.table-striped.table-responsive
+          thead
+            th.text-center 微信昵称
+            th.text-center 提交时间
+            each key in event.formfield
+              th #{key.label}
+            th.text-center 管理
+          tbody
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src="/themes/default/plugins/daterangepicker/daterangepicker.js")
+  script.
+    $(document).ready(function () {
+      $('#dateTime').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 10,
+        format: 'YYYY-MM-DD HH:mm:ss'
+      });
+
+      var formNum = Number(#{event.formfield.length}),forms = [
+        /**{
+          targets:-2, visible: true, sortable: false, className: 'text-center',
+          render: function (data, type, full, row) {
+            return '<div class="btn-group" role="group"><a class="btn btn-default btn-sm" title="报名用户" href="/del"><i class="fa fa-users"></i></a></div>'
+          }
+        }*/
+      ], columns = [{data: "wechatNickname",class:"text-center"},
+        {data: "dateTime",class:"text-center",
+          render: function (data, type, full, meta) {
+            var b = moment(new Date(data));
+            var date = "";
+            if (data != null) {
+              date = b.format("YYYY-MM-DD HH:mm:ss");
+            }
+            return date;
+          }}];
+
+      for(var i=0;i<formNum;i++) {
+        (function(i) {
+          forms.push({
+            targets: i - (formNum + 1), visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, full, row) {
+              var form = full.form[i];
+              return form ? form.value.length>0 ? form.value : '无':'无';
+            }
+          })
+          columns.push({data: "", class: "text-center"})
+        })(i)
+      }
+
+      columns.push({data: "form", visible: false});
+      console.log(forms);
+      var opts = {
+        language: {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        searching: true,
+        lengthChange: true,
+        serverSide: true,
+        autoWidth: false,
+        select: true,
+        stateSave: true,
+        rowid: '_id',
+      };
+      var t = $('#usersList').DataTable($.extend(opts, {
+        ajax: {url: '/activities/event/users/datatable/#{event._id}?'},
+        order: [[1, 'desc']],
+        columnDefs: forms,
+        columns: columns
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      $('#actionList').on('click', '.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+
+      $("#exportCsv").on('click', function () {
+        $("#positionForm").submit();
+      });
+
+    });

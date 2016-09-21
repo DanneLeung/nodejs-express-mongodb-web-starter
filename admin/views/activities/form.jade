@@ -1,0 +1,466 @@
+//
+  Created by pc on 2015/10/27.
+
+extends layout
+block header
+  link( rel="stylesheet",href="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.css")
+  link( rel="stylesheet" href="/themes/default/plugins/select2/select2.min.css")
+  style.
+    #awardIds .alert {
+      padding: 15px 0;
+      margin-bottom: 0;
+    }
+block main
+  if !activity.isNew
+    form#userDelForm(method='post', style='display:none', action='/activities/del')
+      input#ids(type='hidden',name='ids',value="#{activity._id}")
+      input#_csrf(type='hidden', name='_csrf', value=_csrf)
+  .panel
+    .panel-heading
+      h3.panel-title
+        | #{activity.isNew ? '创建新活动' : '编辑活动'}
+        span.text-info #{activity.name}
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href='/activities/index' title='返回')
+            i.fa.fa-reply
+          a#save.btn.btn-default.btn-sm(title='保存')
+            i.fa.fa-save
+    .panel-body
+      form#activityForm.form-horizontal(method="post",action="/activities/save")
+        ul.nav.nav-tabs
+          li.active
+            a(href='#base', data-toggle='tab') 基本参数
+          li
+            a(href='#awards', data-toggle='tab') 奖项设置
+          li
+            a(href='#presetWinners', data-toggle='tab') 预设中奖信息
+
+        .tab-content.padding(style='padding:15px')
+          #base.tab-pane.fade.in.active
+            if(!activity.isNew)
+              input#id(type='hidden', name='id', value="#{activity._id}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+            .form-group
+              label.control-label.col-sm-2.required 活动名称
+              .col-sm-10
+                input#name.form-control.required(type="text",name="name",value="#{activity.name}")
+            .form-group
+              label.control-label.col-sm-2.required 活动时间
+              .col-sm-10
+                .input-group
+                  input#reservationtime.form-control.pull-right.required(type='text',name="time", value="#{formatDatetime(activity.startTime)} - #{formatDatetime(activity.endTime)}")
+                  .input-group-addon
+                    i.fa.fa-clock-o
+                // /.input group
+            .form-group
+              label.control-label.col-sm-2 总人次
+              .col-sm-10
+                input#limit.form-control(type="number",name="limit",value="#{activity.limit}")
+
+            //- .form-group
+            //-   label.control-label.col-sm-2 Logo图片
+            //-   .col-sm-10
+            //-     .input-group
+            //-       input#logo.form-control(type='text', name='logo', value='#{activity.logo}',readonly='true' autocomplete='off')
+            //-       span.input-group-btn
+            //-         input#uploadLogoImg.required( type='file', name='uploadify',style='width:0;')
+            //button.btn.btn-default(type='button', onclick='showImageDialog(this);') 选择图片
+            //- p.help-block 选择活动中的logo图片，保存的时候上传图片
+            //- .form-group
+            //-   label.control-label.col-sm-2 入口URL
+            //-   .col-sm-10
+            //-     input#url.form-control(type="text",name="url",value="#{activity.url}",readonly="true")
+            .form-group
+              label.control-label.col-sm-2 白名单
+              .col-sm-10
+                select#whitelist.form-control(name="whitelist")
+            //.form-group
+              label.control-label.col-sm-2 关键字
+              .col-sm-10
+                input#keywords.form-control(type="text",name="keywords",value="#{activity.keywords}")
+            .form-group
+              label.control-label.col-sm-2 仅用户
+              .col-sm-10
+                label.checkbox
+                  if (activity && activity.needRegister)
+                    input#enabled(type='checkbox', name='needRegister', checked="checked")
+                  else
+                    input#enabled(type='checkbox', name='needRegister')
+                  span &nbsp;&nbsp;是否仅注册用户或公众号粉丝才可参与
+            .form-group
+              label.control-label.col-sm-2 每天可获奖人数
+              .col-sm-10.row
+                .col-sm-3
+                  input#winPerDay.form-control(type="number",name="winPerDay",value="#{activity.winPerDay ? activity.winPerDay : 0}")
+                .col-sm-9
+                  span.help-block 每天限制获奖人数
+            .form-group
+              label.control-label.col-sm-2 每天可参与人数
+              .col-sm-10.row
+                .col-sm-3
+                  input#times.form-control(type="number",name="times",value="#{activity.times ? activity.times : 0}")
+                .col-sm-9
+
+            .form-group
+              label.control-label.col-sm-2 可获奖次数
+              .col-sm-10.row
+                .col-sm-3
+                  input#winPerUser.form-control(type="number",name="winPerUser",value="#{activity.winPerUser ? activity.winPerUser : 0}")
+                .col-sm-9
+                  span.help-block 每个人可获奖次数的总次数
+            .form-group
+              label.control-label.col-sm-2 总次数
+              .col-sm-10.row
+                .col-sm-3
+                  input#timesPerUser.form-control(type="number",name="timesPerUser",value="#{activity.timesPerUser ? activity.timesPerUser : 0}")
+                .col-sm-9
+                  span.help-block 每个人可参与的总次数
+            .form-group
+              label.control-label.col-sm-2 每天次数
+              .col-sm-10
+                input#timesPerDay.form-control(type="number",name="timesPerDay",value="#{activity.timesPerDay ? activity.timesPerDay : 0}")
+                p.help-block 每人每天可参与的次数
+            .form-group
+              label.control-label.col-sm-2 每周次数
+              .col-sm-10
+                input#timesPerWeek.form-control(type="number",name="timesPerWeek",value="#{activity.timesPerWeek ? activity.timesPerWeek : 0}")
+                p.help-block 每人每周可参与的次数
+            .form-group
+              label.control-label.col-sm-2 分享+次数
+              .col-sm-10
+                input#sharedAddTimes.form-control(type="number",name="sharedAddTimes",value="#{activity.sharedAddTimes ? activity.sharedAddTimes : 0}")
+                p.help-block 分享一次可获得增加参加活动次数
+
+            .form-group
+              label.control-label.col-sm-2 描述:
+              .col-sm-10
+                textarea#title.form-control(name="description", rows="5")
+                  | #{activity.description}
+            .form-group
+              label.control-label.col-sm-2 可用:
+              .col-sm-10
+                label.checkbox
+                  if (activity && activity.enabled)
+                    input#enabled(type='checkbox', name='enabled', checked="checked")
+                  else
+                    input#enabled(type='checkbox', name='enabled')
+            .form-group
+              label.control-label.col-sm-2 是否需要token权限:
+              .col-sm-10
+                label.checkbox
+                  if (activity && activity.needToken)
+                    input#needToken(type='checkbox', name='needToken', checked="checked")
+                  else
+                    input#enabled(type='checkbox', name='needToken')
+          #awards.tab-pane.fade
+            .form-group
+              label.control-label.col-sm-2 奖品总预算:
+              .col-sm-10.row
+                .col-sm-3
+                  input#budget.form-control(type="number",name="budget",value="#{activity.budget}")
+                  input#isEmptys.form-control(type="hidden",name="isEmptys",value="")
+                .col-sm-9
+                  strong.help-block.text-info ** 下面添加的奖品成本合计不应该超过奖品预算
+                    a#addAward.btn.btn-default.pull-right(title='添加奖项')
+                      i.fa.fa-plus
+            #awardlist
+              .paramsTitle.clearfix
+                .col-sm-1
+                  b 排序
+                .col-sm-1
+                  b 等级
+                .col-sm-2
+                  b 奖项
+                .col-sm-2
+                  b 奖品
+                .col-sm-1
+                  b 数量
+                .col-sm-1
+                  b 金额
+                .col-sm-2
+                  b 中奖率
+                .col-sm-1
+                  b 空奖
+                .col-sm-1.text-right
+                  b 删除
+            #awardIds.paramsBody.clearfix
+              each e,i in activity.awards
+                .alert
+                  .col-sm-1
+                    input.form-control.required(type='text' name='sort' placeholder='排序' value='#{e.sort}')
+                  .col-sm-1
+                    input.form-control.level.required(type='text' name='level' placeholder='等级' value='#{e.level}')
+                  .col-sm-2
+                    input.form-control.awardName(type='text' name='awardName' placeholder='奖项名称' value='#{e.awardName}')
+                  .col-sm-2
+                    select.form-control.awardSelect(name='award', style="width: 100%;")
+                      each a,i in awards
+                        if a.id == e.award.id
+                          option(value = "#{a._id}" selected='selected') #{a.mark ? a.mark + "-" + a.name : a.name}
+                  .col-sm-1
+                    input.form-control.required(type='text' name='counts' placeholder='数量' value='#{e.count}')
+                  .col-sm-1
+                    input.form-control.required(type='text' name='price' placeholder='金额' readonly value='#{e.award.price}')
+                  .col-sm-2
+                    .col-sm-11
+                      input.form-control.required(type='text' name='ratios' placeholder='中奖率' value='#{e.ratio}')
+                    .col-sm-1.form-group
+                      span %
+                  .col-sm-1
+                    if (e.isEmpty)
+                      input.form-control.isEmpty(type='checkbox' name='isEmpty' value='1' checked="checked")
+                    else
+                      input.form-control.isEmpty(type='checkbox' name='isEmpty' value='1')
+                  .col-sm-1.form-group
+                    button.close(data-dismiss='alert' aria-label='Close' type="button")
+                      span(aria-hidden='true') &times;
+          #presetWinners.tab-pane.fade
+            .form-group
+              label.control-label.col-sm-2 预设中奖信息
+              .col-sm-10.row
+                    a#winners.btn.btn-default.pull-right(title='添加奖项')
+                      i.fa.fa-plus
+            #winnersTilte
+              .paramsTitle.clearfix
+                .col-sm-3
+                  label.control-label 昵称
+                .col-sm-3
+                  label.control-label 手机号
+                .col-sm-4
+                  label.control-label 奖品
+                .col-sm-2.text-right
+                  label.control-label 删除
+            #winnersBody.paramsBody.clearfix
+              each e,i in activity.presetWinners
+                .alert
+                  .col-sm-3
+                    input.form-control.nickname.required(type='text' name='nickname' placeholder='昵称' value='#{e.nickname}')
+                  .col-sm-3
+                    input.form-control.mobile(type='text' name='mobile' placeholder='手机号' value='#{e.mobile}')
+                  .col-sm-4
+                    select.form-control.awardSelect(name='prize', style="width: 100%;")
+                      each a,i in awards
+                        if a.id == e.prize
+                          option(value = "#{a._id}" selected='selected') #{a.mark ? a.mark + "-" + a.name : a.name}
+                  .col-sm-2.form-group
+                    button.close(data-dismiss='alert' aria-label='Close' type="button")
+                      span(aria-hidden='true') &times;
+
+block scripts
+  script(src="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.js")
+  script(src='/themes/default/plugins/select2/select2.full.js')
+  script.
+    $(document).ready(function () {
+      var awards = JSON.parse('!{award ? award : "null"}');
+      $('#reservationtime').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 10,
+        locale: {format: 'YYYY-MM-DD HH:mm'}
+        //- format: 'YYYY-MM-DD HH:mm'
+      });
+      selectWhiteList('#{activity.whitelist}')
+      initSelect2(".awardSelect","/activities/selectAward");
+
+      $("#addAward").on('click', function () {
+        addAwardHtml(awards);
+      });
+      $("#winners").on('click', function () {
+        addWinners(awards);
+      });
+      blur();
+      var form = $('#activityForm');
+      $("#save").on('click', function () {
+        var userNum = $("#timesPerUser").val();
+        var dayNum = $("#timesPerDay").val();
+        var sharedNum = $("#sharedAddTimes").val();
+        var weekNum = $("#timesPerWeek").val();
+
+        if ((userNum && dayNum) && parseInt(userNum) < parseInt(dayNum)) {
+          bootbox.alert("每天次数不能比总次数大");
+          return false;
+        }
+        if ((sharedNum && dayNum) && parseInt(dayNum) < parseInt(sharedNum)) {
+          bootbox.alert("分享次数不能比每天次数大");
+          return false;
+        }
+        var week = parseInt(dayNum) * 7;
+        if ((week && weekNum) && parseInt(week) < parseInt(weekNum)) {
+          bootbox.alert("每周次数应小于等于" + week);
+          return false;
+        }
+        var sum = 0;
+        var priceSum = 0;
+        var n = 0;
+        $("#activityForm").find("input[name='ratios']").each(function () {
+          var s =parseFloat($(this).val());
+          if(s < 0){
+            n+=1;
+          }
+          sum+=s;
+        });
+        var empty = [];
+        $("#activityForm").find("input[name='isEmpty']").each(function () {
+
+          var e = $(this).is(':checked');
+          if(e){
+            empty.push(1);
+          }else{
+            empty.push(0);
+          }
+        });
+        $("#isEmptys").val(empty);
+        $("#activityForm").find("input[name='counts']").each(function (i,e) {
+          var c = parseInt($(this).val());
+          var price =$(this).parent().next().find("input[name='price']").val();
+          var sum = price ? c*price:0;
+          priceSum+= sum;
+        });
+        if(sum > 100){
+          bootbox.alert("中奖率总和不能超过 100 ！");
+          return false;
+        }
+        if(n != 0){
+          bootbox.alert("中奖率不能为负数！");
+          return false;
+        }
+        var budget = $("#budget").val();
+        if(priceSum > budget){
+          bootbox.alert("奖项中添加的奖品成本合计不应该超过奖品预算");
+          return false;
+        }
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          name: {
+            required: true,
+            remote: '/activities/checkName?oldName=#{activity ? activity.name : ''}'
+          }, time: {
+            required: true
+          }, timesPerUser: {
+            digits: true
+          }, timesPerDay: {
+            digits: true
+          }, sharedAddTimes: {
+            digits: true
+          }
+        },
+        messages: {
+          name: {
+            remote: '活动名称已存在'
+          },
+          time: {
+            required: '活动时间必填'
+          }
+        }
+      });
+
+
+    });
+
+    function addAwardHtml(awards) {
+      var html = $("<div class='alert'>" +
+              "<div class='col-sm-1'><input class='form-control required' type='text' name='sort' placeholder='排序' value='0'/></div>" +
+              "<div class='col-sm-1'><input class='form-control level required' type='text' name='level' placeholder='等级' value=''/></div>" +
+              "<div class='col-sm-2'><input class='form-control awardName required' type='text' name='awardName' placeholder='奖项名称' value=''/></div>" +
+              "<div class='col-sm-2'><select class='form-control awardSelect'  style='width: 100%;' name='award'/></div>" +
+              "<div class='col-sm-1'><input class='form-control required' type='text' name='counts' placeholder='数量' value=''/></div>" +
+              "<div class='col-sm-1'><input class='form-control required' type='text' name='price' readonly='true' placeholder='保存后显示' value=''/></div>" +
+              "<div class='col-sm-2'><div class='col-sm-11'><input class='form-control required' placeholder='中奖率' type='text' name='ratios' value=''/></div><div class='col-sm-1 form-group'><span>%</span></div></div>" +
+              "<div class='col-sm-1'><input class='isEmpty' type='checkbox' name='isEmpty' value='1'/></div>" +
+              "<div class='col-sm-1 form-group'><button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+              "<span aria-hidden='true'>&times;</span></button></div></div>");
+      var option = html.find('select.awardSelect');
+      initSelect2(option,"/activities/selectAward");
+      $("#awardIds").append(html)
+      blur();
+    }
+    function addWinners(awards) {
+      var html = $("<div class='alert'>" +
+              "<div class='col-sm-3'><input class='form-control nickname required' type='text' name='nickname' placeholder='昵称' value=''/></div>" +
+              "<div class='col-sm-3'><input class='form-control mobile required' type='text' name='mobile' placeholder='手机号' value=''/></div>" +
+              "<div class='col-sm-4'><select class='form-control awardSelect' style='width: 100%;' name='prize'/></div>" +
+              "<div class='col-sm-2 form-group'><button type='button' class='close' data-dismiss='alert' aria-label='Close'>" +
+              "<span aria-hidden='true'>&times;</span></button></div></div>");
+      var option = html.find('select.awardSelect');
+      initSelect2(option,"/activities/selectAward");
+      $("#winnersBody").append(html)
+    }
+    function blur(){
+      $(".level").blur(function () {
+        var level = $(this).val();
+        $(this).parent().next().find(".awardName").val(level + "等奖");
+      });
+    }
+    //移除数组中的元素
+    function removeLevel(level) {
+      var l = contains(levels, level);
+      if (l != false) {
+        levels.splice(l - 1, 1);
+      }
+    }
+    //验证obj是否在数组中
+    function contains(arr, obj) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == obj) {
+          return i += 1;
+        }
+      }
+      return false;
+    }
+
+    //填充下拉框
+    function selectWhiteList(id) {
+      $("#whitelist").html("")
+      $.ajax({
+        url: "/activities/white/getWhite/",
+        type: "get",
+        data: {},
+        success: function (data) {
+          $("#whitelist").append("<option value=''>" + "请选择" + "</option>");
+          $.each(data, function (i, e) {
+            if (e._id == id) {
+              $("#whitelist").append("<option value='" + e._id + "' selected>&nbsp;" + e.name + "</option>");
+            } else {
+              $("#whitelist").append("<option value='" + e._id + "'>&nbsp;" + e.name + "</option>");
+            }
+          });
+        }
+      });
+    }
+    //select2的使用
+    function initSelect2(selectId, url) {
+      $(selectId).select2({
+        ajax: {
+          url: url,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },
+          cache: true
+        },
+        escapeMarkup: function (markup) {
+          return markup;
+        },
+        minimumInputLength: 2,
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection
+      });
+    }
+    function formatRepo(repo) {
+      return repo.text
+    }
+    function formatRepoSelection(repo) {
+      return repo.text
+    }
+

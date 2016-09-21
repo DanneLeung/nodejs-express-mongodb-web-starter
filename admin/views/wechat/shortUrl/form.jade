@@ -1,0 +1,79 @@
+//
+   Created by pc on 2015/10/27.
+
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet" href="//cdn.bootcss.com/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker3.min.css")
+block main
+  .panel
+    .panel-heading
+      h3.panel-title
+        | #{sUrl.isNew ? '添加短链接' : '修改短链接'}
+        span.text-info
+        .panel-tools.pull-right
+          a#save.btn.btn-default.btn-sm(title='保存')
+            i.fa.fa-save
+          a.btn.btn-default.btn-sm(href='/wechat/shortUrl/list' title='返回')
+            i.fa.fa-reply
+    .panel-body
+
+      form#whiteForm.form-horizontal(method="post",action="/wechat/shortUrl/save")
+        if(!sUrl.isNew)
+          input#id(type='hidden', name='id', value="#{sUrl._id}")
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        .form-group
+          label.control-label.col-sm-3.required 长链接：
+          .col-sm-8
+            input#longUrl.form-control(type="text",name="longUrl",value="#{sUrl.longUrl}")
+            span.help-block 请填写完整的URL，以"http://"或"https://"开头
+        .form-group
+          label.control-label.col-sm-3.required 短域名：
+          .col-sm-8
+            input#host.form-control(type="text",name="host",value="#{sUrl.host}")
+            span.help-block 短域名配置
+        .form-group
+          label.control-label.col-sm-3 失效时间：
+          .col-sm-8
+            input#expireTime.form-control(type="text",name="expireTime",value="")
+            span.help-block 失效时间，如果不填写，视为永久有效
+block scripts
+  script(src='/themes/default/plugins/datepicker/bootstrap-datepicker.js')
+  script.
+    $(document).ready(function () {
+      var dates = $('#expireTime').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        defaultDate: new Date(),
+        todayBtn: 'linked'
+      }).on('changeDate', function (ev) {
+        $('#expireTime').val(ev.date);
+      });
+      var expireTime = '#{sUrl.expireTime}';
+      if(expireTime){
+        $("#expireTime").val(moment(expireTime).format("YYYY-MM-DD"));
+      }
+
+      var form = $('#whiteForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          longUrl: {
+            required: true,
+            remote: '/wechat/shortUrl/check?longUrl=#{shortUrl ? shortUrl.longUrl : ''}'
+          },
+          host: {
+            required: true
+          }
+        },
+        messages: {
+          longUrl: {
+            remote: '长链接必须以http://或https://开头'
+          }
+        }
+      });
+    })

@@ -1,0 +1,78 @@
+//
+   Created by danne on 2016-04-27.
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet" href="/themes/default/plugins/datatables/select.bootstrap.min.css" type="text/css")
+block pageTitle
+  h1 扫描统计
+block main
+  .panel(style="min-height:100%")
+    .panel-heading
+      h3.panel-title 粉丝列表
+        .panel-tools
+          a#createQrCode.btn.btn-sm.btn-primary(title='返回' href='/wechat/branding/index')
+            i.fa.fa-reply
+            span 返回
+    .panel-body
+      #tableWrapper(style="display:none;")
+        table#qrCodeList.table.table-bordered.table-hover.table-striped
+          thead
+            th 头像
+            th 昵称
+            th 扫描时间
+          tbody
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='/themes/default/plugins/datatables/dataTables.select.min.js')
+  script(src='/themes/default/plugins/chartjs/Chart.min.js')
+  script.
+    $(document).ready(function () {
+
+      var tt = $('#qrCodeList')
+              .DataTable({
+                language: {
+                  "url": "/themes/default/plugins/datatables/Chinese.json"
+                },
+                searching: true,
+                lengthChange: true,
+                serverSide: true,
+                autoWidth: false,
+                select: true,
+                stateSave: true,
+                ajax: {url: '/wechat/branding/wbDataTable/#{identifyNo}'},
+                rowid: '_id',
+                order: [[1, 'asc']],
+                columnDefs: [
+                  {
+                    targets: -1, visible: true, sortable: false, className: 'text-center',
+                    render: function (
+                            data, type, row
+                    ) {
+                      return "";
+                    }
+                  }
+                ],
+                columns: [
+                  {
+                    data: "headimgurl", sortable: false, defaultContent: '', class: 'text-center',render: function(data, type, row) {
+                    return "<a href='#'><img src='"+ data +"' height='50px' width='50px' /></a>";
+                  }
+                  },
+                  {data: "nickname", defaultContent: ''},
+                  {data: "updatedAt", sortable: false, defaultContent: '',
+                    render: function (data, type, full, meta) {
+                      var b = moment(new Date(data));
+                      var date = "";
+                      if (data != null) {
+                        date = b.format("YYYY-MM-DD HH:mm:ss");
+                      }
+                      return date;
+                    }},
+                  {data: ""}
+                ]
+              }).on('draw.dt', function () {
+                $("#tableWrapper").fadeIn();
+              });
+    });

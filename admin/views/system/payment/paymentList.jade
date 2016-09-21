@@ -1,0 +1,139 @@
+//
+   Created by danne on 2015/10/24.
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+//应用的page title
+block pageTitle
+  h1 支付方式查看
+    small 系统中支付方式
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 支付方式管理
+      .panel-tools
+        a.btn.btn-box-tool.btn-default(href="/system/payment/add")
+          i.fa.fa-plus
+          span  添加支付方式
+    .panel-body
+      #formWrapper(style="display:none")
+        form#paymentDelForm(method='post', style='display:none', action='/system/payment/del')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+        form#paymentDisableForm(method='post', style='display:none', action='/system/payment/paymentEnableOrDisable')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+        table#paymentList.table.table-bordered.table-hover.table-striped
+          thead
+            th.text-center(width="20%") 名称
+            th(width="60%") 说明
+            th(width="50") 可用
+            th.text-center 操作
+          tbody
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script.
+    $(document).ready(function () {
+
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/member/group/all',
+        data: {}, //要传递的数据
+        success: function (data) { //成功
+          $.each(data,function(i,e) {
+            $("#groupName").append("<option value='" + e._id + "'>" + e.name + "</option>");
+          });
+        }
+      });
+
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthMenu: -1,
+        lengthChange: false,
+        searching: false,
+        processing: false,
+        paging: false,
+        serverSide: true
+      };
+
+      var t = $('#paymentList').DataTable($.extend(opts, {
+        ajax: {url: '/system/payment/dataTable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: 0, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<a href='/system/payment/editPayment/" + row._id + "?type=view'>" + row.name + "</a>"
+            }
+          },
+          {
+            targets: -2, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              var enable = row.enable;
+              if (enable == "01") {
+                return "<a class='btn btn-default btn-sm enableOrDisable'><i class='fa fa-toggle-on'></i> 可用</a>"
+              } else {
+                return "<a class='btn btn-default btn-sm enableOrDisable'><i class='fa fa-toggle-off'></i> 不可用</a>"
+              }
+            }
+          },
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group' ><a class='btn btn-default btn-sm edit' href='/system/payment/editPayment/" + row._id + "'><i class='fa fa-edit'></i></a>"
+                      + " <button class='btn btn-default btn-sm del' type='button'><i class='fa fa-trash-o'></i></button></div>";
+            }
+          }
+        ],
+        columns: [
+          {data: "name", defaultContent: ''},
+          {data: "description", defaultContent: ''},
+          {
+            data: "enable", defaultContent: '', className: 'text-center',
+            render: function (data, type, full, meta) {
+              return data ? "<i class='fa fa-check-square'/>" : "";
+            }
+          },
+          {data: ""}
+        ]
+      })).on('draw.dt', function() {
+        $('#formWrapper').fadeIn();
+      });
+
+      $('#search').on("click", function (e) {
+        var name = $('#name').val();
+        var enable = $('#enable').val();
+        var TT = $('#paymentList').DataTable();
+        TT.ajax.url('/system/payment/dataTable?name=' + name + '&enable=' + enable).load();
+      });
+
+      $('#paymentList').on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#paymentDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#paymentDelForm").submit();
+            }
+          });
+        }
+      });
+
+      $("#paymentList").on('click', 'a.enableOrDisable', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#paymentDisableForm #ids").val(id);
+        if (id) {
+          $("#paymentDisableForm").submit();
+        }
+      });
+
+    });

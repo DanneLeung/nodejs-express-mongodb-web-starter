@@ -1,0 +1,134 @@
+//
+   Created by yu869 on 2016/3/31.
+
+extends layout
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+//应用的page title
+block pageTitle
+  h1 网点信息
+    small 维护线下网点信息，可以增加，编辑，删除网点，点击激活/禁用可以激活或禁用该网点.
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 网点列表
+      .pull-right.panel-tools
+        a.btn.btn-sm.btn-default(href="/bank/branch/add" title="添加网点")
+          i.fa.fa-plus
+    .panel-body
+      form#branchDelForm(method='post', style='display:none', action='/bank/branch/del')
+        input#ids(type='hidden',name='ids')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      #tableWrapper(style="display:none;")
+        table#branchList.table.table-hover.dataTable.no-footer
+          thead
+            th 编号
+            th 名称
+            th 详细地址
+            th 联系人
+            th 手机
+            th 地理坐标
+            th 激活
+            th 操作
+          tbody
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/locale/zh-cn.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: false,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#branchList').DataTable($.extend(opts, {
+        ajax: {url: '/bank/branch/datatable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group'><a class='btn btn-default btn-sm key' title='查看所属用户列表' href='/system/user/findByBrabchList/" + row._id + "'><i class='fa fa-user'></i></a>"
+                      + "<a class='btn btn-default btn-sm key' title='修改' href='/bank/branch/edit/" + row._id + "'><i class='fa fa-edit'></i></a>"
+                      + "<a class='btn btn-default btn-sm key del' title='删除' href='#'><i class='fa fa-trash-o'></i></a></div>";
+            }
+          }
+        ],
+        columns: [
+          //{data: ""},
+          {data: "no", defaultContent: '', 'class': 'text-center'},
+          {data: "name", defaultContent: ''},
+          {data: "address", defaultContent: ''},
+          {data: "contact", defaultContent: ''},
+          {data: "phone", defaultContent: ''},
+          {data: "coordinate", defaultContent: ''},
+          {
+            data: "enabled",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='/bank/branch/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='/bank/branch/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+          },
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      $('#branchList').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#branchDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#branchDelForm").submit();
+            }
+          });
+        }
+      });
+
+      $('#search').on("click", function (e) {
+        var type = $('#type').val();
+        var value = $('#value').val();
+        var price = $('#price').val();
+        var needScore = $('#needScore').val();
+        var TT = $('#branchList').DataTable();
+        TT.ajax.url('/bank/branch/datatable?type=' + type + '&value=' + value + '&price=' + price + '&needScore=' + needScore).load();
+      });
+
+      $('#branchList').on('click', 'a.create', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        var start = moment(t.row($(this).parents('tr')).data().publishBegin).startOf('day');
+        var end = moment(t.row($(this).parents('tr')).data().publishEnd).endOf('day');
+        var now = moment();
+        var enabled = t.row($(this).parents('tr')).data().enabled;
+
+        if (now.diff(start) < 0 || end.diff(now) < 0) {
+          bootbox.alert("发卡时间应在开始时间和结束时间之间!")
+          return;
+        }
+        if (enabled == false) {
+          bootbox.alert("未激活券类型不允许发券!")
+          return;
+        }
+      });
+    });

@@ -1,0 +1,247 @@
+//
+   Created by danne on 2015/10/29.
+extends ../../layouts/default
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet" href="//cdn.bootcss.com/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker3.min.css")
+  style.
+
+//应用的page title
+block pageTitle
+  if viewType == 'add'
+    h1 供应商新增
+      small 添加供应商信息
+  if viewType == 'edit'
+    h1 供应商编辑
+      small 编辑供应商信息
+  if viewType == 'view'
+    h1 供应商查看
+      small 查看供应商信息
+
+block main
+  .panel
+    .panel-heading.with-border
+      if viewType == 'add'
+        h3.panel-title 添加供应商信息
+      if viewType == 'edit'
+        h3.panel-title 编辑供应商信息
+      if viewType == 'view'
+        h3.panel-title 查看供应商信息
+
+      .panel-tools
+        a.btn.btn-sm.btn-default(href='/supplier/service' title="返回")
+          i.fa.fa-reply
+        | &nbsp;
+        if viewType == 'add' || viewType == 'edit'
+          button#save.btn.btn-sm.btn-default(title="保存")
+            i.fa.fa-save
+        | &nbsp;
+        if viewType == 'view' || viewType == 'edit'
+          button#del.btn.btn-sm.btn-default.del(title="删除")
+            i.fa.fa-trash
+      //&nbsp;
+      //button.btn.btn-box-tool(data-widget="collapse")
+      //  i.fa.fa-minus
+    .panel-body
+      div#roleEdit.row
+        .col-md-12
+          if viewType == 'edit'
+            form#typeDelForm(method='post', style='display:none', action='/supplier/service/del')
+              input#ids(type='hidden',name='ids',value="#{service._id}")
+              input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+          form#typeForm.form-horizontal(name='typeForm', action='/supplier/service/save', method='post')
+            if viewType == 'edit'
+              input#id(type='hidden', name='id', value="#{service._id}")
+
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-md-3.required 供应商名称：
+              .col-md-9
+                input#name.form-control.required(name='name', placeholder='请输入名称', value="#{service != null ? service.name : ''}")
+            .form-group
+              label.control-label.col-md-3.required 供应商类别：
+              .col-md-9
+                select#servicesTypeId.form-control.required(name='servicesTypeId')
+                  option(value="") 请选择供应商类别
+            .form-group
+              label.control-label.col-md-3.required 合作时间：
+              .col-md-4
+                div#datetimepicker1.date.input-group.input-group-sm
+                  input#serviceBegin.form-control(type="text" name="serviceBegin" readonly='true' value="#{service != null ? formatDate(service.serviceBegin) : ''}")
+                  span.input-group-btn
+                    button.btn
+                      i.fa.fa-calendar
+                  //| &nbsp;&nbsp;开始日期
+              .col-md-4
+                div#datetimepicker2.date.input-group.input-group-sm
+                  input#serviceEnd.form-control(type="text" name="serviceEnd" readonly='true' value="#{service != null ? formatDate(service.serviceEnd) : ''}")
+                  span.input-group-btn
+                    button.btn
+                      i.fa.fa-calendar
+                  //| &nbsp;&nbsp;结束日期
+                  span#errEnd(style="color:red")
+            .form-group
+              label.control-label.col-md-3.required 星级：
+              .col-md-9
+                select#level.form-control.required(name='level')
+                  option(value="") 请选择星级
+            .form-group
+              label.control-label.col-md-3 标签：
+                span.required
+              .col-md-9
+                div#tagInfolist
+            .form-group
+              label.control-label.col-md-3 添加标签：
+                span.required
+              .col-md-3
+                .input-group.input-group-sm
+                  input#tag.form-control(type="text",placeholder='请输入新标签名称', name="tag")
+                  span.input-group-btn
+                    a#addTag.btn
+                      i.fa.fa-plus-square
+              .col-md-3
+                p.help-block *注：点击+号添加标签或回车添加
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='/themes/default/plugins/datepicker/bootstrap-datepicker.js')
+  script.
+    $(document).ready(function () {
+      selectValue("#{service ? service.level : 0 }");
+      var tags="#{service ? service.tags : "" }";
+      if(tags != ""){
+        var arr=tags.split(",");
+        $.each(arr,function(i,e){
+          var tag=getImgInfo(e);
+          $('#tagInfolist').append(tag);
+        });
+      }
+      //点击回车时添加标签
+      $('#tag').bind('keypress',function(event){
+        if(event.keyCode == "13")
+        {
+          var tag = $("#tag").val();
+          if (tag != "" && tag != null) {
+            var tags = getImgInfo(tag);
+            $('#tagInfolist').append(tags);
+          }
+          $("#tag").val("");
+          return false;
+        }
+      });
+
+      //点击加号时添加标签
+      $("#addTag").on('click', function () {
+        var tag=$("#tag").val();
+        if(tag != "" && tag != null){
+          var tags=getImgInfo(tag);
+          $('#tagInfolist').append(tags);
+        }
+        $("#tag").val("");
+      });
+
+      $.ajax({
+        type:'get', //数据发送方式
+        url: '/supplier/servicesType/getServiceType',
+        data:{}, //要传递的数据
+        success: function(data) { //成功
+          var id="#{service ? service.servicesTypeId : 0 }";
+          $.each(data,function(i,e){
+            if(e._id === id){
+              $("#servicesTypeId").append("<option value='" + e._id + "' selected>" + e.name + "</option>");
+            }else{
+              $("#servicesTypeId").append("<option value='" + e._id + "' >" + e.name + "</option>");
+            }
+          });
+        }
+      });
+
+      var dates1 = $('#datetimepicker1').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      }).on('changeDate', function (ev) {
+        $('#serviceBegin').val(ev.date);
+      });
+
+      var dates2 = $('#datetimepicker2').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      }).on('changeDate', function (ev) {
+        $('#serviceEnd').val(ev.date);
+      });
+
+
+      var form = $('#typeForm');
+      $("#save").on('click', function () {
+        var start=$("#serviceBegin").val();
+        var end=$("#serviceEnd").val();
+        if(start >= end){
+            $("#errEnd").html("结束时间需要大于开始时间");
+          return false;
+        }else{
+          $("#errEnd").html("");
+          form.submit();
+        }
+      });
+      form.validate({
+        rules: {
+          name: {
+            required: true,
+            remote: '/supplier/service/checkname?oldName=#{service ? service.name : ''}'
+          },servicesTypeId: {
+            required: true
+          },serviceBegin: {
+            required: true
+          },serviceEnd: {
+            required: true
+          },level: {
+            required: true
+          }
+        },
+        messages: {
+          name: {
+            remote: '该角色已存在!'
+          }
+        }
+      });
+
+      $('#del').on('click', function () {
+        bootbox.confirm("确定要删除数据吗?", function (result) {
+          if (result) {
+            $("#typeDelForm").submit();
+          }
+        });
+      });
+
+    });
+    function selectValue(level){
+      var arr=[1,2,3,4,5];
+
+      $.each(arr,function(i,e){
+        if(e == level ){
+          $("#level").append("<option value='" + e + "' selected>" + e + "星级</option>");
+        }else{
+          $("#level").append("<option value='" + e + "'>" + e + "星级</option>");
+        }
+      })
+    }
+
+    //新增广告中的图片信息模型
+    function getImgInfo(tag) {
+      var html = "";
+      var listId = "imgInfo_" + Math.round(Math.random() * 100);
+      html += "<div class='alert col-sm-2' id='" + listId + "'>";
+      html += "<button type='button' class='close' data-dismiss='alert' aria-label='Close')><span aria-hidden='true'>&times;</span></button>";
+      html += "<input type='hidden' name='tags'  value='" + tag + "' />";
+      html += "<label class='badge bg-light-blue'>"+tag+"</label>";
+      html += "</div>";
+      return html;
+    }

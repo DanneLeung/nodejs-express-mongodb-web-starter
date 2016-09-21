@@ -1,0 +1,22 @@
+//
+   Created by pc on 2015/10/27.
+
+extends layout
+block main
+  if(site)
+    .panel
+      .panel-heading.with-border
+        h3.panel-title
+          | #{site.isNew ? '创建新站点' : '修改站点'}#{site.name}
+      .panel-body
+        form#siteForm.form-horizontal
+          .form-group
+            label.control-label.col-sm-3 名称
+            .col-sm-4
+              input#name.form-control(type="text",name="name",value="#{site.name}")
+          p.form-actions.text-center
+            button.btn.btn-primary(type="submit") 保存
+  else
+    h4.text-warning
+      i.fa.fa-arrow-left
+      | &nbsp;&nbsp;还没创建站点，点击左侧按钮，立刻创建

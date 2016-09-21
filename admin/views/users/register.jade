@@ -1,0 +1,371 @@
+extends ../layouts/h5/default
+block header
+  style.
+    .weui_cell_hd {
+      width: 30%;
+    }
+
+    .weui_cell_bd {
+      width: 70%
+    }
+block main
+  .container.js_container
+    .page.slideIn.cell
+      .bd
+        .weui_cells.weui_cells_form
+          form#registerForm(action='/user/h5/save', method='post')
+            input(type='hidden', name='_csrf', value=_csrf)
+            input#openid(type='hidden', name='openid')
+            .weui_cells_title
+              | 注册信息
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="fullname") 姓名:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                input#fullname.weui_input(type='text',name="fullname" placeholder='务必请输入您的真实姓名')
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="username") 用户名:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                input#username.weui_input(type='text',name="username" placeholder='请输入用户名')
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="numberID") 身份证:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                input#numberID.weui_input(type='tel',name="numberID" placeholder='务必请输入您的真实身份证')
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="mobile") 手机号码:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                input#mobile.weui_input(type='tel',name="mobile", placeholder='务必请输入您的真实手机号码')
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="mobile") 验证码:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                input#checkCode.weui_input(type='tel',name="checkCode", placeholder='请输入验证码')
+                input#retryBtn.weui_btn.weui_btn_mini.weui_btn_primary(type='button', value='获取验证码')
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="email") Email:
+              .weui_cell_bd.weui_cell_primary
+                input.weui_input(type='email',name="email", placeholder='Email')
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="password") 登录密码:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                input#password.weui_input(type='password',name="password", placeholder='请输入至少6位登录密码')
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="confirmPassword") 确认新密码:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                input#confirmPassword.weui_input(type='password',name="confirmPassword", placeholder='确认新密码')
+
+            // /.col
+            .weui_btn_area
+              a.register.weui_btn.weui_btn_primary 注册
+              // /.col
+          p.weui_cells_tips
+            i.fa.fa-info
+            a.text-center(href='/q/login') &nbsp; &nbsp;我已经注册过账户，直接登录
+            a#registerFind.text-center(href='#') &nbsp; &nbsp;查看审批进度
+    // /.form-box
+  // /.register-box
+block script
+  script.
+    $(function () {
+
+      function isCardNo(card) {
+        // 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
+        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if (reg.test(card) === false) {
+          return false;
+        }
+        return true;
+      }
+
+      function validate(){
+        var flag = true;
+        if($("#fullname").val() == ''){
+          $("#fullname").parent().addClass("weui_cell_warn");
+          $("#fullname").attr("title","fullname is not null")
+          flag = false;
+        }else{
+          $("#fullname").parent().removeClass("weui_cell_warn");
+          flag = true;
+        }
+        if($("#username").val() == ''){
+          $("#username").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else{
+          $("#username").parent().removeClass("weui_cell_warn");
+          flag = true;
+        }
+        if($("#numberID").val() == ''){
+          $("#numberID").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else if(!isCardNo($("#numberID").val())) {
+          $("#numberID").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else{
+          $("#numberID").parent().removeClass("weui_cell_warn");
+          flag = true;
+        }
+        if($("#mobile").val() == ''){
+          $("#mobile").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else if(/^1\d{10}$/.test($("#mobile").val()) == false){
+          $("#mobile").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else{
+          $("#mobile").parent().removeClass("weui_cell_warn");
+          flag = true;
+        }
+        if($("#checkCode").val() == ''){
+          $("#checkCode").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else{
+          $("#checkCode").parent().removeClass("weui_cell_warn");
+          flag = true;
+        }
+        if($("#password").val() == ''){
+          $("#password").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else{
+          $("#password").parent().removeClass("weui_cell_warn");
+          flag = true;
+        }
+        if($("#confirmPassword").val() == ''){
+          $("#confirmPassword").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else{
+          $("#confirmPassword").parent().removeClass("weui_cell_warn");
+          flag = true;
+        }
+
+        if($("#password").val() != $("#confirmPassword").val()){
+          $("#password").parent().addClass("weui_cell_warn");
+          $("#confirmPassword").parent().addClass("weui_cell_warn");
+          flag = false;
+        }else{
+          $("#password").parent().removeClass("weui_cell_warn");
+          $("#confirmPassword").parent().removeClass("weui_cell_warn");
+          flag = true;
+        }
+        return flag;
+      }
+
+      $("#registerFind").on("click", function(){
+        window.location = '/q/user/h5/registerViewFind?openid='+localStorage.getItem("user.openid");
+      });
+
+      var prefix = "";
+      //微信认证
+      function is_weixn() {
+        var ua = navigator.userAgent.toLowerCase();
+        //S.alert(ua);
+        if (ua.match(/micromessenger/i) == "micromessenger") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = decodeURI(window.location.search).substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+      }
+
+      function oauthUserBase(redirectUri) {
+        oauth('snsapi_base', redirectUri, 'base');
+      }
+
+      function oauth(scope, redirectUri, state) {
+        var redirectURL = encodeURIComponent(redirectUri);
+        $.ajax({
+          type: 'post', //数据发送方式
+          url: prefix + '/user/h5/getAppid',
+          success: function (data) { //成功
+            if(!data.error){
+              var appid = data.appid;
+              var oauthURL = "https://open.weixin.qq.com/connect/oauth2/authorize";
+              oauthURL += "?appid=" + appid;
+              oauthURL += "&redirect_uri=" + redirectURL;
+              oauthURL += "&response_type=code";
+              oauthURL += "&scope=" + scope;
+              oauthURL += "&state=" + state;
+              oauthURL += "#wechat_redirect";
+              console.log(oauthURL);
+              window.location.href = oauthURL;
+            }
+          }
+        });
+      }
+
+      function oauthUser(){
+        var redirectUri = location.href.split('#')[0];
+        var openid = localStorage.getItem("user.openid");
+        var state = getQueryString('state');
+        var code = getQueryString("code");
+        if (!openid) {
+          if (!code) {
+            oauthUserBase(redirectUri);
+          }
+        }
+
+        if (code && state === 'base') {
+          $.ajax({
+            type: 'post', //数据发送方式
+            url: prefix + '/user/h5/getOpenid',
+            data: {"code": code}, //要传递的数据
+            success: function (data) { //成功
+              if(!data.error){
+                var openid = data.openid;
+                localStorage.setItem("user.openid", openid);
+                $("#openid").val(openid);
+              }
+            }
+          });
+        }
+      }
+
+      if(is_weixn()){
+        prefix = "/q";
+        oauthUser();
+      }
+
+      /**
+      $("#registerForm").validate({
+        rules: {
+          fullname: {
+            required: true
+          },
+          username: {
+            required: true,
+            minlength: 6,
+            username: true,
+            remote: '/user/checkUsername'
+          },
+          password: {
+            required: true,
+            minlength: 6
+          },
+          confirmPassword: {required: true, equalTo: "#password"},
+          email: {
+            emailCN: true
+          }
+        },
+        messages: {
+          username: {remote: "用户名已经被注册"},
+          confirmPassword: {
+            equalTo: "请输入与登录密码相同的值"
+          }
+        }
+      });
+
+      $("#validForm").validate({
+        rules: {
+          validCode: {
+            required: true,
+            maxlength: 6
+          }
+        },
+        messages: {
+          validCode: {
+            required: "验证码必填"
+          }
+        }
+      });*/
+
+      $(".register").on('click', function () {
+        if(!localStorage.getItem("user.openid")){
+          alert("非微信端或微信未认证!");
+          return;
+        }
+        $.ajax({
+          type: 'post', //数据发送方式
+          url: prefix+'/user/h5/unionCheck',
+          data: {"username": $("#username").val(), "openid": localStorage.getItem("user.openid"), "mobile":$("#mobile").val(),"numberID":$("#numberID").val()},
+          success: function (data) { //成功
+            if (data.success == '1') {
+              var mobile = $("#mobile").val();
+              if (mobile) {
+                var checkCode = $("#checkCode").val();
+                if(!checkCode || checkCode == ""){
+                  alert("请输入验证码!");
+                  return;
+                }
+                $.ajax({
+                  type: 'post', //数据发送方式
+                  url: prefix+'/user/h5/sentValid',
+                  data: {"mobile": mobile, "checkCode": checkCode}, //要传递的数据
+                  success: function (data) { //成功
+                    if (data.success == '1') {
+                      $("#openid").val(localStorage.getItem("user.openid"));
+                      $("#registerForm").attr("action", prefix + $("#registerForm").attr("action"));
+                      $("#registerForm").submit();
+                    } else {
+                      alert(data.msg);
+                    }
+                  }
+                });
+              }else{
+                alert("请输入手机号码");
+              }
+            } else {
+              alert(data.msg);
+            }
+          }
+        });
+      });
+
+      $("#retryBtn").on('click', function () {
+        if (!$(this).attr("disabled")) {
+          var mobile = $("#mobile").val();
+          if(mobile == null || mobile == ''){
+            alert("手机号不能为空");
+            return;
+          }
+
+          var time = 60;
+          var timer = null;
+          var t = function(){
+            $("#retryBtn").val("重新发送("+time+")");
+            time--;
+            if(time == 0){
+              $("#retryBtn").removeAttr("disabled");
+              $("#retryBtn").addClass("weui_btn_primary");
+              $("#retryBtn").removeClass("background-color");
+              $("#retryBtn").val("获取验证码");
+              clearInterval(timer);
+            }
+          }
+
+          $.ajax({
+            type: 'post', //数据发送方式
+            url: prefix+ '/user/h5/sendCheckCode',
+            data: {"mobile": mobile}, //要传递的数据
+            success: function (data) { //成功
+              if (data.success == '1') {
+                $("#retryBtn").attr("disabled","true");
+                $("#retryBtn").removeClass("weui_btn_primary");
+                $("#retryBtn").addClass("background-color", "#DBDBDB");
+
+                timer = setInterval(t, 1000);
+              } else {
+                alert(data.msg);
+              }
+            }
+          });
+
+        }
+      });
+    });

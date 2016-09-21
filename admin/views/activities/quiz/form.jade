@@ -1,0 +1,138 @@
+//
+   Created by pc on 2015/10/27.
+
+extends ../layout
+
+block main
+  .panel
+    .panel-heading
+      h3.panel-title
+        | #{quiz.isNew ? '添加题目' : '修改题目'}
+        span.text-info #{quiz.name}
+        .panel-tools.pull-right
+          a#save.btn.btn-default.btn-sm(title='保存')
+            i.fa.fa-save
+          a.btn.btn-default.btn-sm(href='/activities/quiz/list/#{poolId}')
+            i.fa.fa-reply
+    .panel-body
+      form#quizForm.form-horizontal(method="post",action="/activities/quiz/save")
+        if(!quiz.isNew)
+          input#id(type='hidden', name='id', value="#{quiz._id}")
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        input#quizPool(type='hidden', name='quizPool', value="#{poolId}")
+        .form-group
+          label.control-label.col-sm-3.required 标题：
+          .col-sm-8
+            input#title.form-control(type="text",name="title",value="#{quiz.title}")
+        .form-group
+          label.control-label.col-sm-3 多选：
+          .controls.col-md-8
+            if (quiz && quiz.multi)
+              input#multi(type='checkbox' name='multi' checked="checked")
+            else
+              input#multi(type='checkbox' name='multi')
+        .form-group
+          label.control-label.col-sm-3 难度：
+          .col-sm-8
+            input#level.form-control(type="text",name="level",value="#{quiz.level}")
+            //p.help-block 当使用该题目时提供多少道题，不填写默认 10 道题
+        .form-group
+          label.control-label.col-sm-3 分数：
+          .col-sm-8
+            input#score.form-control(type="text",name="score",value="#{quiz.score}")
+            //p.help-block 当使用该题目时提供多少道题，不填写默认 10 道题
+        .form-group
+          label.control-label.col-sm-3 描述：
+          .col-sm-8
+            textarea#description.form-control(name="description", rows="5")
+              | #{quiz.description}
+        .form-group
+          label.control-label.col-sm-3 选项A：
+          .col-sm-5
+            input.form-control(name="titles", value="#{quiz.options.length >= 1 ? quiz.options[0].title:''}")
+          label.control-label.col-sm-2 是否正确：
+          .col-sm-1
+            if (quiz.options.length >= 1 && quiz.options[0].answer)
+              input#answer(type='checkbox' name='answer' value='0' checked="checked")
+            else
+              input#answer(type='checkbox' name='answer' value='0')
+        .form-group
+          label.control-label.col-sm-3 选项B：
+          .col-sm-5
+            input.form-control(name="titles", value="#{quiz.options.length >= 2 ? quiz.options[1].title:''}")
+          label.control-label.col-sm-2 是否正确：
+          .col-sm-1
+            if (quiz.options.length >= 2 && quiz.options[1].answer)
+              input#answer(type='checkbox' name='answer' value='1' checked="checked")
+            else
+              input#answer(type='checkbox' name='answer' value='1' )
+        .form-group
+          label.control-label.col-sm-3 选项C：
+          .col-sm-5
+            input.form-control(name="titles", value="#{quiz.options.length >= 3 ? quiz.options[2].title:''}")
+          label.control-label.col-sm-2 是否正确：
+          .col-sm-1
+            if (quiz.options.length >= 3 && quiz.options[2].answer)
+              input#answer(type='checkbox' name='answer' value='2' checked="checked")
+            else
+              input#answer(type='checkbox' name='answer' value='2')
+        .form-group
+          label.control-label.col-sm-3 选项D：
+          .col-sm-5
+            input.form-control(name="titles", value="#{quiz.options.length >= 4 ? quiz.options[3].title:''}")
+          label.control-label.col-sm-2 是否正确：
+          .col-sm-1
+            if (quiz.options.length >= 4 && quiz.options[3].answer)
+              input#answer(type='checkbox' name='answer' value='3' checked="checked")
+            else
+              input#answer(type='checkbox' name='answer' value='3')
+        .form-group
+          label.control-label.col-sm-3 选项E：
+          .col-sm-5
+            input.form-control(name="titles", value="#{quiz.options.length >= 5 ? quiz.options[4].title:''}")
+          label.control-label.col-sm-2 是否正确：
+          .col-sm-1
+            if (quiz.options.length >= 5 && quiz.options[4].answer)
+              input#answer(type='checkbox' name='answer' value='4' checked="checked")
+            else
+              input#answer(type='checkbox' name='answer' value='4')
+        .form-group
+          label.control-label.col-sm-3 &nbsp;
+          .col-sm-8
+            p.help-block 如果不够5项，请填写前几项
+
+block scripts
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    $(document).ready(function () {
+
+      $(".form-group").find(':file').filestyle({buttonText: '上传文件'});
+      //下拉框的填充
+
+      var form = $('#quizForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          title: {
+            required: true,
+            remote: '/activities/quiz/checkName?oldName=#{quiz ? quiz.title : ''}&poolId=#{poolId}'
+          },level: {
+            digits: true
+          },score: {
+            digits: true
+          }
+        },
+        messages: {
+          name: {
+            remote: '标题保持唯一'
+          }, level: {
+            numbers: '请输入正整数'
+          }, score: {
+            numbers: '请输入正整数'
+          }
+        }
+      });
+
+    });

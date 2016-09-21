@@ -1,0 +1,209 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ./layout
+block header
+  link( rel="stylesheet",href="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.css")
+  link(href="/themes/default/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+  style.
+    .anli{position: fixed;width:100%; height:50%;background:rgba(0,0,0,0.7);top:0;left:0;z-index:9998;display:none;}
+    .anli_list{overflow: hidden;padding:10px 0;border-bottom:1px solid #ccc;}
+    .anli .title{text-align: center;}
+    .anli_wrap{width: 80%;margin:20px auto;background: #fff;padding:20px 5%;border-radius: 5px;height:90%;overflow: auto;}
+    .anli .code{height:130px;width:100%;}
+    .anli .anli_close{position: absolute;width: 30px;height:30px;text-align: center;line-height: 30px;background: red;color:#fff;border-radius: 50%;z-index: 9999;font-size:20px;top:10px;right:9%;}
+block main
+  .panel(style="position:relative;")
+    .panel-heading
+      h3.panel-title
+        span.text-info #{loan.isNew ? '创建贷款产品' : '贷款产品'}
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href='/bank/loan/list')
+            i.fa.fa-reply
+          button#save.btn.btn-sm.btn-default(title="保存")
+            i.fa.fa-save
+    .panel-body
+      form#loanForm.form-horizontal(method="post",action="/bank/loan/save",enctype='multipart/form-data')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        if(!loan.isNew)
+          input#id(type='hidden', name='id', value="#{loan._id}")
+        .form-group
+          label.control-label.col-sm-2.required 名称：
+          .col-sm-10
+            input#name.form-control.required(type="text",name="name",value="#{loan.name}")
+        .form-group
+          label.control-label.col-sm-2.required 编号：
+          .col-sm-10
+            - var nos = ['A','B','C','D','E', 'F', 'G']
+            select#no.form-control.required(name="no")
+              each no in nos
+                if no == loan.no
+                  option(value="#{no}",selected) #{no}
+                else
+                  option(value="#{no}") #{no}
+        .form-group
+          label.control-label.col-sm-2.required 所属类型：
+          .col-sm-10
+            select#type.form-control.required(name="type")
+        .form-group
+          label.control-label.col-sm-2 图标：
+          .col-sm-10
+            input#logo.form-control(type="file",name='logo')
+            p.help-block 显示在列表的图标
+            if(loan.logo)
+              .col-sm-10.col-xs-12.col-sm-offset-2
+                img.img-responsive.img-thumbnail(src='#{loan.logo ? loan.logo : ""}', width='200')
+        .form-group
+          label.control-label.col-sm-2 简要描述：
+          .col-sm-10
+            textarea#description.form-control(name='description' ,rows="3")
+              | #{loan.description ? loan.description : ''}
+        .form-group
+          label.control-label.col-sm-2 图文详情：
+          .col-sm-10
+            div(style="width:150px;margin-bottom:20px;")
+              a#anli.btn.btn-primary.btn-block(href="javascript:void(0);") 查看案例
+            textarea#text.form-control(name='text' ,rows="3")
+              | #{loan.text ? loan.text : ''}
+
+        .form-group
+          label.control-label.col-sm-2 激活：
+          .col-sm-10
+            label.checkbox
+              if (loan && loan.enabled)
+                input#enabled(type='checkbox' name='enabled' checked="checked")
+              else
+                input#enabled(type='checkbox' name='enabled')
+  .anli
+    .anli_close
+      i.fa.fa-close
+    .anli_wrap
+      h3.title 点击编辑器“html”，复制想要的样式代码
+      .anli_code
+        .anli_list
+          .pull-left(style="width:400px;")
+            style.
+              .content_hide{ max-height: 3.9rem;  display: -webkit-box !important; -webkit-line-clamp: 3;-webkit-box-orient: vertical;}
+            div.op_c_p(style="position: relative;display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-align: flex-start;-webkit-align-items: flex-start;align-items: flex-start;padding: 10px 15px;border-top:10px solid #f0f0f0;background:#fff;")
+              div(style="width: 30px;height: 2rem;overflow: hidden; line-height: 2rem;")
+                img(src="http://xcesys.com/upload/ccb/loan/20160907/icon_8ae963b9e783cc5e7186636902a3e711_70_70.jpg",height="16px")
+              div(style="-webkit-box-flex: 1;-webkit-flex: 1;flex: 1;")
+                div(style="line-height: 2rem;color:#595757;font-size:18px;") 标题
+                div.content_hide.op_close(style="line-height: 1.3rem;color: #898989;overflow: hidden;")  内容内容内容内容内容内容内容内容内容内容内容内内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内内容内容内容内容内容内容内容内容内容
+              div(onclick="op_close(this)",style="width:16px;",class="op_c_icon")
+                img(src="#{theme}/dist/img/right.png",style="width:100%;")
+
+              script.
+                function op_close(obj) {
+                  var $class = $(obj).closest('.op_c_p').find('.op_close').attr('class');
+                  if($class.indexOf('content_hide') >= 0) {
+                    $(obj).closest('.op_c_p').find('.op_close').removeClass('content_hide');
+                    $(obj).find('img').attr('src','#{theme}/dist/img/down.png')
+                  } else {
+                    $(obj).closest('.op_c_p').find('.op_close').addClass('content_hide');
+                    $(obj).find('img').attr('src','#{theme}/dist/img/right.png')
+                  }
+                }
+
+          .pull-right(style="width:48%;")
+            textarea.code <div style="position: relative;display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-align: flex-start;-webkit-align-items: flex-start;align-items: flex-start;padding: 10px 15px;border-top:10px solid #f0f0f0;background:#fff;" class="op_c_p"><div style="width: 24px;height: 2rem;overflow: hidden; line-height: 2rem;margin-right:10px;"><img src="http://xcesys.com/upload/ccb/loan/20160907/icon_8ae963b9e783cc5e7186636902a3e711_70_70.jpg" height="16px"></div><div style="-webkit-box-flex: 1;-webkit-flex: 1;flex: 1;"><div style="line-height: 2rem;color:#595757;font-size:18px;">标题</div><div style="line-height: 1.3rem;color: #898989;overflow: hidden;" class="content_hide op_close"> 内容内容内容内容内容内容内容内容内容内容内容内内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内内容内容内容内容内容内容内容内容内容</div></div><div onclick="op_close(this)" style="width:16px;" class="op_c_icon"><img src="/themes/default/dist/img/right.png" width="100%"></div></div>
+
+          .clearfix
+        .anli_list
+          h4 顶端细线
+          .pull-left(style="width:400px;")
+            div(style="position: relative;display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-align: flex-start;-webkit-align-items: flex-start;align-items: flex-start;padding: 10px 15px;border-top:1px solid #f0f0f0;background:#fff;")
+              div(style="width: 30px;height: 2rem;overflow: hidden; line-height: 2rem;")
+                img(src="http://xcesys.com/upload/ccb/loan/20160907/icon_8ae963b9e783cc5e7186636902a3e711_70_70.jpg",height="16px",style="vertical-align: top;")
+              div(style="-webkit-box-flex: 1;-webkit-flex: 1;flex: 1;")
+                div(style="line-height: 2rem;color:#595757;") 标题
+                div(style="font-size: .8rem;color: #898989;")  内容内容内容内容内容内容内容内容内容内容内容内
+          .pull-right(style="width:48%;")
+            textarea.code <div style="position: relative;display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-align: flex-start;-webkit-align-items: flex-start;align-items: flex-start;padding: 10px 15px;border-top:1px solid #f0f0f0;background: #fff;"><div style="width:30px;height: 2rem;overflow: hidden;line-height: 2rem;"><img src="http://xcesys.com/upload/ccb/loan/20160907/icon_8ae963b9e783cc5e7186636902a3e711_70_70.jpg" height="16px"></div><div style="-webkit-box-flex: 1;-webkit-flex: 1;flex: 1;"><div style="line-height: 2rem;">标题</div><div style="font-size: .8rem;color: #9c9c9c;">内容内容内容内容内容内容内容内容内容内容内容内</div></div></div>
+          .clearfix
+        .anli_list
+          h4 大图、顶端细线
+          .pull-left(style="width:400px;")
+            div(style="position: relative;display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-align: flex-start;-webkit-align-items: flex-start;align-items: flex-start;padding: 10px 15px;border-top:1px solid #f0f0f0;background:#fff;")
+              div(style="width: 20%;margin-right:8px;")
+                img(src="http://xcesys.com/upload/ccb/loan/20160907/icon_8ae963b9e783cc5e7186636902a3e711_70_70.jpg",width="100%",style="vertical-align: top;")
+              div(style="-webkit-box-flex: 1;-webkit-flex: 1;flex: 1;")
+                div(style="line-height: 2rem;color:#595757;") 标题
+                div(style="font-size: .8rem;color: #898989;")  内容内容内容内容内容内容内容内容内容内容内容内
+          .pull-right(style="width:48%;")
+            textarea.code <div style="position: relative;display: -webkit-box;display: -webkit-flex;display: flex;-webkit-box-align: flex-start;-webkit-align-items: flex-start;align-items: flex-start;padding: 10px 15px;border-top:1px solid #f0f0f0;background: #fff;"><div style="width: 20%;margin-right:8px;"><img src="http://xcesys.com/upload/ccb/loan/20160907/icon_8ae963b9e783cc5e7186636902a3e711_70_70.jpg" width="100%" style=" height: 1rem;"></div><div style="-webkit-box-flex: 1;-webkit-flex: 1;flex: 1;"><div style="line-height: 2rem;">标题</div><div style="font-size: .8rem;color: #9c9c9c;">内容内容内容内容内容内容内容内容内容内容内容内</div></div></div>
+          .clearfix
+
+
+block scripts
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script(src="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.js")
+  script(src="/themes/default/plugins/uploadify/jquery.uploadify.min.js")
+  script(src="/themes/default/plugins/uploadify/dora.public.js")
+  script(src="/themes/default/plugins/ueditor/ueditor.config.js")
+  script(src="/themes/default/plugins/ueditor/ueditor.all.js")
+  script(src="/themes/default/plugins/ueditor/lang/zh-cn/zh-cn.js")
+  //script(src="//cdn.ckeditor.com/4.4.3/full/ckeditor.js")
+
+  script.
+    $(document).ready(function () {
+      //CKEDITOR.replace('text');
+      var ueOpts = {
+        initialFrameHeight: 500,
+        serverUrl: contextRoot + 'api/ueditor',
+        autoHeightEnabled: true,
+        autoFloatEnabled: true,
+        allowDivTransToP: false
+      };
+      var ue = UE.getEditor('text', ueOpts);
+      //填充类型
+      $.post('/bank/loan/gettype', function (data, status) {
+        if (status == 'success' && data.success) {
+          var str = '<option value="">-请选择-</option>';
+          data.types.forEach(function (t) {
+            var typeId = '#{!loan.isNew ? loan.type : ""}';
+            if (typeId == t.id) {
+              str += '<option value="' + t.id + '" selected>' + t.name + '</option>';
+            }
+            else {
+              str += '<option value="' + t.id + '">' + t.name + '</option>';
+            }
+          });
+
+          $('#type').append(str);
+        }
+      });
+
+      //图片上传
+      $(".form-group").find(':file').filestyle({buttonText: '上传图片'});
+
+      //表单验证
+      $('#loanForm').validate({
+        rules: {
+          name: {
+            required: true,
+            remote: '/bank/loan/checkName?oldName=#{loan ? loan.name : ""}'
+          }
+        },
+        messages: {
+          name: {
+            remote: '该名称已存在'
+          }
+        }
+      });
+      //表单提交
+      $('#save').click(function() {
+
+        $('#loanForm').submit();
+      });
+
+      $('#anli').click(function() {
+        $('.anli').fadeIn(400);
+      })
+      //close
+      $('.anli_close').click(function() {
+        $('.anli').fadeOut(400);
+      });
+
+    });
+

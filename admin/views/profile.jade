@@ -1,0 +1,160 @@
+extends layouts/default
+block pageTitle
+  h1 个人资料
+block main
+  .row
+    .col-md-3
+      // Profile Image
+      .panel
+        .panel-body.panel-profile
+          img.profile-user-img.img-responsive.img-circle(src='#{user.photo_profile ? user.photo_profile : "/themes/default/dist/img/avatar.png"}', alt='头像')
+          h3.profile-username.text-center #{user.username}
+          //p.text-muted.text-center Software Engineer
+          //ul.list-group
+            //li.list-group-item
+            //  a(href="#") 编辑资料
+            li.list-group-item(data-toggle='modal' data-target='#editPassword' aria-label='Left Align')
+          button.btn.btn-block.btn-success(data-toggle='modal' data-target='#editPassword' aria-label='Left Align') 修改密码
+            //span.pull-right.fa.fa-angle-right
+          //li.list-group-item
+          //  a(href="#") 系统消息
+          //    span.pull-right.fa.fa-angle-right
+    .col-md-9
+      .nav-tabs-custom
+        ul.nav.nav-tabs
+          li.active
+            a(href='#settings', data-toggle='tab') 编辑资料
+          //li.active
+            a(href='#activity', data-toggle='tab') Activity
+          //li
+            a(href='#timeline', data-toggle='tab') Timeline
+        .tab-content
+          // /.tab-pane
+          #settings.tab-pane.active
+            form#profileForm.form-horizontal(method="post",action="/vendor/#{user.username}/update")
+              input#userId(type="hidden",name="id",value="#{user._id}")
+              input(type='hidden', name='_csrf', value=_csrf)
+              .form-group
+                label.col-sm-2.control-label(for='email') 电子邮件：
+                .col-sm-10
+                  input#email.form-control(type='email', placeholder='电子邮件',disabled="disabled" ,name="email",value="#{user.email}")
+              .form-group
+                label.col-sm-2.control-label(for='username') 登录手机号：
+                .col-sm-10
+                  input#mobile.form-control(type='text', placeholder='登录手机号',name="mobile" value="#{user.mobile}")
+              .form-group
+                label.col-sm-2.control-label(for='fullname') 姓名：
+                .col-sm-10
+                  input#fullname.form-control(type='text', placeholder='真实姓名',name="fullname",value="#{user.fullname}")
+              .form-group
+                label.col-sm-2.control-label(for='photo_profile') 头像URL：
+                .col-sm-10
+                  input#photo_profile.form-control(type='text', placeholder='头像URL',disabled="disabled" ,name="photo_profile",value="#{user.photo_profile}")
+              .form-group
+                .col-sm-offset-2.col-sm-10
+                  button.btn.btn-block.btn-primary(type='submit') 保  存
+
+      #editPassword.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+        .modal-dialog
+          .modal-content
+            .container
+              .modal-body
+                .row.clearfix
+                  .col-md-6.column
+                    h3 修改密码
+                    form#editPasswordForm.form-horizontal(action='/vendor/editPassword',method='post')
+                      input#_csrf(type='hidden', name='_csrf', value=_csrf)
+                      input#userId(type='hidden',name='userId',value='#{user._id}')
+                      .form-group
+                        label.col-sm-2.control-label(for='oldPwd') 原密码：
+                        .col-sm-10
+                          input#oldPasswrord.form-control(type='password',name='oldPwd', placeholder='原密码',value="")
+                      .form-group
+                        label.col-sm-2.control-label(for='newPwd') 新密码：
+                        .col-sm-10
+                          input#newPassword.form-control(type='password',name='newPwd', placeholder='新密码',value="")
+                      .form-group
+                        label.col-sm-2.control-label(for='affirmPwd') 确认密码：
+                        .col-sm-10
+                          input#affirmPassword.form-control(type='password', placeholder='请与新密码一致',name="affirmPwd",value="")
+                      br
+                      .center-block.pull-right
+                        | &nbsp;&nbsp;&nbsp;
+                        button.btn.btn-primary(type='button', data-dismiss='modal', aria-hidden='false') 取消
+                        | &nbsp;&nbsp;&nbsp;
+                        button.btn.btn-success(type='submit') 确定
+block scripts
+  script(src='//cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js')
+  script(src='//cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min.js')
+  script(src='/themes/default/plugins/jquery-validation/dist/jquery.validate.messages_zh.js')
+  script(src='/themes/default/plugins/setup_validation.js')
+  // AdminLTE for demo purposes
+  script.
+    $(document).ready(function () {
+
+      var form = $("#profileForm");
+
+      form.validate({
+        rules: {
+          mobile: {
+            required: true,
+            mobileCN: true
+          },
+          fullname: {
+            required: true
+          },
+          email: {
+            emailCN: true
+          }
+        },
+        messages: {
+          mobile: {required: "请输入手机号"},
+          fullname: {required: "请输入姓名"}
+        }
+      });
+
+
+      form.on("submit", function (e) {
+        if (form.valid()) {
+          var _this = this;
+          e.preventDefault();
+          $.ajax({
+            url: $(_this).attr("action"),
+            method: "POST",
+            data: $(_this).serialize(),
+            dataType: "json",
+            success: function (data) {
+              if (data.success) {
+                bootbox.alert(data.msg + ", 下次登录请用新手机号" + $("#mobile").val() + "登录系统!");
+                $(document).find('.user-image, .profile-user-img, .img-circle').attr('src', $("#photo_profile").val());
+              }
+            },
+            error: function (err) {
+              bootbox.alert(err);
+            }
+          });
+        }
+      });
+
+      $("#editPasswordForm").validate({
+        rules: {
+          oldPwd: {
+            required: true,
+            minlength: 6,
+            remote: "/vendor/virtualPwd"
+          }, newPwd: {
+            required: true,
+            minlength: 6
+          }, affirmPwd: {
+            required: true,
+            minlength: 6,
+            equalTo: "#newPassword"
+          }
+        },
+        messages: {
+          oldPwd: {required: "请输入原密码", remote: "密码错误"},
+          newPwd: {required: "请输入新密码"},
+          affirmPwd: {required: "请输入确认密码", equalTo: "请确保确认密码和新密码一致"}
+        }
+      });
+    });

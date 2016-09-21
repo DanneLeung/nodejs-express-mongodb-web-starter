@@ -1,0 +1,219 @@
+extends ../layouts/h5/default
+block header
+  style.
+    .weui_cell_hd {
+      width: 30%;
+    }
+
+    .weui_cell_bd {
+      width: 70%
+    }
+block main
+  .container.js_container
+    .page.slideIn.cell
+      .bd
+        .weui_cells.weui_cells_form
+            input#id(type='hidden', value="#{_id}")
+            .weui_cells_title
+              | 注册信息预览
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="fullname") 姓名:
+              .weui_cell_bd.weui_cell_primary
+                if approvedStatus == '00' || approvedStatus == '03'
+                    input#fullname.weui_input(type='text',name="fullname" value="#{fullname}" placeholder='务必请输入您的真实姓名')
+                else
+                  label
+                    | #{fullname}
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="username") 用户名:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                label#username
+                  |#{username}
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="numberID") 身份证:
+              .weui_cell_bd.weui_cell_primary
+                label#numberID
+                  |#{numberID}
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="mobile") 手机号码:
+                  span.required *
+              .weui_cell_bd.weui_cell_primary
+                label#mobile
+                  |#{mobile}
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="email") Email:
+              .weui_cell_bd.weui_cell_primary
+                if approvedStatus == '00' || approvedStatus == '03'
+                  input#email.weui_input(type='text',name="email" value="#{email}" placeholder='Email')
+                else
+                  label
+                    | #{email}
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="email") 状态:
+              .weui_cell_bd.weui_cell_primary
+                label
+                  if approvedStatus == '00'
+                    strong(style="color:red") 待提交
+                  else if approvedStatus == '01'
+                    strong(style="color:red") 审核中
+                  else if approvedStatus == '02'
+                    strong(style="color:red") 通过
+                  else if approvedStatus == '03'
+                    strong(style="color:red") 不通过
+            .weui_cell
+              .weui_cell_hd
+                label.weui-label(for="email") 证件照:
+              .weui_cell_bd.weui_cell_primary
+                img#headImgs(src="http://xcesys.com:5001/#{headImgs}" width="100%" height="50%")
+                if approvedStatus == '00' || approvedStatus == '03'
+                  input#chooseImgBtn.weui_btn.weui_btn_mini.weui_btn_primary(type='button', value='上传证件照')
+            // /.col
+            .weui_btn_area
+              if approvedStatus == '00' || approvedStatus == '03'
+                a.register.weui_btn.weui_btn_primary 提交审批
+              // /.col
+    // /.form-box
+  // /.register-box
+block script
+  script.
+    $(function () {
+      $(".register").on('click', function () {
+        var approvedStatus = "#{approvedStatus}";
+        $.ajax({
+          type: 'post', //数据发送方式
+          url: '/q/user/h5/submitReApply',
+          data: {"id": $("#id").val(),"fullname":$("#fullname").val(),"email":$("#email").val()},
+          success: function (data) { //成功
+            if(data && data.success && data.success == '1'){
+              alert("提交审批成功");
+              window.location = '/q/user/h5/registerViewFind?openid='+localStorage.getItem("user.openid");
+            }else{
+              alert(data.msg);
+            }
+          }
+        });
+      });
+
+      function config() {
+        $.ajax({
+          url: prefix + "/user/h5/jsConfig",
+          type: 'POST',
+          data: {url: location.href.split('#')[0]},
+          success: function(data){
+            if(data && data.error){
+              alert(data.msg);
+              return;
+            }
+            var appId = data.appId;
+            var timestamp = data.timestamp;
+            var nonceStr = data.nonceStr;
+            var signature = data.signature;
+            wx.config({
+              debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+              appId: appId, // 必填，公众号的唯一标识
+              timestamp: timestamp, // 必填，生成签名的时间戳
+              nonceStr: nonceStr, // 必填，生成签名的随机串
+              signature: signature,// 必填，签名，见附录1
+              jsApiList: [
+                'onMenuShareTimeline'
+                ,'onMenuShareAppMessage'
+                ,'onMenuShareQQ'
+                ,'onMenuShareWeibo'
+                ,'startRecord'
+                ,'stopRecord'
+                ,'onVoiceRecordEnd'
+                ,'playVoice'
+                ,'pauseVoice'
+                ,'stopVoice'
+                ,'onVoicePlayEnd'
+                ,'uploadVoice'
+                ,'downloadVoice'
+                ,'chooseImage'
+                ,'previewImage'
+                ,'uploadImage'
+                ,'downloadImage'
+                ,'translateVoice'
+                ,'getNetworkType'
+                ,'openLocation'
+                ,'getLocation'
+                ,'hideOptionMenu'
+                ,'showOptionMenu'
+                ,'hideMenuItems'
+                ,'showMenuItems'
+                ,'hideAllNonBaseMenuItem'
+                ,'showAllNonBaseMenuItem'
+                ,'closeWindow'
+                ,'scanQRCode'
+                ,'chooseWXPay'
+                ,'openProductSpecificView'
+                ,'addCard'
+                ,'chooseCard'
+                ,'openCard'
+              ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+            });
+          },
+          error: function(err){
+            alert(err);
+          }
+        });
+      }
+
+      function is_weixn() {
+        var ua = navigator.userAgent.toLowerCase();
+        //S.alert(ua);
+        if (ua.match(/micromessenger/i) == "micromessenger") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      var prefix = "";
+      if(is_weixn()){
+        prefix = "/q";
+        config();
+      }
+
+      $("#chooseImgBtn").on("click", function(){
+        wx.ready(function () {
+          wx.chooseImage({
+            count: 1, // 默认9
+            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+            sourceType: ['camera'], // 可以指定来源是相册还是相机，默认二者都有 album:相册
+            success: function (res) {
+              var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+              if(localIds && localIds.length > 0){
+                //上传图片
+                wx.uploadImage({
+                  localId: localIds[0], // 需要上传的图片的本地ID，由chooseImage接口获得
+                  isShowProgressTips: 1, // 默认为1，显示进度提示
+                  success: function (res) {
+                    var serverId = res.serverId; // 返回图片的服务器端ID
+                    var id = $("#id").val();
+                    $.ajax({
+                      type: 'post', //数据发送方式
+                      url: prefix+'/user/h5/saveUploadImg',
+                      data: {"serverId": serverId, "id": id},
+                      success: function (data) { //成功
+                        if (data && data.success == '1') {
+                          $("#headImgs").attr("src", "http://xcesys.com:5001/"+data.headImgs);
+                        } else {
+                          alert(data.msg);
+                        }
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          });
+        });
+      });
+    });

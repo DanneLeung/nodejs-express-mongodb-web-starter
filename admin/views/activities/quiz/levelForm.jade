@@ -1,0 +1,124 @@
+//
+   Created by pc on 2015/10/27.
+
+extends ../layout
+
+block main
+  .panel
+    .panel-heading
+      h3.panel-title
+        |  关卡的信息管理
+        span.text-info #{level.name}
+        .panel-tools.pull-right
+          a#save.btn.btn-default.btn-sm(title='保存')
+            i.fa.fa-save
+          a.btn.btn-default.btn-sm(href='/activities/quiz/run/searchLevel/#{runId}')
+            i.fa.fa-reply
+    .panel-body
+      form#levelForm.form-horizontal(method="post",action="/activities/quiz/run/levelSave")
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        input.form-control(type="hidden",name="level",value="#{levelNum}")
+        input#runId(type='hidden', name='runId', value="#{runId}")
+        input#view(type='hidden', name='view', value="#{view}")
+        input.form-control(type="hidden",name="levelName",readonly='true' value="#{level.levelName ? level.levelName : '第' + levelNum + '关'}")
+        .form-group
+          .panel
+            .panel-heading
+              h4.box-title 第 #{levelNum} 关：
+            .panel-body
+              .form-group
+                label.control-label.col-sm-2.required 本关奖品：
+                .col-sm-3
+                  select#award1.form-control.required.award(name="award")
+                  p.help-block 需要先选择活动才会有奖品选项
+                label.control-label.col-sm-2.required 随机题数：
+                .col-sm-3
+                  input.form-control.required(type="text",name="randNum",value="#{level.randNum ? level.randNum : ''}")
+                  p.help-block 随机获取题库的题目数量
+              .form-group
+                label.control-label.col-sm-2 通过分数：
+                .col-sm-3
+                  input.form-control(type="text",name="score",value="#{level.score ? level.score : ''}")
+                  p.help-block 设置通过本关获得的分数
+                label.control-label.col-sm-2.required 闯关时间（秒）：
+                .col-sm-3
+                  input.form-control.required(type="text",name="second",value="#{level.second ? level.second : ''}")
+                  p.help-block 用于闯关时的时间控制
+              .form-group
+                label.control-label.col-sm-2 难度最小值：
+                .col-sm-3
+                  input#minLevel.form-control(type="text",name="minLevel",value="#{level.minLevel ? level.minLevel : ''}")
+                  p.help-block 设置随机题目时匹配难度的最小值
+                label.control-label.col-sm-2 难度最大值：
+                .col-sm-3
+                  input#maxLevel.form-control(type="text",name="maxLevel",value="#{level.maxLevel ? level.maxLevel : ''}")
+                  p.help-block 设置随机题目时匹配难度的最大值
+              .form-group
+                label.control-label.col-sm-2 可跳过本关？
+                .col-sm-3
+                  label.checkbox
+                    if (level && level.cancellable)
+                      input(type='checkbox' name='cancellable' checked="checked")
+                    else
+                      input(type='checkbox' name='cancellable')
+                label.control-label.col-sm-2 必须通过：
+                .col-sm-3
+                  label.checkbox
+                    if (level && level.allPass)
+                      input(type='checkbox' name='allPass' checked="checked")
+                    else
+                      input(type='checkbox' name='allPass')
+              .form-group
+                label.control-label.col-sm-2 奖品说明：
+                .col-sm-8
+                  textarea.form-control(name="awardDesc",rows="6")
+                    | #{level.awardDesc ? level.awardDesc : ''}
+
+
+block scripts
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    var levelNum = 1;
+    $(document).ready(function () {
+      selectAward("#{activityId}", '#{level.award ? level.award._id : ""}', "#award1")
+      var form = $('#levelForm');
+      $("#save").on('click', function () {
+        var minLevel = $("#minLevel").val();
+        var maxLevel = $("#maxLevel").val();
+        if (parseInt(minLevel) > parseInt(maxLevel)) {
+          bootbox.alert("难度最小值应小于难度最大值");
+          return false;
+        }
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          name: {}
+        },
+        messages: {}
+      });
+    });
+
+    //填充活动的下拉列表
+    function selectAward(activityId, awardId, selectId) {
+      $.ajax({
+        url: "/activities/getByActivityAwards/" + activityId,
+        type: "get",
+        data: {},
+        success: function (data) {
+          if (data) {
+            $(selectId).append("<option value=''>-请选择-</option>")
+            $.each(data, function (i, e) {
+              if (e._id == awardId) {
+                $(selectId).append("<option value='" + e._id + "' selected>" + e.name + "</option>")
+              } else {
+                $(selectId).append("<option value='" + e._id + "'>" + e.name + "</option>")
+              }
+            });
+          }
+        }
+      });
+    }
+
+
+

@@ -1,0 +1,98 @@
+//
+   Created by yu869 on 2016/1/13.
+
+extends ../../layouts/default
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+//应用的page title
+block pageTitle
+  h1 系统功能模块管理
+    small 维护系统中的功能模块，不可编辑功能模块为系统内置部分.
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 功能模块
+      .panel-tools
+        a.btn.btn-sm.btn-default(href="/system/module/add" title="添加功能模块")
+          i.fa.fa-plus
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#messageList.table.table-bordered.table-hover.table-striped
+          thead
+            th 名称
+            th 描述
+            th.text-center 可编辑
+            th.text-center 激活
+            th.text-center 操作
+          tbody
+        form#delForm(method='post', style='display:none', action='/system/module/del')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        serverSide: true,
+        deferRender: true
+      };
+      // 订单表格
+      var t = $('#messageList').DataTable($.extend(opts, {
+        ajax: {url: '/system/module/dataTable'},
+        order: [[1, 'asc']],
+        columns: [
+          {data: "name", defaultContent: ''},
+          {data: "description", defaultContent: ''},
+          {
+            data: "editable", defaultContent: '', className: 'text-center', render: function (data, type, row) {
+            var result = "";
+            if (data)
+              result = "<a class='btn btn-xs edit' title='编辑' href='/system/module/editable/" + row._id + "'><i class='fa fa-check-square'/></a>";
+            else
+              result = "<a class='btn btn-xs edit' title='编辑' href='/system/module/editable/" + row._id + "'><i class='fa fa-square-o'/></a>";
+            return result;
+          }
+          },
+          {
+            data: "enabled", defaultContent: '', className: 'text-center', render: function (data, type, row) {
+            var result = "";
+            if (data)
+              result = "<a class='btn btn-xs edit' title='编辑' href='/system/module/enabled/" + row._id + "'><i class='fa fa-check-square'/></a>";
+            else
+              result = "<a class='btn btn-xs edit' title='编辑' href='/system/module/enabled/" + row._id + "'><i class='fa fa-square-o'/></a>";
+            return result;
+          }
+          },
+          {
+            data: "_id", sortable: false, className: 'text-center', render: function (data, type, row) {
+            return row.editable ? "<a class='btn btn-default btn-xs edit' title='编辑' href='/system/module/edit/" + data + "' ><i class='fa fa-edit'></i></a>"
+            + " <button class='btn btn-default btn-xs del' type='button'><i class='fa fa-trash-o'></i></button>" : '';
+          }
+          }
+        ]
+      })).on('draw.dt', function() {
+        $('#tableWrapper').fadeIn();
+      });
+
+      $('#messageList').on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+    });

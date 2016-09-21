@@ -1,0 +1,54 @@
+meta(charset='utf-8')
+meta(http-equiv='X-UA-Compatible', content='IE=edge')
+title #{req.session.channel ? req.session.channel.channelName : appName}
+// Tell the browser to be responsive to screen width
+meta(name='keywords', content='')
+meta(name='description', content='')
+meta(name='format-detection', content='telephone=no,email=no')
+meta(name='viewport', content='width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1.0, user-scalable=no, minimal-ui')
+meta(name='apple-mobile-web-app-capable', content='yes')
+meta(name='apple-mobile-web-app-status-bar-style', content='grey')
+meta(name='screen-orientation', content='portrait')
+meta(name='x5-orientation', content='portrait')
+meta(http-equiv='pragma', content='no-cache')
+meta(http-equiv='Cache-Control', content='no-cache, must-revalidate')
+
+link(rel='shortcut icon', href='/favicon.png')
+// Bootstrap 3.3.5
+link(rel='stylesheet', href='//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css')
+// Font Awesome
+link(rel='stylesheet', href='//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css')
+// Ionicons
+//link(rel='stylesheet', href='//cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css')
+link( rel="stylesheet" href="//cdn.bootcss.com/toastr.js/2.1.2/toastr.min.css")
+//- link( rel="stylesheet" href="/themes/default/plugins/pace/pace.min.css" type="text/css")
+
+// iCheck
+link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
+if NODE_ENV == 'development'
+  link( rel="stylesheet" href="/themes/default/dist/css/AdminLTE.css" type="text/css")
+  //link( rel="stylesheet" href="/themes/default/dist/css/skins/skin-blue.css" type="text/css")
+  link( rel="stylesheet" href="/themes/default/dist/css/skins/_all-skins.min.css" type="text/css")
+
+if NODE_ENV == 'production'
+  link( rel="stylesheet" href="/themes/default/dist/css/AdminLTE.min.css" type="text/css")
+  link( rel="stylesheet" href="/themes/default/dist/css/skins/_all-skins.min.css" type="text/css")
+
+//HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
+//WARNING: Respond.js doesn't work if you view the page via file:
+//[if lt IE 9]
+  <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+//[end if]
+script(type='text/javascript').
+  var contextRoot = '#{contextRoot}';
+  var contextFront = '#{contextFront}';
+  var staticRoot = '#{staticRoot}';
+  console.log('----------------#{contextRoot}');
+style.
+  .table tbody td {
+    vertical-align: middle !important;
+  }
+//if (req.session.channel && req.session.channel.analystScript)
+//  插入统计代码
+//  !{req.session.channel.analystScript}

@@ -1,0 +1,30 @@
+//
+   Created by pc on 2015/10/27.
+
+extends layout
+block main
+  //.nav-tabs-custom
+    ul.nav.nav-tabs
+      li.active
+        a(href="#list",data-toggle="tab")活动游戏
+      li
+        a(href="#prize",data-toggle="tab")奖品设置
+      li
+        a(href="#analysis",data-toggle="tab")活动统计
+    .tab-content
+      #list.tab-pane.active
+        h3.panel-title 投票活动列表
+        table.table.table-hover.table-responsive
+          thead
+            th 标题
+            th 时间
+            th 状态
+            th 管理
+          tbody
+            tr
+              td
+              td
+              td
+              td
+      #prize.tab-pane
+      #analysis.tab-pane

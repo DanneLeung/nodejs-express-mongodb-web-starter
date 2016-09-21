@@ -1,0 +1,50 @@
+extends layouts/front
+block header
+  // iCheck
+  link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
+block main
+  .register-box
+    .register-logo
+      a(href='/vendor')
+        #{channel.channelName}
+          | <br>移动应用平台
+    .register-box-body
+      p.login-box-msg
+      form#registerForm(action='/vendor/verification', method='post')
+        input(type='hidden', name='_csrf', value=_csrf)
+        .form-group.has-feedback
+          label(for="verification") 验证码:
+            span.required *
+          input.form-control(type='number',name="verification" placeholder='验证码')
+          input(type='hidden', name='id', value="#{id}")
+          span.glyphicon.glyphicon-user.form-control-feedback
+
+        .form-group.has-feedback
+          button.btn.btn-primary.btn-block.btn-flat(type='submit') 提交申请
+          // /.col
+      p
+        i.fa.fa-info
+        a.text-center(href='/vendor/login') &nbsp; &nbsp;我已经注册过账户，直接登录
+    // /.form-box
+  // /.register-box
+block scripts
+  script.
+    $(function () {
+      $("#registerForm").validate({
+        rules: {
+          verification: {
+            required: true,
+            minlength: 10,
+            maxlength: 10,
+            number: true
+          }
+        },
+        messages: {
+          verification: {
+            minlength: "验证码为10位数字!",
+            maxlength: "验证码为10位数字!",
+            number: "验证码为10位数字!"
+          }
+        }
+      });
+    });

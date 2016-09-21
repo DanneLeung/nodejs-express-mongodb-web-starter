@@ -1,0 +1,106 @@
+//
+   Created by danne on 2015/10/24.
+extends layout
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+
+//应用的page title
+block pageTitle
+  h1 服务项管理
+    small 添加，删除，更新系统中服务项信息
+
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 服务项
+      .panel-tools.pull-right
+        a.btn.btn-sm.btn-default(href="/bank/service/add")
+          i.fa.fa-plus
+    .box-body
+      #tableWrapper(style="display:none;")
+        table#serviceList.table.table-hover.dataTable.no-footer
+          thead
+            th 服务名称
+            th 服务图片
+            th 增加时间
+            th.text-center(width="80") 操作
+          tbody
+
+      form#serviceDelForm(method='post', style='display:none', action='/bank/service/del')
+        input#ids(type='hidden',name='ids')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/locale/zh-cn.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: false,
+        serverSide: true,
+        deferRender: true
+      };
+      var t = $('#serviceList').DataTable($.extend(opts, {
+        ajax: {url: '/bank/service/datatable'},
+        order: [[0, 'asc']],
+        columnDefs: [
+          //{targets: 0, visible: true, sortable: false, searchable: false, className: 'text-right', defaultContent: ''},
+          {
+            targets: 2, visible: true, sortable: false,
+            render: function (data, type, row) {
+              return (row.lastname ? row.lastname : '') + " " + (row.firstname ? row.firstname : '');
+            }
+          },
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<a class='btn btn-default btn-xs edit' href='/bank/service/edit?id=" + row._id + "'><i class='fa fa-edit'></i></a>"
+                      + " <button class='btn btn-default btn-xs del' type='button'><i class='fa fa-trash-o'></i></button>";
+            }
+          }
+        ],
+        columns: [
+          //{data: ""},
+          {data: "serverName",defaultContent: ''},
+          {data: "serviceImg",defaultContent: '',render: function ( data, type, full, meta ) {
+            return '<img width=50 height=50 class="img-thumbnail" src="'+data+'" />';
+          }},
+          {data: "addTime", defaultContent: '',render: function ( data, type, full, meta ) {
+            var b = moment(new Date(data));
+            var date = "";
+            if (data != null) {
+              date = b.format("YYYY-MM-DD hh:mm:ss");
+            }
+            return date;
+          }},
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+      //      t.on('order.dt search.dt page.dt', function () {
+      //        t.column(0, {search: 'applied', order: 'applied'}).nodes().each(function (cell, i) {
+      //          cell.innerHTML = i + 1;
+      //        });
+      //      }).draw();
+      $('#serviceList').on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#serviceDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#serviceDelForm").submit();
+            }
+          });
+        }
+      });
+    });

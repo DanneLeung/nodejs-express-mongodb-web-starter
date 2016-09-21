@@ -1,0 +1,243 @@
+//
+   Created by yu869 on 2016/3/31.
+
+extends layout
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+//应用的page title
+block pageTitle
+  h1 券发行
+    small 系统中券类型与发行
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 券发行
+      .pull-right.panel-tools
+        a.btn.btn-sm.btn-default(href="/shop/coupon/create" title="券管理与发行")
+          i.fa.fa-plus
+    .panel-body
+      form.form-inline
+        .form-group
+          label.control-label(for="type")  券类型:
+          input#type.form-control.required(name='type', value="#{querys ? querys.type : ''}",placeholder='券类型')
+        .form-group
+          label.control-label(for="value")  面值:
+          input#value.form-control.required(name='value', value="#{querys ? querys.value : ''}",placeholder='面值')
+        .form-group
+          label.control-label(for="price")  售价:
+          input#price.form-control.required(name='price', value="#{querys ? querys.price : ''}",placeholder='售价')
+        .form-group
+          label.control-label(for="needScore")  所兑换积分数:
+          input#needScore.form-control.required(name='needScore', value="#{querys ? querys.needScore : ''}",placeholder='所兑换积分数')
+        .form-group
+          a#search.btn.btn-default.btn-sm(title='查询')
+            i.fa.fa-search
+            span 查询
+      form#couponDelForm(method='post', style='display:none', action='/shop/coupon/del')
+        input#ids(type='hidden',name='ids')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      #tableWrapper(style="display:none;")
+        table#couponList.table.table-bordered.table-hover.table-striped
+          thead
+            th 类型
+            th 名称
+            th 面值
+            th 售价
+            th 兑换积分
+            th 发行开始时间
+            th 发行结束时间
+            th.text-center 最大数量
+            th 激活
+            th 激活
+            th 激活
+            //- th 描述
+            th.text-center(width="80") 操作
+            th.text-center(width="80") 发券
+          tbody
+
+  #couponCreateModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="productReleaseModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 发券
+        .modal-body
+          form#couponCreateForm.form-horizontal(method='post', action='/shop/coupon/createCoupons')
+            input#couponId(type='hidden',name='couponId')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-md-3.required 发券张数:
+              .controls.col-md-8
+                input#num.form-control.required(name='num', type="number", placeholder='请输入发券张数')
+        .modal-footer
+          .center-block.pull-right
+          a#couponCreate.btn.btn-primary 确定
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/locale/zh-cn.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: false,
+        searching: false,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#couponList').DataTable($.extend(opts, {
+        ajax: {url: '/shop/coupon/datatable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          //{targets: 0, visible: true, sortable: false, searchable: false, className: 'text-right', defaultContent: ''},
+          {
+            targets: -2, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group'><a class='btn btn-default btn-sm key' title='修改' href='/shop/coupon/edit/" + row._id + "'><i class='fa fa-edit'></i></a>"
+                      + "<a class='btn btn-default btn-sm key del' title='删除' href='#'><i class='fa fa-trash-o'></i></a></div>";
+            }
+          },
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group'> " +
+                      "<a class='btn btn-default btn-sm stats' title='统计' href='/shop/coupon/stats'><i class='fa fa-line-chart'></i></a>" +
+                      "<a class='btn btn-default btn-sm create' title='发券' href='#'><i class='fa fa-plus-square'></i></a>" +
+                      "<a class='btn btn-default btn-sm search' title='查看券' href='/shop/coupon/item/list/" + row._id + "'><i class='fa fa-list'></i></a>" +
+                      "</div>";
+            }
+          }
+        ],
+        columns: [
+          //{data: ""},
+          {data: "type", defaultContent: ''},
+          {data: "name", defaultContent: ''},
+          {data: "value", defaultContent: '', 'class': 'text-center'},
+          {
+            data: "price", defaultContent: '', 'class': 'text-right', render: function (data, type, full, meta) {
+            return data.toFixed(2);
+          }
+          },
+          {data: "needScore", defaultContent: '', 'class': 'text-center'},
+          {
+            data: "publishBegin",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var b = moment(new Date(data));
+              var date = "";
+              if (data != null) {
+                date = b.format("YYYY-MM-DD HH:mm");
+              }
+              return date;
+            }
+          },
+          {
+            data: "publishEnd", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+            var b = moment(new Date(data));
+            var date = "";
+            if (data != null) {
+              date = b.format("YYYY-MM-DD HH:mm");
+            }
+            return date;
+          }
+          },
+          {
+            data: "max",
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              return full.max ? full.max : 0;
+            }
+          },
+          {
+            data: "enabled",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='/shop/coupon/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='/shop/coupon/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+          },
+          {data: "publishCount", visible: false, defaultContent: ''},
+          {data: "max", visible: false, defaultContent: ''},
+          {data: ""},
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      $('#couponList').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#couponDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#couponDelForm").submit();
+            }
+          });
+        }
+      });
+
+      $('#search').on("click", function (e) {
+        var type = $('#type').val();
+        var value = $('#value').val();
+        var price = $('#price').val();
+        var needScore = $('#needScore').val();
+        var TT = $('#couponList').DataTable();
+        TT.ajax.url('/shop/coupon/datatable?type=' + type + '&value=' + value + '&price=' + price + '&needScore=' + needScore).load();
+      });
+
+      $('#couponList').on('click', 'a.create', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        var start = moment(t.row($(this).parents('tr')).data().publishBegin).startOf('day');
+        var end = moment(t.row($(this).parents('tr')).data().publishEnd).endOf('day');
+        var now = moment();
+        var enabled = t.row($(this).parents('tr')).data().enabled;
+
+        if (now.diff(start) < 0 || end.diff(now) < 0) {
+          bootbox.alert("发卡时间应在开始时间和结束时间之间!")
+          return;
+        }
+
+        if (enabled == false) {
+          bootbox.alert("未激活券类型不允许发券!")
+          return;
+        }
+
+        $("#couponId").val(id);
+        $("#num").val("");
+        $('#couponCreateModal').modal('show');
+      });
+
+      $("#couponCreateForm").validate({
+        rules: {
+          num: {
+            required: true,
+            digits: true
+          }
+        }
+      });
+
+      $("#couponCreate").on('click', function () {
+        var form = $("#couponCreateForm");
+        if (form.valid()) {
+          form.submit();
+        }
+      })
+    });

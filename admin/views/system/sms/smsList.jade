@@ -1,0 +1,115 @@
+//
+   Created by yu869 on 2016/3/8.
+
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+//应用的page title
+block pageTitle
+  h1 短信通道管理
+    small 添加，删除，更新系统中的短信通道
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 短信通道
+      .panel-tools
+        a.btn.btn-sm.btn-default(href="/system/sms/add" title="添加短信通道")
+          i.fa.fa-plus
+          span  添加短信通道
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#smsList.table.table-bordered.table-hover.table-striped
+          thead
+            th 名称
+            th 说明
+            th 激活
+            th 激活
+            th.text-center(width="100") 操作
+          tbody
+        form#smsDelForm(method='post', style='display:none', action='/system/sms/del')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        form#smsDisableForm(method='post', style='display:none', action='/system/sms/smsEnableOrDisable')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthMenu: -1,
+        lengthChange: false,
+        searching: false,
+        processing: false,
+        paging: false,
+        serverSide: true,
+        deferRender: true
+      };
+      var t = $('#smsList').DataTable($.extend(opts, {
+        ajax: {url: '/system/sms/dataTable'},
+        order: [[0, 'asc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group' ><a class='btn btn-default btn-sm edit' href='/system/sms/smsEdit/" + row._id + "?type=edit'><i class='fa fa-edit'></i></a>"
+                      + " <button class='btn btn-default btn-sm del' type='button'><i class='fa fa-trash-o'></i></button></div>";
+            }
+          }
+        ],
+        columns: [
+          {data: "name", defaultContent: ''},
+          {data: "description", defaultContent: ''},
+          {
+            data: "enabled", defaultContent: '', 'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='/system/sms/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='/system/sms/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+          },
+          {data: "_id",visible:false},
+          {data: ""}
+        ]
+      })).on('draw.dt', function() {
+        $('#tableWrapper').fadeIn();
+      });
+
+      $('#search').on("click", function (e) {
+        var name = $('#name').val();
+        var enable = $('#enable').val();
+        var TT = $('#smsList').DataTable();
+        TT.ajax.url('/system/sms/dataTable?name=' + name + '&enable=' + enable).load();
+      });
+
+      $('#smsList').on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#smsDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#smsDelForm").submit();
+            }
+          });
+        }
+      });
+
+      $("#smsList").on('click', 'a.enableOrDisable', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#smsDisableForm #ids").val(id);
+        if (id) {
+          $("#smsDisableForm").submit();
+        }
+      });
+
+    });

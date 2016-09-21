@@ -1,0 +1,87 @@
+//
+   Created by danne on 8/16/2016.
+.form-group
+  label.control-label.col-sm-2 UPC：
+  .col-sm-9
+    input.form-control(name="upc",value="#{product ? product.upc : ''}",placeholder="UPC")
+.form-group
+  label.control-label.col-sm-2.required EAN：
+  .col-sm-9
+    input.form-control(name="ean",value="#{product ? product.ean : ''}",placeholder="EAN")
+.form-group
+  label.control-label.col-sm-2 JAN：
+  .col-sm-9
+    input.form-control(name="jan",value="#{product ? product.jan : ''}",placeholder="JAN")
+.form-group
+  label.control-label.col-sm-2 ISBN：
+  .col-sm-9
+    input.form-control(name="isbn",value="#{product ? product.isbn : ''}",placeholder="ISBN")
+.form-group
+  label.control-label.col-sm-2 生产地：
+  .col-sm-9
+    input.form-control(name="location",value="#{product ? product.location : ''}",placeholder="产品生产地")
+.form-group
+  label.control-label.col-sm-2 价格：
+  .col-sm-9
+    input.form-control(name="price",value="#{product ? product.price : ''}",placeholder="价格")
+.form-group
+  label.control-label.col-sm-2 可得积分：
+  .col-sm-9
+    input.form-control(name="points",value="#{product ? product.points : ''}",placeholder="购买可得积分")
+    p.help-block 购买该产品可获得积分数
+.form-group
+  label.control-label.col-sm-2 积分购买：
+  .col-sm-9
+    input.form-control(name="getByPoints",value="#{product ? product.getByPoints : ''}",placeholder="购买需要积分")
+    p.help-block 使用积分购买所需要的积分数
+.form-group
+  label.control-label.col-sm-2 数量：
+  .col-sm-9
+    input.form-control(name="quantity",value="#{product ? product.quantity : ''}",placeholder="数量")
+    p.help-block 库存数量
+.form-group
+  label.control-label.col-sm-2 减少库存：
+  .col-sm-9
+    if (product && product.substract)
+      input#substract.mini(type='checkbox' name='substract' value='1' checked)
+    else
+      input#substract.mini(type='checkbox' name='substract')
+.form-group
+  label.control-label.col-sm-2 是否配送：
+  .col-sm-9
+    if (product && product.shipping)
+      input#substract.mini(type='checkbox' name='shipping' value='1' checked)
+    else
+      input#substract.mini(type='checkbox' name='shipping')
+.form-group
+  label.control-label.col-sm-2 产品链接：
+  .col-sm-9
+    input.form-control(name="url",value="#{product ? product.url : ''}",placeholder="产品链接URL")
+.form-group
+  label.control-label.col-sm-2 长度单位：
+  .col-sm-9
+    select#lengthClass.form-control(name="lengthClass")
+.form-group
+  label.control-label.col-sm-2 尺寸 (长 x 宽 x 高)：
+  .col-sm-9
+    .col-sm-4
+      input.form-control(name="length",value="#{product ? product.size.length : ''}",placeholder="长")
+    .col-sm-4
+      input.form-control(name="width",value="#{product ? product.size.width : ''}",placeholder="宽")
+    .col-sm-4
+      input.form-control(name="height",value="#{product ? product.size.height : ''}",placeholder="高")
+.form-group
+  label.control-label.col-sm-2 重量单位：
+  .col-sm-9
+    select#weightClass.form-control(name="weightClass")
+.form-group
+  label.control-label.col-sm-2 重量：
+  .col-sm-9
+    input.form-control(name="weight",value="#{product ? product.weight.weight : ''}",placeholder="重量")
+.form-group
+  label.control-label.col-sm-2 是否可用：
+  .col-sm-9
+    if (product && product.enabled)
+      input#enabled.mini(type='checkbox' name='enabled' value='1' checked)
+    else
+      input#enabled.mini(type='checkbox' name='enabled')

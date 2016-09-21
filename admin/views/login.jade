@@ -1,0 +1,91 @@
+extends layouts/front
+block header
+  style.
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+block main
+  .login-box
+    .login-logo
+      a(href='/')
+        b #{req.session.channel ? req.session.channel.channelName : appName}
+        | <br>移动应用平台
+    // /.login-logo
+    .login-box-body
+      p.login-box-msg
+      form#loginForm(action='/login?_#{Date.now()}', method='post')
+        input(type='hidden', name='_csrf', value=_csrf)
+        //input(type='hidden', name='channelId', value='#{channel._id}')
+        .form-group.has-feedback
+          input#username.form-control(type='text', placeholder='请使用用户名登录', name="username")
+          span.glyphicon.glyphicon-envelope.form-control-feedback
+        .form-group.has-feedback
+          input#password.form-control.required(type='password', placeholder='请输入登录密码', name="password")
+          span.glyphicon.glyphicon-lock.form-control-feedback
+        .form-group.has-feedback
+          .row
+            .col-sm-6
+              input#captcha.form-control.col-md-3(type='text', placeholder='请输入验证码', name="captcha")
+            .col-sm-6
+              img#captchaImg
+        .checkbox.icheck
+          label
+            input#rememberMe(type='checkbox',name="rememberMe")
+            | &nbsp;&nbsp;记住我
+        .row
+          a#register.btn.pull-left(href='/register') 立即注册
+          a.btn.pull-right(href='/forgetPass') 忘记密码?
+        button#login.btn.btn-primary.btn-block.btn-flat(type="submit") 登 录
+
+    // /.login-box-body
+    // /.login-box
+block scripts
+  script.
+    $(function () {
+      $('#captchaImg').attr('src', '/captcha?' + Date.now()).on('click', function () {
+        $(this).attr('src', '/captcha?' + Date.now());
+      });
+
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+
+      var form = $("#loginForm");
+
+      $('#username').val($.cookie('username'))
+      var check = $.cookie('rememberMe');
+      if (check == "true") {
+        $('#rememberMe').iCheck('check');
+      } else {
+        $('#rememberMe').iCheck('uncheck');
+      }
+
+      form.validate({
+        rules: {
+          username: {required: true},
+          password: {required: true},
+          captcha: {required: true}
+        },
+        messages: {
+          username: {required: "请输入登录用户名"},
+          password: {required: "请输入登录密码"},
+          captcha: {required: "请输入验证码"}
+        }
+      });
+
+      $("#loginForm").on('submit', function () {
+        var rememberMe = $("#rememberMe").is(":checked");
+        if (rememberMe) {
+          $.cookie('username', $('#username').val(), {expires: 7});
+          $.cookie('rememberMe', true, {expires: 7});
+        } else {
+          $.cookie('username', '', {expires: -1}); // 删除 cookie
+          $.cookie('rememberMe', '', {expires: -1}); // 删除 cookie
+        }
+      })
+
+
+    });

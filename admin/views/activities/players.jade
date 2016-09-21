@@ -1,0 +1,86 @@
+//
+  Created by pc on 2015/10/27.
+extends layout
+
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 活动参与人员
+        .panel-tools.pull-right
+          a.btn.btn-sm.btn-primary(title='返回' href='/activities/index')
+            i.fa.fa-reply
+          a.btn.btn-primary.btn-sm(href="/activities/players/download/#{activityId}")
+            i.fa.fa-download.fa-fw
+
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#playerList.table.table-hover.table-striped.table-responsive
+          thead
+            th 姓名
+            th 昵称
+            th 手机
+            th 分享次数
+            th 今日次数
+            th 本周次数
+            th 总参与次数
+            th 得奖次数
+            //th 操作
+          tbody
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#playerList').DataTable($.extend(opts, {
+        ajax: {url: '#{baseUrl}/players/datatable/#{activityId}'},
+        order: [[0, 'asc']],
+        columnDefs: [
+          {
+          }
+        ],
+        columns: [
+          //{data: ""},
+          {data: "user.fullname", defaultContent: ''},
+          {data: "user.nickname", defaultContent: ''},
+          {data: "user.mobile", defaultContent: ''},
+          {data: "shareTimes", defaultContent: '', 'class': 'text-right'},
+          {data: "todayTimes", defaultContent: '', 'class': 'text-right'},
+          {data: "weeklyTimes", defaultContent: '', 'class': 'text-right'},
+          {data: "totalTimes", defaultContent: '', 'class': 'text-right'},
+          {data: "winTimes", defaultContent: '', 'class': 'text-right'}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      //删除活动的事件
+      $('#playerList').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              window.location.href = '/activities/del/' + id;
+            }
+          });
+        }
+      });
+
+    })

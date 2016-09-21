@@ -1,0 +1,224 @@
+//
+   Created by danne on 2016-04-28.
+extends ../layout
+block header
+  style.
+    .template .item {
+      position: relative;
+      display: block;
+      float: left;
+      border: 1px #ddd solid;
+      border-radius: 5px;
+      background-color: #fff;
+      padding: 5px;
+      width: 190px;
+      margin: 0 20px 20px 0;
+      overflow: hidden;
+    }
+
+    .template .title {
+      margin: 5px auto;
+      line-height: 2em;
+    }
+
+    .template .title a {
+      text-decoration: none;
+    }
+
+    .template .item img {
+      width: 178px;
+      height: 270px;
+      cursor: pointer;
+    }
+
+    .template .active.item-style img, .template .item-style:hover img {
+      width: 178px;
+      height: 270px;
+      border: 3px #009cd6 solid;
+      padding: 1px;
+    }
+
+    .template .title .fa {
+      display: none
+    }
+
+    .template .active .fa.fa-check {
+      display: inline-block;
+      position: absolute;
+      bottom: 33px;
+      right: 6px;
+      color: #FFF;
+      background: #009CD6;
+      padding: 5px;
+      font-size: 14px;
+      border-radius: 0 0 6px 0;
+    }
+
+    .template .fa.fa-times {
+      cursor: pointer;
+      display: inline-block;
+      position: absolute;
+      top: 10px;
+      right: 6px;
+      color: #D9534F;
+      background: #ffffff;
+      padding: 5px;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .template .fa.fa-times:hover {
+      color: red;
+    }
+
+    .template .item-bg {
+      width: 100%;
+      height: 342px;
+      background: #000;
+      position: absolute;
+      z-index: 1;
+      opacity: 0.5;
+      margin: -5px 0 0 -5px;
+    }
+
+    .template .item-build-div1 {
+      position: absolute;
+      z-index: 2;
+      margin: -5px 10px 0 5px;
+      width: 168px;
+    }
+
+    .template .item-build-div2 {
+      text-align: center;
+      line-height: 30px;
+      padding-top: 150px;
+    }
+
+block main
+  .clearfix.template
+    .panel.panel-default
+      nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom:0;')
+        .container-fluid
+          .navbar-header
+            a.navbar-brand(href='javascript:;') 站点模板
+          ul.nav.navbar-nav.nav-btns
+            li(class='#{isActive("/cms/template/all")}')
+              a(href='/cms/template/all') 全部
+            li(class='#{isActive("/cms/template/often")}')
+              a(href='/cms/template/often') 常用模板
+            li(class='#{isActive("/cms/template/rummery")}')
+              a(href='/cms/template/rummery') 酒店
+            li(class='#{isActive("/cms/template/car")}')
+              a(href='/cms/template/car') 汽车
+            li(class='#{isActive("/cms/template/tourism")}')
+              a(href='/cms/template/tourism') 旅游
+            li(class='#{isActive("/cms/template/drink")}')
+              a(href='/cms/template/drink') 餐饮
+            li(class='#{isActive("/cms/template/realty")}')
+              a(href='/cms/template/realty') 房地产
+            li(class='#{isActive("/cms/template/medical")}')
+              a(href='/cms/template/medical') 医疗保健
+            li(class='#{isActive("/cms/template/education")}')
+              a(href='/cms/template/education') 教育
+            li(class='#{isActive("/cms/template/cosmetology")}')
+              a(href='/cms/template/cosmetology') 健身美容
+            li(class='#{isActive("/cms/template/shoot")}')
+              a(href='/cms/template/shoot') 婚纱摄影
+            li(class='#{isActive("/cms/template/other")}')
+              a(href='/cms/template/other') 其它
+      .panel-body
+        .col-md-3.item.item-style.active
+          a.fa.fa-times(onclick="if(!confirm('删除后将不可恢复,确定删除吗?')) return false;", title='删除风格', href='/cms/template/del/8')
+          .title
+            div(style='overflow:hidden; height:28px;') 微赞style1_BHU2 (style1)
+            a(href='./index.php?c=site&a=style&do=default&styleid=8')
+              img.img-rounded(src='data:image/jpeg;base64')
+            span.fa.fa-check
+          .btn-group.btn-group-justified
+            a.btn.btn-default.btn-xs(href='/cms/template/apply/8') 设计风格
+            a.btn.btn-default.btn-xs(href='./index.php?c=site&a=style&do=copy&styleid=8') 复制风格
+            a.btn.btn-default.btn-xs(href='javascript:;', onclick="preview('8');return false;") 预览
+        .col-md-3.item.item-style
+          a.fa.fa-times(onclick="if(!confirm('删除后将不可恢复,确定删除吗?')) return false;", title='删除风格', href='/cms/template/del/7')
+          .title
+            div(style='overflow:hidden; height:28px;') 微赞style1_quhR (style1)
+            a(href='./index.php?c=site&a=style&do=default&styleid=7')
+              img.img-rounded(src='data:image/jpeg;base64')
+            span.fa.fa-check
+          .btn-group.btn-group-justified
+            a.btn.btn-default.btn-xs(href='/cms/template/apply/7') 设计风格
+            a.btn.btn-default.btn-xs(href='./index.php?c=site&a=style&do=copy&styleid=7') 复制风格
+            a.btn.btn-default.btn-xs(href='javascript:;', onclick="preview('7');return false;") 预览
+
+        .col-md-3.col-md-3.item(style='border-color:#FFF;')
+          .item-bg
+          .item-build-div1
+            .item-build-div2
+              a.btn.btn-warning.item-build-btn(href='/cms/template/enable/114', role='button', data-toggle='popover', data-trigger='hover', data-placement='bottom', data-content='该模板尚未激活，激活后可正常使用！', data-original-title='', title='') 点击激活
+          .title
+            div(style='overflow:hidden; height:28px;') 微赞微站模板100
+            img.img-rounded(src='../app/themes/style100/preview.jpg')
+          .btn-group.btn-group-justified
+            a.btn.btn-default.btn-xs(href='#') 设计风格
+            a.btn.btn-default.btn-xs(href='#') 复制风格
+            a.btn.btn-default.btn-xs(href='#') 预览
+        .col-md-3.col-md-3.item(style='border-color:#FFF;')
+          .item-bg
+          .item-build-div1
+            .item-build-div2
+              a.btn.btn-warning.item-build-btn(href='/cms/template/enable/113', role='button', data-toggle='popover', data-trigger='hover', data-placement='bottom', data-content='该模板尚未激活，激活后可正常使用！', data-original-title='', title='') 点击激活
+          .title
+            div(style='overflow:hidden; height:28px;') 微赞微站模板101
+            img.img-rounded(src='../app/themes/style101/preview.jpg')
+          .btn-group.btn-group-justified
+            a.btn.btn-default.btn-xs(href='#') 设计风格
+            a.btn.btn-default.btn-xs(href='#') 复制风格
+            a.btn.btn-default.btn-xs(href='#') 预览
+        .col-md-3.col-md-3.item(style='border-color:#FFF;')
+          .item-bg
+          .item-build-div1
+            .item-build-div2
+              a.btn.btn-warning.item-build-btn(href='/cms/template/enable/112', role='button', data-toggle='popover', data-trigger='hover', data-placement='bottom', data-content='该模板尚未激活，激活后可正常使用！', data-original-title='', title='') 点击激活
+          .title
+            div(style='overflow:hidden; height:28px;') 微赞微站模板102
+            img.img-rounded(src='../app/themes/style102/preview.jpg')
+          .btn-group.btn-group-justified
+            a.btn.btn-default.btn-xs(href='#') 设计风格
+            a.btn.btn-default.btn-xs(href='#') 复制风格
+            a.btn.btn-default.btn-xs(href='#') 预览
+        .col-md-3.col-md-3.item(style='border-color:#FFF;')
+          .item-bg
+          .item-build-div1
+            .item-build-div2
+              a.btn.btn-warning.item-build-btn(href='/cms/template/enable/111', role='button', data-toggle='popover', data-trigger='hover', data-placement='bottom', data-content='该模板尚未激活，激活后可正常使用！', data-original-title='', title='') 点击激活
+          .title
+            div(style='overflow:hidden; height:28px;') 微赞微站模板103
+            img.img-rounded(src='../app/themes/style103/preview.jpg')
+          .btn-group.btn-group-justified
+            a.btn.btn-default.btn-xs(href='#') 设计风格
+            a.btn.btn-default.btn-xs(href='#') 复制风格
+            a.btn.btn-default.btn-xs(href='#') 预览
+        .col-md-3.col-md-3.item(style='border-color:#FFF;')
+          .item-bg
+          .item-build-div1
+            .item-build-div2
+              a.btn.btn-warning.item-build-btn(href='/cms/template/enable/110', role='button', data-toggle='popover', data-trigger='hover', data-placement='bottom', data-content='该模板尚未激活，激活后可正常使用！', data-original-title='', title='') 点击激活
+          .title
+            div(style='overflow:hidden; height:28px;') 微赞微站模板104
+            img.img-rounded(src='../app/themes/style104/preview.jpg')
+          .btn-group.btn-group-justified
+            a.btn.btn-default.btn-xs(href='#') 设计风格
+            a.btn.btn-default.btn-xs(href='#') 复制风格
+            a.btn.btn-default.btn-xs(href='#') 预览
+        .col-md-3.col-md-3.item(style='border-color:#FFF;')
+          .item-bg
+          .item-build-div1
+            .item-build-div2
+              a.btn.btn-warning.item-build-btn(href='/cms/template/enable/109', role='button', data-toggle='popover', data-trigger='hover', data-placement='bottom', data-content='该模板尚未激活，激活后可正常使用！', data-original-title='', title='') 点击激活
+          .title
+            div(style='overflow:hidden; height:28px;') 微赞微站模板105
+            img.img-rounded(src='../app/themes/style105/preview.jpg')
+          .btn-group.btn-group-justified
+            a.btn.btn-default.btn-xs(href='#') 设计风格
+            a.btn.btn-default.btn-xs(href='#') 复制风格
+            a.btn.btn-default.btn-xs(href='#') 预览

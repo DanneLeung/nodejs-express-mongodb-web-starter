@@ -1,0 +1,193 @@
+//
+   Created by yu869 on 2016/3/31.
+
+extends ../layout
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet",href="/themes/default/plugins/daterangepicker/daterangepicker-bs3.css")
+//应用的page title
+block pageTitle
+  h1 费用订单
+    small 订单的详情查看
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 订单列表
+      .pull-right.panel-tools
+        //a.btn.btn-sm.btn-default(href="/shop/chargeOrder/create" title="券管理与发行")
+        //  i.fa.fa-plus
+    .panel-body
+      form#searchForm.form-inline
+        .form-group
+          label.control-label(for="mobile")  手机号码:
+          input#mobile.form-control(name='mobile', placeholder='手机号码')
+        .form-group
+          label.control-label(for="no")  订单号:
+          input#no.form-control.required(name='no',placeholder='订单号')
+        .form-group
+          label.control-label(for="type")  类型:
+          select#type.form-control.required(name='type')
+            option(value="") -请选择-
+            option(value="1") 流量充值
+            option(value="2") 话费充值
+        .form-group
+          label.control-label(for="status")  状态:
+          select#status.form-control.required(name='status')
+            option(value="") -请选择-
+            option(value="1") 待支付
+            option(value="2") 失败
+            option(value="3") 取消支付
+            option(value="4") 成功
+        .form-group
+          label.control-label(for="daterange-btn")
+          button#daterange-btn.btn.btn-default.pull-right(type='button')
+            i.fa.fa-calendar 选择时间
+            i.fa.fa-caret-down
+          input#times(name='times' type='hidden')
+        .form-group
+          a#search.btn.btn-default.btn-sm(title='查询')
+            i.fa.fa-search
+            span 查询
+      form#chargeOrderDelForm(method='post', style='display:none', action='/shop/chargeOrder/del')
+        input#ids(type='hidden',name='ids')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      #tableWrapper(style="display:none;")
+        table#chargeOrderList.table.table-bordered.table-hover.table-striped
+          thead
+            th 粉丝名称
+            th 手机号码
+            th 订单号
+            th 类型
+            th 金额
+            th 状态
+            th 下单时间
+            th 微信订单号
+            //th.text-center(width="80") 操作
+          tbody
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src="/themes/default/plugins/daterangepicker/daterangepicker.js")
+  script.
+    $(document).ready(function () {
+
+      $('#daterange-btn').daterangepicker(
+              {
+                ranges: {
+                  '今天': [moment(), moment()],
+                  '昨天': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                  '近7天': [moment().subtract(6, 'days'), moment()],
+                  '近30天': [moment().subtract(29, 'days'), moment()],
+                  '当月': [moment().startOf('month'), moment().endOf('month')],
+                  '上月': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                startDate: moment().subtract(29, 'days'),
+                endDate: moment()
+              },
+              function (start, end) {
+                $('#times').val(start.format('YYYY-MM-DD HH:mm:ss') + ' - ' + end.format('YYYY-MM-DD HH:mm:ss'));
+              }
+      );
+
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: false,
+        searching: false,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#chargeOrderList').DataTable($.extend(opts, {
+        ajax: {url: '/shop/order/charge/datatable'},
+        order: [[2, 'asc']],
+        columnDefs: [
+          /**{
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group'> " +
+                      "<a class='btn btn-default btn-sm search' title='查看订单' href='/shop/oder/charge/search/" + row._id + "'><i class='fa fa-list'></i></a>" +
+                      "</div>";
+            }
+          }*/
+        ],
+        columns: [
+          //{data: ""},
+          {data: "wechat.nickname", defaultContent: ''},
+          {data: "mobile", defaultContent: ''},
+          {data: "no", defaultContent: '', render: function (data, type, full, meta) {
+            var result = "";
+            if(data){
+              result = data;
+            }else{
+              result = full.wxOrderNo;
+            }
+            return result;
+          }},
+          {
+            data: "type", defaultContent: '', 'class': 'text-right', render: function (data, type, full, meta) {
+            var result = "";
+            if(data == '1'){
+              result = "流量充值";
+            }else if(data == '2'){
+              result = "话费充值";
+            }
+            return result;
+          }
+          },
+          {data: "amount", defaultContent: '', 'class': 'text-right', render: function (data, type, full, meta) {
+            return data.toFixed(2);
+          }},
+          {
+            data: "status",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "待支付";
+              } else if (data == '2') {
+                result = "失败";
+              }else if (data == '3') {
+                result = "取消支付";
+              }else if (data == '4') {
+                result = "成功";
+              }
+              return result;
+            }
+          },
+          {
+            data: "createdAt",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var b = moment(new Date(data));
+              var date = "";
+              if (data != null) {
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+          {data: "wxOrderNo", defaultContent: '', 'class': 'text-center',visible: false},
+          //{data: "",visible: false}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      $('#search').on("click", function (e) {
+        var data = $('#searchForm').serialize();
+        var TT = $('#chargeOrderList').DataTable();
+        TT.ajax.url('/shop/order/charge/datatable?' + data + '').load();
+      });
+
+    });

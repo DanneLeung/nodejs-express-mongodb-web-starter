@@ -1,0 +1,63 @@
+//
+  Created by pc on 2015/10/27.
+.row
+  .col-md-12.margin-bottom
+    p.help-block 已收藏的消息(#{count}条)
+  .col-md-12
+    #tableWrapper1(style="display:none")
+      table#collectionList.table.table-hover.table-striped
+        thead
+          th 头像
+          th 昵称
+          th 内容
+          th 时间
+          th 回复标记
+          th.text-center(width="160") 操作
+        tbody
+
+#wechatModal.modal.fade.text-center(tabindex="-1", role="dialog", aria-labelledby="wechatModal", aria-hidden='true')
+  .modal-dialog(style="display: inline-block; width: 50%;")
+    .modal-content
+      .modal-header.text-left
+        button.close(type="button",data-dismiss="modal", aria-label="Close")
+          span(aria-hidden="true") &times;
+        h4.modal-title 关键词规则
+      .modal-body
+        form#keyWordForm.form-horizontal(name='keyWordForm', action=  '', method='post')
+          div#idDis
+          input(type='hidden', name='mediaId', value="")
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+          .form-group
+            label.control-label.col-md-2 规则名称：
+            .col-md-10
+              input#ruleName.form-control(name='ruleName',progressbar="规则名称")
+          .form-group
+            label.control-label.col-md-2 关键词：
+            .col-md-10.text-left
+              .input-group.input-group-sm
+                input#rules.form-control(name='rules')
+                span.input-group-btn
+                  a#addTag.btn
+                    i.fa.fa-plus-square
+              p.help-block 注意：点击“+”或者回车可添加关键词
+          .form-group
+            label.control-label.col-md-2 &nbsp;
+            .col-md-10
+              #rulesInfo
+          .form-group
+            label.control-label.col-md-2 选择类型：
+            .col-md-10.text-left
+              select#fodderType.form-control(name='type')
+              p.help-block 注意：选择类型将弹出对应的素材
+          .form-group
+            label.control-label.col-md-2 &nbsp;
+            .col-md-10
+              #mediaInfo
+                textarea#content.form-control.required(name='content',rows='4',placeholder='文本内容')
+                  | #{reply ? reply.content : ''}
+                p.pull-right 还可以输入600字
+
+      .modal-footer
+        .center-block.pull-right
+          button.btn.btn-primary(type="button",data-dismiss="modal", aria-label="Close") 取消
+          a#saveKeyWord.btn.btn-primary(type="button") 确定

@@ -1,0 +1,254 @@
+//
+   Created by danne on 2016-04-27.
+extends ../layout
+block pageTitle
+  h1 场景二维码管理
+block main
+  .nav-tabs-custom
+    ul.nav.nav-tabs
+      li.active
+        a(href='#tab-1',data-toggle='tab') 管理二维码
+      li
+        a(href='#tab-2', data-toggle='tab') 生成二维码
+      li
+        a(href='#tab-3', data-toggle='tab') 扫描统计
+    .tab-content
+      #tab-1.tab-pane.active
+        .panel.panel-default
+          .table-responsive.panel-body
+            table#qrCodeList.table.table-hover
+              thead
+                tr
+                  th(style='width:100px;') 场景名称
+                  th(style='width:100px;') 关联关键字
+                  th(style='width:70px;') 二维码类型
+                  th(style='width:80px;') 过期时间
+                  th(style='width:100px;') 场景ID/场景字符串
+                  th(style='width:50px;') 二维码
+                  th(style='width:190px;') url
+                  th(style='width:100px;') 生成时间
+                  th(style='width:100px') 到期时间
+                  th(style='width:100px;') 操作
+              tbody
+        a.btn.btn-primary(href='./index.php?c=platform&a=qr&do=del&scgq=1', onclick="javascript:return confirm('您确定要删除吗？\n将删除所有过期二维码以及其统计数据！！！')", style='margin-bottom:15px') 删除全部已过期二维码
+        |  注意：永久二维码无法在微信平台删除，但是您可以点击
+        a(href='javascript:;') 【强制删除】
+        | 来删除本地数据。
+      #tab-2.tab-pane
+        .clearfix
+          form#form1.form-horizontal.form(action='/wechat/qrcode/createQrCode', method='post')
+            input(type='hidden', name='id', value='#{_id}')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .panel.panel-default
+              .panel-heading 生成二维码
+              .panel-body
+                .form-group
+                  label.col-xs-12.col-sm-3.col-md-2.control-label 场景名称
+                  .col-sm-9.col-xs-12
+                    input#scene-name.form-control(type='text', placeholder='', name='sceneName', value='')
+                .form-group
+                  label.col-xs-12.col-sm-3.col-md-2.control-label 关联关键字
+                  .col-sm-9.col-xs-12
+                    input#keyword.form-control(type='text', name='keyWord', value='')
+                    span.help-block 二维码对应关键字, 用户扫描后系统将通过场景ID返回关键字到平台处理.
+                .form-group
+                  label.col-xs-12.col-sm-3.col-md-2.control-label 二维码类型
+                  .col-sm-9.col-xs-12
+                    label#radio1
+                      input#radio_1(type='radio', name='type', value='1', checked='checked')
+                      |  临时
+                    label#radio0
+                      input#radio_0(type='radio', name='type', onclick="showModel2();", value='2')
+                      |  永久
+                    span.help-block
+                      | 目前有2种类型的二维码, 分别是临时二维码和永久二维码, 前者有过期时间, 最大为7天（2592000秒）, 但能够生成较多数量, 后者无过期时间, 数量较少(目前参数只支持1--100000).
+                #model1.form-group
+                  label.col-xs-12.col-sm-3.col-md-2.control-label 过期时间
+                  .col-sm-9.col-xs-12
+                    input#expireSeconds.form-control.required(type='text', placeholder='', name='expireSeconds', value='2592000')
+                    span.help-block 临时二维码过期时间, 最大为7天（2592000秒）.
+                #model2.form-group(style='display:none;')
+                  label.col-xs-12.col-sm-3.col-md-2.control-label 场景值
+                  .col-sm-9.col-xs-12
+                    input#sceneStr.form-control(type='text', placeholder='场景值', name='sceneStr', value='')
+                    span.help-block 场景值不能为空,并且只能为字符串
+            .form-group
+              .col-sm-12
+                button#saveBtn.btn.btn-primary.col-lg-1(type='button', value='提交') 提交
+
+      #tab-3.tab-pane
+        .panel.panel-info
+          .panel-heading 筛选
+          .panel-body
+            form#form2.form-horizontal(action='./index.php', method='get', role='form')
+              input(type='hidden', name='c', value='platform')
+              input(type='hidden', name='a', value='qr')
+              input(type='hidden', name='do', value='display')
+              .form-group
+                label.col-xs-12.col-sm-3.col-md-2.control-label 场景名称
+                .col-sm-6.col-lg-8.col-xs-12
+                  input.form-control(type='text', name='keyword', value='', placeholder='请输入场景名称')
+              .form-group
+                label.col-xs-12.col-sm-3.col-md-2.control-label 时间范围
+                .col-sm-6.col-lg-8.col-xs-12
+                  script(type='text/javascript').
+                    /**
+                    require(["daterangepicker"], function ($) {
+                      $(function () {
+                        $(".daterange.daterange-date").each(function () {
+                          var elm = this;
+                          $(this).daterangepicker({
+                            startDate: $(elm).prev().prev().val(),
+                            endDate: $(elm).prev().val(),
+                            format: "YYYY-MM-DD"
+                          }, function (start, end) {
+                            $(elm).find(".date-title").html(start.toDateStr() + " 至 " + end.toDateStr());
+                            $(elm).prev().prev().val(start.toDateStr());
+                            $(elm).prev().val(end.toDateStr());
+                          });
+                        });
+                      });
+                    });
+                     */
+                  input(name='time[start]', type='hidden', value='2016-03-28')
+                  input(name='time[end]', type='hidden', value='2016-05-03')
+                  button.btn.btn-default.daterange.daterange-date(type='button')
+                    span.date-title 2016-03-28 至 2016-05-03
+                    i.fa.fa-calendar
+                .pull-right.col-xs-12.col-sm-3.col-lg-2
+                  button.btn.btn-default
+                    i.fa.fa-search
+                    |  搜索
+        .panel.panel-default
+          .panel-heading
+            | 详细数据    
+            span.text-muted(style='color:red;') 扫描次数：0
+          .table-responsive.panel-body
+            table.table.table-hover
+              thead
+                tr
+                  th(style='width:80px;')
+                    | 粉丝
+                    i
+                  th(style='width:80px;')
+                    | 场景名称
+                    i
+                  th(style='width:100px;')
+                    | 场景ID/场景值
+                    i
+                  th(style='width:110px;')
+                    | 关注扫描
+                    i
+                  th(style='width:150px;')
+                    | 扫描时间
+                    i
+                  th(style='width:110px;') 操作
+              tbody
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+    script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+    script(src='/themes/default/plugins/datatables/dataTables.select.min.js')
+   script.
+     $(document).ready(function () {
+       $("#radio1").on("click", function(){
+         $("#model1").removeAttr("style");
+         $("#model2").attr("style", "display:none");
+         $("#expireSeconds").addClass("required");
+         $("#sceneStr").removeClass("required");
+       });
+
+       $("#radio0").on("click", function () {
+         $("#model1").attr("style", "display:none");
+         $("#model2").removeAttr("style");
+         $("#expireSeconds").removeClass("required");
+         $("#sceneStr").addClass("required");
+       });
+      /**/
+
+       var form = $("#form1");
+       $("#saveBtn").on("click", function(){
+         form.submit();
+       });
+
+       form.validate({
+         rules: {
+           sceneName: {
+             required: true
+           }, keyWord: {
+             required: true
+           }, type: {
+             required: true
+           }
+         }
+       });
+
+       var tt = $('#qrCodeList')
+               .DataTable({
+                 language: {
+                   "url": "/themes/default/plugins/datatables/Chinese.json"
+                 },
+                 searching: true,
+                 lengthChange: true,
+                 serverSide: true,
+                 autoWidth: false,
+                 select: true,
+                 stateSave: true,
+                 ajax: {url: '/wechat/qrcode/dataTable'},
+                 rowid: '_id',
+                 order: [[1, 'asc']],
+                 columnDefs: [
+                   {
+                     targets: -1, visible: true, sortable: false, className: 'text-center',
+                     render: function (data, type, row) {
+                       return " <button class='btn btn-default btn-xs remark' type='button'><i class='fa fa-commenting-o'></i></button>";
+                     }
+                   }
+                 ],
+                 columns: [
+                   {
+                     data: "sceneName", sortable: false, defaultContent: '', class: 'text-center', width: "100px",
+                   },
+                   {data: "keyWord", defaultContent: '', width: "100px"},
+                   {
+                     data: "type", defaultContent: '', class: 'text-center', width: "70px",
+                     render: function (data, type, row) {
+                       return data == 1 ? '临时' : '永久';
+                     }
+                   },
+                   {
+                     data: "expiresTime", defaultContent: '', class: 'text-center', width: "120px",
+                     render: function (data, type, full, meta) {
+                       var b = moment(new Date(parseInt(data)) * 1000);
+                       var date = "";
+                       if (data != null) {
+                         date = b.format("YYYY-MM-DD HH:mm:ss");
+                       }
+                       return date;
+                     }
+                   },
+                   {data: "sceneStr", sortable: false, defaultContent: '', width: "100px"},
+                   {data: "url", sortable: false, defaultContent: '', width: "50px", render: function(data, type, full, meta) {
+                     return "<a href="+ data +"><image src="+ data +" height='50px' width='50px'></image></a>";
+                   }},
+                   {data: "url", sortable: false, defaultContent: '', width: "50px", render: function(data, type, full, meta) {
+                     return "<a href='"+data+"'>查看</a>";
+                    }
+                   },
+                   {data: "createdAt", sortable: false, defaultContent: '', width: "100px",
+                     render: function (data, type, full, meta) {
+                       var b = moment(new Date(parseInt(data)) * 1000);
+                       var date = "";
+                       if (data != null) {
+                         date = b.format("YYYY-MM-DD HH:mm:ss");
+                       }
+                       return date;
+                     }},
+                   {data: "expiresTime", sortable: false, defaultContent: '', width: "100px"},
+                   {data: ""}
+                 ]
+               }).on('draw.dt', function () {
+                 $("#tableWrapper").fadeIn();
+               });
+
+
+     });

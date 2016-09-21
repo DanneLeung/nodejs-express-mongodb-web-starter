@@ -1,0 +1,23 @@
+//
+  Created by pc on 2015/10/27.
+.row
+  .col-md-12.margin-bottom
+    .form-group
+      label.control-label(for="daterange-btn")
+      button#daterange-btn.btn.btn-default(type='button')
+        i.fa.fa-calendar.fa-fw
+        |选择时间
+        i.fa.fa-caret-down
+      input#times(name='times' type='hidden')
+      p.help-block 全部消息(文字消息保存5天，其它类型消息只保存3天)
+  .col-md-12
+    #tableWrapper(style="display:none")
+      table#wholeList.table.table-hover.table-striped.table-responsive
+        thead
+          th 头像
+          th 昵称
+          th 内容
+          th 时间
+          th 回复标记
+          th.text-center(width="160") 操作
+        tbody

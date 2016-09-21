@@ -1,0 +1,133 @@
+//
+  Created by pc on 2015/10/27.
+
+extends ../layout
+
+block main
+  .panel
+    .panel-heading
+      h3.panel-title
+        | #{award.isNew ? '添加奖品' : '修改奖品'}
+        span.text-info #{award.name}
+        .panel-tools.pull-right
+          a#save.btn.btn-default.btn-sm(title='保存')
+            i.fa.fa-save
+          a.btn.btn-default.btn-sm(href='/activities/award/list')
+            i.fa.fa-reply
+    .panel-body
+      if !award.isNew
+        form#userDelForm(method='post', style='display:none', action='/activities/award/del')
+          input#ids(type='hidden',name='ids',value="#{award._id}")
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+      form#awardForm.form-horizontal(method="post",action="/activities/award/save",enctype='multipart/form-data')
+        if(!award.isNew)
+          input#id(type='hidden', name='id', value="#{award._id}")
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        //.form-group
+        //  label.control-label.col-sm-2 类型
+        //  .col-sm-10
+        //    input#type.form-control(type="text",name="type",value="#{award.type}")
+        .form-group
+          label.control-label.col-sm-2.required 名称
+          .col-sm-9
+            input#name.form-control(type="text",name="name",value="#{award.name}")
+        .form-group
+          label.control-label.col-sm-2.required 标识
+          .col-sm-9
+            input#mark.form-control(type="text",name="mark",value="#{award.mark}")
+        .form-group
+          label.control-label.col-sm-2.required 类型
+          .col-sm-9
+            select#type.form-control
+              option 请选择
+              each v,k in types
+                if(k == award.type)
+                  option(value="#{k}", selected="selected") #{v}
+                else
+                  option(value="#{k}") #{v}
+        .form-group
+          label.control-label.col-sm-2 奖品数量
+          .col-sm-9
+            input#num.form-control(type="text",name="num",value="#{award.num ? award.num : 1}")
+        .form-group
+          label.control-label.col-sm-2 兑换页面
+          .col-sm-9
+            input#destUrl.form-control(type="text",name="destUrl",value="#{award.destUrl}")
+        .form-group
+          label.control-label.col-sm-2 库存数量
+          .col-sm-9
+            input#stock.form-control(type="number",name="stock",value="#{award.stock}")
+        .form-group
+          label.control-label.col-sm-2 成本价格
+          .col-sm-9
+            input#value.form-control(type="number",name="value",value="#{award.value.toFixed(2)}")
+        .form-group
+          label.control-label.col-sm-2 公开售价
+          .col-sm-9
+            input#price.form-control(type="number",name="price",value="#{award.price.toFixed(2)}")
+        .form-group
+          label.control-label.col-sm-2 奖品说明
+          .col-sm-9
+            textarea#description.form-control(name="description", rows="5")
+              | #{award.description}
+        .form-group
+          label.control-label.col-sm-2 奖品明细:
+          .col-sm-9
+            label.checkbox
+              if (award && award.hasItems)
+                input#hasItems(type='checkbox' name='hasItems' checked="checked")
+              else
+                input#hasItems(type='checkbox' name='hasItems')
+              span.text-info &nbsp;&nbsp; 如果奖品有详细明细清单，库存记录，请打勾，并且维护明细清单.
+        .form-group
+          label.control-label.col-sm-2 可用:
+          .col-sm-9
+            label.checkbox
+              if (award && award.enabled)
+                input#enabled(type='checkbox' name='enabled' checked="checked")
+              else
+                input#enabled(type='checkbox' name='enabled')
+        .form-group
+          label.control-label.col-sm-2 奖品图片
+          .col-sm-9
+            input#pic.form-control(type="file",name='pic')
+          if(award.pic)
+            .col-sm-9.col-xs-12.col-sm-offset-2
+              img.img-responsive.img-thumbnail(src='#{award.pic ? award.pic : ""}', width='200')
+block scripts
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    $(document).ready(function () {
+      $("#pic").filestyle({buttonText: '上传图片'});
+
+      var form = $('#awardForm');
+      var name = '';
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          name: {
+            required: true
+          }, mark: {
+            required: true
+          }, value: {
+            priceNum: true
+          }, price: {
+            priceNum: true
+          }
+        },
+        messages: {
+          name: {
+            remote: '奖品名称保持唯一'
+          }, type: {
+            required: '类型不能为空'
+          },
+          time: {
+            required: '活动时间必填'
+          }
+        }
+      });
+
+    });

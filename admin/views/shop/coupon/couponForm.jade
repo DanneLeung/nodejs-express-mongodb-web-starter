@@ -1,0 +1,167 @@
+//
+   Created by yu869 on 2016/3/31.
+
+extends layout
+block header
+  link( rel="stylesheet" href="/themes/default/plugins/datepicker/datetimepicker.css")
+//应用的page title
+block pageTitle
+  if coupon.isNew
+    h1 券新增
+      small 添加券信息
+  if !coupon.isNew
+    h1 券编辑
+      small 编辑券信息
+block main
+  .panel
+    .panel-heading.with-border
+      if coupon.isNew
+        h3.panel-title 添加券信息
+      if !coupon.isNew
+        h3.panel-title 编辑券信息
+      .panel-tools
+        a.btn.btn-box-tool.btn-default(href='/shop/coupon')
+          i.fa.fa-reply
+          span  返回
+        | &nbsp;
+        if coupon.isNew || !coupon.isNew
+          button#save.btn.btn-box-tool.btn-default
+            i.fa.fa-save
+            span  保存
+        | &nbsp;
+      //button.btn.btn-box-tool(data-widget="collapse")
+      //  i.fa.fa-caret-left
+    .panel-body
+      div#userEdit.row
+        .col-md-12
+          form#groupForm.form-horizontal(name='groupForm', action='/shop/coupon/save', method='post')
+            if !coupon.isNew
+              input#id(type='hidden', name='id', value="#{coupon._id}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+            .form-group
+              label.control-label.col-md-3.required 类型：
+              .controls.col-md-9
+                input#type.form-control.required(name='type',placeholder='券类型', value="#{coupon ? coupon.type : ''}")
+            .form-group
+              label.control-label.col-md-3.required 标识：
+              .controls.col-md-9
+                input#code.form-control.required(name='code',placeholder='唯一标识', value="#{coupon ? coupon.code : ''}")
+
+            .form-group
+              label.control-label.col-md-3.required 名称：
+              .controls.col-md-9
+                input#name.form-control.required(name='name',placeholder='券显示名称', value="#{coupon ? coupon.name : ''}")
+
+            .form-group
+              label.control-label.col-md-3 面值：
+              .controls.col-md-9
+                input#value.form-control(name='value', type="number", placeholder='面值', value="#{coupon ? coupon.value : ''}")
+
+            .form-group
+              label.control-label.col-md-3 售价：
+              .controls.col-md-9
+                input#price.form-control(name='price', type="number", placeholder='售价', value="#{coupon ? coupon.price : ''}")
+
+            .form-group
+              label.control-label.col-md-3 兑换积分数：
+              .controls.col-md-9
+                input#needScore.form-control(name='needScore', type="number", placeholder='所兑换积分数', value="#{coupon ? coupon.needScore : ''}")
+
+            .form-group
+              label.control-label.col-md-3 最大数量：
+              .controls.col-md-9
+                input#max.form-control.required(name='max', type="number", placeholder='最大数量', value="#{coupon ? coupon.max : ''}")
+
+            //.form-group
+            //  label.control-label.col-md-3 已发行数量：
+            //  .controls.col-md-9
+            //    input#currentNo.form-control.required(name='currentNo', type="number", placeholder='已发行数量', value="#{coupon ? coupon.currentNo : ''}")
+
+            .form-group
+              label.control-label.col-md-3 发行开始时间：
+              .controls.col-md-9
+                input#publishBegin.form-control.required.compareDate(name='publishBegin', value="#{coupon ? formatDatetime(coupon.publishBegin) : ''}", placeholder='点击选时间')
+
+            .form-group
+              label.control-label.col-md-3 发行结束时间：
+              .controls.col-md-9
+                input#publishEnd.form-control.required.compareDate(name='publishEnd', value="#{coupon ? formatDatetime(coupon.publishEnd) : ''}", placeholder='点击选时间')
+
+            .form-group
+              label.control-label.col-md-3 激活:
+              .controls.col-md-9
+                if (coupon && coupon.enabled)
+                  input#enabled.mini(type='checkbox' name='enabled' checked)
+                else
+                  input#enabled.mini(type='checkbox' name='enabled')
+
+            .form-group
+              label.control-label.col-md-3 描述：
+              .controls.col-md-9
+                textarea#description.form-control(name='description',placeholder='描述')
+                  | #{coupon ? coupon.description : ''}
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='/themes/default/plugins/datepicker/bootstrap-datetimepicker.min.js')
+  script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/locale/zh-cn.js')
+  script.
+    $(document).ready(function () {
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+
+      var startDate = $('.compareDate').datetimepicker({
+        format: "yyyy-mm-dd hh:ii",
+        autoclose: true,
+        todayBtn: 'linked'
+      });
+
+      jQuery.validator.addMethod("compareDate", function (value, element) {
+        var start = moment($("#publishBegin").val()).startOf('day');
+        var end = moment($("#publishEnd").val()).endOf('day');
+        var flag = true;
+        if (end.diff(start) < 0) {
+          flag = false;
+        }
+        return this.optional(element) || flag;
+      }, jQuery.validator.format("结束日期必须大于开始日期"));
+
+
+      var form = $('#groupForm');
+      $("#save").on('click', function () {
+          form.submit();
+      });
+      form.validate({
+        rules: {
+          type: {
+            required: true
+          }, code: {
+            required: true,
+            remote: '/shop/coupon/checkCode?oldCode=#{coupon ? coupon.code : ''}'
+          }, name: {
+            required: true,
+            remote: '/shop/coupon/checkName?oldName=#{coupon ? coupon.name : ''}'
+          }
+        },
+        messages: {
+          code: {
+            remote: '标识已经重复，请修改为其他'
+          },name: {
+            remote: '名称已经重复，请修改为其他'
+          }
+        }
+      });
+
+
+      $('#del').on('click', function () {
+        bootbox.confirm("确定要删除数据吗?", function (result) {
+          if (result) {
+            $("#groupDelForm").submit();
+          }
+        });
+      });
+    });

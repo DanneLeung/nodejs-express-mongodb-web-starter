@@ -1,0 +1,27 @@
+//extends layouts/default
+doctype html
+html
+  head
+    include layouts/incs/header
+    block header
+
+  // ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR.
+  body.hold-transition.layout-top-nav.skin-blue
+    #wrapper
+      .error-page
+        h2.headline.text-yellow  404
+        .error-content(style="padding-top:30px")
+          h3
+            i.fa.fa-warning.text-yellow
+            |  抱歉! 您访问的页面不存在!
+          p
+            | 我们无法找到你要访问的页面，您可以
+            a(href='/') 返回首页
+          //form.search-form
+            .input-group
+              input.form-control(type='text', name='search', placeholder='Search')
+              .input-group-btn
+                button.btn.btn-warning.btn-flat(type='submit', name='submit')
+                  i.fa.fa-search
+            // /.input-group
+        // /.error-content

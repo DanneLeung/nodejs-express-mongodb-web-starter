@@ -1,0 +1,125 @@
+//
+  Created by pc on 2015/10/27.
+extends ../layout
+
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  //link( rel="stylesheet" href="/themes/default/plugins/datatables/select.bootstrap.min.css" type="text/css")
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 闯关的信息管理
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href="/activities/quiz/run/add" title="添加闯关")
+            i.fa.fa-plus.fa-fw
+          //button#appoint.btn.btn-default.btn-sm(title="指定闯关")
+          //  i.fa.fa-hand-pointer-o
+          //button#search.btn.btn-default.btn-sm(title="查看指定闯关")
+          //  i.fa.fa-search
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#poolList.table.table-hover.table-striped.table-responsive
+          thead
+            //th 类型
+            th 关联活动
+            th 题库名称
+            th 闯关名称
+            th 奖品
+            th URL
+            th 激活
+            th 操作
+          tbody
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='#{theme}/js/jquery.qrcode.min.js')
+  //script(src='/themes/default/plugins/datatables/dataTables.select.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        //select: true,
+        deferRender: true
+      };
+
+      var t = $('#poolList').DataTable($.extend(opts, {
+        ajax: {url: '/activities/quiz/run/datatable'},
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              var url = contextFront + '/quiz/' + row._id + '?cid=#{req.session.channel.identity}&wid=#{req.session.wechat._id}';
+              return "<div class='btn-group'>"
+                      + '<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-qrcode"></i><span class="caret"></span></button>'
+                      + '<div class="qrcode dropdown-menu dropdown-menu-right" style="width:210px;height: 210px;padding:4px;border:1px solid #f4f4f4" data-url="' + url + '"></div>'
+                      + "<a class='btn btn-default btn-sm' title='答题记录与统计' href='/activities/quiz/stat/" + row._id + "'><i class='fa fa-line-chart'></i></a>"
+                      + "</div>&nbsp;&nbsp;"
+                      + "<div class='btn-group'>"
+                      + "<a class='btn btn-default btn-sm' title='编辑' href='/activities/quiz/run/edit/" + row._id + "'><i class='fa fa-pencil'></i></a>"
+                      + "<a class='btn btn-default btn-sm del' title='删除'><i class='fa fa-trash'></i></a>"
+                      + "<a class='btn btn-default btn-sm search' title='关卡设置' href='/activities/quiz/run/searchLevel/" + row._id + "'><i class='fa fa-list'></i></a></div>";
+            }
+          }
+        ],
+        columns: [
+          //{data: ""},
+          //{data: "type", defaultContent: ''},
+          {data: "activity.name", defaultContent: ''},
+          {data: "quizPool.name", defaultContent: ''},
+          {data: "name", defaultContent: ''},
+          //- {data: "description", defaultContent: ''},
+          {data: "award.name", defaultContent: ''},
+          {
+            data: "url", class: "text-center",
+            render: function (data, type, full, meta) {
+              var url = contextFront + '/quiz/' + full._id + '?cid=#{req.session.channel.identity}&wid=#{req.session.wechat._id}';
+              return '<a href="' + url + '">' + url + '</a>';
+            }
+          },
+          {
+            data: "enabled",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='/activities/quiz/run/enable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='/activities/quiz/run/enable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+          },
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+        $(".qrcode").each(function () {
+          $(this).qrcode({'width': 200, 'height': 200, 'text': $(this).data('url')});
+        });
+      });
+
+      //删除闯关的事件
+      $('#poolList').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              window.location.href = '/activities/quiz/run/del/' + id;
+            }
+          });
+        }
+      });
+
+    })

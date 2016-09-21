@@ -24,7 +24,7 @@ gulp.task('js', function (cb) {
 
 gulp.task('uglify', ['js'], function (cb) {
   return gulp.src(['./public/themes/dist/js/*.js', '!./public/themes/dist/js/*.min.js'])
-    .pipe(uglify({/* preserveComments: "license"*/}))
+    .pipe(uglify({/* preserveComments: "license"*/ }))
     .pipe(ext_replace('.min.js'))
     .pipe(gulp.dest('./public/themes/dist/js')).on('end', cb);
 });
@@ -39,14 +39,29 @@ gulp.task('copy', ['uglify'], function () {
 
 
 gulp.task('livereload', function () {
-  var server = livereload();
+  livereload.listen();
   // app/**/*.*的意思是 app文件夹下的 任何文件夹 的 任何文件
-  return gulp.watch(['app/**/*.*']);
+  // return gulp.watch(['app/**/*.*']);
 });
 
-gulp.task('nodemon', ['livereload'], function () {
+gulp.task('nodemon-app', function () {
   return nodemon({
     script: 'app/app.js',
+    ext: 'js',
+    ignore: [
+      "tmp/**",
+      "public/**",
+      "/**/views/**"
+    ],
+    env: {
+      "NODE_ENV": "development",
+    }
+  });
+});
+gulp.task('nodemon-admin', function () {
+  return nodemon({
+    script: 'admin/server.js',
+    ext: 'js',
     ignore: [
       "tmp/**",
       "public/**",
@@ -58,4 +73,5 @@ gulp.task('nodemon', ['livereload'], function () {
   });
 });
 
-gulp.task('app', ['nodemon', 'livereload']);
+gulp.task('app', ['nodemon-app']);
+gulp.task('admin', ['nodemon-admin']);

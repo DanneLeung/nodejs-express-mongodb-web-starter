@@ -1,0 +1,434 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ../layout
+block header
+  link( rel="stylesheet",href="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.css")
+  style.
+    ul {
+      padding: 0
+    }
+
+    #edit li {
+      list-style-type: none;
+      width: 20%;
+      padding: 8px;
+      font-weight: bold;
+    }
+
+    #edit li.small {
+      width: 5%;
+    }
+
+    #edit .tbody li {
+      width: 100%;
+      font-weight: normal;
+    }
+
+    #edit .tbody li:hover {
+      background: #eee;
+    }
+
+    #edit .tbody .form-group {
+      width: 20%;
+      margin: 8px 0;
+    }
+
+    #edit .tbody .form-group.small {
+      width: 5%;
+    }
+
+    #edit .tbody .form-group.smallClose {
+      width: 3%;
+    }
+
+    #edit .tbody .form-group.portlet-header {
+      width: 5%;
+    }
+
+    #edit .tbody input, #edit .tbody checkbox, #edit .tbody select {
+      width: 90%;
+      margin: 0 5%;
+    }
+
+    #edit .portlet-placeholder {
+      width: 100%;
+      height: 50px;
+    }
+
+block main
+  if !event.isNew
+    form#userDelForm(method='post', style='display:none', action='/activities/event/del')
+      input#ids(type='hidden',name='ids',value="#{event._id}")
+      input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+  .panel(style="position:relative;")
+    .panel-heading
+      h3.panel-title
+        span.text-info #{event.name} #{event.isNew ? '创建报名活动' : '活动修改'}
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href='/activities/event')
+            i.fa.fa-reply
+          button#save.btn.btn-sm.btn-default(title="保存")
+            i.fa.fa-save
+    .panel-body
+      form#eventForm.form-horizontal(method="post",action="/activities/event/save",enctype='multipart/form-data')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        if(!event.isNew)
+          input#id(type='hidden', name='id', value="#{event._id}")
+
+        ul.nav.nav-tabs
+          li.active
+            a(href='#base', data-toggle='tab') 基本参数
+          li
+            a(href='#media', data-toggle='tab') 图文信息
+          li
+            a(href='#formfields', data-toggle='tab') 表单数据
+        .tab-content.padding(style='padding:15px')
+          #base.tab-pane.fade.in.active
+            .form-group
+              label.control-label.col-sm-2.required 活动标题：
+              .col-sm-10
+                input#name.form-control.required(type="text",name="name",value="#{event.name}")
+
+            .form-group
+              label.control-label.col-sm-2 活动时间范围：
+              .col-sm-10
+                .input-group
+                  input#reservationtime.form-control.pull-right(type='text',name="time",value="#{event.startTime && event.endTime ? (formatDatetime(event.startTime) + '-' + formatDatetime(event.endTime)) : ''}")
+                  .input-group-addon
+                    i.fa.fa-clock-o
+
+            .form-group
+              label.control-label.col-sm-2 限制人数：
+              .col-sm-10
+                input#limit.form-control(type="number",name="limit",value="#{event.limit}")
+
+
+            //.form-group
+              label.control-label.col-sm-2 入口URL：
+              .col-sm-10
+                input#url.form-control(type="text",name="url",value="#{event.url}",readonly="true")
+
+            .form-group
+              label.control-label.col-sm-2 说明：
+              .col-sm-10
+                textarea#description.form-control(name='description' ,rows="3")
+                  | #{event.description ? event.description : ''}
+
+            .form-group
+              label.control-label.col-sm-2 上线：
+              .col-sm-10
+                label.checkbox
+                  if (event && event.enabled)
+                    input#enabled(type='checkbox' name='enabled' checked="checked")
+                  else
+                    input#enabled(type='checkbox' name='enabled')
+                    | #{event.text ? event.text : ''}
+
+
+          #media.tab-pane.fade
+            .form-group
+              label.control-label.col-sm-2.col-md-2.col-xs-12 上传LOGO：
+              .col-sm-10
+                input#log.form-control(type="file",name='logo')
+                p.help-block 上传logo图片会被压缩到200X100像素,如未上传图片,将使用系统设定的LOGO
+              if(event.logo)
+                .col-sm-10.col-xs-12.col-sm-offset-2
+                  img#logoimg.img-responsive.img-thumbnail(src='#{event.logo ? url(event.logo.url) : ""}', width='200')
+
+            .form-group
+              label.control-label.col-sm-2 关键字：
+              .col-sm-10
+                input#keywords.form-control(type="text",name="keywords",value="#{event.keywords}")
+                p.help-block 填写微信平台自动回复关键字,用户发送关键字则会自动图文回复回复活动链接
+
+            .form-group
+              label.control-label.col-sm-2 成功提交后显示信息：
+              .col-sm-10
+                textarea#submitText.form-control(name='submitText' ,rows="3")
+                  | #{event.submitText ? event.submitText : ''}
+                p.help-block 设置用户提交完信息后显示成功页面的信息内容
+
+            .form-group
+              label.control-label.col-sm-2 文案：
+              .col-sm-10
+                textarea#text.form-control(name="backgroup", rows="5")
+
+            .form-group
+              label.control-label.col-sm-2.col-md-2.col-xs-12 背景图案：
+              .col-sm-10
+                input#bgimg.form-control(type="file",name='bgimg')
+              if(event.bgimg)
+                .col-sm-10.col-xs-12.col-sm-offset-2
+                  img#bgimgimg.img-responsive.img-thumbnail(src='#{event.bgimg ? url(event.bgimg.url) : ""}', width='200')
+            .form-group
+              label.control-label.col-sm-2.col-md-2.col-xs-12 备注：
+              .col-sm-10
+                input.form-control(type="text",name='remark',value="#{typeof event.remark !== 'undefined' && event.remark ? event.remark : ''}")
+            .form-group
+              label.control-label.col-sm-2.col-md-2.col-xs-12 备注颜色：
+              .col-sm-10
+                  input.form-control(class="jscolor",type="text",name='remarkColor',value="#{typeof event.remarkColor !== 'undefined' && event.remarkColor ? event.remarkColor : ''}")
+            .form-group
+              label.control-label.col-sm-2.col-md-2.col-xs-12 边框颜色：
+              .col-sm-10
+                input.form-control(class="jscolor",type="text",name='views.borderColor',value="#{typeof event.views !== 'undefined' && event.views ? event.views.borderColor : ''}")
+            .form-group
+              label.control-label.col-sm-2.col-md-2.col-xs-12 边框粗细：
+              .col-sm-10
+                input.form-control(type="number",name='views.borderWidth',value="#{typeof event.views !== 'undefined' && event.views ? event.views.borderWidth : ''}")
+            .form-group
+              label.control-label.col-sm-2.col-md-2.col-xs-12 边框圆角：
+              .col-sm-10
+                input.form-control(type="number",name='views.borderRadius',value="#{typeof event.views !== 'undefined' && event.views ? event.views.borderRadius : ''}")
+
+
+          #formfields.tab-pane.fade
+            #addField
+              a.btn.btn-primary.add(title='添加字段',style="margin-right:15px;")
+                i.fa.fa-plus
+
+            #edit
+              .title
+                ul.clearfix
+                  li.text-center.pull-left 显示名称
+                  li.text-center.pull-left 字段名称(英文字母)
+                  li.text-center.pull-left 数据类型
+                  li.text-center.pull-left.small 必须
+                  li.text-center.pull-left.small 唯一
+                  li.text-center.pull-left 数据约束
+                  li.text-center.pull-left.small 删除
+                  li.text-center.pull-left.small 排序
+                .tbody
+                  ul#sortable(style="position:relative;")
+                    each f,idx in event.formfield
+                      li.clearfix.ui-state-default
+                        .text-center.form-group.pull-left
+                          input.form-control.fieldlabel.required1.noRepeat(type='text',value="#{f.label}",name="label")
+                        .text-center.form-group.pull-left
+                          input.form-control.fieldname.required1.chrnum.noRepeat(type='text',value="#{f.name}",name="fieldname")
+                        .text-center.form-group.pull-left
+                          select.form-control.fieldtype.required1(name="type",required)
+                            option(value="#{f.type}") #{f.type}
+                            option(value="text") 单行文本
+                            option(value="textarea") 多行文本
+                            option(value="number") number数字
+                            option(value="date") date日期
+                            option(value="email") email邮箱
+                            option(value="passworld") passworld密码
+                            option(value="radio",role="other") radio单选框
+                            option(value="checkbox",role="other") checkbox多选框
+                            option(value="select",role="other") select下拉框
+
+                        .text-center.form-group.pull-left.small
+                          label.checkbox
+                            if f.required == 1
+                              input.form-control.fieldrequired(type='checkbox',name='required#{f.name}',checked)
+                            else
+                              input.form-control.fieldrequired(type='checkbox',name='required#{f.name}')
+
+                        .text-center.form-group.pull-left.small
+                          label.checkbox
+                            if f.unique && f.unique == 1
+                              input.form-control.fieldrequired(type='checkbox',name='unique#{f.name}',checked)
+                            else
+                              input.form-control.fieldrequired(type='checkbox',name='unique#{f.name}')
+
+                        .text-center.form-group.pull-left
+                          if f.other === 1
+                            input.form-control(name="range",type="text",value="#{typeof f.range === 'undefined' ? '' : f.range.toString().replace(/,/g, '-')}",placeholder="字数范围/日期范围/内容")
+                          else
+                            input.form-control(name="range",type="text",value="#{typeof f.range === 'undefined' ? '' : f.range.toString().replace(/,/g, ' ')}",placeholder="字数范围/日期范围/内容")
+                        .text-center.form-group.pull-left.small
+                          button.close.pull-right(type="button",aria-label="Close")
+                            span(aria-hidden="true") &times;
+                        .text-center.form-group.pull-right.portlet-header
+                          a.glyphicon.glyphicon-arrow-up(href="javascript:void(0);")
+                          a.glyphicon.glyphicon-arrow-down(href="javascript:void(0);")
+
+            p.text-info 手机号、邮箱均无需改动，会自动验证
+            p.text-info 范围中，用"-"隔开，'-20'代表最大范围20，无最小限制，'20-'代表最小值为20，无最大限制，当类型是单选、多选、下拉框时，内容用空格隔开
+
+block scripts
+  script(src="//cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.min.js")
+  script(src="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.21/daterangepicker.min.js")
+  script(src="//cdn.ckeditor.com/4.4.3/standard/ckeditor.js")
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script(src="#{theme}/js/jscolor.min.js")
+  script.
+    $(document).ready(function () {
+      var edits = $('#edit .tbody li');
+      CKEDITOR.replace('text');
+      //图片上传
+      $(".form-group").find(':file').filestyle({buttonText: '上传图片'});
+
+      //活动日期格式
+      $('#reservationtime').daterangepicker({
+        startDate:'#{event.startTime ? formatDatetime(event.startTime) : ''}',
+        endDate:'#{event.endTime ? formatDatetime(event.endTime) : ''}',
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 10,
+        locale:{format: 'YYYY-MM-DD HH:mm:ss'}
+      });
+
+
+      function addField(value, type) {
+        var $add = $('<li class="clearfix">' +
+                '<div class="form-group pull-left"><input type="text" placeholder="添加字段" name="label" class="form-control fieldlabel required1 noRepeat"></div>' +
+                '<div class="form-group pull-left"><input type="text" placeholder="name(英文)" name="fieldname" class="form-control fieldname required1 chrnum noRepeat" /></div>' + value +
+                '<div class="form-group text-center pull-left small"><div class="icheckbox_square-blue checked" style="position: relative;"><input type="checkbox"  checked="checked" class="form-control" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div></div>' +
+                '<div class="form-group text-center pull-left small"><div class="icheckbox_square-blue checked" style="position: relative;"><input type="checkbox"  checked="checked" class="form-control" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div></div>' + type +
+                '<div class="form-group pull-left small"><button type="button" aria-label="Close" class="close pull-right"><span aria-hidden="true">×</span></button></div>' +
+                '<div class="text-center form-group pull-right portlet-header ui-sortable-handle"><a href="javascript:void(0);" class="glyphicon glyphicon-arrow-up"></a><a href="javascript:void(0);" class="glyphicon glyphicon-arrow-down"></a></div></li>');
+        $('#edit .tbody ul').append($add);
+        $add.find('input.fieldlabel').focus();
+
+        //加载后的checkbox样式添加
+        $add.find('.icheckbox_square-blue').click(function () {
+          if ($(this).attr('class').indexOf('checked') >= 0) {
+            $(this).removeClass('checked');
+            $(this).find('input[type="checkbox"]').attr('checked', false);
+          } else {
+            $(this).addClass('checked');
+            $(this).find('input[type="checkbox"]').attr('checked', true);
+          }
+        }).hover(function () {
+          $(this).addClass('hover');
+        }, function () {
+          $(this).removeClass('hover');
+        });
+
+        //处理必填未选不提交后台
+        $add.find('input.fieldname').bind('change', function () {
+          var name = $(this).val();
+          $(this).closest('tr').find('input[type="checkbox"]').attr('name', 'required' + name);
+        });
+
+        //范围针对不同类型的说明
+        $add.find('select').bind('change', function () {
+          if ($(this).find('option:checked').attr('role') === 'other') {
+            $add.find('input[name="range"]').attr('placeholder', '如:男 女,空格隔开')
+          }
+          if ($(this).find('option:checked').val() === 'date') {
+            $add.find('input[name="range"]').attr('placeholder', '如:2000.01.01-2020.01.01')
+          }
+        });
+
+        //删除此行
+        $add.find('.close').click(function () {
+          $add.remove();
+        });
+
+        //click换序
+        $add.find('.glyphicon-arrow-down').click(function () {
+          var idx = $(this).closest('li').index(), curr = $(this).closest('li');
+          $('#edit .tbody li').eq(idx + 1).after(curr)
+        });
+        $add.find('.glyphicon-arrow-up').click(function () {
+          var idx = $(this).closest('li').index(), curr = $(this).closest('li');
+          $('#edit .tbody li').eq(idx - 1).before(curr);
+        });
+      }
+
+      //+字段
+      $('#addField  .add').click(function () {
+        var value = '<div class="form-group pull-left"><select class="form-control fieldtype required1" name="type" aria-invalid="false"><option value="text">单行文本</option><option value="textarea">多行文本</option><option value="number">number数字</option><option value="date">date日期</option><option value="email">email邮箱</option><option value="passworld">passworld密码</option><option value="radio" role="other">radio单选框</option><option value="checkbox" role="other">checkbox多选框</option><option value="select"  role="other">select下拉框</option></select></div>';
+        var type = '<div class="form-group pull-left"><input type="text" placeholder="字数范围/日期范围/内容" name="range" class="form-control range"></div>';
+        addField(value, type);
+      });
+
+      $('#edit .fieldname').bind('change', function () {
+        var name = $(this).val();
+        $(this).closest('tr').find('input[type="checkbox"]').attr('name', 'required' + name);
+        $(this).closest('tr').find('select').attr('name', 'type' + name);
+        $(this).closest('tr').find('input[type="radio"]').each(function () {
+          $(this).attr('name', 'type' + name);
+        })
+      });
+
+      $('#edit select').bind('change', function () {
+        if ($(this).find('option:checked').attr('role') === 'other') {
+          $(this).closest('tr').find('input[name="range"]').attr('placeholder', '如:男 女,空格隔开')
+        }
+        if ($(this).find('option:checked').val() === 'date') {
+          $(this).closest('tr').find('input[name="range"]').attr('placeholder', '如:2000.01.01-2020.01.01');
+        }
+      });
+
+      $('#edit .close').click(function () {
+        $(this).closest('li').remove();
+      });
+
+
+      //validator
+      $('#eventForm').validate({
+        rules: {
+          name: {
+            required: true,
+            remote: '/activities/checkName?oldName=#{event ? event.name : ''}'
+          }
+        },
+        messages: {
+          name: {
+            remote: '活动名称已存在'
+          }
+        }
+      });
+
+      //动态表单部分验证
+      $('#save').click(function () {
+        console.log('save');
+        var form = $('#eventForm');
+        var isRepeat = [];
+        var errors = [];
+        $('#edit input[type!="hidden"]').each(function () {
+          $(this).val($.trim($(this).val()))
+          if ($.trim($(this).val()).length === 0 && $(this).attr('class').indexOf('required1') >= 0) {
+            $(this).addClass('has-error').attr('placeholder', '必填').closest('.form-group').addClass('has-error');
+            errors.push((this));
+          }
+          ;
+
+          if ($(this).attr('class').indexOf('noRepeat') >= 0 && isRepeat.indexOf($(this).val()) >= 0) {
+            $(this).removeClass('has-success').addClass('has-error').val('').attr('placeholder', '不能重复').closest('.form-group').removeClass('has-success').addClass('has-error');
+            errors.push($(this));
+          }
+          if ($(this).attr('class').indexOf('noRepeat') >= 0 && isRepeat.indexOf($(this).val()) < 0 && $(this).val().length > 0) {
+            isRepeat.push($(this).val());
+          }
+
+          if ($(this).attr('class').indexOf('chrnum') >= 0 && $(this).val().length > 0) {
+            var patt = /^([a-zA-Z]+)$/;
+            if (!patt.test($(this).val())) {
+              $(this).removeClass('has-success').addClass('has-error').val('').closest('.form-group').removeClass('has-success').addClass('has-error').attr('placeholder', '只能写字母');
+              if (errors.length <= 0) {
+                errors.push($(this));
+              }
+            }
+          }
+        });
+        if (errors.length > 0) {
+          errors[0].focus();
+          return false;
+        }
+        $(this).attr('disabled', 'disabled');
+        form.submit();
+      });
+
+      //click换序
+      $('#edit .glyphicon-arrow-down').click(function () {
+        var idx = $(this).closest('li').index(), curr = $(this).closest('li');
+        $('#edit .tbody li').eq(idx + 1).after(curr)
+      });
+
+      $('#edit .glyphicon-arrow-up').click(function () {
+        var idx = $(this).closest('li').index(), curr = $(this).closest('li');
+        $('#edit .tbody li').eq(idx - 1).before(curr);
+      });
+
+      //jquery.ui拖拽
+      $("#sortable").sortable();
+      $("#sortable").disableSelection();
+    });

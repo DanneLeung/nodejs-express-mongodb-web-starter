@@ -1,0 +1,59 @@
+//
+   Created by yu869 on 2015/12/2.
+
+extends ../layouts/default
+block header
+//应用的page title
+block pageTitle
+
+block main
+   .panel
+      .panel-heading.with-border
+
+   .panel-body
+      div#userEdit.row
+         form#userForm.form-horizontal(name='userForm', action='/system/user/save', method='post')
+            .form-group
+               label.control-label.col-md-3 token：
+                  span.required *
+               .controls.col-md-9
+                  input#token.form-control.required(name='token')
+            .form-group
+               label.control-label.col-md-3 email：
+                  span.required *
+               .controls.col-md-9
+                  input#email.form-control.required(name='email')
+            .form-group
+               label.control-label.col-md-3 mobile：
+                  span.required *
+               .controls.col-md-9
+                  input#mobile.form-control.required(name='mobile')
+
+            div.row.form-group
+               div.controls.col-md-9
+                  a#send.btn.btn-block.btn-primary
+                     span send
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+   script.
+      $(document).ready(function () {
+         $('#send').on('click', function () {
+            var token = $("#token").val();
+            var email = $("#email").val();
+            var mobile = $("#mobile").val();
+
+            var data = {
+               "token": token
+               , "email": email
+               , "mobile": mobile
+               , "date" : new Date()
+            };
+
+            $.getJSON("/api/user/verify", data, function (data) {
+               console.log(data);
+            })
+
+         });
+      });

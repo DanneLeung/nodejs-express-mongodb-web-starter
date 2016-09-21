@@ -1,0 +1,36 @@
+//
+   Created by danne on 8/16/2016.
+
+.form-group
+  .col-sm-12
+    .col-sm-10
+      p.alert.alert-info 添加属性点击加号，删除属性点击后面的'X'
+    .col-sm-2
+      button#addAttributes.btn.btn-sm.btn-default.pull-right(type='button',title='添加属性')
+        i.fa.fa-plus.fa-fw
+.form-group
+  #attrValueTitle.col-sm-12
+    .paramsTitle.clearfix
+      .col-sm-5
+        | 属性分组
+      .col-sm-6
+        | 属性值
+      .col-sm-1.form-group.text-center
+        | 删除
+  #attrBody.col-sm-12
+    each attrs,i in product.attributes
+      .alert
+        .col-sm-5
+          select.form-control.selectGroup(name='group')
+            each attr , j in groups
+              if(attr.id == attrs.group)
+                option(value='#{attr._id}' selected) #{attr.name}
+              else
+                option(value='#{attr._id}') #{attr.name}
+        .attrValue.col-sm-6
+          each value , j in attrs.attrs
+            .col-sm-12
+              input.form-control(name="#{value.attr}",value="#{value.value}")
+        .col-sm-1.form-group
+          button.close(data-dismiss='alert' aria-label='Close' type="button")
+            span(aria-hidden='true') &times;

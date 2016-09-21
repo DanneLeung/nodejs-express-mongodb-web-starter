@@ -1,0 +1,159 @@
+//
+   Created by danne on 2015/10/29.
+extends ../layout
+block header
+//应用的page title
+block pageTitle
+  h1 生成二维码
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 生成二维码 
+      .panel-tools
+        a.btn.btn-box-tool.btn-default(href='/wechat/qrcode/list')
+          i.fa.fa-reply
+          span  返回
+        | &nbsp;
+        if viewType == 'add' || viewType == 'edit'
+          button#save.btn.btn-box-tool.btn-default
+            i.fa.fa-save
+            span  保存
+        | &nbsp;
+    .panel-body
+      div#userEdit.row
+        .col-md-12
+          form#form1.form-horizontal.form(action='/wechat/qrcode/createQrCode', method='post')
+            input(type='hidden', name='id', value='#{_id}')
+            input(type='hidden', id='tags' name='tags', value='#{tags}')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        
+            .form-group
+              label.col-xs-12.col-sm-3.col-md-2.control-label 场景名称
+              .col-sm-9.col-xs-12
+                input#scene-name.form-control(type='text', placeholder='', name='sceneName', value='')
+            .form-group
+              label.col-xs-12.col-sm-3.col-md-2.control-label 关联关键字
+              .col-sm-9.col-xs-12
+                input#keyword.form-control(type='text', name='keyWord', value='')
+                span.help-block 二维码对应关键字, 用户扫描后系统将通过场景ID返回关键字到平台处理.
+            .form-group
+              label.col-xs-12.col-sm-3.col-md-2.control-label 二维码类型
+              .col-sm-9.col-xs-12
+                label#radio1
+                  input#radio_1(type='radio', name='type', value='1', checked='checked')
+                  |  临时
+                label#radio0
+                  input#radio_0(type='radio', name='type', value='2')
+                  |  永久
+                span.help-block
+                  | 目前有2种类型的二维码, 分别是临时二维码和永久二维码, 前者有过期时间, 最大为7天（604800）, 但能够生成较多数量, 后者无过期时间, 数量较少(目前参数只支持1--100000).
+            #model1.form-group
+              label.col-xs-12.col-sm-3.col-md-2.control-label 过期时间
+              .col-sm-9.col-xs-12
+                input#expireSeconds.form-control.required(type='text', placeholder='', name='expireSeconds', value='604800')
+                span.help-block 临时二维码过期时间, 最大为7天（604800秒）.
+            #model2.form-group(style='display:none;')
+              label.col-xs-12.col-sm-3.col-md-2.control-label 场景值
+              .col-sm-9.col-xs-12
+                input#sceneStr.form-control(type='text', placeholder='场景值', name='sceneStr', value='')
+                span.help-block 场景值不能为空,并且只能为字符串
+            .form-group
+              label.col-xs-12.col-sm-3.col-md-2.control-label 粉丝标签
+              .col-sm-9.col-xs-12#groups
+                span.help-block#errorMsg(style='color: red; font-weight: 600')
+            .form-group
+              .col-sm-9.col-xs-12.col-sm-offset-3.col-md-offset-2
+                button#saveBtn.btn.btn-primary(type='button', value='提交') 提交
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      $('input').on('ifChecked', function (event) { //ifCreated 事件应该在插件初始化之前绑定
+        var val = $(this).val();
+        if (val == '1') {
+          radio1Click();
+        } else if (val == '2') {
+          radio0Click();
+        }
+      });
+      /**
+      $(".iCheck-helper").on('click', function(){
+        var val = $(this).parent().find("input")[0].value;
+      });
+       */
+
+      function radio1Click(){
+        $("#model1").removeAttr("style");
+        $("#model2").attr("style", "display:none");
+        $("#expireSeconds").addClass("required");
+        $("#sceneStr").removeClass("required");
+      }
+
+      function radio0Click(){
+        $("#model1").attr("style", "display:none");
+        $("#model2").removeAttr("style");
+        $("#expireSeconds").removeClass("required");
+        $("#sceneStr").addClass("required");
+      }
+      /*
+      $("#radio0").on("click", function () {
+        radio0Click();
+      });
+      $("#radio1").on("click", function () {
+        radio1Click();
+      });
+      */
+
+      var form = $("#form1");
+      $("#saveBtn").on("click", function () {
+        //记录标签选中列表
+        var tags = '';
+        $("#groups").find("input[type=checkbox]:checked").each(function(i, o){
+          tags += ','+ o.value;
+        })
+        if(tags){
+          tags = tags.substr(1)
+        }
+        $("#tags").val(tags)
+        form.submit();
+      });
+
+      form.validate({
+        rules: {
+          sceneName: {
+            required: true
+          }, keyWord: {
+            required: true
+          }, type: {
+            required: true
+          }
+        }
+      });
+
+      //初始化粉丝标签
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/wechat/fans/getAllGroup',
+        data: {}, //要传递的数据
+        success: function (data) { //成功
+          $.each(data, function (i, e) {
+            if (e.groupId >= 100 || e.groupId == 2) {
+            }
+            $("#groups").append("<input type='checkbox' value='" + e.groupId + "' onchange='checkGroup(this)'>&nbsp;" + e.name + "&nbsp;&nbsp;&nbsp;&nbsp;");
+          });
+        }
+      });
+    });
+
+    function checkGroup(obj) {
+      //检查选中的checkBox,最多只能选择3个
+      if ($("#groups").find("input[type=checkbox]:checked").length > 3) {
+        obj.checked = false;//不允许选择第四个标签
+        $("#errorMsg").text("最多只能选择3个标签");
+        return
+      } else {
+        $("#errorMsg").text("");
+      }
+    }
+

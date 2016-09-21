@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
 
 var MemberGroupSchema = new Schema({
   id: ObjectId
+  , channel: {type: ObjectId, ref: 'Channel'}//渠道，渠道为NULL时为系统全局配置
   , name: {type: String, trim: true, default: ""}
   , description: {type: String, trim: true, default: ""}
 }, {timestamps: {}});

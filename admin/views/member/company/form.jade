@@ -1,0 +1,202 @@
+//
+   Created by pc on 2015/10/27.
+
+extends ../layout
+
+block main
+  .panel
+    .panel-heading
+      h3.panel-title
+        | #{company.isNew ? '添加公司' : '修改公司'}
+        span.text-info #{company.name}
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href='/member/company/list')
+            i.fa.fa-reply
+          a#save.btn.btn-default.btn-sm(title='保存')
+            i.fa.fa-save
+    .panel-body
+      form#companyForm.form-horizontal(method="post",action="/member/company/save",enctype='multipart/form-data')
+        if(!company.isNew)
+          input#id(type='hidden', name='id', value="#{company._id}")
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+        .form-group
+          label.control-label.col-sm-2.required 名称：
+          .col-sm-10
+            input#fullname.form-control(type="text",name="fullname",value="#{company.fullname}")
+        .form-group
+          label.control-label.col-sm-2 简称：
+          .col-sm-10
+            input#shortname.form-control(type="text",name="shortname",value="#{company.shortname}")
+        .form-group
+          label.control-label.col-sm-2 电话：
+          .col-sm-10
+            input#tel.form-control(type="text",name="tel",value="#{company.tel}")
+        .form-group
+          label.control-label.col-sm-2 邮箱：
+          .col-sm-10
+            input#email.form-control(type="email",name="email",value="#{company.email}")
+        .form-group
+          label.control-label.col-sm-2 地址：
+          .col-sm-10
+            input#address.form-control(type="text",name="address",value="#{company.address}")
+        .form-group
+          label.control-label.col-sm-2 Logo：
+          .col-sm-10
+            input#logo.form-control(type="file",name="logo")
+          if(company.logo)
+            .col-sm-10.col-xs-12.col-sm-offset-2
+              img#logoimg.img-responsive.img-thumbnail(src='#{company.logo ? url(company.logo) : ""}', width='200')
+        .form-group
+          label.control-label.col-sm-2 背景图片：
+          .col-sm-10
+            input#bgimg.form-control(type="file",name="bgimg")
+          if(company.bgimg)
+            .col-sm-10.col-xs-12.col-sm-offset-2
+              img#bgimgimg.img-responsive.img-thumbnail(src='#{company.bgimg ? url(company.bgimg) : ""}', width='200')
+        .form-group
+          label.control-label.col-sm-2 描述：
+          .col-sm-10
+            textarea#description.form-control(name="description", rows="5")
+              | #{company.description}
+        .form-group
+          label.control-label.col-sm-2 设定值：
+          .col-sm-10
+            .pull-right
+              label.control-label
+                a#addSetting.btn.btn-default(title='添加参数')
+                  i.fa.fa-plus
+                p.help-block 请在这里设置参数
+        .form-group
+          label.control-label.col-sm-2 &nbsp;
+          .col-sm-10
+            .panel-body.row
+              .paramsTitle.row
+                .col-md-12
+                  .col-md-3
+                    | 参数名称
+                  .col-md-3
+                    | 参数文字
+                  .col-md-2
+                    | 参数类型
+                  .col-md-3
+                    | 参数值
+              #settings.paramsBody
+
+  #settingModal.modal.fade(tabindex='-1', role='dialog')
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 添加参数
+        .modal-body
+          form#settingForm.form-horizontal(method="post",action="/member/company/save")
+            input#id(type='hidden', name='id', value="")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-sm-2.required 参数名称：
+              .col-sm-10
+                input#name.form-control.required(type="text",name="name",value="")
+            .form-group
+              label.control-label.col-sm-2.required 参数文字：
+              .col-sm-10
+                input#label.form-control.required(type="text",name="label",value="")
+            .form-group
+              label.control-label.col-sm-2.required 参数类型：
+              .col-sm-10
+                select#type.form-control.pull-right.required(name="type")
+            .form-group
+              label.control-label.col-sm-2.required 参数值：
+              .col-sm-10
+                input#value.form-control.required(type='text', name='value', value='')
+        .modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+          button.addAwardBtn.btn.btn-primary(type="button") 添加
+block scripts
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    $(document).ready(function () {
+
+      $(".form-group").find(':file').filestyle({buttonText: '上传Logo'});
+      selectType();
+      getSettRing("#{company._id}")
+      var form = $('#companyForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          fullname: {
+            required: true,
+            remote: '/member/company/checkName?oldName=#{company ? company.fullname : ''}'
+          }
+
+        },
+        messages: {
+          fullname: {
+            remote: '名称保持唯一'
+          }
+        }
+      });
+      var settingForm = $('#settingForm');
+      $(".addAwardBtn").on('click', function () {
+        settingForm.submit();
+      });
+      settingForm.validate({
+        rules: {
+          name: {}
+        },
+        messages: {
+          name: {}
+        },
+        submitHandler: function (form) {
+          var settings = {};
+          settings.name = $("#name").val();
+          settings.label = $("#label").val();
+          settings.type = $("#type").val();
+          settings.value = $("#value").val();
+          $("#settings").append(addAwardHtml(settings));
+          $("#settingModal").modal("hide");
+          form.reset();
+        }
+      });
+      $("#addSetting").on('click', function () {
+        $("#settingModal").modal("show");
+      });
+
+    });
+    function addAwardHtml(settings) {
+      //根据奖品Id获取奖品名称
+      var html = "";
+      html += "<div class='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close')><span aria-hidden='true'>&times;</span></button>"
+      html += "<div class='col-md-3'>" + settings.name + "<input type='hidden' name='name' value='" + settings.name + "'/></div>"
+      html += "<div class='col-md-3'>" + settings.label + "<input type='hidden' name='label' value='" + settings.label + "'/></div>"
+      html += "<div class='col-md-2'>" + settings.type + "<input type='hidden' name='type' value='" + settings.type + "'/></div>"
+      html += "<div class='col-md-3'>" + settings.value + "<input type='hidden' name='val' value='" + settings.value + "'/></div></div>";
+      return html;
+
+    }
+    function selectType() {
+
+      var data = [{code: "", name: "请选择"}, {code: "大", name: "大"}, {code: "小", name: "小"}]
+      $.each(data, function (i, e) {
+        $("#type").append("<option value='" + e.code + "'>&nbsp;" + e.name + "</option>")
+      });
+
+    }
+    //获取所有参数
+    function getSettRing(id) {
+      $.ajax({
+        url: "/member/company/getSettRing/" + id,
+        type: "get",
+        data: {},
+        success: function (data) {
+          $("#settings").html("");
+          $.each(data, function (i, e) {
+            if (e) {
+              $("#settings").append(addAwardHtml(e))
+            }
+          });
+        }
+      });
+    }

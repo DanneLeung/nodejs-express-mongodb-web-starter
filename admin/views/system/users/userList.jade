@@ -1,0 +1,424 @@
+//
+   Created by danne on 2015/10/24.
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link(href="/themes/default/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+  link( rel="stylesheet" href="/themes/default/plugins/datatables/select.bootstrap.min.css" type="text/css")
+
+//应用的page title
+block pageTitle
+  h1 用户管理
+    small 添加，删除，更新用户信息
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 用户信息
+      .panel-tools
+        if req.user.isAdmin
+          a.btn.btn-sm.btn-default(href="/system/user/add" title="添加用户")
+            i.fa.fa-plus
+          button#exportModal.btn.btn-default.btn-sm(title='下载模板')
+            i.fa.fa-cloud-download
+          button#setGroup.btn.btn-default.btn-sm(title='给用户分组')
+            i.fa.fa-gear
+          button.delAll.btn.btn-default.btn-sm(title='删除选中用户数据')
+            i.fa.fa-trash
+      if req.user.isAdmin
+        | &nbsp;&nbsp;&nbsp;
+        form#imputUserForm(method='post', action='/system/user/importUser')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+          input#files(type="file", name='uploadify')
+          input#filePath(type="hidden" name='filePath')
+    .panel-body
+      #tableWrapper(style="display:none;")
+        table#userList.table.table-bordered.table-hover.table-striped
+          thead
+            //th
+              input#selectAll(type="checkbox" title="全选")
+            th 用户名
+            th 姓名
+            th 手机
+            th 邮箱
+            th 网点
+            th 职位
+            th 组
+            th 审核
+            th 管理员
+            th 激活
+            th.text-center() 操作
+          tbody
+
+      form#delForm(method='post', style='display:none', action='/system/user/del')
+        input#ids(type='hidden',name='ids')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+
+  #UpdataModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="UpdataModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 修改密码
+        .modal-body
+          form#updataForm.form-horizontal(method='post', action='/system/user/editPassWord')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            input#userId(type='hidden',name='userId')
+            .form-group
+              label.control-label.col-md-3 旧密码:
+              .controls.col-md-8
+                input#oldPassWord.form-control.required(type='password' name="oldPassWord")
+            .form-group
+              label.control-label.col-md-3 密码产生方式:
+              .controls.col-md-8
+                select#selectMonth.form-control.required(name="selectMonth")
+                  option(value="1" selected) 填写密码
+                  if req.user.isAdmin
+                    option(value="2") 生成密码
+            div#inputPwd
+              .form-group
+                label.control-label.col-md-3 新密码:
+                .controls.col-md-8
+                  input#newPassWord.form-control(type='password' name="newPassWord")
+              .form-group
+                label.control-label.col-md-3 确认密码:
+                .controls.col-md-8
+                  input#newPwd.form-control(type='password' name="newPwd")
+            div#autoPwd
+              .form-group
+                label.control-label.col-md-3 生成密码:
+                .controls.col-md-5
+                  input#PassWord.form-control(type='password' name="PassWord")
+                .controls.col-md-3
+                  a#autoBtn.btn.btn-sm.btn-primary
+                    | 自动生成密码
+            .modal-footer
+              .center-block.pull-right
+              span#errors
+              button#editPassWord.btn.btn-primary(type="button", data-dismiss="modal") 确定
+
+  #setBranchModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="setBranchModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 设置网点/门店、职位
+        .modal-body
+          form#setBranchForm.form-horizontal(method='post', action='/system/user/setBranchAndPlace')
+            input#userIds(type='hidden',name='userIds')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-md-3.required 网点/门店:
+              .controls.col-md-8
+                select#branch.form-control(name="branch")
+                  option(value='') -- 请选择 --
+            .form-group
+              label.control-label.col-md-3.required 职位:
+              .controls.col-md-8
+                input#place.form-control(name="place" value="")
+        .modal-footer
+          .center-block.pull-right
+          button#setBranchBtn.btn.btn-primary(type="button") 确定
+  #setGroupModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="setGroupModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 用户分组
+        .modal-body
+          form#setgroupForm.form-horizontal(method='post', action='/system/user/setGroup')
+            input#groupUserIds(type='hidden',name='groupUserIds')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-md-3.required 分组:
+              .controls.col-md-8
+                select#group.form-control(name="group")
+                  option(value='') -- 请选择 --
+                span#err(style="color:red")
+        .modal-footer
+          .center-block.pull-right
+          button#setgroupBtn.btn.btn-primary(type="button") 确定
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src="/themes/default/plugins/uploadify/jquery.uploadify.min.js")
+  script(src="/themes/default/plugins/uploadify/dora.public.js")
+  script(src='/themes/default/plugins/datatables/dataTables.select.min.js')
+  script.
+    $(function () {
+
+      // 导入用户信息
+      initUploadFyBtn('files', 'xlsx', '', function (data) {
+        $("#filePath").val(data[0].url);
+        if (data) {
+          bootbox.confirm("确定要导入" + data + "文件中的数据吗?", function (result) {
+            if (result) {
+              $("#imputUserForm").submit();
+            }
+          });
+        }
+      });
+      //下载用户导入模版
+      $('#exportModal').on("click", function (e) {
+        window.location.href = '/system/user/exportUser';
+      });
+
+      var d = $("#selectMonth").val();
+      if (d == 1) {
+        $("#autoPwd").hide();
+      } else {
+        $("#inputPwd").hide();
+      }
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        serverSide: true,
+        select: true,
+        deferRender: true
+      };
+      var t = $('#userList').DataTable($.extend(opts, {
+          ajax: {url: '/system/user/datatable'},
+          order: [[1, 'asc']],
+          columnDefs: [
+            //{targets: 0, visible: true, sortable: false, searchable: false, defaultContent: ''},
+            {
+              targets: -1, visible: true, sortable: false, className: 'text-center',
+              render: function (data, type, row) {
+                var id = "#{req.user.id}";
+                var result = "<div class='btn-group'><a class='btn btn-default btn-sm edit' title='编辑' href='/system/user/edit/" + row._id + "'><i class='fa fa-edit'></i></a>";
+                if (id != row._id && !row.isAdmin) {
+                  result += "<button class='btn btn-default btn-sm del' title='移除' type='button'><i class='fa fa-trash-o'></i></button>";
+                  result += "<a class='btn btn-default btn-sm key' title='审核' href='/system/user/approved/" + row._id + "'><i class='fa fa-gavel'></i></a>";
+                  result += "<button class='btn btn-default btn-sm set' title='设置网点和职位'><i class='fa fa-cog'></i></button>";
+                }
+                result += "<button class='btn btn-default btn-sm edit' title='修改密码' type='button' onClick=updatePwd('" + row._id + "');> <i class='fa fa-key'></i></button>";
+                return result;
+              }
+            }
+          ],
+          columns: [
+            /* {
+             data: "_id", sortable: false, render: function (data, type, row) {
+             return '<input type="checkbox" class="select" name="Ids" value="' + data + '">';
+             }
+             },*/
+            {data: "username", defaultContent: ''},
+            {data: "fullname", defaultContent: ''},
+            {data: "mobile", defaultContent: ''},
+            {data: "email", defaultContent: ''},
+            {data: "branch.name", defaultContent: ''},
+            {data: "place", defaultContent: ''},
+            {data: "group.name", defaultContent: ''},
+            {
+              data: "approvedStatus",
+              defaultContent: '',
+              'class': 'text-center',
+              render: function (data, type, full, meta) {
+                return data == "02" ? "通过" : data == "03" ? "不通过" : "";
+              }
+            },
+            {
+              data: "isAdmin", defaultContent: '',
+              'class': 'text-center',
+              render: function (data, type, full, meta) {
+                return data ? "<i class='fa fa-check-square'/>" : "";
+              }
+            },
+            {
+              data: "enabled", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "<a class='btn key' title='激活/禁用' href='/system/user/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn key' title='激活/禁用' href='/system/user/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+            },
+            {data: ""}
+          ]
+        }
+      )).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+      // 全选
+      $("#selectAll").on("click", function (e) {
+        $(this).parents("table").find("tbody :checkbox").prop("checked", $(this).is(":checked"));
+      });
+      // 设置分组功能
+      $("#setGroup").on("click", function (e) {
+        var len = $('#userList').find(":checkbox[name='Ids']:checked").length;
+        if (len > 0) {
+          var ids = [];
+          $('#userList').find(":checkbox[name='Ids']:checked").each(function (e) {
+            ids.push($(this).val())
+          });
+          $('#groupUserIds').val(ids);
+          $('#setGroupModal').modal('show');
+        } else {
+          bootbox.alert("请选择用户");
+        }
+      });
+
+      t.on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+      t.on('click', 'button.set', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#setBranchForm #userIds").val(id);
+        if (id) {
+          $("#setBranchModal").modal("show");
+        }
+      });
+
+      //删除多行数据
+      $(".btn.delAll", ".panel-tools").on(
+        "click",
+        function (e) {
+          var datas = t.rows({selected: true}).data();
+          var ids = [];
+          datas.each(function (d) {
+            //ids.push(d._id);
+            ids.push(d._id);
+          });
+          $("#delForm #ids").val(ids.join(","));
+          if (ids.length > 0) {
+            bootbox.confirm("确定要删除选中的数据吗?", function (result) {
+              if (result) {
+                $("#delForm").submit();
+              }
+            });
+          } else {
+            bootbox.alert("请选择要删除的数据.");
+          }
+        });
+
+      $("#setgroupBtn").on('click', function () {
+        var group = $("#group").val();
+        if (group != "") {
+          $("#err").html("");
+          $("#setgroupForm").submit();
+        } else {
+          $("#err").html("请选择分组");
+        }
+      });
+      var formB = $('#setBranchForm');
+      $("#setBranchBtn").on('click', function () {
+        formB.submit();
+      });
+      formB.validate({
+        rules: {
+          branch: {
+            required: true
+          }, place: {
+            required: true
+          }
+        },
+        messages: {
+          branch: {
+            required: "请选择网点/门店"
+          }, place: {
+            required: "请选择职位"
+          }
+        }
+      });
+
+
+      var form = $('#updataForm');
+      $("#editPassWord").on('click', function () {
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          oldPassWord: {
+            required: true
+          }, newPassWord: {
+            rangelength: [6, 18]
+          }, newPwd: {
+            equalTo: "#newPassWord"
+          }
+        },
+        messages: {
+          oldPassWord: {
+            required: "原密码不能为空",
+            remote: '原密码不正确!'
+          }, newPassWord: {
+            rangelength: "请输入6-18位的密码！"
+          }, newPwd: {
+            equalTo: "请与新密码保持一致"
+          }
+        }
+      });
+      $("#selectMonth").change(function (e) {
+        var values = $(this).val();
+        if (values == 2) {
+          $("#inputPwd").hide();
+          $("#autoPwd").show();
+        } else {
+          $("#autoPwd").hide();
+          $("#inputPwd").show();
+        }
+      });
+      $("#autoBtn").on('click', function () {
+        $.ajax({
+          type: 'get', //数据发送方式
+          url: '/system/user/autoGeneration',
+          data: {}, //要传递的数据
+          success: function (data) { //成功
+            $("#PassWord").val(data);
+          }
+        });
+      });
+      selectPosition();
+      selectGroup();
+    });
+    //56ebcc82ef9074bf428c0c82
+    function updatePwd(id) {
+      $("#userId").val(id);
+      $('#UpdataModal').modal('show');
+    }
+    function selectPosition() {
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/system/user/getAllBranch',
+        data: {}, //要传递的数据
+        success: function (data) { //成功
+          $.each(data, function (i, e) {
+            $("#branch").append("<option value='" + e._id + "'>" + e.name + "</option>");
+          });
+        }
+      });
+
+    }
+    function selectGroup() {
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/channel/group/getGroups',
+        data: {}, //要传递的数据
+        success: function (data) { //成功
+          $.each(data, function (i, e) {
+            $("#group").append("<option value='" + e._id + "'>" + e.name + "</option>");
+          });
+        }
+      });
+
+    }

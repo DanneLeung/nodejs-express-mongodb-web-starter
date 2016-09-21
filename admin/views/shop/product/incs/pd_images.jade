@@ -1,0 +1,54 @@
+//
+   Created by danne on 8/16/2016.
+.form-group
+  .col-sm-12
+    .col-sm-12
+      p.alert.alert-info 添加产品主图，以及轮播图
+
+fieldset
+  legend 主图
+  .form-group
+    #thumbImageTitle.col-sm-12
+      .paramsTitle.clearfix
+        .col-sm-5
+          | 图片
+        .col-sm-7
+          | 上传图片
+  .form-group
+    .col-sm-12
+      .col-sm-5
+        .col-sm-6.col-xs-12
+          .input-group
+            img.img-responsive.img-thumbnail(src='#{product.thumbImage ? url(product.thumbImage) : ""}', width='200px')
+      .col-sm-7
+        input#thumbImage.form-control(type="file",name='thumbImage')
+        p.help-block 只支持JPG图片
+fieldset
+  legend 附图
+  .form-group
+    .col-sm-12
+      button#addImages.btn.btn-sm.btn-default.pull-right(type='button',title='添加属性')
+        i.fa.fa-plus.fa-fw
+  .form-group
+    #imagesTitle.col-sm-12
+      .paramsTitle.clearfix
+        .col-sm-5
+          | 图片
+        .col-sm-6
+          | 上传图片
+        .col-sm-1.form-group.text-center
+          | 删除
+  #imagesBody.form-group
+    each img,i in product.images
+      .col-sm-12
+        .alert
+          .col-sm-5
+            .col-sm-6.col-xs-12
+              .input-group
+                img.img-responsive.img-thumbnail(src='#{img ? url(img) : ""}', width='200')
+          .attrValue.col-sm-6
+            input.form-control(type="file",name='images')
+            p.help-block 只支持JPG图片
+          .col-sm-1.form-group
+            button.close(data-dismiss='alert' aria-label='Close' type="button")
+              span(aria-hidden='true') &times;

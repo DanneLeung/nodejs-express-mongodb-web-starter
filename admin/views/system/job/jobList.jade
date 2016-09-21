@@ -1,0 +1,157 @@
+//
+   Created by danne on 2015/10/24.
+extends ../../layouts/default
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+
+//应用的page title
+block pageTitle
+  h1 定时任务管理
+    small 添加，删除，更新系统中定时任务
+
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 任务列表
+      .pull-right.panel-tools
+        a.btn.btn-sm.btn-default(href="/system/job/add")
+          i.fa.fa-plus
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#jobList.table.table-hover
+          thead
+            th 名称
+            th job脚本
+            th cron表达式
+            th 上次运行
+            th 上次结束
+            th 状态
+            th 修改
+            th 激活
+            th 控制
+            th.text-center 操作
+          tbody
+
+        form#jobDelForm(method='post', style='display:none', action='/system/job/del')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: false,
+        searching: true,
+        processing: false,
+        serverSide: true,
+        //scrollX:true,
+        deferRender: true
+
+      };
+      var t = $('#jobList').DataTable($.extend(opts, {
+        ajax: {url: '/system/job/datatable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group-xs'><a class='btn btn-xs edit' href='/system/job/edit/" + row._id + "'><i class='fa fa-edit'></i></a>"
+                      + " <a class='btn btn-xs del' href='javascript:void(0);'><i class='fa fa-trash-o'></i></a></div>";
+            }
+          }
+        ],
+        columns: [
+          {data: "name"},
+          {data: "jobClass"},
+          {data: "cron", defaultContent: ''},
+          {
+            data: "lastTime", defaultContent: '', 'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var b = moment(new Date(data));
+              var date = "";
+              if (data != null) {
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+          {
+            data: "lastTimeEnd", defaultContent: '', 'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var b = moment(new Date(data));
+              var date = "";
+              if (data != null) {
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+          {
+            data: "status", defaultContent: '', render: function (data, type, full, meta) {
+            var result = "";
+            if (data == 'waiting') {
+              result = "等待";
+            } else if (data == 'running') {
+              result = "运行";
+            } else if (data == 'stopped') {
+              result = "停止";
+            }
+            return result;
+          }
+          },
+          {
+            data: "updatedAt", defaultContent: '', 'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var b = moment(new Date(data));
+              var date = "";
+              if (data != null) {
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+          {
+            data: "enabled", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+            var result = "";
+            if (data == '1') {
+              result = "<a class='btn btn-xs key' title='激活/禁用' href='/system/job/enabled/" + full._id + "'><i class='fa fa-check-square'/></a>"
+            } else {
+              result = "<a class='btn btn-xs key' title='激活/禁用' href='/system/job/enabled/" + full._id + "'><i class='fa fa-square-o'/></a>"
+            }
+            return result;
+          }
+          },
+          {
+            data: "control", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+            var result = "";
+            if (data === "start") {
+              return "<a class='btn btn-xs stop' title='停止' href='/system/job/control/stop/" + full._id + "'><i class='fa fa-stop'></i></a>";
+            } else {
+              return "<a class='btn btn-xs start' title='开始' href='/system/job/control/start/" + full._id + "'><i class='fa fa-play'></i></a>";
+            }
+          }
+          },
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $('#tableWrapper').fadeIn();
+      });
+
+      $('#jobList').on('click', '.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#jobDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#jobDelForm").submit();
+            }
+          });
+        }
+      });
+    });

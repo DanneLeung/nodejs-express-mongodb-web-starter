@@ -1,0 +1,62 @@
+//
+   Created by pc on 2015/10/27.
+extends ../layout
+
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 分享数据明细
+        .panel-tools.pull-right
+          a.btn.btn-primary.btn-sm(href="/wechat/shareGroup/exportDetail?fansId=#{fansId}&dateRange=#{dateRange}")
+            i.fa.fa-plus.fa-fw
+            | 导出
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#whiteList.table.table-hover.table-striped.table-responsive
+          thead
+            th 昵称
+            th 页面描述
+            th 转发时间
+          tbody
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#whiteList').DataTable($.extend(opts, {
+        ajax: {url: '/wechat/shareGroup/detailDatatable?fansId=#{fansId}&dateRange=#{dateRange}'},
+        order: [[1, 'asc']],
+        /***/
+        columnDefs: [
+
+        ],
+
+        columns: [
+          {data: "nickname", defaultContent: ''},
+          {data: "desc", defaultContent: '', render: function (data, type, full, meta) {
+            return "<a href='"+ full.link +"'>"+ data +"</a>";
+          }},
+          {data: "shareTime", defaultContent: ''},
+          {data: "link", visible: false},
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+    })

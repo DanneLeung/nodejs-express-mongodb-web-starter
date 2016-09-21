@@ -1,0 +1,69 @@
+//
+   Created by danne on 2015/10/29.
+extends layout
+block header
+//应用的page title
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 回复留言信息
+    .panel-tools.pull-right
+      a.btn.btn-panel-tool.btn-default(href='/bank/message/list')
+        i.fa.fa-reply
+        span  返回
+      | &nbsp;
+      button#save.btn.btn-panel-tool.btn-default
+        i.fa.fa-save
+        span  保存
+      | &nbsp;
+    .panel-body
+      div#userEdit.row
+        .col-md-12
+          form#messageForm.form-horizontal(name='messageForm', action='/bank/message/feedback', method='post')
+            input#id(type='hidden', name='id', value="#{message._id}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-md-3 用户名：
+              .controls.col-md-8
+                span #{message.user ? message.user.fullname : ''}
+            .form-group
+              label.control-label.col-md-3 用户手机：
+              .controls.col-md-8
+                span #{message.user ? message.user.mobile : ''}
+            .form-group
+              label.control-label.col-md-3 留言内容：
+              .controls.col-md-8
+                span #{message ? message.message : ''}
+            .form-group
+              label.control-label.col-md-3 留言时间：
+              .controls.col-md-8
+                span #{message ? formatDatetime(message.datetime) : ''}
+            .form-group
+              label.control-label.col-md-3.required 回复内容：
+              .controls.col-md-8
+                input#feedback.form-control.input-sm.required(type='text', name='feedback', value="#{message ? message.feedback : ''}")
+            .form-group
+              label.control-label.col-sm-3.col-md-3.col-xs-12 显示：
+              .col-sm-8.col-md-8.col-xs-12
+                label.checkbox
+                  if (message && message.isDisplay)
+                    input#enabled(type='checkbox' name='isDisplay' checked="checked")
+                  else
+                    input#enabled(type='checkbox' name='isDisplay')
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+      var form = $('#messageForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+
+    });
+

@@ -1,0 +1,84 @@
+//
+   Created by danne on 2016-04-27.
+extends ../layout
+block main
+  .alert.alert-info
+    | 注意：使用长连接转短连接功能,您的公众号应该是"服务号"。如果您的公众号是普通订阅号,不能使用该功能
+  .clearfix
+    form.form.form-horizontal(action='', method='post')
+      input(type='hidden', name='id', value='')
+      .panel
+        .panel-heading
+          | 长链接转二维码
+        .panel-body
+          .form-group
+            label.col-xs-12.col-sm-3.col-md-2.control-label 请输入长链接:
+            .col-sm-9.col-xs-12
+              .input-group
+                input#longurl.form-control(type='text', name='longurl', value='', placeholder='请输入长链接', autocomplete='off')
+                .input-group-btn
+                  span#longurl_but.btn.btn-primary
+                    i.fa.fa-external-link
+                    |  选择原链接生成
+              .help-block 请输入您要转换的长链接，支持http://、https://、weixin://wxpay 格式的url
+          .form-group
+            label.col-xs-12.col-sm-3.col-md-2.control-label
+            .col-sm-9.col-xs-12
+              .input-group
+                span#change.btn.btn-primary 转换
+          .form-group
+            label.col-xs-12.col-sm-3.col-md-2.control-label 生成的短连接
+            .col-sm-9.col-xs-12
+              input#shorturl.form-control(type='text', name='shorturl', value='', readonly='')
+          .form-group.hide
+            label.col-xs-12.col-sm-3.col-md-2.control-label 二维码地址
+            .col-sm-9.col-xs-12
+              input.form-control(type='text', name='qr', value='', readonly='')
+          .form-group
+            label.col-xs-12.col-sm-3.col-md-2.control-label 生成的二维码
+            .col-sm-9.col-xs-12
+              #qrCode
+block scripts
+  script(src='/themes/default/js/jquery.qrcode.min.js')
+  script.
+    //点击选择【系统连接】事件
+    $('#longurl_but').click(function () {
+      var longurl = $('#longurl').val().trim();
+      if (longurl == '') {
+        alert('请输入长链接');
+        return;
+      } else if (longurl.indexOf("http://") == -1 && longurl.indexOf("https://") == -1 && longurl.indexOf("weixin://") == -1) {
+        alert('请输入有效的长链接');
+        return;
+      }
+      $("#qrCode").html('');
+      $("#qrCode").qrcode(longurl);
+    });
+
+
+    $(document).ready(function () {
+      $('#change').click(function () {
+        var longurl = $('#longurl').val().trim();
+        if (longurl == '') {
+          alert('请输入长链接');
+          return;
+        } else if (longurl.indexOf("http://") == -1 && longurl.indexOf("https://") == -1 && longurl.indexOf("weixin://") == -1) {
+          alert('请输入有效的长链接');
+          return;
+        }
+
+        $.ajax({
+          url: "/wechat/qrcode/transfer/long2short?longUrl="+longurl+"&t="+Date.now(),
+          type: "GET",
+          success: function(data){
+            if(data.success == '0'){
+              alert(data.msg);
+            }else{
+              $("#shorturl").val(data.shortUrl);
+              $("#qrCode").html('');
+              $("#qrCode").qrcode(data.shortUrl);
+            }
+          }
+        });
+      });
+    });

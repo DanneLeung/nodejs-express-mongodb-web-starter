@@ -1,0 +1,218 @@
+//
+   Created by danne on 2016-04-27.
+extends layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet" href="/themes/default/plugins/datatables/select.bootstrap.min.css" type="text/css")
+  link( rel="stylesheet",href="/themes/default/plugins/daterangepicker/daterangepicker-bs3.css")
+block pageTitle
+  h4 扫描统计
+block main
+  .panel(style="min-height:100%")
+    .panel-heading
+      h3.panel-title 活动统计列表
+        .panel-tools
+          a#createQrCode.btn.btn-sm.btn-primary(title='返回' href='/activities/index')
+            i.fa.fa-reply
+    .panel-body
+      .tab-content
+        ul#myTab.nav.nav-tabs
+          li.active
+            a(href="#statDay" data-id="day" data-toggle="tab") 今日
+          li
+            a(href="#statWeek" data-id="week" data-toggle="tab") 近7日
+          li
+            a(href="#statMonth" data-id="month" data-toggle="tab") 近30日
+
+      #myTabContent.tab-content(style="padding:15px;")
+        #statDay.tab-pane.fade.in.active
+          canvas#statDayChart(width='900px' height='300px')
+        #statWeek.tab-pane.fade.in
+          canvas#statWeekChart(width='900px' height='300px')
+        #statMonth.tab-pane.fade.in
+          canvas#statMonthChart(width='900px' height='300px')
+
+      form#searchForm.form-inline
+        .form-group
+          label.control-label(for="fullname")  用户名:
+          input#fullname.form-control.required(name='fullname',placeholder='用户名')
+        .form-group
+          label.control-label(for="mobile")  手机号码:
+          input#mobile.form-control.required(name='mobile',placeholder='手机')
+        .form-group
+          label.control-label(for="startAt")  时间:
+          input#startAt.form-control.required(name='startAt',placeholder='参与时间段')
+        //.form-group
+        //    label.control-label(for="email")  参与次数>=:
+        //    input#email.form-control.required(name='playNum', placeholder='次数')
+        .form-group
+          button#search.btn.btn-default.btn-sm(title='查询',type='button',value="Search")
+            i.fa.fa-search
+            | 查询
+          | &nbsp;&nbsp;
+          button#export.btn.btn-default.btn-sm(title='导出中奖用户信息',type='button')
+            i.fa.fa-cloud-download
+            | 下载
+      #tableWrapper(style="display:none;")
+        table#activityLogList.table.table-bordered.table-hover.table-striped
+          thead
+            th 活动名称
+            th 访问时间
+            th 访问总数
+            th 访问周次
+            th 访问日次
+            th 用户名
+            th 手机
+            th 中奖次数
+            //th email
+          tbody
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='/themes/default/plugins/datatables/dataTables.select.min.js')
+  script(src='//cdn.bootcss.com/echarts/3.1.10/echarts.min.js')
+  script(src="/themes/default/plugins/daterangepicker/daterangepicker.js")
+  script.
+    $(document).ready(function () {
+
+      $('#myTab a:first').tab('show')
+      loadLineByDay()
+      loadLineByWeek()
+      loadLineByMonth()
+
+      $('#startAt').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 10,
+        format: 'YYYY-MM-DD HH:mm:ss'
+      });
+
+      var tt = $('#activityLogList').DataTable({
+        language: {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        searching: true,
+        lengthChange: true,
+        serverSide: true,
+        autoWidth: false,
+        select: true,
+        stateSave: true,
+        ajax: {url: '/activities/LogDatatable/#{activityId}'},
+        rowid: '_id',
+        order: [[1, 'desc']],
+        columnDefs: [],
+        columns: [
+          {
+            data: "activity.name", defaultContent: ''
+          },
+          {
+            data: "updatedAt", defaultContent: '',
+            render: function (data, type, full, meta) {
+              var b = moment(new Date(data));
+              var date = "";
+              if (data != null) {
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+          {data: "totalTimes", defaultContent: ''},
+          {data: "weeklyTimes", defaultContent: ''},
+          {data: "todayTimes", defaultContent: ''},
+          {data: "user.fullname", defaultContent: ''},
+          {data: "user.mobile", defaultContent: ''},
+          {data: "winTimes", defaultContent: ''}
+          //{data: "user.email", defaultContent: ''}
+          //{
+          // data: "action", defaultContent: '', class: 'text-center',
+          // render: function (data, type, row) {
+          //   return data == "read" ? '访问' : data == "play" ? '参与' : data == "share" ? '分享' : data == "win" ? '获奖' : "";
+          // }
+          //},
+        ]
+      }).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      $("#search").on('click', function () {
+        var data = $("#searchForm").serialize();
+        var TT = $('#activityLogList').DataTable();
+        TT.ajax.url('/activities/LogDatatable/#{activityId}?' + data + '').load();
+      })
+      $("#export").on('click', function () {
+        var data = $("#searchForm").serialize();
+        window.location.href = '/activities/player/export/#{activityId}?' + data;
+      })
+
+
+    });
+    function getData(data) {
+      var option = {
+        title: {
+          text: ''
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: data.legend
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: data.xAxis
+        },
+        yAxis: {
+          type: 'value'
+        }, series: data.series
+
+      };
+      return option;
+    }
+    //查看今日统计
+    function loadLineByDay() {
+      $.ajax({
+        url: '/activities/getDataByDay/#{activityId}',
+        type: 'get',
+        success: function (data) {
+          var op = getData(data)
+          var myChart = echarts.init(document.getElementById('statDayChart'));
+          myChart.setOption(op);
+        }
+      });
+    }
+    //查看近7日统计
+    function loadLineByWeek() {
+      $.ajax({
+        url: '/activities/getDataByWeek/#{activityId}',
+        type: 'get',
+        success: function (data) {
+          var op = getData(data)
+          var myChart = echarts.init(document.getElementById('statWeekChart'));
+          myChart.setOption(op);
+        }
+      });
+    }
+    //查看近30日统计
+    function loadLineByMonth() {
+      $.ajax({
+        url: '/activities/getDataByMonth/#{activityId}',
+        type: 'get',
+        success: function (data) {
+          var op = getData(data)
+          var myChart = echarts.init(document.getElementById('statMonthChart'));
+          myChart.setOption(op);
+        }
+      });
+    }

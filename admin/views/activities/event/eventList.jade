@@ -1,0 +1,137 @@
+//
+   Created by pc on 2015/10/27.
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 可用报名活动列表
+        .panel-tools.pull-right
+          a.btn.btn-primary.btn-sm(href="/activities/event/add")
+            i.fa.fa-plus.fa-fw
+            | 创建新报名活动
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#siteList.table.table-hover.table-striped.table-responsive
+          thead
+            th.text-center 标题
+            th.text-center 活动时间
+            //th.text-center 表单字段
+            th.text-center 限制人数
+            th.text-center URL
+            th.text-center 上线
+            th.text-center 操作
+          tbody
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='#{theme}/js/jquery.qrcode.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        language: {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        searching: true,
+        lengthChange: true,
+        serverSide: true,
+        autoWidth: false,
+        select: true,
+        stateSave: true,
+        rowid: '_id',
+      };
+      var t = $('#siteList').DataTable($.extend(opts, {
+        ajax: {url: '/activities/event/datatable'},
+        order: [[0, 'asc']],
+        columnDefs: [
+          {
+            targets: -2, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, full, row) {
+              var url = contextFront + '/event/' + full._id + '?cid=#{req.session.channel.identity}&wid=#{req.session.wechat._id}';
+              return '<div class="btn-group" role="group">' +
+                      '<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-qrcode"></i><span class="caret"></span></button>' +
+                      '<div class="qrcode dropdown-menu dropdown-menu-right" style="width:210px;height: 210px;padding:4px;border:1px solid #f4f4f4" data-url="' + url + '"></div>' +
+                      '<a class="btn btn-default btn-sm" title="预览" target="_blank" href="'+url+'"><i class="fa fa-eye"></i></a>' +
+                      '<a class="btn btn-default btn-sm" title="查看数据" href="/activities/event/users/' + full._id + '"><i class="fa fa-list"></i></a>' +
+                      '<a class="btn btn-default btn-sm" title="编辑活动" href="/activities/event/edit/' + full._id + '"><i class="fa fa-pencil"></i></a>' +
+                      '<a class="btn btn-default btn-sm del" title="删除活动" href="javascript:bootbox.confirm(\'确定要删除该报名活动吗？\',function(b){if(b)window.location.href=\'/activities/event/del/' + full._id + '\';})"><i class="fa fa-trash"></i></a>' +
+                      '<a class="btn btn-default btn-sm" title="复制活动" href="/activities/event/copy/' + full._id + '"><i class="fa fa-copy"></i></a>' +
+                      '<a class="btn btn-default btn-sm" title="添加数据" href="/activities/event/sign/' + full._id + '"><i class="fa fa-plus-square"></i></a>' +
+                      '</div>'
+            }
+          }
+        ],
+
+        columns: [
+          {data: "name"},
+          {
+            data: "startTime", defaultContent: '', class: 'text-center', render: function (data, type, full, meta) {
+            var b = moment(new Date(data));
+            var a = moment(new Date(full.endTime));
+            var date = "";
+            if (data != null) {
+              date = b.format("YYYY-MM-DD HH:mm:ss");
+              date += " - " + a.format("YYYY-MM-DD HH:mm:ss");
+            }
+            return date;
+          }
+          },
+          //          {
+          //            data: "formfield", width: "200px", sortable: false,
+          //            render: function (data, type, full, meta) {
+          //              var f = '';
+          //              if (data != null) {
+          //                for (var i = 0; i < data.length; i++) {
+          //                  f += data[i].label + '-' + data[i].name + '-' + data[i].type + '&nbsp;&nbsp|&nbsp;&nbsp'
+          //                }
+          //
+          //              }
+          //              return f;
+          //            }
+          //          },
+          {data: "limit", class: "text-center"},
+          {
+            data: "url", class: "text-center", render: function (data, type, full, meta) {
+            var url = contextFront + '/event/' + full._id + '?cid=#{req.session.channel.identity}&wid=#{req.session.wechat._id}';
+            return '<a href="' + url + '">' + url + '</a>';
+            }
+          },
+          {
+            data: "enabled", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+            var result = "";
+            if (data) {
+              result = "<a title='上线/下线 ' href='/activities/event/enable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+            } else {
+              result = "<a title='上线/下线' href='/activities/event/enable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+            }
+            return result;
+          }
+          },
+          {data: ""},
+          {data: "endTime", defaultContent: '', visible: false}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+        $(".qrcode").each(function () {
+          $(this).qrcode({'width': 200, 'height': 200, 'text': $(this).data('url')});
+        });
+
+      });
+
+      $('#actionList').on('click', '.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+    });
+
+

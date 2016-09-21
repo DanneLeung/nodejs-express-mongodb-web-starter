@@ -1,0 +1,118 @@
+//
+   Created by yu869 on 2016/3/31.
+
+extends layout
+block header
+  //link( rel="stylesheet" href="//cdn.bootcss.com/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker3.min.css")
+//应用的page title
+block pageTitle
+  if brand.isNew
+    h1 品牌新增
+      small 添加品牌信息
+  if !brand.isNew
+    h1 品牌编辑
+      small 编辑品牌信息
+block main
+  .panel
+    .panel-heading.with-border
+      if brand.isNew
+        h3.panel-title 添加品牌信息
+      if !brand.isNew
+        h3.panel-title 编辑品牌信息
+      .panel-tools
+        a.btn.btn-box-tool.btn-default(href='/shop/brand')
+          i.fa.fa-reply
+          span  返回
+        | &nbsp;
+        button#save.btn.btn-box-tool.btn-default
+          i.fa.fa-save
+          span  保存
+        | &nbsp;
+      //button.btn.btn-box-tool(data-widget="collapse")
+      //  i.fa.fa-caret-left
+    .panel-body
+      div#userEdit.row
+        .col-md-12
+          form#brandForm.form-horizontal(name='brandForm', action='/shop/brand/save', method='post' ,enctype="multipart/form-data")
+            if !brand.isNew
+              input#id(type='hidden', name='id', value="#{brand._id}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+            .form-group
+              label.control-label.col-md-3.required 名称：
+              .controls.col-md-8
+                input#nameCh.form-control.required(name='nameCh',placeholder='品牌名称', value="#{brand ? brand.nameCh : ''}")
+            .form-group
+              label.control-label.col-md-3.required 英文名：
+              .controls.col-md-8
+                input#nameEn.form-control.required(name='nameEn',placeholder='英文名称', value="#{brand ? brand.nameEn : ''}")
+
+            .form-group
+              label.control-label.col-md-3.required 主页url：
+              .controls.col-md-8
+                input#url.form-control.required(name='url',placeholder='品牌显示名称', value="#{brand ? brand.url : ''}")
+
+            .form-group
+              label.control-label.col-md-3 描述：
+              .controls.col-md-8
+                textarea#description.form-control(name='description',placeholder='描述')
+                  | #{brand ? brand.description : ''}
+            .form-group
+              label.control-label.col-md-3 品牌logo：
+              .controls.col-md-8
+                input#logo.form-control(name='logo', type="file")
+              if(brand.logo)
+                .col-sm-8.col-xs-12.col-sm-offset-3
+                  img.img-responsive.img-thumbnail(src='#{brand.logo ? url(brand.logo.url) : ""}', width='200')
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/locale/zh-cn.js')
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    $(document).ready(function () {
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+
+      $(".form-group").find(':file').filestyle({buttonText: '上传图片'});
+
+      var form = $('#brandForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      //validator
+      form.validate({
+        rules: {
+          nameCh: {
+            required: true,
+            remote: '/shop/brand/checkName?oldName=#{brand ? brand.nameCh : ''}'
+          }, nameEn: {
+            required: true,
+            enCharset: true
+          }, url: {
+            required: true,
+            url: true
+          }
+        },
+        messages: {
+          nameCh: {
+            remote: '品牌名称已存在'
+          }, nameEn: {
+            enCharset: '请输入英文名称'
+          }, url: {
+            url: '请输入正确的url地址'
+          }
+        }
+      });
+
+      $('#del').on('click', function () {
+        bootbox.confirm("确定要删除数据吗?", function (result) {
+          if (result) {
+            $("#brandDelForm").submit();
+          }
+        });
+      });
+    });

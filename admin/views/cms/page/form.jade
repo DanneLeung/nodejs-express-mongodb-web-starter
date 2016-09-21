@@ -1,0 +1,92 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ../layout
+block header
+
+block main
+  if !content.isNew
+    form#userDelForm(method='post', style='display:none', action='#{baseUrl}/del')
+      input#ids(type='hidden',name='ids',value="#{content._id}")
+      input#_csrf(type='hidden', name='_csrf', value=_csrf)
+  form#contentForm.form-horizontal(method="post",action="#{baseUrl}/save")
+    input#_csrf(type='hidden', name='_csrf', value=_csrf)
+    if(!content.isNew)
+      input#id(type='hidden', name='id', value="#{content._id}")
+
+    .panel(style="position:relative;")
+      .panel-heading
+        h3.panel-title
+          span.text-info #{content.name} #{content.isNew ? '创建文章' : '文章修改'}
+          .panel-tools.pull-right
+            a.btn.btn-default.btn-sm(href='#{baseUrl}')
+              i.fa.fa-reply
+            button#save.btn.btn-sm.btn-default(type="submit", title="保存")
+              i.fa.fa-save
+      .panel-body
+          .form-group
+            label.control-label.col-sm-2 分类：
+            .col-sm-10
+              select#category.form-control(name="category")
+                option(name="-- 请选择 --", value="")
+              //- input#category.form-control.required(type="text",name="category",value="#{content.category}")
+          .form-group
+            label.control-label.col-sm-2.required 标题：
+            .col-sm-10
+              input#name.form-control.required(type="text",name="title",value="#{content.title}")
+
+          .form-group
+            label.control-label.col-sm-2 阅读得积分：
+            .col-sm-10
+              input#point.form-control(type="number",name="point",value="#{content.point}")
+
+          .form-group
+            label.control-label.col-sm-2 关键字：
+            .col-sm-10
+              input#keywords.form-control(type="text",name="keywords",value="#{content.keywords}")
+
+          .form-group
+            label.control-label.col-sm-2 简要：
+            .col-sm-10
+              textarea#description.form-control(name='description' ,rows="3")
+                | #{content.description ? content.description : ''}
+              p.help-block 文章简要信息，让用户快速了解文字简要内容
+          .form-group
+            label.control-label.col-sm-2 作者：
+            .col-sm-10
+              input#author.form-control(type="text",name="author",value="#{content.author}")
+          .form-group
+            label.control-label.col-sm-2 内容：
+            .col-sm-10
+              textarea#content(name="content", rows="10",style="width:100%")
+                | #{content.content ? content.content : ''}
+block scripts
+  script(src="/themes/default/plugins/ueditor/ueditor.config.js")
+  script(src="/themes/default/plugins/ueditor/ueditor.all.js")
+  script(src="/themes/default/plugins/ueditor/lang/zh-cn/zh-cn.js")
+  script.
+    $(document).ready(function () {
+      var ueOpts = {
+        initialFrameHeight:500,
+        serverUrl:contextRoot+'api/ueditor',
+        autoHeightEnabled: true,
+        autoFloatEnabled: true,
+        allowDivTransToP: false
+      };
+      var ue = UE.getEditor('content',ueOpts);
+      //validator
+      $('#contentForm').validate({
+        rules: {
+          name: {
+            required: true,
+            remote: '#{baseUrl}/checkName?oldName=#{content ? content.name : ''}'
+          }
+        },
+        messages: {
+          name: {
+            remote: '文章名称已存在'
+          }
+        }
+      });
+
+    });

@@ -1,0 +1,118 @@
+//
+   Created by danne on 2015/10/24.
+extends ../../layouts/default
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+
+//应用的page title
+block pageTitle
+  h1 供应商管理
+    small 添加，删除，更新供应商管理
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 供应商
+      .panel-tools
+        a.btn.btn-sm.btn-default(href="/supplier/service/add" title="添加供应商")
+          i.fa.fa-plus
+        //button.btn.btn-box-tool(data-widget="collapse")
+        //  i.fa.fa-minus
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#serviceList.table.table-bordered.table-hover.table-striped
+          thead
+            //th.text-right(width="40") #
+            th(width="20%") 名称
+            th 类别
+            th 合作开始时间
+            th 合作结束时间
+            th 星级
+            th 激活
+            th.text-center(width="160") 操作
+          tbody
+
+        form#delForm(method='post', style='display:none', action='/supplier/service/del')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script.
+    $(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        serverSide: true,
+        deferRender: true
+      };
+      var t = $('#serviceList').DataTable($.extend(opts, {
+                ajax: {url: '/supplier/service/datatable'},
+                order: [[0, 'asc']],
+                columnDefs: [
+                  //{targets: 0, visible: true, sortable: false, searchable: false, defaultContent: ''},
+                  {
+                    targets: -1, visible: true, sortable: false, className: 'text-center',
+                    render: function (data, type, row) {
+                      return "<a class='btn btn-xs edit' title='编辑' href='/supplier/service/edit?id=" + row._id + "'><i class='fa fa-edit'></i></a>"
+                              + " <button class='btn btn-xs del' title='移除' type='button'><i class='fa fa-trash-o'></i></button>"
+                              +"<a class='btn btn-xs key' title='查看联系人' href='/supplier/contact/" + row._id + "'><i class='fa fa-ellipsis-h'></i></a>";
+                    }
+                  }
+                ],
+                columns: [
+                  //{data: ""},
+                  {data: "name", defaultContent: ''},
+                  {data: "servicesTypeId.name", defaultContent: ''},
+                  {data: "serviceBegin", defaultContent: '','class':'text-center',render: function ( data, type, full, meta ) {
+                    var b = moment(new Date(data));
+                    var date = "";
+                    if (data != null) {
+                      date = b.format("YYYY年MM月DD日");
+                    }
+                    return date;
+                  }},
+                  {data: "serviceEnd", defaultContent: '','class':'text-center',render: function ( data, type, full, meta ) {
+                    var b = moment(new Date(data));
+                    var date = "";
+                    if (data != null) {
+                      date = b.format("YYYY年MM月DD日");
+                    }
+                    return date;
+                  }},
+                  {data: "level", defaultContent: '','class':'text-center', render: function ( data, type, full, meta ) {
+                    return data+"星";
+                  }},
+                  {data: "enabled", defaultContent: '','class':'text-center', render: function ( data, type, full, meta ) {
+                    var result="";
+                    if (data == '1') {
+                      result = "<a class='btn btn-xs key' title='激活/禁用' href='/supplier/service/isEnable?id=" + full._id + "'><i class='fa fa-check-square'/></a>"
+                    } else {
+                      result = "<a class='btn btn-xs key' title='激活/禁用' href='/supplier/service/isEnable?id=" + full._id + "'><i class='fa fa-square-o'/></a>"
+                    }
+                    return result;
+                  }},
+                  {data: ""}
+                ]
+              }
+      )).on('draw.dt', function() {
+        $('#tableWrapper').fadeIn();
+      });
+      $('#serviceList').on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+    });

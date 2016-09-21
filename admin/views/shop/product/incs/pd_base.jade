@@ -1,0 +1,38 @@
+//
+   Created by danne on 8/16/2016.
+.form-group
+  label.control-label.col-sm-2.required 商品编号：
+  .col-sm-9
+    input.form-control.required(name="no",value="#{product ? product.no : ''}",placeholder="商品编号")
+.form-group
+  label.control-label.col-sm-2.required 商品名称：
+  .col-sm-9
+    input.form-control.required(name="name",value="#{product ? product.name : ''}",placeholder="商品名称")
+.form-group
+  label.control-label.col-sm-2.required 型号：
+  .col-sm-9
+    input.form-control.required(name="model",value="#{product ? product.model : ''}",placeholder="型号")
+.form-group
+  label.control-label.col-sm-2 标签：
+  .col-sm-9
+    input.form-control(name="tag",value="#{product ? product.tag : ''}",placeholder="标签")
+.form-group
+  label.control-label.col-sm-2 简述：
+  .col-sm-9
+    textarea.form-control(name="description", rows=8, cols=20 )
+      | #{product ? product.description : ''}
+fieldset
+  legend.text-center
+    h4 选择选项
+  .form-group
+    label.control-label.col-md-3
+    .col-md-9
+      .row
+        each option in options
+          .checkbox.icheck.col-md-4
+            label
+              if (product != null && product.options.join(",").match('' + option.id))
+                input(type="checkbox", name="options", value="#{option.id}", checked="checked")
+              else
+                input(type="checkbox", name="options", value="#{option.id}")
+              | &nbsp;&nbsp; #{option.name}

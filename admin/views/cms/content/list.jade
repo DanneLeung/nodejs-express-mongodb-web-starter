@@ -1,0 +1,114 @@
+//
+   Created by danne on 2016-04-28.
+extends ../layout
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+block main
+  .panel
+    .panel-heading
+      h3.panel-title 文章列表
+        .panel-tools.pull-right
+          a.btn.btn-primary.btn-sm(href="#{baseUrl}/add")
+            i.fa.fa-plus.fa-fw
+            | 添加文章
+          a.btn.btn-default.btn-sm(href="#{baseUrl}/trash/list")
+            i.fa.fa-trash.fa-fw
+            | 查看回收站
+    .panel-body
+      #tableWrapper(style="display:none")
+        table#contentList.table.table-hover.table-striped.table-responsive
+          thead
+            //th 类型
+            th 分类
+            th 标题
+            th.text-center 作者
+            th.text-right 阅读积分
+            th.text-right 阅读数
+            th.text-center URL
+            th.text-center 发布
+            th.text-center 发布时间 
+            th.text-center 操作
+          tbody
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='#{theme}/js/jquery.qrcode.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#contentList').DataTable($.extend(opts, {
+        ajax: {url: '#{req.baseUrl}/datatable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              var url = contextFront + '/content/' + row._id + '?cid=#{req.session.channel.identity}';
+              return "<div class='btn-group'> " +
+                      '<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-qrcode"></i><span class="caret"></span></button>' +
+                      '<div class="qrcode dropdown-menu dropdown-menu-right" style="width:210px;height: 210px;padding:4px;border:1px solid #f4f4f4" data-url="' + url + '"></div>' +
+                      "<a class='btn btn-default btn-sm' title='编辑文章' href='#{baseUrl}/edit/" + row._id + "'><i class='fa fa-pencil'></i></a>" +
+                      "<a class='btn btn-default btn-sm trash' title='扔到回收站'><i class='fa fa-trash'></i></a>" +
+                      "<a class='btn btn-default btn-sm del' title='彻底删除文章'><i class='fa fa-close'></i></a>" +
+                      "</div>";
+            }
+          }
+        ],
+        columns: [
+          {data: "tags", defaultContent: ''},
+          {data: "title", defaultContent: ''},
+          {data: "author", defaultContent: ''},
+          {data: "point", defaultContent: '', class: "text-right"},
+          {data: "readTimes", defaultContent: '', class: "text-right"},
+          {
+            data: "url", class: "text-center", render: function (data, type, row, meta) {
+            var url = contextFront + '/content/' + row._id + '?cid=#{req.session.channel.identity}';
+            return '<a href="' + url + '">' + url + '</a>';
+          }
+          },
+          {
+            data: "enabled",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, row, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='#{baseUrl}/enable/" + row._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn btn-sm key' title='激活/禁用' href='#{baseUrl}/enable/" + row._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+          },
+          {
+            data: "publishedAt", defaultContent: '', class: 'text-center', render: function (data, type, row, meta) {
+            var b = moment(new Date(data));
+            var date = "";
+            if (data != null) {
+              date = b.format("YYYY-MM-DD HH:mm");
+            }
+            return date;
+          }
+          },
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+        $(".qrcode").each(function () {
+          $(this).qrcode({'width': 200, 'height': 200, 'text': $(this).data('url')});
+        });
+      });
+    });

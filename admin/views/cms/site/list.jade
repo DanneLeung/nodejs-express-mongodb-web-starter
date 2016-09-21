@@ -1,0 +1,60 @@
+//
+   Created by pc on 2015/10/27.
+extends ../layout
+block pageTitle
+  h1 站点列表
+    small 啊哦哦哦滴哦io
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 站点列表
+        .panel-tools.pull-right
+          a.btn.btn-primary.btn-sm(href="/cms/site/add")
+            i.fa.fa-plus.fa-fw
+            | 创建新站点
+    .panel-body
+      #tableWrapper
+        table#siteList.table.table-hover.table-striped.table-responsive
+          thead
+            th 名称
+            th 标题
+            th URL
+            th.text-center 发布
+            th.text-center 发布时间
+            th.text-center 管理
+          tbody
+            each s in sites
+              tr
+                td=s.name
+                td=s.title
+                td=s.url
+                td.text-center
+                  a(href="/cms/site/enable/#{s.id}")
+                    if(s.enabled)
+                      i.fa.fa-check-square
+                    else
+                      i.fa.fa-square-o
+                td.text-center
+                  |#{formatDatetime(s.publishedAt)}
+                td.text-center
+                  .btn-group
+                    .btn-group(role='group')
+                      button.btn.btn-default.btn-sm.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                        i.fa.fa-qrcode
+                        span.caret
+                      .dropdown-menu
+                        img(src="",width="160")
+
+                    a.btn.btn-default.btn-sm(href="/cms/site/page/#{s.id}",title="管理页面")
+                      i.fa.fa-sticky-note-o
+                    a.btn.btn-default.btn-sm(href="/cms/site/edit/#{s.id}",title="编辑站点")
+                      i.fa.fa-pencil
+                    a.btn.btn-default.btn-sm(href="javascript:bootbox.confirm('确定要删除该站点吗？',function(b){if(b)window.location.href='/cms/site/del/#{s.id}';})",title="删除站点")
+                      i.fa.fa-trash
+                    a.btn.btn-default.btn-sm(href="/cms/site/copy/#{s.id}",title="复制站点")
+                      i.fa.fa-copy
+                    a.btn.btn-default.btn-sm(href="/cms/site/preview/#{s.id}",title="预览站点")
+                      i.fa.fa-eye
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.

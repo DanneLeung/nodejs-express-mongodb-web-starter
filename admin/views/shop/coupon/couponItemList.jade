@@ -1,0 +1,303 @@
+//
+  Created by yu869 on 2016/3/31.
+extends layout
+block header
+  link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link(href="/themes/default/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+//应用的page title
+block pageTitle
+  h1 券号列表
+    small 系统中券查看
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 券号列表
+
+        .pull-right.panel-tools
+          a#back.btn.btn-default.btn-sm(href='/shop/coupon/list', title='返回')
+            i.fa.fa-reply
+
+          button#delModal.btn.btn-danger.btn-sm(type='button' title='批量删除')
+            i.fa.fa-trash-o
+          a#exportModal.btn.btn-default.btn-sm(href='/shop/coupon/item/exportCoupon', target='_black', title='下载模板')
+            i.fa.fa-cloud-download
+
+          a#importModal.btn.btn-default.btn-sm(title='导入券')
+            i.fa.fa-cloud-upload
+    .panel-body
+      form.form-inline
+        .form-group
+          label.control-label(for="no")  券号:
+          input#no.form-control.required(name='no',placeholder='券号')
+        .form-group
+          label.control-label(for="getStatus")  状态:
+          select#getStatus.form-control.required(name='getStatus')
+            option(value='') -请选择-
+            option(value='01') 未获取
+            option(value='02') 已获取
+            option(value='03') 已使用
+        .form-group
+          label.control-label(for="getStatus")  手机号:
+          input#mobile.form-control.required(name='mobile',placeholder='手机号查询')
+        .form-group
+          a#search.btn.btn-default.btn-sm(title='查询')
+            i.fa.fa-search
+            span 查询
+
+      form#delForm(method='post', style='display:none', action='/shop/coupon/item/del')
+        input#ids(type='hidden',name='ids')
+        input#branchName(type='hidden',name='branchName')
+        input#companyName(type='hidden',name='companyName')
+        input#coupon(type='hidden',name='coupon',value='#{couponId}')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+      #tableWrapper(style="display:none;")
+        table#couponItemList.table.table-bordered.table-hover.table-striped
+          thead
+            th 导入时间
+            th 券号
+            th 面值
+            th 售价
+            th 兑换积分数
+            th 有效开始时间
+            th 有效结束时间
+            th 领取时间
+            th 手机
+            th 领取人
+            th 支行
+            th 公司
+            th 状态
+            th 激活
+            th.text-center(width="80") 操作
+          tbody
+
+
+  #importCouponsModal.modal.fade(tabindex='-1', role='dialog')
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 导入券的信息
+        .modal-body
+          form#inputCouponForm.form-horizontal(method='post', action='/shop/coupon/item/importCoupons',enctype="multipart/form-data")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            input#couponId(type="hidden" name='couponId' value="#{couponId}")
+            .form-group
+              label.control-label.col-sm-3 选择券文件：
+              .col-sm-8
+                input#mfile.form-control(type="file",name='mfile')
+                p.help-block 选择券的文件，进行导入
+        .modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+          button#importBtn.btn.btn-primary(type="button") 添加
+  #importInfo.modal.fade(tabindex='-1', role='dialog')
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 正在导入券信息，请等待......
+
+  #delCouponsModal.modal.fade(tabindex='-1', role='dialog')
+    .modal-dialog(role="document")
+      .modal-content
+        .modal-header
+          button.close(type="button", data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 批量删除券的信息
+        .modal-body
+          form.form-horizontal(method='post', action='')
+            .form-group
+              label.control-label.col-sm-3 支行：
+              .col-sm-8
+                input#branch.form-control(type="text",name='branchName')
+                p.help-block 输入批量删除的支行名称
+            .form-group
+              label.control-label.col-sm-3 公司：
+              .col-sm-8
+                input#company.form-control(type="text",name='companyName')
+                p.help-block 输入公司删除的支行名称
+        .modal-footer
+          button.btn.btn-default(type="button", data-dismiss="modal") 关闭
+          button#delBtn.btn.btn-primary(type="button") 删除
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    $(document).ready(function () {
+
+      $(".form-group").find(':file').filestyle({buttonText: '上传文件'});
+
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: false,
+        searching: false,
+        processing: false,
+        //scrollX:true,
+        serverSide: true,
+        deferRender: true
+      };
+      var t = $('#couponItemList').DataTable($.extend(opts, {
+        ajax: {url: '/shop/coupon/item/list/datatable/#{couponId}'},
+        order: [[0, 'desc']],
+        columnDefs: [
+          {
+            targets: -2, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group'>"
+                      + "<a class='btn btn-default btn-sm key del' title='删除' href='#'><i class='fa fa-trash-o'></i></a></div>";
+            }
+          }
+        ],
+        columns: [
+          //{data: ""},
+          {
+            data: "updatedAt", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+              var date = "";
+              if (data != null && data != undefined) {
+                var b = moment(new Date(data));
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+          {data: "no", defaultContent: '', 'class': 'text-center'},
+          {data: "value", defaultContent: '', 'class': 'text-center'},
+          {
+            data: "price", defaultContent: '', 'class': 'text-right',
+            render: function (data, type, full, meta) {
+              return data ? data.toFixed(2):"0.00";
+            }
+          },
+          {data: "needScore", defaultContent: '', 'class': 'text-center'},
+          {
+            data: "avaliabeBegin", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+              var date = "";
+              if (data != null && data != undefined) {
+                var b = moment(new Date(data));
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+          {
+            data: "avaliabeEnd", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+              var date = "";
+              if (data != null && data != undefined) {
+                var b = moment(new Date(data));
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+
+          {
+            data: "getTime", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+              var date = "";
+              if (data != null && data != undefined) {
+                var b = moment(new Date(data));
+                date = b.format("YYYY-MM-DD HH:mm:ss");
+              }
+              return date;
+            }
+          },
+          {data: "mobile", defaultContent: ''},
+          {data: "fullname", defaultContent: ''},
+          {data: "branchName", defaultContent: ''},
+          {data: "company.fullname", defaultContent: ''},
+          {data: "getStatus", defaultContent: '',
+            render: function (data, type, full, meta) {
+              var result="";
+              if(data == "01"){
+                result = "未获取";
+              }else if(data == "02"){
+                result = "已获取";
+              }else if(data == "03"){
+                result = "已使用";
+              }else{
+                result = "未获取";
+              }
+              return result;
+            }},
+          {
+            data: "enabled",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, full, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "<a class='btn btn-xs key' title='激活/禁用' href='/shop/coupon/item/list/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn btn-xs key' title='激活/禁用' href='/shop/coupon/item/list/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+          },
+          {data: ""},
+          {data: "_id", visible: false}
+        ]
+      })).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+
+      $('#search').on("click", function (e) {
+        var no = $('#no').val();
+        var status = $('#getStatus').val();
+        var mobile = $('#mobile').val();
+        var TT = $('#couponItemList').DataTable();
+        TT.ajax.url('/shop/coupon/item/list/datatable/#{couponId}?no=' + no +'&status='+status+'&mobile='+mobile).load();
+      });
+      //导入
+      $('#importModal').on("click", function (e) {
+        $('#importCouponsModal').modal("show");
+      });
+      $('#delModal').on("click", function (e) {
+        $('#delCouponsModal').modal("show");
+      });
+      //提交导入
+      $('#importBtn').on("click", function (e) {
+        var file= $("#mfile").val();
+        if(file){
+          $('#inputCouponForm').submit();
+          $('#importInfo').modal("show");
+          $('#importCouponsModal').modal("hide");
+        }else{
+          bootbox.alert("请先选择文件！");
+          return false;
+        }
+      });
+      //提交导入
+      $('#delBtn').on("click", function (e) {
+        var branch= $("#branch").val();
+        var company= $("#company").val();
+        $("#branchName").val(branch)
+        $("#companyName").val(company)
+        if(!branch && !company){
+          bootbox.alert("请输入支行或公司其中一个信息进行删除！");
+          return false;
+        }else{
+          $('#delForm').submit();
+        }
+      });
+
+      $('#couponItemList').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+
+    });

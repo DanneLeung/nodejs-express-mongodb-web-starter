@@ -1,0 +1,31 @@
+//
+  Created by pc on 2015/10/27.
+
+extends ../../layouts/default
+//应用的page title
+block pageTitle
+  h1 网点管理
+    small 站点网点/门店，网点管理
+//block left
+  .panel.panel-default
+    .panel-heading(data-widget='collapse')
+      h4.panel-title 会员管理
+      .panel-tools.pull-right
+        span.btn.btn-box-tool
+          i.fa.fa-caret-down
+    .panel-body.no-padding.list-group
+      a.list-group-item(class="#{isActive('/member/list')}",href="/member/list")
+        i.fa.fa-list
+        | 会员查询
+      a.list-group-item(class="#{isActive('/member/group/list')}",href="/member/group/list")
+        i.fa.fa-list
+        | 会员分组
+      a.list-group-item(class="#{isActive('/member/company/list')}",href="/member/company/list")
+        i.fa.fa-list
+        | 客户公司
+      a.list-group-item(class="#{isActive('/member/action/list')}",href="/member/action/list")
+        i.fa.fa-list
+        | 会员行为
+      a.list-group-item(class="#{isActive('/member/score/list')}",href="/member/score/list")
+        i.fa.fa-list
+        | 积分记录

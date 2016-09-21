@@ -1,0 +1,71 @@
+//
+   Created by pc on 2015/10/27.
+extends ../layout
+
+block main
+  .panel
+    .panel-heading.with-border
+      h3.panel-title 关卡的信息管理
+        .panel-tools.pull-right
+          a.btn.btn-default.btn-sm(href="/activities/quiz/run/addLevel/#{runId}" title="添加闯关")
+            i.fa.fa-plus.fa-fw
+          a.btn.btn-default.btn-sm(href='/activities/quiz/run')
+            i.fa.fa-reply
+    .panel-body
+        table#poolList.table.table-hover.table-striped.table-responsive
+          thead
+            th 关卡名称
+            th.text-center 通过分数
+            th.text-center 难度最小值
+            th.text-center 难度最大值
+            th.text-center 随机题数
+            th.text-center 时间（秒）
+            th.text-center 可否跳过
+            th.text-center 全对通过
+            th.text-center 操作
+          tbody
+            each level,index in levels
+              tr(data-tt-index='#{index}')
+                td
+                  | &nbsp; #{level.levelName}
+                td.text-center
+                  | #{level.score}
+                td.text-center
+                  span #{level.minLevel}
+                td.text-center
+                  span #{level.maxLevel}
+                td.text-center
+                  span #{level.randNum}
+                td.text-center
+                  span #{level.second}
+                td.text-center
+                  if (level.cancellable)
+                    <i class='fa fa-check-square'/>
+                  else
+                    <i class='fa fa-square-o'/>
+                td.text-center
+                  if(level.allPass)
+                    <i class='fa fa-check-square'/>
+                  else
+                    <i class='fa fa-square-o'/>
+                td.text-center
+                  a.btn.btn-xs.edit(href='/activities/quiz/run/editLevel/#{runId}/#{level.level}', title='修改关卡')
+                    i.fa.fa-edit
+                  a.btn.btn-xs.del(title='删除关卡' data-index="#{index}")
+                    i.fa.fa-trash-o
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      $("#poolList .del").on("click",function(e){
+        var index=$(this).data("index");
+        if(index || index == 0){
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              window.location.href ="/activities/quiz/run/delLevel/#{runId}/"+index;
+            }
+          });
+        }
+      });
+    })

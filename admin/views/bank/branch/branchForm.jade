@@ -1,0 +1,523 @@
+//
+  Created by yu869 on 2016/3/31.
+
+extends layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker3.min.css")
+  link(rel="stylesheet" href="/themes/default/plugins/select2/select2.css")
+//应用的page title
+block pageTitle
+  if branch.isNew
+    h1 网点新增
+      small 添加网点信息
+  if !branch.isNew
+    h1 网点编辑
+      small 编辑网点信息
+block main
+  #mapModal.modal
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') ×
+          h4.modal-title 地图定位
+        .modal-body(style='padding:0;')
+          #map.map(style="width:100%;height:400px")
+        .modal-footer
+          button.ok.btn.btn-primary(data-dismiss="modal", aria-label="Close")
+            span 确定坐标
+  .panel
+    .panel-heading.with-border
+      if branch.isNew
+        h3.panel-title 添加网点信息
+      if !branch.isNew
+        h3.panel-title 编辑网点信息
+      .panel-tools
+        a.btn.btn-box-tool.btn-default(href='/bank/branch/list')
+          i.fa.fa-reply
+          span  返回
+        | &nbsp;
+        if branch.isNew || !branch.isNew
+          button#save.btn.btn-box-tool.btn-default
+            i.fa.fa-save
+            span  保存
+        | &nbsp;
+      //button.btn.btn-box-tool(data-widget="collapse")
+      //  i.fa.fa-caret-left
+    .panel-body
+      div#userEdit.row
+        .col-sm-12
+          form#branchForm.form-horizontal(name='branchForm', action='/bank/branch/save', method='post')
+            if !branch.isNew
+              input#id(type='hidden', name='id', value="#{branch._id}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            fieldset
+              legend 基本信息
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12.required 编号：
+                .col-sm-9.col-md-9.col-xs-12
+                  input#no.form-control.required(name='no',placeholder='编号', value="#{branch ? branch.no : ''}")
+
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12.required 名称：
+                .col-sm-9.col-md-9.col-xs-12
+                  input#name.form-control(name='name',placeholder='名称', value="#{branch ? branch.name : ''}")
+
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 省：
+                div.col-sm-9.col-md-9.col-xs-12
+                  select#province.form-control(name="province")
+                    option(value="") 请选择
+
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 市：
+                div.col-sm-9.col-md-9.col-xs-12
+                  select#city.form-control(name="city")
+                    option(value="") 请选择
+
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 区：
+                div.col-sm-9.col-md-9.col-xs-12
+                  select#district.form-control(name="district")
+                    option(value="") 请选择
+
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 详细地址：
+                .col-sm-9.col-md-9.col-xs-12
+                  input#address.form-control(name='address',  placeholder='详细地址', value="#{branch ? branch.address : ''}")
+                  span#err(style="color:red")
+              div.row.form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12.required 经纬度：
+                .col-sm-9.col-md-9.col-xs-12
+                  .input-group
+                    input#coordinate.form-control(name='coordinate', value="#{branch != null ? branch.coordinate.join(',') : ''}")
+                    //input#coordinateCode.form-control.required(name='coordinateCode', type='hidden')
+                    .input-group-btn
+                      a#location.btn.btn-block.btn-default 定位
+
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 联系人：
+                .col-sm-9.col-md-9.col-xs-12
+                  input#contact.form-control(name='contact', placeholder='联系人', value="#{branch ? branch.contact : ''}")
+
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 手机：
+                .col-sm-9.col-md-9.col-xs-12
+                  input#phone.form-control(name='phone', placeholder='手机', value="#{branch ? branch.phone : ''}")
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 详细描述：
+                .col-sm-9.col-md-9.col-xs-12
+                  textarea#description.form-control(name='description',placeholder='详细描述',rows='3')
+                    | #{branch ? branch.description : ''}
+            fieldset
+              legend 营业时间
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 工作日：
+                .col-sm-3
+                  div.input-group
+                    .input-group-addon
+                      i.fa.fa-clock-o
+                    input#openTime1.form-control(name='openTime1', data-inputmask="'alias': 'hh:mm'" data-mask value="#{branch != null ? branch.openTime1 : ''}")
+                label.control-label.col-sm-2 ~
+                .col-sm-3
+                  div.input-group
+                    .input-group-addon
+                      i.fa.fa-clock-o
+                    input#closeTime1.form-control(name='closeTime1', data-inputmask="'alias': 'hh:mm'" data-mask value="#{branch != null ? branch.closeTime1 : ''}")
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 星期六：
+                .col-sm-3
+                  div.input-group
+                    .input-group-addon
+                      i.fa.fa-clock-o
+                    input#openTime2.form-control(name='openTime2', data-inputmask="'alias': 'hh:mm'" data-mask value="#{branch != null ? branch.openTime2 : ''}")
+                label.control-label.col-sm-2 ~
+                .col-sm-3
+                  div.input-group
+                    .input-group-addon
+                      i.fa.fa-clock-o
+                    input#closeTime2.form-control(name='closeTime2', data-inputmask="'alias': 'hh:mm'" data-mask value="#{branch != null ? branch.closeTime2 : ''}")
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 星期天：
+                .col-sm-3
+                  div.input-group
+                    .input-group-addon
+                      i.fa.fa-clock-o
+                    input#openTime3.form-control(name='openTime3', data-inputmask="'alias': 'hh:mm'" data-mask value="#{branch != null ? branch.openTime3 : ''}")
+                label.control-label.col-sm-2 ~
+                .col-sm-3
+                  div.input-group
+                    .input-group-addon
+                      i.fa.fa-clock-o
+                    input#closeTime3.form-control(name='closeTime3', data-inputmask="'alias': 'hh:mm'" data-mask value="#{branch != null ? branch.closeTime3 : ''}")
+            fieldset
+              legend 服务项
+              .form-group
+                label.control-label.col-md-3
+                .col-md-9
+                  .row
+                    each s ,i in services
+                      .checkbox.icheck.col-md-4
+                        label
+                          if (branch != null && branch.services.join(",").match('' + s._id))
+                            input(type="checkbox", name="services", value="#{s._id}", checked="checked")
+                          else
+                            input(type="checkbox", name="services", value="#{s._id}")
+                          | &nbsp;&nbsp; #{s.serverName}
+
+            fieldset
+              legend 展示素材
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 上传LOGO：
+                .col-sm-2
+                  button#logoupload.btn.btn-success(type="button")
+                    //- i.fa.fa-plus.fa-fw
+                    | 选择图片
+                .col-sm-7
+                  p.help-block 上传logo图片会被压缩为宽100X100像素的小图片
+              .form-group
+                .col-sm-9.col-md-9.col-xs-12.col-sm-offset-3
+                  input#logo(type='hidden', name='logo', value="#{branch ? branch.logo : ''}")
+                  img#mylogo.img-thumbnail(src="#{branch ? url(branch.logo) : ''}" alt="" width="120")
+              .form-group
+                label.control-label.col-sm-3.col-md-3.col-xs-12 轮播图片:
+                .col-sm-2
+                  button#images.btn.btn-success(type="button")
+                    //- i.fa.fa-plus.fa-fw
+                    | 选择图片
+                  //- input#uploadimages.form-control(type='file', name='uploadify')
+                .col-sm-7
+                  p.help-block 上传logo图片会被压缩为宽640X480像素的小图片
+              .form-group
+                .col-sm-9.col-md-9.col-xs-12.col-sm-offset-3
+                  .well.clearfix
+                    div#imgInfolist
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/locale/zh-cn.js')
+  script(src='/themes/default/plugins/input-mask/jquery.inputmask.js')
+  script(src='/themes/default/plugins/input-mask/jquery.inputmask.date.extensions.js')
+  script(src='/themes/default/plugins/select2/select2.full.js')
+  script(src='/themes/default/plugins/bootbox/bootbox.min.js')
+  script(src="http://api.map.baidu.com/api?v=2.0&ak=soAXo1XoypnI5XH63m8fdDO7")
+  script(src="//cdn.bootcss.com/webuploader/0.1.0/webuploader.html5only.min.js")
+  script(src='/themes/default/js/fileupload.js')
+
+  script.
+    $(document).ready(function () {
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+
+
+      //- initUploadFyBtn('uploadLogoImg', 'images', '100X100', function (data) {
+      //-   $("#mylogo").attr("src", data[0].url);
+      //-   $("#logo").val(data[0].url);
+      //- });
+      //- initUploadFyBtn('uploadimages', 'images', '640X480', function (data) {
+      //-   if (data) {
+      //-     var html = getImgInfo(data[0].url);
+      //-     $("#imgInfolist").append(html);
+      //-   }
+      //- });
+      $('#logoupload').fileupload({type:'images', key:'100', callback:function (data) {
+        if (data) {
+          $("#mylogo").attr("src", data[0].url);
+          $("#logo").val(data[0].url);
+        }
+      }});
+      $('#images').fileupload({type:'images', key:'640X480', callback:function (data) {
+        if (data) {
+          var html = getImgInfo(data[0].url);
+          $("#imgInfolist").append(html);
+        }
+      }});
+
+      //Money Euro
+      $("[data-mask]").inputmask();
+
+      var imgs = "#{branch ? branch.images : ''}";
+      if (imgs) {
+        var arr = imgs.split(",");
+        if (arr && arr.length > 0)
+          $.each(arr, function (i, e) {
+            var html = getImgInfo(e);
+            $("#imgInfolist").append(html);
+          });
+      }
+      // form
+      var form = $('#branchForm');
+      $("#save").on('click', function () {
+        var openTime1 = $("#openTime1").val().split(":");
+        var closeTime1 = $("#closeTime1").val().split(":");
+        var openTime2 = $("#openTime2").val().split(":");
+        var closeTime2 = $("#closeTime2").val().split(":");
+        var openTime3 = $("#openTime3").val().split(":");
+        var closeTime3 = $("#closeTime3").val().split(":");
+
+        if (((openTime1[0] == closeTime1[0]) && (openTime1[1] > closeTime1[1])) || (openTime1[0] > closeTime1[0])) {
+          bootbox.alert("工作日：结束时间不能早于开始时间！");
+          return false;
+        }
+        if (((openTime2[0] == closeTime2[0]) && (openTime2[1] > closeTime2[1])) || (openTime2[0] > closeTime2[0])) {
+          bootbox.alert("周六：结束时间不能早于开始时间！");
+          return false;
+        }
+        if (((openTime3[0] == closeTime3[0]) && (openTime3[1] > closeTime3[1])) || (openTime3[0] > closeTime3[0])) {
+          bootbox.alert("周日：结束时间不能早于开始时间！");
+          return false;
+        }
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          no: {
+            required: true,
+            remote: '/bank/branch/checkNo?oldNo=#{branch ? branch.no : ''}'
+          }, name: {
+            required: true
+          }, coordinate: {
+            required: true
+          }
+        },
+        messages: {
+          no: {
+            remote: '该编号已存在!'
+          },
+          name: {
+            required: '名称必填'
+          },
+          coordinate: {
+            required: '请您先定位'
+          }
+        }
+      });
+
+
+      $('#del').on('click', function () {
+        bootbox.confirm("确定要删除数据吗?", function (result) {
+          if (result) {
+            $("#groupDelForm").submit();
+          }
+        });
+      });
+
+      //自动列出省份
+      $.getJSON("/bank/branch/province", function (data) {
+        var id = '#{branch ? branch.province : ''}';
+        $.each(data, function (i, item) {
+          if (item._id == id) {
+            $("#province").append("<option value='" + item.code + "|" + item._id + "|" + item.name + "' selected>&nbsp;" + item.name + "</option>");
+            city(item.code + "|" + item._id + "|" + item.name);
+          } else {
+            $("#province").append("<option value='" + item.code + "|" + item._id + "|" + item.name + "'>&nbsp;" + item.name + "</option>");
+          }
+          $("#province").append("<input type='hidden' id='" + item._id + "' value='" + item.code + "|" + item._id + "|" + item.name + "'/>");
+        });
+
+        var provinceId = "#{provinceId}";
+        if (provinceId) {
+          var key = $("#" + provinceId).val();
+          $("#province").val(key);
+          city(key);
+        }
+
+      });
+      //联动城市
+      $("#province").on('change', function () {
+        city($(this).val());
+      });
+      //联动区
+      $("#city").on('change', function () {
+        district($(this).val())
+      });
+
+      function createmap(container, longitude, latitude, address) {
+        window.offsetx = -0.011052422380004145;
+        window.offsety = -0.004009994660076723;
+        window.newPoint = false;
+        window.point = new BMap.Point(longitude, latitude);
+        window.map = new BMap.Map(container);
+        window.map.addControl(new BMap.NavigationControl());
+
+        //初始地图，百度地图坐标
+        var initMap = function(){
+          map.centerAndZoom(window.point, 16);//设置地图的中心点和坐标
+          var marker = new BMap.Marker(window.point);  //创建标注
+          map.addOverlay(marker);
+          var geocoder = new BMap.Geocoder();
+          map.addEventListener("click", function (e) {
+            map.clearOverlays();
+            window.point = e.point;
+            window.newPoint = true;
+            var marker = new BMap.Marker(window.point);
+            map.addOverlay(marker);
+            marker.addEventListener("click", function (e) {
+            });
+            geocoder.getLocation(window.point, function (rs) {
+              var addComp = rs.addressComponents;
+              var opts = {
+                width: 200, /* 信息窗口宽度*/
+                height: 60, /* 信息窗口高度*/
+                title: "<b>定位到地址</b>", /* 信息窗口标题*/
+                enableAutoPan: true /*自动平移*/
+              };
+              var infoWindow = new BMap.InfoWindow("<p>" + addComp.province + "" + addComp.city + "" + addComp.district + "" + addComp.street + "" + addComp.streetNumber + "</p>", opts);  // 创建信息窗口对象
+              map.openInfoWindow(infoWindow, window.point); //开启信息窗口
+            });
+          });
+        };
+
+        if (address!='') {
+          //如果有地址从地址解析
+          $("#err").html("");
+          var city = getCity();
+          var myGeo = new BMap.Geocoder();
+          myGeo.getPoint(address, function (point) {
+            //第一步getPoint是地址解析。
+            if (point) {
+              window.point = point;
+              initMap();
+            }else{
+              console.log("未能正确解析地址："+address);
+            }
+          }, "上海市"); //必须设置城市
+        } else if(longitude > 0 && latitude > 0){
+          //GPS坐标点
+          var pointArr = [];
+          pointArr.push(new BMap.Point(longitude, latitude));
+          var convertor = new BMap.Convertor();
+          convertor.translate(pointArr, 1, 5, function (d) {
+            if (d.status == 0) {
+              var point = d.points[0];
+              //坐标偏移
+              window.point = point;
+              //- console.log('offsetx: %s, offsety: %s', offsetx, offsety);
+              initMap();
+            } else {
+              console.log("坐标转换错误");
+            }
+          });
+        }
+      }
+
+      $('#mapModal .ok').on('click', function (e) {
+        $("#coordinate").val((window.point.lng + window.offsetx) + ',' + (window.point.lat + window.offsety));
+        if(window.newPoint){
+          var geoc = new BMap.Geocoder();
+          geoc.getLocation(window.point, function (rs) {
+            var addComp = rs.addressComponents;
+            //addComp.district + "" + addComp.street + "" + addComp.streetNumber+":" +
+            $("#address").val(rs.address);
+          });
+        }
+      });
+
+      //定位
+      $("#location").on('click', function () {
+        var pa=[0,0];
+        var point = $("#coordinate").val();
+        var address = $("#address").val();
+        if (point.trim() != '') {
+          pa = point.split(',');
+        }
+        var modal = $("#mapModal").modal({
+          keyboard: false
+        }).modal("show");
+
+        createmap('map', pa[0], pa[1], address);
+      });
+    });
+
+    function city(provinceCode) {
+      $.ajax({
+        url: "/bank/branch/city",
+        type: "GET",
+        async: false,
+        data: {'provinceCode': provinceCode},
+        success: function (data) {
+          if (data) {
+            $("#city").html("");
+            $("#city").append("<option value=''>&nbsp;请选择</option>");
+            $("#district").html("");
+            $("#district").append("<option value=''>&nbsp;请选择</option>");
+            var id = '#{branch ? branch.city : ''}';
+            $.each(data, function (i, item) {
+              if (item._id == id) {
+                $("#city").append("<option value='" + item.code + "|" + item._id + "|" + item.name + "' selected>&nbsp;" + item.name + "</option>");
+                district(item.code + "|" + item._id + "|" + item.name)
+              } else {
+                $("#city").append("<option value='" + item.code + "|" + item._id + "|" + item.name + "'>&nbsp;" + item.name + "</option>");
+              }
+              $("#city").append("<input type='hidden' id='" + item._id + "' value='" + item.code + "|" + item._id + "|" + item.name + "'/>");
+            });
+
+            var cityId = "#{cityId}";
+            if (cityId) {
+              var key = $("#" + cityId).val();
+              $("#city").val(key);
+              district(key);
+            }
+          }
+        }
+      });
+    }
+
+    function district(cityCode) {
+      $.ajax({
+        url: "/bank/branch/district",
+        type: "GET",
+        async: false,
+        data: {'cityCode': cityCode},
+        success: function (data) {
+          if (data) {
+            $("#district").html("");
+            var id = '#{branch ? branch.district : ''}';
+            $.each(data, function (i, item) {
+              if (item._id == id) {
+                $("#district").append("<option value='" + item.code + "|" + item._id + "|" + item.name + "' selected>&nbsp;" + item.name + "</option>");
+              } else {
+                $("#district").append("<option value='" + item.code + "|" + item._id + "|" + item.name + "'>&nbsp;" + item.name + "</option>");
+              }
+              $("#district").append("<input type='hidden' id='" + item._id + "' value='" + item.code + "|" + item._id + "|" + item.name + "'/>");
+            });
+
+            var districtId = "#{districtId}";
+            if (districtId) {
+              var key = $("#" + districtId).val();
+              $("#district").val(key);
+            }
+          }
+        }
+      });
+    }
+    function getCity() {
+      var province = $("#province").val();
+      var p = province.split("|")[2];
+      var ps = ["北京市", "上海市", "天津市", "重庆市"]
+      var index = $.inArray(p, ps);
+      var c = "";
+      var city = $("#city").val();
+      if (index > 0) {
+        c = p;
+      } else {
+        if (city != "") {
+          c = city.split("|")[2];
+        }
+      }
+      return c;
+    }
+    //新增广告中的图片信息模型
+    function getImgInfo(atta) {
+      var html = "";
+      var listId = "imgInfo_" + Math.round(Math.random() * 100);
+      html += "<div class='alert fade in col-sm-3' id='" + listId + "'>";
+      html += "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>";
+      html += "<input type='hidden' class='form-control input-sm' name='images'  value='" + atta + "' />";
+      html += "<a target='_blank' href='" + atta + "'><img src='" + atta + "' alt='' class='img-thumbnail' width='140px' /></a>";
+      html += "</div>";
+      return html;
+    }

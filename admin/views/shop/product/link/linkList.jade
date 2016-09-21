@@ -1,0 +1,432 @@
+//
+   Created by yu869 on 2015/10/26.
+
+extends layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet" href="//cdn.bootcss.com/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker3.min.css")
+
+  style.
+    .table td {
+      white-space: normal;
+      vertical-align: middle;
+    }
+
+    .form > div > div > select {
+      width: 200px;
+    }
+  //应用的page title
+block pageTitle
+  h1 外部产品列表
+
+block main
+  .panel
+    .panel-heading
+      h3.panel-title 外部产品列表
+      .panel-tools
+        a.btn.btn-sm.btn-primary(href="#{baseUrl}/link/add")
+          i.fa.fa-plus.fa-fw
+          | 添加外链商品
+
+    .panel-body
+      form#searchForm.form-horizontal
+        .row
+          .col-sm-12
+            h5 查询条件
+        .row
+          .form-group.col-sm-4
+            label.control-label.col-sm-3(for="activityType")  活动类型:
+            .col-sm-8
+              select#activityType.form-control(name='activityType' )
+                each v,k in types
+                  if(k === 'c')
+                    option(value="#{k}",selected="selected") #{v}
+                  else
+                    option(value="#{k}") #{v}
+
+
+          .form-group.col-sm-4
+            label.control-label.col-sm-3(for="name")  名称:
+            .col-sm-8
+              input#name.form-control(name='name', value="",placeholder='产品名称')
+          .form-group.col-sm-4
+            .icheck
+              label.control-label
+                input#init(type="checkbox",name='init',value='1')
+                | &nbsp;
+                | 活动中
+        .row
+
+          .form-group.col-sm-4
+            label.control-label.col-sm-3 开始时间:
+            .col-sm-8
+              div#datetimepicker1.date.input-group.input-group-sm
+                input#startDate.form-control(type="text" name="startDate" readonly='true')
+                span.input-group-btn
+                  a.btn.btn-default
+                    i.fa.fa-calendar
+              span#errStart(style="color:red")
+          .form-group.col-sm-4
+            label.control-label.col-sm-3  结束时间:
+            .col-sm-8
+              div#datetimepicker2.date.input-group.input-group-sm
+                input#endDate.form-control(type="text" name="endDate" readonly='true')
+                span.input-group-btn
+                  a.btn.btn-default
+                    i.fa.fa-calendar
+              span#errEnd(style="color:red")
+        .row
+          .col-sm-12
+            h5 排序
+        .row
+          .form-group.col-sm-4
+            label.control-label.col-sm-3(for="name")  活动价:
+            .col-sm-8
+              select#activityPrice.form-control.required(name='activityPrice' )
+                option(value="") --请选择--
+          .form-group.col-sm-4
+            label.control-label.col-sm-3(for="diffPrice")  差价:
+            .col-sm-8
+              select#diffPrice.form-control.required(name='diffPrice' )
+                option(value="") --请选择--
+          .form-group.col-sm-4
+            .col-sm-12.pull-right
+              a#search.btn.btn-default.btn-sm(title='查询')
+                i.fa.fa-search.fa-fw
+                span 查询
+              | &nbsp;&nbsp;
+              a#releaseBtn.btn.btn-sm.btn-default(title='生成产品结果集')
+                i.fa.fa-ticket.fa-fw
+                span 创建商品发布
+              | &nbsp;&nbsp;
+              a#addBtn.btn.btn-sm.btn-default(title='添加至原有发布信息')
+                i.fa.fa-plus-square.fa-fw
+                span  添加到已有
+      form#delForm(method='post', style='display:none', action='/shop/product/link/del/')
+        input#ids(type='hidden',name='ids')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+    #tableWrapper(style="display:none")
+      table#productList.table.table-bordered.table-hover.table-striped
+        thead
+          th
+            input#selectAll(type="checkbox" title="全选")
+          th 店铺
+          th 商品图
+          th 名称
+          th 活动类型
+          th 活动开始
+          th 活动结束
+          th 商城价
+          th 活动价
+          th 差价
+          th 库存
+          th.text-center 操作
+          //th 月销
+          //th 描述相符
+        tbody
+
+
+  #productReleaseModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="productReleaseModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 发布信息
+        .modal-body
+          form#releaseForm.form-horizontal(method='post', action='/shop/product/link/releaseProduct')
+            input#productIds(type='hidden',name='productIds')
+            input(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-sm-3.required 发布名称:
+              .controls.col-sm-8
+                input#title.form-control.required(name='title', placeholder='发布名称')
+        .modal-footer
+          .center-block.pull-right
+          a#wechatGroup.btn.btn-primary 确定
+
+  #addProductModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="addProductModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 添加新商品至发布信息
+        .modal-body
+          form#addProductForm.form-horizontal(method='post', action='/shop/product/link/addProduct')
+            input#Ids(type='hidden',name='productIds')
+            input(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-sm-3.required 发布名称:
+              .controls.col-sm-8
+                select#releaseProduct.form-control(name="releaseProduct")
+                  option(value='') -- 请选择 --
+        .modal-footer
+          .center-block.pull-right
+          a#addProductBtn.btn.btn-primary 确定
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src='/themes/default/plugins/datepicker/bootstrap-datepicker.js')
+  script.
+    $(document).ready(function () {
+
+      var activityTypes = JSON.parse('!{JSON.stringify(types)}');
+
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '/shop/product/link/getAllRelease',
+        data: {}, //要传递的数据
+        success: function (data) { //成功
+          $.each(data, function (i, e) {
+            $("#releaseProduct").append("<option value='" + e._id + "'>" + e.title + "</option>");
+          });
+        }
+      });
+      var dates1 = $('#datetimepicker1').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      }).on('changeDate', function (ev) {
+        $('#startBegin').val(ev.date);
+      });
+
+      var dates2 = $('#datetimepicker2').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      }).on('changeDate', function (ev) {
+        $('#startEnd').val(ev.date);
+      });
+      var startDate = $('#datetimepicker3').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      }).on('changeDate', function (ev) {
+        $('#endBegin').val(ev.date);
+      });
+      var endDate = $('#datetimepicker4').datepicker({
+        format: "yyyy-mm-dd",
+        language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      }).on('changeDate', function (ev) {
+        $('#endEnd').val(ev.date);
+      });
+
+      var table1 = $('#productList').DataTable({
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        lengthMenu: [50],
+        autoWidth: false,
+        lengthChange: false,
+        searching: false,
+        serverSide: true,
+        ordering: true,
+        order: [[2, 'asc']],
+        ajax: {url: '/shop/product/link/datatable?init=1&activityType=' + $("#activityType").val()},
+        columnDefs: [
+          //{targets: 0, visible: true, sortable: false, searchable: false, className: 'text-right', defaultContent: ''},
+          {
+            targets: -6, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              var btns = "<div class='btn-group'>" +
+                      "<a class='btn btn-sm btn-default' href='/shop/product/link/edit/" + row._id + "'><i class='fa fa-pencil'></i> </a>" +
+                      "<a class='btn btn-sm btn-danger key del' title='删除1' ><i class='fa fa-trash'></i></a>" +
+                      "</div>";
+              return "c" === row.activityType ? btns : "";
+            }
+          }
+        ],
+        columns: [
+          {
+            data: "_id", sortable: false, render: function (data, type, row) {
+            return '<input type="checkbox" class="select" name="Ids" value="' + data + '">';
+          }
+          },
+          {data: "store.name", defaultContent: ''},
+          {
+            data: "smallImgs", defaultContent: '', render: function (data, type, full, meta) {
+            var r = data ? "<a target='_blank' href='" + full.url + "'><img width=50 src='" + data[0] + "'/></a>" : "";
+            if (full.thumbImg)
+              r = "<a target='_blank' href='" + full.url + "'><img width=50  src='" + full.thumbImg + "'/></a>";
+            return r;
+          }
+          },
+          {
+            data: "name", defaultContent: '',
+            render: function (data, type, full, row) {
+              return "编&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：" + full.no + "<br>" + "名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称：<a target='_blank' href='" + full.url + "'>" + data + "</a><br>" +
+                      "<span style='font-size: smaller'>" + (full.activityPriceDesc == undefined ? "" : full.activityPriceDesc) + "</span>";
+            }
+          },
+          {
+            data: "activityType", defaultContent: '', render: function (data, type, full, meta) {
+            return activityTypes[data];
+          }
+          },
+          {
+            data: "startDate", defaultContent: '', render: function (data, type, full, meta) {
+            var b = moment(new Date(data));
+            var date = "";
+            if (data != null) {
+              date = b.format("YYYY-MM-DD HH:mm:ss");
+            }
+            return date;
+          }
+          },
+          {
+            data: "endDate", defaultContent: '', render: function (data, type, full, meta) {
+            var b = moment(new Date(data));
+            var date = "";
+            if (data != null) {
+              date = b.format("YYYY-MM-DD HH:mm:ss");
+            }
+            return date;
+          }
+          },
+          {
+            data: "price", defaultContent: '', 'class': 'text-right',
+            render: function (data, type, full, meta) {
+              return data ? data.toFixed(2) : "";
+            }
+          },
+          {
+            data: "activityPrice", defaultContent: '', 'class': 'text-right',
+            render: function (data, type, full, meta) {
+              return data ? data.toFixed(2) : "";
+            }
+          },
+          {
+            data: "diffPrice", defaultContent: '', 'class': 'text-right',
+            render: function (data, type, full, meta) {
+              return data ? data.toFixed(2) : "";
+            }
+          },
+          {data: "stockNum", defaultContent: '', 'class': 'text-center'},
+          {data: "", defaultContent: '', 'class': 'text-center'},
+          {
+            data: "activityType", defaultContent: '', visible: false
+          },
+          {data: "no", defaultContent: '', visible: false},
+          {data: "thumbImg", defaultContent: '', visible: false},
+          {data: "activityPriceDesc", defaultContent: '', visible: false},
+          {data: "url", defaultContent: '', visible: false}
+        ]
+      }).on('draw.dt', function () {
+        $('#tableWrapper').fadeIn();
+      });
+      $('#productList').on('click', 'a.del', function () {
+        var id = table1.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+      //筛选
+      $('#search').on("click", function (e) {
+        var data = $('#searchForm').serialize();
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val();
+
+        if ((startDate != "" && endDate == "") || (startDate == "" && endDate != "")) {
+          $("#errStart").html("请同时选择两个时间");
+          return false;
+        } else {
+          $("#errStart").html("");
+        }
+        if (startDate > endDate) {
+          $("#errStart").html("结束时间时间应晚于等于开始时间");
+          return false;
+        } else {
+          $("#errStart").html("");
+        }
+
+        var TT = $('#productList').DataTable();
+        TT.ajax.url('/shop/product/link/datatable?data=null&' + data).load();
+      });
+      // 全选
+      $("#selectAll").on("ifChecked", function (e) {
+        $(this).parents("table").find("tbody :checkbox").prop("checked", true);
+      });
+      // 全选
+      $("#selectAll").on("ifUnchecked", function (e) {
+        $(this).parents("table").find("tbody :checkbox").prop("checked", false);
+      });
+      // 生成发布信息
+      $("#releaseBtn").on("click", function (e) {
+        var len = $('#productList').find(":checkbox[name='Ids']:checked").length;
+        if (len > 0) {
+          var ids = [];
+          $('#productList').find(":checkbox[name='Ids']:checked").each(function (e) {
+            ids.push($(this).val())
+          });
+          $('#productIds').val(ids);
+          $('#productReleaseModal').modal('show');
+        } else {
+          bootbox.alert("请选择产品");
+        }
+      });
+      // 添加新产品
+      $("#addBtn").on("click", function (e) {
+        var len = $('#productList').find(":checkbox[name='Ids']:checked").length;
+        if (len > 0) {
+          var ids = [];
+          $('#productList').find(":checkbox[name='Ids']:checked").each(function (e) {
+            ids.push($(this).val())
+          });
+          $('#Ids').val(ids);
+          $('#addProductModal').modal('show');
+        } else {
+          bootbox.alert("请选择产品");
+        }
+      });
+      var form = $('#releaseForm');
+      form.validate({
+        rules: {
+          title: {
+            required: true,
+            remote: '/shop/product/link/checkTitle'
+          }
+        },
+        messages: {
+          title: {
+            remote: '该发布名称已存在'
+          }
+        }
+      });
+      var addform = $('#addProductForm');
+      addform.validate({
+        rules: {
+          title: {
+            required: true
+          }
+        }
+      });
+      $("#wechatGroup").on("click", function (e) {
+        form.submit();
+      });
+      $("#addProductBtn").on("click", function (e) {
+        addform.submit();
+      });
+
+
+
+    });
+
+

@@ -1,0 +1,105 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ../layout
+block header
+  link( rel="stylesheet" href="/themes/default/plugins/select2/select2.min.css")
+  style.
+    #slides li{padding-bottom:10px;border-bottom:1px solid #ccc;list-style-type: none;margin-top:10px;}
+block main
+  form#groupForm.form-horizontal(method="post",action="/shop/product/attribute/save_group")
+    input(type='hidden', name='_csrf', value=_csrf)
+    if !group.isNew
+      input#id(type='hidden', name='id', value="#{group._id}")
+
+    .panel(style="position:relative;")
+      .panel-heading
+        h3.panel-title
+          span.text-info #{group.name} #{group.isNew ? '添加分组' : '编辑分组'}
+          .panel-tools.pull-right
+            a.btn.btn-default.btn-sm(href='/shop/product/attribute/groupList')
+              i.fa.fa-reply
+            a#save.btn.btn-sm.btn-default(title="保存",href="javascript:void(0);")
+              i.fa.fa-save
+      .panel-body
+        //.form-group
+        //  label.control-label.col-sm-2.required 店铺名称：
+        //  .col-sm-8
+        //    select#store.form-control.required(name='store' style="width: 100%;")
+        //      if !group.isNew
+        //        option(value='#{group.store}') #{group.store.name}
+        //    p.help-block 请输入店铺名称进行选择
+        .form-group
+          label.control-label.col-sm-2.required 名称：
+          .col-sm-8
+            input#name.form-control.required(type="text",name="name",value="#{group.name}")
+
+        .form-group
+          label.control-label.col-sm-2 排序：
+          .col-sm-8
+            input#sort.form-control(type="text",name="sort",value="#{group.sort}")
+            p.help-block 根据此数字小到大排序
+
+        .form-group
+          label.control-label.col-sm-2 描述：
+          .col-sm-8
+            textarea#description.form-control(name="description" rows='3')
+              | #{group.description}
+block scripts
+  script(src='/themes/default/plugins/select2/select2.full.js')
+  script.
+    $(document).ready(function () {
+      //initSelect2("#store", "/shop/product/attribute/getStore");
+
+      var form = $('#groupForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          name: {
+            required: true,
+            remote: '/shop/product/attribute/checkName_group?oldName=#{group ? group.name : ''}'
+          }
+        },
+        messages: {
+          name: {
+            remote: '名称已经重复，请修改为其他'
+          }
+        }
+      });
+
+    });
+    //select2的使用
+    function initSelect2(selectId, url) {
+      $(selectId).select2({
+        ajax: {
+          url: url,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              q: params.term
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data
+            };
+          },
+          cache: true
+        },
+        escapeMarkup: function (markup) {
+          return markup;
+        },
+        minimumInputLength: 1,
+        templateResult: formatRepo,
+        templateSelection: formatRepoSelection
+      });
+    }
+    function formatRepo(repo) {
+      return repo.text
+    }
+    function formatRepoSelection(repo) {
+      return repo.text
+    }

@@ -8,19 +8,15 @@ var ObjectId = Schema.ObjectId;
 var _ = require('lodash');
 
 var MenuSchema = mongoose.Schema({
-  parentId: {type: ObjectId, ref: "Menu"},    //上级菜单
-  children: [{type: ObjectId, ref: "Menu"}],    //上级菜单
-  module: {type: ObjectId, ref: "Module"},    //所属模块，模块禁用后菜单也不可以使用
+  // parentId: {type: ObjectId, ref: "Menu"},    //上级菜单
+  // module: {type: ObjectId, ref: "Module"},    //所属模块，模块禁用后菜单也不可以使用
   //type: {type: String, required: true, default: ""},     //菜单类型（如头部菜单“01”，侧边栏菜单“02”）
   code: {type: String, required: true, default: ""}, // 菜单标识
   title: {type: String, required: true, default: ""}, // 菜单标题
   link: {type: String, required: false, index: true, default: ""},   // 菜单链接（关联权限）
   iconClass: {type: String, default: ''},//图表class
   sort: {type: Number, required: false, default: 0},   // 菜单排序，同级
-  maxSort: {type: Number, required: false, default: 0},   // 同级最大排序号
-  depth: {type: Number, required: false, default: 1},   // 深度
-  lineage: {type: String, required: false, default: ""},//页路径
-  leaf: {type: Boolean, default: true},    //叶节点，true时无子节点
+  children: [],    //上级菜单
   topNav: {type: Boolean, default: false},    //顶置菜单
   enabled: {type: Boolean, default: true} // 激活
 }, {timestamps: {}, minimize: false});
@@ -145,25 +141,25 @@ MenuSchema.statics.findMenus = function (parentCode, done) {
 MenuSchema.statics.findMenusByParent = function (parentCode, includes, done) {
   if (!includes) includes = [];
   Menu.findOne({code: parentCode, enabled: true}).exec().then(function (parent) {
-    //console.log("######## load channel %s menu %s. ", parent);
+    // console.log("######## load menu %s. ", parent);
     //if (err)
     if (parent) {
-      Menu.find({parentId: parent._id, /*topNav: true,*/ enabled: true, _id: {$in: includes}}).sort("sort").populate({
+      Menu.find({parentId: parent._id/*, topNav: true*/, enabled: true}).sort("sort").populate({
         path: "children",
-        match: {enabled: true/*, topNav: true*/, _id: {$in: includes}},
+        match: {enabled: true/*, topNav: true*/},
         options: {sort: "sort"},
         populate: {
           path: 'children',
-          match: {enabled: true/*, topNav: true*/, _id: {$in: includes}},
+          match: {enabled: true/*, topNav: true*/},
           options: {sort: "sort"},
           populate: {
             path: 'children',
-            match: {enabled: true/*, topNav: true*/, _id: {$in: includes}},
+            match: {enabled: true/*, topNav: true*/},
             options: {sort: "sort"}
           }
         }
       }).exec(function (err, menus) {
-        //console.log("menus found: " + menus);
+        console.log("menus found: " + menus);
         done(menus);
       });
     } else {

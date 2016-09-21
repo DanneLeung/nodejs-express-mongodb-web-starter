@@ -1,0 +1,638 @@
+extends ../layout
+block head
+  meta(charset='utf-8')
+  meta(http-equiv='X-UA-Compatible', content='IE=edge')
+  meta(name='viewport', content='width=device-width, initial-scale=1.0')
+  link(rel='shortcut icon', href='/favicon.png')
+  // Bootstrap 3.3.5
+  link(rel='stylesheet', href='//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css')
+  // Font Awesome
+  link(rel='stylesheet', href='//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css')
+  // iCheck
+  link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
+  if NODE_ENV == 'development'
+    link( rel="stylesheet" href="/themes/default/dist/css/AdminLTE.css" type="text/css")
+    //link( rel="stylesheet" href="/themes/default/dist/css/skins/skin-blue.css" type="text/css")
+    link( rel="stylesheet" href="/themes/default/dist/css/skins/_all-skins.min.css" type="text/css")
+
+  if NODE_ENV == 'production'
+    link( rel="stylesheet" href="/themes/default/dist/css/AdminLTE.min.css" type="text/css")
+    link( rel="stylesheet" href="/themes/default/dist/css/skins/_all-skins.min.css" type="text/css")
+
+  link( rel="stylesheet" href="/themes/default/dist/css/wechat/common.css" type="text/css")
+  //script.
+    var require = {urlArgs: 'v=2016062115'};
+
+  //if lt IE 9
+    script(src='./resource/js/html5shiv.min.js')
+    script(src='./resource/js/respond.min.js')
+block main
+  .container-fluid
+    form.form.form-horizontal(action='', ng-controller='post')
+      input(type='hidden', name='replies', value='')
+      .panel.panel-default.clearfix
+        .panel-heading 回复内容
+        .panel-body
+          .row.clearfix.reply
+            .col-xs-6.col-sm-3.col-md-3.panel-group
+              .panel.panel-default(ng-repeat='item in context.items')
+                .panel-body(ng-if='$index == 0')
+                  .img
+                    i.default 封面图片
+                    img(src='', ng-src='{{item.thumb}}')
+                    span.text-left {{item.title}}
+                    .mask
+                      a(href='javascript:;', ng-click='context.exportFromCms(item)')
+                        i.fa.fa-book
+                        | 导入文章
+                      a(href='javascript:;', ng-click='context.exportFromNews(item)')
+                        i.fa.fa-book
+                        | 导入图文
+                      a(href='javascript:;', ng-click='context.editItem(item)')
+                        i.fa.fa-edit
+                        | 编辑
+                      a(href='javascript:;', ng-click='context.removeItem(item)')
+                        i.fa.fa-times
+                        | 删除
+                .panel-body(ng-if='$index != 0')
+                  .text
+                    h4 {{item.title}}
+                  .img
+                    img(src='', ng-src='{{item.thumb}}')
+                    i.default 缩略图
+                  .mask
+                    a(href='javascript:;', ng-click='context.exportFromCms(item)')
+                      i.fa.fa-book
+                      |  导入文章
+                    a(href='javascript:;', ng-click='context.editItem(item)')
+                      i.fa.fa-edit
+                      |  编辑
+                    a(href='javascript:;', ng-click='context.removeItem(item)')
+                      i.fa.fa-times
+                      |  删除
+              .panel.panel-default(ng-show='context.items.length < 8')
+                .panel-body
+                  .add(ng-click="context.items.length >= 8 ? '' : context.addItem();")
+                    span
+                      i.fa.fa-plus
+                      |  添加
+            #edit-container.col-xs-6.col-sm-9.col-md-9.aside
+              .card
+                .arrow-left
+                .inner
+                  .panel.panel-default
+                    .panel-body
+                      .form-group
+                        label.col-xs-12.col-sm-3.col-md-2.control-label 标题
+                        .col-sm-9.col-xs-12
+                          input.form-control(type='text', placeholder='添加图文消息的标题', ng-model='context.activeItem.title')
+                          input(type='hidden', ng-model='context.activeItem.id')
+                      .form-group
+                        label.col-xs-12.col-sm-3.col-md-2.control-label 作者
+                        .col-sm-9.col-xs-12
+                          input.form-control(type='text', placeholder='添加图文消息的作者', ng-model='context.activeItem.author')
+                      .form-group(ng-show='!context.activeItem.isFirst')
+                        label.col-xs-12.col-sm-3.col-md-2.control-label 排序
+                        .col-sm-9.col-xs-12
+                          input.form-control(type='text', placeholder='添加排序', ng-model='context.activeItem.displayorder')
+                          span.help-block 排序只能在提交后显示。按照从大到小的顺序对图文排序
+                      .form-group
+                        label.col-xs-12.col-sm-3.col-md-2.control-label 封面
+                        .col-sm-9.col-xs-12
+                          .col-xs-3.img(ng-if="context.activeItem.thumb == ''")
+                            span(ng-click='context.changeItem(context.activeItem)')
+                              i.fa.fa-plus-circle.green
+                              |  添加图片
+                          .col-xs-3.img(ng-if="context.activeItem.thumb != ''")
+                            h3(ng-click='context.changeItem(context.activeItem)') 重新上传
+                            img(ng-src='{{ context.activeItem.thumb }}')
+                      .form-group
+                        label.col-xs-12.col-sm-3.col-md-2.control-label
+                        .col-sm-9.col-xs-12
+                          label
+                            | 封面（大图片建议尺寸：360像素 * 200像素）
+                      .form-group
+                        label.col-xs-12.col-sm-3.col-md-2.control-label
+                        .col-sm-9.col-xs-12
+                          label.checkbox-inline
+                            input(type='checkbox', value='1', ng-model='context.activeItem.incontent', ng-checked='context.activeItem.incontent')
+                            |  封面图片显示在正文中
+                      .form-group
+                        label.col-xs-12.col-sm-3.col-md-2.control-label 描述
+                        .col-sm-9.col-xs-12
+                          textarea.form-control(placeholder='添加图文消息的简短描述', ng-model='context.activeItem.description')
+                      .form-group
+                        label.col-xs-12.col-sm-3.col-md-2.control-label 详情
+                        .col-sm-9.col-xs-12
+                          div(ng-my-editor='', ng-my-value='context.activeItem.content')
+                      .form-group
+                        label.col-xs-12.col-sm-3.col-md-2.control-label 来源
+                        .col-sm-9.col-xs-12
+                          .input-group
+                            input.form-control(type='text', placeholder='图文消息的来源地址', ng-model='context.activeItem.url')
+                            span.input-group-btn
+                              button.btn.btn-default(type='button', ng-click='context.selectLink()')
+                                i.fa.fa-external-link
+                                |  系统链接
+              #btn-submit.btn.btn-primary(ng-click='context.sync()') 提 交
+block bottom
+  script(type='text/javascript', src='#{theme}/plugins/ueditor/ueditor.config.js')
+  script(type='text/javascript', src='#{theme}/plugins/ueditor/third-party/zeroclipboard/ZeroClipboard.min.js')
+  script(type='text/javascript', src='#{theme}/plugins/ueditor/ueditor.all.js')
+
+  script(type='text/javascript').
+    var ueditoroption = {
+      'lang': 'zh-cn',
+      'autoClearinitialContent': false,
+      'toolbars': [['fullscreen', 'source', 'preview', '|', 'bold', 'italic', 'underline', 'strikethrough', 'forecolor', 'backcolor', '|',
+        'justifyleft', 'justifycenter', 'justifyright', '|', 'insertorderedlist', 'insertunorderedlist', 'blockquote', 'emotion', 'insertvideo',
+        'link', 'removeformat', '|', 'rowspacingtop', 'rowspacingbottom', 'lineheight', 'indent', 'paragraph', 'fontsize', '|',
+        'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol',
+        'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|', 'anchor', 'map', 'print', 'drafts']],
+      'elementPathEnabled': false,
+      'initialFrameHeight': 200,
+      'focus': false,
+      'maximumWords': 9999999999999
+    };
+    var opts = {
+      type: 'image',
+      direct: false,
+      multi: true,
+      tabs: {
+        'upload': 'active',
+        'browser': '',
+        'crawler': ''
+      },
+      path: '',
+      dest_dir: '',
+      global: false,
+      thumb: false,
+      width: 0
+    };
+    UE.registerUI('myinsertimage', function (editor, uiName) {
+      editor.registerCommand(uiName, {
+        execCommand: function () {
+          require(['fileUploader'], function (uploader) {
+            uploader.show(function (imgs) {
+              if (imgs.length == 0) {
+                return;
+              } else if (imgs.length == 1) {
+                editor.execCommand('insertimage', {
+                  'src': imgs[0]['url'],
+                  '_src': imgs[0]['attachment'],
+                  'width': '100%',
+                  'alt': imgs[0].filename
+                });
+              } else {
+                var imglist = [];
+                for (i in imgs) {
+                  imglist.push({
+                    'src': imgs[i]['url'],
+                    '_src': imgs[i]['attachment'],
+                    'width': '100%',
+                    'alt': imgs[i].filename
+                  });
+                }
+                editor.execCommand('insertimage', imglist);
+              }
+            }, opts);
+          });
+        }
+      });
+      var btn = new UE.ui.Button({
+        name: '插入图片',
+        title: '插入图片',
+        cssRules: 'background-position: -726px -77px',
+        onclick: function () {
+          editor.execCommand(uiName);
+        }
+      });
+      editor.addListener('selectionchange', function () {
+        var state = editor.queryCommandState(uiName);
+        if (state == -1) {
+          btn.setDisabled(true);
+          btn.setChecked(false);
+        } else {
+          btn.setDisabled(false);
+          btn.setChecked(state);
+        }
+      });
+      return btn;
+    }, 19);
+
+  script(src='//cdn.bootcss.com/require.js/2.2.0/require.min.js')
+  script(src='#{theme}/js/config.js')
+  script.
+    require(['angular.sanitize', 'underscore', 'util', 'jquery', 'jquery.ui'], function (angular, _, util, $) {
+      var running = false;
+      window.onbeforeunload = function (e) {
+        if (running) {
+          return (e || window.event).returnValue = '正在进行创建图文，确定离开页面吗.';
+        }
+      }
+      angular.module('app', ['ngSanitize']).controller('post', function ($scope, $http) {
+        $scope.context = {};
+        $scope.context.items = [];
+        $scope.context.hasimgs = []; //已经同步的图片
+        $scope.context.wximgs = []; //已经同步的图片对应的微信url
+        if (!$.isArray($scope.context.items)) {
+          $scope.context.items = [];
+        }
+        if ($scope.context.items.length == 0) {
+          $scope.context.items.push(
+                  {
+                    id: '',
+                    title: '',
+                    author: '',
+                    thumb: '',
+                    media_id: '',
+                    displayorder: '0',
+                    description: '',
+                    content: '',
+                    url: ''
+                  }
+          );
+        }
+        //当前编辑的回复项目的索引
+        $scope.context.activeIndex = 0;
+        //当前编辑的回复项目
+        $scope.context.activeItem = $scope.context.items[$scope.context.activeIndex];
+        $scope.context.editItem = function (item) {
+          var index = $.inArray(item, $scope.context.items);
+          if (index == -1) return false
+          $scope.context.triggerActiveItem(index);
+        };
+        $scope.context.triggerActiveItem = function (index) {
+          var top = index * 110 + 120;
+          $('#edit-container').css('marginTop', top);
+          $("html,body").animate({scrollTop: top + 50}, 500);
+          $scope.context.activeIndex = index;
+          $scope.context.activeItem = $scope.context.items[$scope.context.activeIndex];
+          $scope.context.activeItem.detail = $scope.context.activeItem.content != '';
+        };
+        $scope.context.changeItem = function (item) {
+          require(['fileUploader'], function (uploader) {
+            uploader.init(function (imgs) {
+              $scope.context.activeItem.thumb = imgs.url;
+              $scope.$apply()
+            }, {'direct': true, 'multiple': false});
+          });
+        };
+        $scope.context.selectLink = function () {
+          util.linkBrowser(function (href) {
+            var url = 'http://wz.9cubic.com/app';
+            $scope.context.activeItem.url = url + href.replace('./index', '/index');
+            $scope.$digest();
+          });
+        };
+        $scope.context.addItem = function () {
+          $scope.context.items.push({
+            id: '',
+            title: '',
+            author: '',
+            thumb: '',
+            displayorder: '0',
+            description: '',
+            content: '',
+            url: ''
+          });
+          var index = $scope.context.items.length - 1;
+          $scope.context.triggerActiveItem(index);
+        };
+        $scope.context.removeItem = function (item) {
+          require(['underscore'], function (_) {
+            $scope.context.items = _.without($scope.context.items, item);
+            $scope.context.triggerActiveItem(0);
+            $scope.$digest();
+          });
+        };
+        //导入文章
+        $scope.context.exportFromCms = function (item) {
+          var index = $.inArray(item, $scope.context.items);
+          if (index == -1) return false
+          $scope.context.triggerActiveItem(index);
+          $scope.context.searchCms();
+        }
+        $scope.context.searchCms = function (page) {
+          var html = {};
+          html['header'] = '<ul role="tablist" class="nav nav-pills" style="font-size:14px; margin-top:-20px;">' +
+                  '	<li role="presentation" class="active" id="li_goodslist"><a data-toggle="tab" role="tab" aria-controls="articlelist" href="#articlelist">文章列表</a></li>' +
+                  '</ul>';
+          html['content'] =
+                  '<div class="tab-content">' +
+                  '<div id="articlelist" class="tab-pane active" role="tabpanel">' +
+                  '	<table class="table table-hover">' +
+                  '		<thead class="navbar-inner">' +
+                  '			<tr>' +
+                  '				<th style="width:40%;">标题</th>' +
+                  '				<th style="width:30%">创建时间</th>' +
+                  '				<th style="width:30%; text-align:right">' +
+                  '					<div class="input-group input-group-sm">' +
+                  '						<input type="text" class="form-control">' +
+                  '						<span class="input-group-btn">' +
+                  '							<button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>' +
+                  '						</span>' +
+                  '					</div>' +
+                  '				</th>' +
+                  '			</tr>' +
+                  '		</thead>' +
+                  '		<tbody></tbody>' +
+                  '	</table>' +
+                  '	<div id="pager" style="text-align:center;"></div>' +
+                  '</div>' +
+                  '</div>';
+          html['footer'] = '';
+          html['articleitem'] =
+                  '<%_.each(list, function(item) {%> \\n' +
+                  '<tr>\\n' +
+                  '	<td><a href="#" data-cover-attachment-url="<%=item.attachment%>" title="<%=item.title%>"><%=item.title%></a></td>\\n' +
+                  '	<td><%=item.createtime%></td>\\n' +
+                  '	<td class="text-right">\\n' +
+                  '		<button class="btn btn-default js-btn-select" js-id="<%=item.id%>">选取</button>\\n' +
+                  '	</td>\\n' +
+                  '</tr>\\n' +
+                  '<%});%>\\n';
+          if (!$('#link-search-cms')[0]) {
+            $scope.modalobj = util.dialog(html['header'], html['content'], html['footer'], {'containerName': 'link-search-cms'});
+            $scope.modalobj.find('.modal-body').css({'height': '680px', 'overflow-y': 'auto'});
+            $scope.modalobj.modal('show');
+            $scope.modalobj.on('hidden.bs.modal', function () {
+              $scope.modalobj.remove();
+            });
+            $('#link-search-cms').data('modal', $scope.modalobj);
+          } else {
+            $scope.modalobj = $('#link-search-cms').data('modal');
+          }
+          page = page || 1;
+          $http.get('./index.php?c=utility&a=link&do=articlelist' + '&page=' + page).success(function (result, status, headers, config) {
+            if (result.message.list) {
+              $scope.modalobj.find('#articlelist').data('articles', result.message.list);
+              $scope.modalobj.find('#articlelist tbody').html(_.template(html['articleitem'])(result.message));
+              $scope.modalobj.find('#pager').html(result.message.pager);
+              $scope.modalobj.find('#pager .pagination li[class!="active"] a').click(function () {
+                $scope.context.searchCms($(this).attr('page'));
+                return false;
+              });
+              $scope.modalobj.find('.js-btn-select').click(function () {
+                $scope.context.addCms($(this).attr('js-id'));
+                $scope.$apply();
+                $scope.modalobj.modal('hide');
+              });
+            }
+          });
+        };
+        $scope.context.addCms = function (id) {
+          var article = $scope.modalobj.find('#articlelist').data('articles')[id];
+          $scope.context.activeItem.title = article.title;
+          $scope.context.activeItem.thumb = article.thumb_url;
+          $scope.context.activeItem.author = article.author;
+          $scope.context.activeItem.description = article.description;
+          $scope.context.activeItem.content = article.content;
+          $scope.context.activeItem.url = article.linkurl;
+        };
+        $scope.context.exportFromNews = function (item) {
+          var index = $.inArray(item, $scope.context.items);
+          if (index == -1) return false
+          $scope.context.triggerActiveItem(index);
+          $scope.context.searchNews();
+        }
+        $scope.context.searchNews = function (page) {
+          var html = {};
+          html['header'] = '<ul role="tablist" class="nav nav-pills" style="font-size:14px; margin-top:-20px;">' +
+                  '	<li role="presentation" class="active" id="li_newslist"><a data-toggle="tab" role="tab" aria-controls="newslist" href="#newslist">图文列表</a></li>' +
+                  '</ul>';
+          html['content'] =
+                  '<div class="tab-content">' +
+                  '<div id="newslist" class="tab-pane active" role="tabpanel">' +
+                  '	<table class="table table-hover">' +
+                  '		<thead class="navbar-inner">' +
+                  '			<tr>' +
+                  '				<th style="width:40%;">标题</th>' +
+                  '				<th style="width:30%">创建时间</th>' +
+                  '				<th style="width:30%; text-align:right">' +
+                  '					<div class="input-group input-group-sm">' +
+                  '						<input type="text" class="form-control">' +
+                  '						<span class="input-group-btn">' +
+                  '							<button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>' +
+                  '						</span>' +
+                  '					</div>' +
+                  '				</th>' +
+                  '			</tr>' +
+                  '		</thead>' +
+                  '		<tbody></tbody>' +
+                  '	</table>' +
+                  '	<div id="pager" style="text-align:center;"></div>' +
+                  '</div>' +
+                  '</div>';
+          html['footer'] = '';
+          html['newsitem'] =
+                  '<%_.each(list, function(item) {%> \\n' +
+                  '<tr>\\n' +
+                  '	<td><a href="#" data-cover-attachment-url="<%=item.attachment%>" title="<%=item.title%>"><%=item.title%></a></td>\\n' +
+                  '	<td><%=item.createtime%></td>\\n' +
+                  '	<td class="text-right">\\n' +
+                  '		<button class="btn btn-default js-btn-select" js-id="<%=item.id%>">选取</button>\\n' +
+                  '	</td>\\n' +
+                  '</tr>\\n' +
+                  '<%});%>\\n';
+          if (!$('#link-search-news')[0]) {
+            $scope.modalobj = util.dialog(html['header'], html['content'], html['footer'], {'containerName': 'link-search-news'});
+            $scope.modalobj.find('.modal-body').css({'height': '680px', 'overflow-y': 'auto'});
+            $scope.modalobj.modal('show');
+            $scope.modalobj.on('hidden.bs.modal', function () {
+              $scope.modalobj.remove();
+            });
+            $('#link-search-news').data('modal', $scope.modalobj);
+          } else {
+            $scope.modalobj = $('#link-search-news').data('modal');
+          }
+          page = page || 1;
+          $http.get('./index.php?c=utility&a=link&do=newschunk' + '&page=' + page).success(function (result, status, headers, config) {
+            if (result.message.list) {
+              $scope.modalobj.find('#newslist').data('news', result.message.list);
+              $scope.modalobj.find('#newslist tbody').html(_.template(html['newsitem'])(result.message));
+              $scope.modalobj.find('#pager').html(result.message.pager);
+              $scope.modalobj.find('#pager .pagination li[class!="active"] a').click(function () {
+                $scope.context.searchCms($(this).attr('page'));
+                return false;
+              });
+              $scope.modalobj.find('.js-btn-select').click(function () {
+                $scope.context.addNews($(this).attr('js-id'));
+                $scope.$apply();
+                $scope.modalobj.modal('hide');
+              });
+            }
+          });
+        };
+        $scope.context.addNews = function (id) {
+          var news = $scope.modalobj.find('#newslist').data('news')[id];
+          $scope.context.items = news.items;
+          $scope.$apply();
+          $scope.context.triggerActiveItem(0);
+        };
+        $scope.context.uploadMedia = function (thumbs, thumb) {
+          running = true;
+          util.message('创建图文中...,请不要关闭或刷新浏览器,', '', 'info');
+          var num = 0;
+          var thumbs = thumbs;
+          var prop = function (thumbs, thumb) {
+            if (thumb) {
+              var thumb = thumb;
+            } else {
+              var thumb = thumbs.shift();
+            }
+            if (!thumb) {
+              $scope.context.getDetailImgs();
+              return false;
+            }
+            if (thumb.val == '') {
+              prop(thumbs);
+              return false;
+            }
+            $http.post("./index.php?c=material&a=post&do=thumb&", thumb).success(function (dat) {
+              if (dat.message.errno != 0) {
+                num++;
+                if (num < 5) {
+                  prop(thumbs, thumb);
+                  return false;
+                } else {
+                  util.message('第' + (thumb.index + 1) + '条图文的缩略图上传失败.请更换图片', '', 'error');
+                  $('#btn-submit').attr('disabled', false);
+                  return false;
+                }
+              } else {
+                $scope.context.items[thumb.index].media_id = dat.message.message.media_id;
+              }
+              prop(thumbs);
+            });
+          }
+          prop(thumbs);
+        };
+        $scope.context.getDetailImgs = function () {
+          var details = [];
+          angular.forEach($scope.context.items, function (val1, index1) {
+            this.push({'index': index1, 'val': val1.content});
+          }, details);
+          $http.post("./index.php?c=material&a=post&do=details&", details).success(function (dat) {
+            if (dat.message.errno != 0) {
+              util.message(dat.message.message, '', 'error');
+              $('#btn-submit').attr('disabled', false);
+              return false;
+            } else {
+              $scope.context.imgs = dat.message.message;
+              $scope.context.uploadDetailImgs();
+            }
+          });
+        };
+        $scope.context.uploadDetailImgs = function () {
+          var images = $scope.context.imgs;
+          var num = 0;
+          var propimage = function (image) {
+            if (image) {
+              var image = image;
+            } else {
+              var image = images.shift();
+            }
+            if (!image) {
+              $scope.context.submit();
+              return false;
+            }
+            $http.post("./index.php?c=material&a=post&do=image&", {
+              'image': image,
+              'hasimgs': $scope.context.hasimgs,
+              'wximgs': $scope.context.wximgs
+            }).success(function (dat) {
+              if (dat.message.errno != 0) {
+                if (num < 5) {
+                  num++;
+                  propimage(image);
+                  return false;
+                } else {
+                  util.message('图片上传到微信失败,原因:' + dat.message.message + "<br>解决方案:您可以删除该图片或者替换其他图片.<br><a target='_blank' href='" + image + "'>点击查看图片<a>", '', 'error');
+                  $('#btn-submit').attr('disabled', false);
+                  return false;
+                }
+              } else {
+                $scope.context.hasimgs.push(image);
+                $scope.context.wximgs.push(dat.message.message);
+              }
+              propimage();
+            });
+          }
+          propimage();
+        };
+        $scope.context.submit = function () {
+          $('#btn-submit').attr('disabled', true);
+          $http.post("./index.php?c=material&a=post&do=submit&", {
+            items: $scope.context.items,
+            'hasimgs': $scope.context.hasimgs,
+            'wximgs': $scope.context.wximgs
+          }).success(function (dat) {
+            if (dat.message.errno != 0) {
+              $('#btn-submit').attr('disabled', false);
+              util.message(dat.message.message, '', 'error');
+            } else {
+              running = false;
+              util.message('创建微信图文成功,正在跳转到图文列表. ', "./index.php?c=material&a=display&do=list&type=news&sync=1", 'success');
+              return false;
+            }
+          });
+        };
+        $scope.context.sync = function () {
+          var error = {title: '', action: ''};
+          angular.forEach($scope.context.items, function (val, index) {
+            if (!$.trim(val.title)) {
+              this.title += '第' + (index + 1) + '条图文回复没有设置标题<br>';
+            }
+            if (!$.trim(val.thumb)) {
+              this.title += '第' + (index + 1) + '条图文回复没有设置缩略图<br>';
+            }
+            if (!$.trim(val.content)) {
+              this.title += '第' + (index + 1) + '条图文回复没有设置详情<br>';
+            }
+          }, error);
+          if (error.title) {
+            util.message(error.title, '', 'error');
+            $('#btn-submit').attr('disabled', false);
+            return false;
+          }
+          var thumbs = [];
+          angular.forEach($scope.context.items, function (val, index) {
+            if (!val.media_id) {
+              this.push({'index': index, 'val': val.thumb});
+            }
+          }, thumbs);
+          $scope.context.uploadMedia(thumbs);
+          return;
+        }
+      }).directive('ngMyEditor', function () {
+        var editor = {
+          'scope': {
+            'value': '=ngMyValue'
+          },
+          'template': '<textarea id="editor" style="height:600px;width:100%;"></textarea>',
+          'link': function ($scope, element, attr) {
+            if (!element.data('editor')) {
+              editor = UE.getEditor('editor', ueditoroption);
+              element.data('editor', editor);
+              editor.addListener('contentChange', function () {
+                $scope.value = editor.getContent();
+                $scope.$root.$$phase || $scope.$apply('value');
+              });
+              editor.addListener('ready', function () {
+                if (editor && editor.getContent() != $scope.value) {
+                  editor.setContent($scope.value);
+                }
+                $scope.$watch('value', function (value) {
+                  if (editor && editor.getContent() != value) {
+                    editor.setContent(value ? value : '');
+                  }
+                });
+              });
+            }
+          }
+        };
+        return editor;
+      });
+      angular.bootstrap(document, ['app']);
+    });

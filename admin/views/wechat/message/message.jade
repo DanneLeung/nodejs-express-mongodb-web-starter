@@ -1,0 +1,233 @@
+//
+  Created by pc on 2015/10/27.
+
+extends ../layout
+block header
+  link( rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.11/css/dataTables.bootstrap.min.css")
+  link( rel="stylesheet",href="/themes/default/plugins/daterangepicker/daterangepicker-bs3.css")
+  style(media="screen").
+    .tab-content {
+      padding: 10px;
+    }
+block main
+  .panel
+    .panel-heading
+      h3.panel-title 消息管理
+    .panel-body
+      ul#myTab.nav.nav-tabs
+        li.active
+          a(href="#whole" data-id="whole" data-toggle="tab") 全部消息
+        li
+          a(href="#collection" data-id="collection" data-toggle="tab") 已收藏的消息
+
+      #myTabContent.tab-content
+        #whole.tab-pane.fade.in.active
+          include ./whole
+        #collection.tab-pane.fade.in
+          include ./collection
+
+    #msgCreateModal.modal.fade.text-center(tabindex="-1", role="dialog", aria-labelledby="msgCreateModal", aria-hidden='true')
+      .modal-dialog(style="display: inline-block; width: 50%;")
+        .modal-content
+          .modal-header.text-left
+            button.close(type="button",data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+            h4.modal-title 回复消息
+          .modal-body
+            form#msgForm.form-horizontal(name='msgForm', action='/wechat/message/save', method='post')
+              input(type='hidden', name='msgId' id='msgId')
+              input#_csrf(type='hidden', name='_csrf', value=_csrf)
+              .form-group
+                label.control-label.col-md-2(for='content') &nbsp;
+                .col-md-10
+                  textarea#content.form-control.required(onkeydown='countMsg(this.value)' name='content',rows='4',placeholder='请输入回复消息')
+                  p#msg.pull-right 还可以输入600字
+          .modal-footer
+            .center-block.pull-right
+              button.btn.btn-primary(type="button",data-dismiss="modal", aria-label="Close") 取消
+              a#saveMsg.btn.btn-primary(type="button") 确定
+
+block scripts
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.11/js/dataTables.bootstrap.min.js')
+  script(src="/themes/default/plugins/daterangepicker/daterangepicker.js")
+  script.
+    $(document).ready(function () {
+      $("#msgForm").validate({
+        rules: {
+          content: {
+            required: true
+          }
+        },
+        messages: {
+          content: '请输入回复消息'
+        }
+      });
+
+      $("#saveMsg").on('click', function(){
+        $("#msgForm").submit();
+      });
+
+      $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+
+      })
+
+      var opts = {
+        "language": {
+          "url": "/themes/default/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: false,
+        searching: false,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+
+      };
+      var data = {
+        ajax: {url: '/wechat/message/datatable'},
+        order: [[3, 'desc']],
+        columnDefs: [
+          {
+            targets: 5, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              var fa = "";
+              if (row.tag) {
+                fa = "<i class='fa fa-star'></i>"
+              } else {
+                fa = "<i class='fa fa-star-o'></i>"
+              }
+              var html = "<a class='btn btn-default btn-xs tag' href='/wechat/message/tag/" + row._id + "'>" + fa + "</a>";
+              html += "<button class='btn btn-default btn-xs reply' type='button' onclick=show('"+row._id+"')><i class='fa fa-reply'></i></button>"
+              return html;
+            }
+          }
+        ],
+        columns: [{
+          data: "fans.headimgurl", defaultContent: '', render: function (data, type, full, meta) {
+            var html = '<img class="img-circle" width="60px" height="60px" src="' + data + '"/>'
+            return html;
+          }
+        }, {
+          data: "fans.nickname", defaultContent: ''
+        }, {
+          data: "msgType",
+          defaultContent: '',
+          render: function (data, type, full, meta) {
+            return message(data, full);
+          }
+        },
+          {
+            data: "createTime", defaultContent: '',
+            render: function (data, type, full, meta) {
+              var date = "";
+              if (data != null) {
+                date = moment(data * 1000).format("YYYY-MM-DD HH:mm");
+              }
+              return date;
+            }
+          },
+          {data: "replyTag",defaultContent: '',render: function (data, type, full, meta) {
+              if(data){
+                return '<span style="color: #ff4c2f">已回复</span>';
+              }else{
+                return '否';
+              }
+            }
+          },
+          {data: ""},
+          {data: "content", defaultContent: '', visible: false},//文本消息内容
+          {data: "picUrl", defaultContent: '', visible: false},//图片链接
+          {data: "mediaId", defaultContent: '', visible: false},//媒体id
+          {data: "thumbMediaId", defaultContent: '', visible: false},//视频消息缩略图的媒体id
+          {data: "format", defaultContent: '', visible: false},//语音格式
+          {data: "title", defaultContent: '', visible: false},//消息标题
+          {data: "description", defaultContent: '', visible: false},//消息描述
+          {data: "url", defaultContent: '', visible: false},//消息链接
+          {data: "location_X", defaultContent: '', visible: false},//地理位置x坐标
+          {data: "location_Y", defaultContent: '', visible: false},//地理位置y坐标
+          {data: "scale", defaultContent: '', visible: false},//地图缩放大小
+          {data: "label", defaultContent: '', visible: false},//地图位置信息
+          {data: "tag", defaultContent: '', visible: false},//地图位置信息
+          {data: "msgId", defaultContent: '', visible: false}//消息id
+        ]
+      };
+
+      var t = $('#wholeList').DataTable($.extend(opts, data)).on('draw.dt', function () {
+        $("#tableWrapper").fadeIn();
+      });
+      data.ajax = {url: '/wechat/message/datatableColl'};
+      var t = $('#collectionList').DataTable($.extend(opts, data)).on('draw.dt', function () {
+        $("#tableWrapper1").fadeIn();
+      });
+      $('#daterange-btn').daterangepicker(
+              {
+                ranges: {
+                  '最近五天': [moment().subtract(4, 'days'), moment().subtract(4, 'days')],
+                  '今天': [moment(), moment()],
+                  '昨天': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                  '前天': [moment().subtract(2, 'days'), moment().subtract(2, 'days')],
+                  '更早': [moment().subtract(3, 'days'), moment().subtract(3, 'days')]
+                },
+                startDate: moment().subtract(5, 'days'),
+                endDate: moment()
+              },
+              function (start, end) {
+                var time = start.format('YYYY-MM-DD HH:mm:ss') + ' - ' + end.format('YYYY-MM-DD HH:mm:ss');
+                $('#times').val(time);
+                var TT = $("#wholeList").DataTable();
+                TT.ajax.url('/wechat/message/datatable?time='+time).load();
+              }
+      );
+
+    })
+
+
+
+    //消息的内容显示
+    function message(type,full){
+      var value = "";
+      switch (type) {
+        case 'text':
+          value = full.content;
+          break;
+        case 'image':
+          value = '<a class="title_wrp" href="' + full.picUrl + '" target="_blank">' +
+                  '<img class="img-rounded" width="100px" height="100px" src='+ full.picUrl +'>' +
+                  '</a>';
+          break;
+        case 'voice':
+          value = '<audio controls="controls">' +
+                  '<source src="/wechat/media/getMaterial/' + full.mediaId + '" type="audio/ogg">' +
+                  '<source src="/wechat/media/getMaterial/' + full.mediaId + '" type="audio/mpeg">' +
+                  'Your browser does not support the audio element.</audio>';
+          break;
+        case 'video':
+          value = '<a class="title_wrp" href="/wechat/media/getMaterial/' + full.thumbMediaId + '" target="_blank">' +
+                  '<img class="img-rounded" src="/wechat/media/getMaterial/' + full.thumbMediaId + '">' +
+                  '<span class="title">[视频]</span></a>';
+          break;
+        case 'location':
+          value = '<p>' + full.location_X + "-" + full.location_Y + '</p>' +
+                  '<label>' + full.label + '</label>';
+          break;
+        case 'link':
+          value = '<a href="' + full.url + '" target="_blank"><p>' + full.title + '</p>' +
+                  '<label>' + full.description + '</label></a>';
+          break;
+      }
+      return value;
+
+    }
+    //打开回复消息框
+    function show(id){
+      $("#msgId").val(id);
+      $('#msgCreateModal').modal('show')
+    }
+
+    function countMsg(val){
+      var len = 600 - val.length;
+      $("#msg").text("还可以输入"+ len +"字");
+    }

@@ -1,0 +1,170 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ../layout
+block header
+  link(href="/themes/default/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+  style.
+    .wrap{margin-right:25px;}
+    .wrap span{margin-left:10px;}
+block main
+    .panel(style="position:relative;")
+      .panel-heading
+        h3.panel-title
+          span.text-info #{sett.isNew ? '创建贷款页面' : '贷款页面'}
+          .panel-tools.pull-right
+            a.btn.btn-default.btn-sm(href='#')
+              i.fa.fa-reply
+            button#save.btn.btn-sm.btn-default(title="保存")
+              i.fa.fa-save
+      .panel-body
+        form#loanForm.form-horizontal(method="post",action="/bank/loan/setting/save",enctype='multipart/form-data')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+          if(!sett.isNew)
+            input#id(type='hidden', name='id', value="#{sett._id}")
+          .form-group
+            label.control-label.col-sm-2.required 站点标题：
+            .col-sm-10
+              input#name.form-control.required(type="text",name="site.title",value="#{sett.site.title}")
+          .form-group
+            label.control-label.col-sm-2 首页轮播：
+            .col-sm-10
+              select#slide.form-control(name="site.slide")
+          .form-group
+            label.control-label.col-sm-2 footer：
+            .col-sm-10
+              textarea#footer.form-control(name='site.footer' ,rows="3")
+                | #{sett.site.footer}
+              p.help-block 站点footer文字
+          .form-group
+            label.control-label.col-sm-2 提醒：
+            .col-sm-10
+              input#tip.form-control(type="text",name="site.tip",value="#{sett.site.tip}")
+              p.help-block 站点提示文字
+          .form-group
+            label.control-label.col-sm-2 自定义字段：
+            .col-sm-10
+              input.recommend(type="hidden",name="fields.recommend")
+              input.email(type="hidden",name="fields.email")
+              input.gender(type="hidden",name="fields.gender")
+              div
+                .wrap.pull-left
+                  if sett.fields.gender
+                    input.gender(type='checkbox' checked)
+                    span 性别
+                  else
+                    input.gender(type='checkbox')
+                    span 性别
+                .wrap.pull-left
+                  if sett.fields.recommend
+                    input.recommend(type='checkbox' checked)
+                    span 推荐人
+                  else
+                    input.recommend(type='checkbox')
+                    span 推荐人
+                .wrap.pull-left
+                  if sett.fields.email
+                    input.fieldsEmail(type='checkbox' checked)
+                    span 邮箱
+                  else
+                    input.fieldsEmail(type='checkbox')
+                    span 邮箱
+
+
+                .clearfix
+              p.help-block 显示在表单提交页
+          .form-group
+            label.control-label.col-sm-2 限粉丝：
+            .col-sm-10
+              label.checkbox
+                if (sett && sett.needRegister)
+                  input#enabled(type='checkbox' name='needRegister' checked="checked")
+                  p.help-block 勾选限制只有关注才能打开
+                else
+                  input#enabled(type='checkbox' name='needRegister')
+                  p.help-block 勾选限制只有关注才能打开
+          .form-group
+            label.control-label.col-sm-2 分享图片：
+            .col-sm-10
+              input#shareLogo.form-control(type="file",name='shareLogo')
+              p.help-block 分享图片
+              if(sett && sett.shareLogo && sett.shareLogo.length > 0)
+                .col-sm-10.col-xs-12.col-sm-offset-2
+                  img.img-responsive.img-thumbnail(src='#{sett.shareLogo}', width='200')
+          .form-group
+            label.control-label.col-sm-2 分享标题：
+            .col-sm-10
+              input#shareTitle.form-control(type="text",name="shareTitle",value="#{sett.shareTitle}")
+              p.help-block 分享自定义标题
+          .form-group
+            label.control-label.col-sm-2 分享内容：
+            .col-sm-10
+              textarea#shareText.form-control(name='shareText' ,rows="3")
+                | #{sett.shareText}
+              p.help-block 分享自定义内容
+          .form-group
+            label.control-label.col-sm-2 首页访问量：
+            .col-sm-10
+              input.form-control(value="#{sett && sett.site.pv ? sett.site.pv : 0}",readonly,style="background:#fff;border:1px solid #fff;")
+
+block scripts
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script(src="/themes/default/plugins/uploadify/jquery.uploadify.min.js")
+  script(src="/themes/default/plugins/uploadify/dora.public.js")
+  script(src="/themes/default/plugins/ueditor/ueditor.config.js")
+  script(src="/themes/default/plugins/ueditor/ueditor.all.js")
+  script(src="/themes/default/plugins/ueditor/lang/zh-cn/zh-cn.js")
+
+
+  script.
+    $(document).ready(function () {
+      //footer
+      var ueOpts = {
+        initialFrameHeight: 500,
+        serverUrl: contextRoot + 'api/ueditor',
+        autoHeightEnabled: true,
+        autoFloatEnabled: true,
+        allowDivTransToP: false
+      };
+      var ue = UE.getEditor('footer', ueOpts);
+
+      $(".form-group").find(':file').filestyle({buttonText: '上传图片'});
+      //填充轮播
+      var slide = '#{sett.site.slide}';
+      $.get('#{baseUrl}/loan/getSlide', function(data, status) {
+        if(status == 'success' && data.success) {
+          var option = '<option value="">-请选择-</option>';
+          data.slide.forEach(function(s) {
+            if(s._id == slide) {
+              option += '<option value="'+ s._id +'" selected>'+ s.type + '--' + s.name +'</option>'
+            } else {
+              option += '<option value="'+ s._id +'">'+ s.type + '--' + s.name +'</option>'
+            }
+          });
+          $('#slide').append(option)
+        }
+      });
+
+
+      $('#loanForm').validate();
+
+      //save
+      $('#save').click(function() {
+        $('input[type="checkbox"]').each(function () {
+          var name = $(this).attr('class');
+
+          if (name !== 'needRegister') {
+            if(name == "fieldsEmail") {
+              name = 'email';
+            }
+            if ($(this).is(':checked')) {
+              $('input[name="fields.' + name + '"]').val(true);
+            } else {
+              $('input[name="fields.' + name + '"]').val(false);
+            }
+          }
+        });
+        $('#loanForm').submit();
+      });
+    });
+

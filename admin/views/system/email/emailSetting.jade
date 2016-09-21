@@ -1,0 +1,96 @@
+//
+   Created by pc on 2015/10/27.
+
+extends ../layout
+//应用的page title
+block pageTitle
+  h1 邮件设置
+block main
+  form.form-horizontal(name='channelForm', action='/system/mailSave', method='post')
+    .panel
+      .panel-heading.with-border
+        h3.panel-title
+          i.fa.fa-fw.fa-list
+          | 邮件设置
+        .panel-tools
+          button#save.btn.btn-box-tool.btn-primary(type="submit")
+            i.fa.fa-save
+            | &nbsp;保存设置
+      .panel-body
+        #channelEdit
+          .col-md-12
+            input#id(type='hidden', name='id', value="#{channel ? channel._id : ''}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-sm-3(for="smtp") smtp服务器：
+              .col-sm-4
+                input#smtp.form-control.required(name='smtp', value="#{channel ? channel.email ? channel.email.smtp : '' : ''}")
+              .col-sm-5
+                p.help-block
+                  | 邮件发送SMTP服务器IP或域名
+
+            .form-group
+              label.control-label.col-sm-3(for="port") 端口：
+              .col-sm-4
+                input#port.form-control.required(type='number', name='port', value="#{channel ? channel.email ? channel.email.port : '' : ''}")
+              .col-sm-5
+                p.help-block
+                  | SMTP服务器端口
+            .form-group
+              label.control-label.col-sm-3(for="check") 发送验证：
+              .col-md-4
+                label.checkbox
+                  if (channel && channel.email && channel.email.check)
+                    input#check.mini(type='checkbox' name='check' checked)
+                  else
+                    input#check.mini(type='checkbox' name='check')
+              .col-md-5
+                p.help-block
+                  | SMTP服务器发送需要验证则勾选
+            .form-group
+              label.control-label.col-sm-3(for="username") 用户名：
+              .col-sm-4
+                input#username.form-control.required(name='username', value="#{channel ? channel.email ? channel.email.username : '' : ''}")
+              .col-md-5
+                p.help-block
+                  | SMTP发送用户名
+
+            .form-group
+              label.control-label.col-sm-3(for="password") 密码：
+              .col-sm-4
+                input#password.form-control.required(type='password', name='password', value="#{channel ? channel.email ? channel.email.password : '' : ''}")
+              .col-md-5
+                p.help-block
+                  | SMTP发送密码
+
+            .form-group
+              label.control-label.col-sm-3(for="from") 发件人：
+              .col-sm-4
+                input#from.form-control.required(name='from', value="#{channel ? channel.email ? channel.email.from : '' : ''}")
+              .col-md-5
+                p.help-block
+                  | 发出邮件中From栏显示的邮件发送人和地址，格式如：小明&lt;xiaoming@163.com&gt;
+
+            .form-group
+              label.control-label.col-sm-3(for="ssl") SSL：
+              .col-md-4
+                label.checkbox
+                  if (channel && channel.email && channel.email.ssl)
+                    input#ssl.mini(type='checkbox' name='ssl' checked)
+                  else
+                    input#ssl.mini(type='checkbox' name='ssl')
+              .col-md-5
+                p.help-block
+                  i.fa.fa-info-circle
+                  | 使用SSL发送邮件
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+      });
+    })

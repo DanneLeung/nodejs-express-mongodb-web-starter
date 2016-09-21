@@ -1,0 +1,60 @@
+header.main-header
+  nav.navbar.navbar-static-top
+    .container-fluid
+      .navbar-header
+        button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar-collapse', aria-expanded='true')
+          i.fa.fa-bars
+        a.navbar-brand(href='/wechat',style="display:block;float:none;")
+          i.fa.fa-reply-all.fa-fw
+          b 返回系统
+
+      // Collect the nav links, forms, and other content for toggling
+      #navbar-collapse.collapse.navbar-collapse
+        ul.nav.navbar-nav
+          if(req.session.menus)
+            each m in req.session.menus
+              if (m.code === 'wechat')
+                each a in m.children
+                  li(class="#{isActive(a.link)}")
+                    a(href='#{a.link}')
+                      if(a.iconClass)
+                        i(class="#{a.iconClass} fa-fw")
+                      | #{a.title}
+          //li(class="#{isActive('/wechat')}")
+            a(href="/wechat/mgmt")
+              i.fa.fa-wechat
+              | 基础功能
+          //li
+            a(href="/wechat/fans")
+              i.fa.fa-gear
+              | 粉丝管理
+          //li(class="#{isActive('/site')}")
+            a(href="/site")
+              i.fa.fa-leaf
+              | 微信站点
+          //li(class="#{isActive('/activities')}")
+            a(href="/activities")
+              i.fa.fa-thumbs-up
+              | 互动应用
+
+        // /.navbar-collapse
+        // Navbar Right Menu
+        include nav-top-right
+        ul.nav.navbar-nav.navbar-right
+          li.dropdown
+            a.dropdown-toggle(href='#', data-toggle='dropdown')
+              i.fa.fa-weixin.fa-fw
+              span #{req.session.wechat.name}
+              b.caret
+            ul.dropdown-menu
+              li.text-center
+                img(src='#{(req.session.wechat && req.session.wechat.qrcode)?url(req.session.wechat.qrcode.url):""}')
+              li.divider
+              li
+                a(href="/wechat/edit/#{req.session.wechat._id}")
+                  i.fa.fa-pencil
+                  span 编辑当前公众号信息
+              li
+                a(href="/wechat")
+                  i.fa.fa-weixin
+                  span 管理其它公众号
