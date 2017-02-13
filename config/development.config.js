@@ -9,7 +9,7 @@ module.exports = function (ROOT_PATH) {
     database: {
       user: '',
       password: '',
-      host: 'xcesys.com',
+      host: 'localhost',
       port: '27017',
       db: 'starter',
       url: ''

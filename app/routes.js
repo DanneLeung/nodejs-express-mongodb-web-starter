@@ -92,7 +92,10 @@ module.exports = function (app, express) {
           error: message
         });
       } else {
-        res.render('' + status, {error: err, message: message});
+        res.render('' + status, {
+          error: err,
+          message: message
+        });
       }
     });
   }
