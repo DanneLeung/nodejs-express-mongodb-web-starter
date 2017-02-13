@@ -40,16 +40,6 @@ function removeQueryString(url, names) {
   return url;
 }
 
-function inarray(s, array) {
-  if (array && array.length > 0) {
-    for (var i = 0; i < array.length; i++) {
-      if (s == array[i]) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
 
 function getLocationURL() {
   return location.href.split('#')[0];
@@ -87,46 +77,22 @@ function getLocation(cb) {
   } else {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (p) {
-          var latitude = p.coords.latitude;//纬度
-          var longitude = p.coords.longitude;
-          console.log("经纬度" + (longitude + "," + latitude));
-          geolocation = [longitude, latitude];
-          sessionStorage.geolocation = geolocation;
-          cb(geolocation);
-        }, function (e) {
-          sessionStorage.geolocation = geolocation;
-          cb(geolocation);
-        }
-      );
+        var latitude = p.coords.latitude; //纬度
+        var longitude = p.coords.longitude;
+        console.log("经纬度" + (longitude + "," + latitude));
+        geolocation = [longitude, latitude];
+        sessionStorage.geolocation = geolocation;
+        cb(geolocation);
+      }, function (e) {
+        sessionStorage.geolocation = geolocation;
+        cb(geolocation);
+      });
     } else {
       //cb([121.473701, 31.230416]);
       alert("浏览器不支持定位功能!");
     }
   }
 }
-
-function _getCityName() {
-  if (window.localStorage) {
-    if (localStorage["cityName"])
-      return localStorage["cityName"];
-    else
-      return null;
-  } else {
-    "上海";
-  }
-}
-
-function _getCityId() {
-  if (window.localStorage) {
-    if (localStorage["cityId"])
-      return localStorage["cityId"];
-    else
-      return null;
-  } else {
-    "3";
-  }
-}
-
 
 function is_weixn() {
   var ua = navigator.userAgent.toLowerCase();
@@ -154,38 +120,6 @@ function nwx() {
         $("#brand-detail-guide").addClass("hide");
       }, false)
     }, false);
-  }
-}
-
-var getStrSize = function (str) {
-  var realLength = 0, len = str.length, charCode = -1;
-  for (var i = 0; i < len; i++) {
-    charCode = str.charCodeAt(i);
-    if (charCode >= 0 && charCode <= 128) realLength += 1;
-    else realLength += 2;
-  }
-  return realLength;
-};
-
-function showShare() {
-  $("#brand-detail-guide").toggleClass("hide");
-  $("#brand-detail-guide").bind("click", function () {
-    $("#brand-detail-guide").addClass("hide");
-  }, false)
-}
-
-function closeShare() {
-  $("#brand-detail-guide").addClass("hide");
-}
-
-function _getUserId() {
-  if (window.sessionStorage) {
-    if (sessionStorage["user.openid"])
-      return sessionStorage["user.openid"];
-    else
-      return null;
-  } else {
-    return null;
   }
 }
 
