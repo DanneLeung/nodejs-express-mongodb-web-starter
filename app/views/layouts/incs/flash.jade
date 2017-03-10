@@ -1,61 +1,30 @@
-//if errors && errors.length
-//  #flash-message
-//    .alert.alert-danger.animated.fadeIn
-//      button.close(type='button', data-dismiss='alert') ×
-//      for err in errors
-//        div= err
-//
-//if info && info.length
-//  #flash-message
-//    .alert.alert-info.animated.fadeIn
-//      button.close(type='button', data-dismiss='alert') ×
-//      for i in info
-//        div= i
-//
-//if success && success.length
-//  #flash-message
-//    .alert.alert-success.animated.fadeIn
-//      button.close(type='button', data-dismiss='alert') ×
-//      for s in success
-//        div=s
-//  script.
+-var met = false
+if messages.error && messages.error.length
+  - met = true
+  #flash-message.row.error
+    .alert.alert-danger.animated.fadeIn
+      button.close(type='button', data-dismiss='alert')
+        i.fa.fa-times
+      for err in messages.error
+        span=err
 
-if errors && errors.length
-  .weui_mask.weui_mask_visible.backError
-  .weui_dialog.weui_dialog_visible.backError
-    .weui_dialog_hd
-      strong.weui_dialog_title 提示
-    for err in errors
-      .weui_dialog_bd #{err}
-    .weui_dialog_ft
-      a.weui_btn_dialog.primary(href="javascript:") 确定
+if messages.info && messages.info.length
+  - met = true
+  #flash-message.row
+    .alert.alert-info.animated.fadeIn
+      button.close(type='button', data-dismiss='alert')
+        i.fa.fa-times
+      for i in messages.info
+        span=i
 
-if info && info.length
-  .weui_mask.weui_mask_visible.backError
-  .weui_dialog.weui_dialog_visible.backError
-    .weui_dialog_hd
-      strong.weui_dialog_title 信息
-    for i in info
-      .weui_dialog_bd #{i}
-    .weui_dialog_ft
-      a.weui_btn_dialog.primary(href="javascript:") 确定
-
-if success && success.length
-  .weui_mask.weui_mask_visible.backError
-  .weui_dialog.weui_dialog_visible.backError
-    .weui_dialog_hd
-      strong.weui_dialog_title 操作成功
-    for s in success
-      .weui_dialog_bd #{s}
-    .weui_dialog_ft
-      a.weui_btn_dialog.primary(href="javascript:") 确定
-
-script.
-  $(function() {
-    $('a.weui_btn_dialog').click(function() {
-      $('.backError').remove();
-    });
-  });
-
-
-
+if messages.success && messages.success.length
+  - met = true
+  #flash-message.row
+    .alert.alert-success.animated.fadeIn
+      button.close(type='button', data-dismiss='alert')
+        i.fa.fa-times
+      for s in messages.success
+        span=s
+if met
+  script.
+    setTimeout(function() { $('#flash-message:not(.error)').fadeOut(); },3000);

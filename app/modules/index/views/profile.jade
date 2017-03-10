@@ -7,7 +7,7 @@ block main
       // Profile Image
       .panel
         .panel-body.panel-profile
-          img.profile-user-img.img-responsive.img-circle(src='#{user.photo_profile ? user.photo_profile : "/themes/default/dist/img/avatar.png"}', alt='头像')
+          img.profile-user-img.img-responsive.img-circle(src='#{user.photo_profile ? user.photo_profile : "#{theme}/dist/img/avatar.png"}', alt='头像')
           h3.profile-username.text-center #{user.username}
           //p.text-muted.text-center Software Engineer
           //ul.list-group
@@ -86,8 +86,8 @@ block main
 block scripts
   script(src='//cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js')
   script(src='//cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min.js')
-  script(src='/themes/default/plugins/jquery-validation/dist/jquery.validate.messages_zh.js')
-  script(src='/themes/default/plugins/setup_validation.js')
+  script(src='#{theme}/plugins/jquery-validation/dist/jquery.validate.messages_zh.js')
+  script(src='#{theme}/plugins/setup_validation.js')
   // AdminLTE for demo purposes
   script.
     $(document).ready(function () {

@@ -1,55 +1,83 @@
--var baseUrl = (req.session.contextRoot + req.baseUrl)
--if (baseUrl.indexOf('http')<0)
--baseUrl = baseUrl.replace('//','/');
-html
-  head
-    block title
-    style.
-      #flash-message {
-        position: absolute;
-        width: 90%;
-        height: 50px;
-        background: rgba(224, 30, 30, 0.8);
-        left: 5%;
-        top: 30%;
-        color: #fff;
-        line-height: 50px;
-        text-indent: 10px;
-        z-index: 2;
-      }
+doctype html
+html.app(lang='en')
 
-      #flash-message .alert-success {
-        background: rgba(69, 245, 139, 0.8);
-      }
-
-      #flash-message .close {
-        position: absolute;
-        background: none;
-        border: none;
-        color: #fff;
-        font-size: 30px;
-        line-height: 50px;
-        right: 10px;
-      }
-
-    include incs/header
-    block header
-  body(style='overflow-x:hidden')
-    block main
-
-    script(type='text/javascript', src='//cdn.bootcss.com/zepto/1.1.6/zepto.min.js')
-    script(type='text/javascript', src='http://res.wx.qq.com/open/js/jweixin-1.0.0.js')
-    script(type='text/javascript', src='#{themeRoot}/dist/js/global.min.js?v=2.1')
-    script(type='text/javascript', src='#{themeRoot}/dist/js/weixin.min.js?v=2.1')
-    script(type='text/javascript', src='#{theme}/dist/js/jquery-weui.min.js')
-
-    include incs/flash
-
-    script.
-      var baseUrl = '#{baseUrl}', contextRoot = "#{contextRoot}";
-      $('#flash-message .close').click(function () {
-        $('#flash-message').remove();
+  include incs/header
+  block header
+  body.fixed.hold-transition.skin-blue.sidebar-mini
+    .wrapper
+      include incs/nav
+      include incs/sidebar
+      // Content Wrapper. Contains page content
+      .content-wrapper
+        // Content Header (Page header)
+        section.content-header
+          // page header
+          block pageTitle
+          //page breadcrumd
+          block breadcrumb
+          //ol.breadcrumb
+          //  li
+          //    a(href='#')
+          //      i.fa.fa-dashboard
+          //      |  Level
+          //  li.active Here
+        // Main content
+        section.content
+          //- include incs/flash
+          block main
+      include incs/footer
+      //include ../includes/sideba  r_right
+      // ./wrapper
+    // REQUIRED JS SCRIPTS jQuery 2.1.4
+    script(src='//cdn.bootcss.com/jquery/2.2.1/jquery.min.js')
+    // Bootstrap 3.3.5
+    script(src='//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js')
+    // SlimScroll 
+    script(src='//cdn.bootcss.com/jQuery-slimScroll/1.3.7/jquery.slimscroll.min.js')
+    // FastClick for mobile device
+    script(src='//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js')
+    //script(src='#{theme}/dist/js/custom.js')
+    //PACE
+    //script(src='//cdn.bootcss.com/pace/1.0.2/pace.min.js')
+    script(src='//cdn.bootcss.com/iCheck/1.0.2/icheck.min.js')
+    // bootbox
+    script(src='//cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js')
+    script(src='//cdn.bootcss.com/toastr.js/2.1.3/toastr.min.js')
+    script(src='//cdn.bootcss.com/moment.js/2.11.2/moment.min.js')
+    script(src='//cdn.bootcss.com/moment.js/2.11.2/locale/zh-cn.js')
+    // jquery validation
+    script(src='//cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min.js')
+    script(src='#{theme}/plugins/jquery-validation/dist/jquery.validate.messages_zh.js')
+    script(src='#{theme}/plugins/setup_validation.js')
+    // AdminLTE App
+    script(src='#{theme}/dist/js/app.min.js')
+    // highlight error input
+    if messages.error
+      script.
+        $(document).ready(function () {
+          for err in messages.error
+            if (err.name === 'ValidationError')
+              for e in err.errors
+                $("input[name='#{e.path}']").parents(".form-group").addClass("has-error");
+        });
+    //script.
+      $(document).ajaxStart(function() { Pace.restart(); });
+    if (info&&info.length)
+      script.
+        toastr.info("!{info.join('<br/>').replace('\n\r','<br/>')}");
+    if (errors&&errors.length)
+      script.
+        toastr.error('!{errors.join('<br/>').replace(/\n/g,'<br/>')}');
+    if (success&&success.length)
+      script.
+        toastr.success('!{success.join('<br/>').replace('\n\r','<br/>')}');
+    script.      
+      $(document).ready(function () {
+        $('input').iCheck({
+          checkboxClass: 'icheckbox_square-blue',
+          radioClass: 'iradio_square-blue',
+          increaseArea: '20%' // optional
+        });
       });
-
-
-    block script
+    // App scripts go here
+    block scripts

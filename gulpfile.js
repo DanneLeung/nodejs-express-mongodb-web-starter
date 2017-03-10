@@ -10,11 +10,7 @@ var cssmin = require('gulp-cssmin');
 var pkg = require("./package.json");
 
 var banner =
-  "/** \n\
- * 9cubic " + pkg.version + " \n\
- * y Mingai Info Tech\n\
- * http://www.9cubic.cn\n \
-*/\n";
+  "/**Danne Leung*/";
 
 gulp.task('js', function (cb) {
   gulp.src(['./public/themes/src/js/*.js'])
@@ -24,7 +20,7 @@ gulp.task('js', function (cb) {
 
 gulp.task('uglify', ['js'], function (cb) {
   return gulp.src(['./public/themes/dist/js/*.js', '!./public/themes/dist/js/*.min.js'])
-    .pipe(uglify({/* preserveComments: "license"*/ }))
+    .pipe(uglify({ /* preserveComments: "license"*/ }))
     .pipe(ext_replace('.min.js'))
     .pipe(gulp.dest('./public/themes/dist/js')).on('end', cb);
 });
@@ -58,20 +54,5 @@ gulp.task('nodemon-app', function () {
     }
   });
 });
-gulp.task('nodemon-admin', function () {
-  return nodemon({
-    script: 'admin/server.js',
-    ext: 'js',
-    ignore: [
-      "tmp/**",
-      "public/**",
-      "/**/views/**"
-    ],
-    env: {
-      "NODE_ENV": "development",
-    }
-  });
-});
 
 gulp.task('app', ['nodemon-app']);
-gulp.task('admin', ['nodemon-admin']);

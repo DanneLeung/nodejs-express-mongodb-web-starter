@@ -1,49 +1,56 @@
-//base(href="#{contextRoot}")
-meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
-meta(charset='utf-8')
-meta(name='keywords', content='')
-meta(name='description', content='')
-meta(name='format-detection', content='telephone=no,email=no')
-meta(name='viewport', content='width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1.0, user-scalable=no, minimal-ui')
-meta(name='apple-mobile-web-app-capable', content='yes')
-meta(name='apple-mobile-web-app-status-bar-style', content='grey')
-meta(name='screen-orientation', content='portrait')
-meta(name='x5-orientation', content='portrait')
-meta(http-equiv='pragma', content='no-cache')
-meta(http-equiv='Cache-Control', content='no-cache, must-revalidate')
-link(href='#{themeRoot}/dist/images/icon.png', rel='apple-touch-icon-precomposed')
-link(href='#{themeRoot}/dist/images/icon.png', rel='Shortcut Icon', type='image/x-icon')
-//link(rel='stylesheet', href='css/reset.min.css')
-//link(rel='stylesheet', href='css/ratchet.min.css')
-//link(rel='stylesheet', href='css/theme-ios.min.c  ss')
-//link(rel='stylesheet', href='css/loaders.min.cs s')
+head
+  meta(charset="utf-8")
+  meta(http-equiv="Content-Type", content="text/html; charset=utf-8")
+  meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+  meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
+  title #{appName}运营管理平台
+  meta(name="keywords", content=pkg.keywords.join(","))
+  meta(name="description", content=pkg.description)
 
-link(rel='stylesheet', href='#{theme}/dist/lib/weui.min.css')
-link(rel='stylesheet', href='#{theme}/dist/css/jquery-weui.min.css')
-link(rel='stylesheet', href='#{theme}/dist/css/base.css')
-script(type='text/javascript').
-  var prefix = contextRoot = '#{contextRoot}';
-  var baseUrl = '#{baseUrl}';
-  var wid = '#{req.session.wid}';
-  var appId = '#{req.session.appid}';
-  var authWid = '#{req.session.authWid}';
-  var authAppid = '#{req.session.authAppid}';
-  var version = 3.2;
-  console.log("appid: " + appId + ", wid: " + wid, "authAppid: " + authAppid + ", authWid: " + authWid);
-// 自动字体大小适配
-//script.
-  (function (doc, win) {
-    var docEl = doc.documentElement,
-      resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-      recalc = function () {
-        var clientWidth = docEl.clientWidth;
-        if (!clientWidth) return;
-        docEl.style.fontSize = (24 * clientWidth / 627) + 'px';
-      };
-    if (!doc.addEventListener) return;
-    win.addEventListener(resizeEvt, recalc, false);
-    //doc.addEventListener('DOMContentLoaded', recalc, false);
-    recalc();
-  })(document, window);
-//if (req.session.channel && req.session.channel.analystScript)
-//  !{req.session.channel.analystScript}
+  //link(href="/favicon.png", rel="shortcut icon", type="image/x-icon")
+
+  //script(src='//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js')
+  //Bootstrap 3.3.5
+  link( rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css")
+  //Font Awesome
+  link( rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css")
+  //Ionicons
+  //- link( rel="stylesheet" href="//cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css")
+  link( rel="stylesheet" href="//cdn.bootcss.com/toastr.js/2.1.2/toastr.min.css")
+
+  style.
+    .table tbody td {
+      vertical-align: middle !important;
+    }
+  block header
+
+  if NODE_ENV == 'development'
+    link( rel="stylesheet", href="#{theme}/dist/css/AdminLTE.css")
+    //AdminLTE Skins. Choose a skin from the css/skins
+          folder instead of downloading all of them to reduce the load.
+    //link(rel='stylesheet', href='#{theme}/dist/css/skins/_all-skins.min.css')
+    link( rel="stylesheet", href="#{theme}/dist/css/skins/skin-blue.min.css")
+
+    //link( rel="stylesheet", href="#{theme}/plugins/pace/pace.min.css")
+    // iCheck
+    link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
+  if NODE_ENV == 'production'
+    link( rel="stylesheet", href="#{theme}/dist/css/AdminLTE.min.css")
+    link( rel="stylesheet", href="#{theme}/dist/css/skins/skin-blue.min.css")
+    // iCheck
+    link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
+
+  //HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
+  //WARNING: Respond.js doesn't work if you view the page via file:
+  //[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
+  //script.
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?278190ab2a22211d9b8e0dffbdd1b5f1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();

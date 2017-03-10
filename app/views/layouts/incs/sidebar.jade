@@ -1,0 +1,236 @@
+// Left side column. contains the logo and sidebar
+aside.main-sidebar
+  // sidebar: style can be found in sidebar.less
+  section.sidebar
+    // Sidebar user panel (optional)
+    .user-panel
+      .pull-left.image
+        -if(req.user)
+          img.img-circle(src='#{req.user.photo_profile ? req.user.photo_profile : "#{theme}/dist/img/avatar.png"}', alt='头像')
+
+      .pull-left.info
+        p #{req.isAuthenticated() ? User.username : 'Please log in'}
+        // Status
+        a(href='#')
+          i.fa.fa-circle.text-success
+          |  #{req.isAuthenticated() ? 'Online' : 'Offline'}
+    // search form (Optional)
+    //form.sidebar-form(action='#', method='get')
+    //  .input-group
+    //    input.form-control(type='text', name='q', placeholder='Search...')
+    //
+    //    span.input-group-btn
+    //      button#search-btn.btn.btn-flat(type='submit', name='search')
+    //        i.fa.fa-search
+    // /.search form
+    // Sidebar Menu
+    ul.sidebar-menu
+      li.header 导航菜单
+      // Optionally, you can add icons to the links
+      li
+        a(href='/dashboard')
+          i.fa.fa-dashboard
+          span 仪表盘
+
+      //li.treeview
+        a(href='#')
+          i.fa.fa-plane
+          span 内容管理
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li
+            a(href='/advert/list')
+              i.fa.fa-plane
+              span 广告管理
+
+      //li.treeview
+        a(href='#')
+          i.fa.fa-list
+          span 订单管理
+          i.fa.fa-angle-left.pull-right
+        //ul.treeview-menu
+          li
+            a(href='/order/list')
+              i.fa.fa-list-ol
+              span 虚拟产品订单查询
+          li
+            a(href='/order/orderDayList')
+              i.fa.fa-list-ol
+              span 虚拟产品订单统计
+          li
+            a(href='/order/orderAnalyst')
+              i.fa.fa-list-ol
+              span 虚拟产品订单分析
+      //li.treeview
+        a(href='#')
+          i.fa.fa-ticket
+          span 发票管理
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li
+            a(href='/invoice/list')
+              i.fa.fa-ticket
+              span 待开发票
+          li
+            a(href='/invoice/needSendList')
+              i.fa.fa-ticket
+              span 待寄发票
+          li
+            a(href='/invoice/sendInvoiceList')
+              i.fa.fa-ticket
+              span 已寄发票
+
+      li(class="treeview #{isActive('/member')}")
+        a(href='#')
+          i.fa.fa-users
+          span 会员管理
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          //- li(class="#{isActive('/member/list')}")
+            a(href='/member/list')
+              i.fa.fa-user
+              span 会员信息
+          li(class="#{isActive('/member/action/list')}")
+            a(href='/member/action/list')
+              i.fa.fa-paw
+              span 会员行为
+          //li
+            a(href='/member/list')
+              i.fa.fa-group
+              span 微信粉丝
+          //li
+            a(href='/member/groupList')
+              i.fa.fa-group
+              span 微信粉丝分组
+      //- li(class="treeview #{isActive('/product')}")
+        a(href='#')
+          i.fa.fa-gift
+          span 商品管理
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li(class="#{isActive('/product/category/list')}")
+            a(href='/product/category/list')
+              i.fa.fa-group
+              span 商品类目
+          li(class="#{isActive('/product/list')}")
+            a(href='/product/list')
+              i.fa.fa-group
+              span 商品库
+
+      li(class="treeview #{isActive('/channel')}")
+        a(href='#')
+          i.fa.fa-folder
+          span 渠道管理
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li(class="#{isActive('/channel/type/list')}")
+            a(href='/channel/type/list/')
+              i.fa.fa-list
+              span 分类
+          li(class="#{isActive('/channel/list')}")
+            a(href='/channel/list/')
+              i.fa.fa-group
+              span 渠道
+          //li(class="#{isActive('/channel/channelWechat/list')}")
+            a(href='/channel/channelWechat/list/')
+              i.fa.fa-group
+              span 微信公众号
+
+      li(class="treeview #{isActive('/vendor')}")
+        a(href='#')
+          i.fa.fa-truck
+          span 渠道商户
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li(class="#{isActive('/vendor/type/list')}")
+            a(href='/vendor/type/list')
+              i.fa.fa-list
+              span 分类
+          li(class="#{isActive('/vendor/list')}")
+            a(href='/vendor/list')
+              i.fa.fa-truck
+              span 商户
+      li(class="treeview #{isActive('/wechat')}")
+        a(href='#')
+          i.fa.fa-wechat
+          span 微信平台
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li(class="#{isActive('/wechat/apps')}")
+            a(href='/wechat/apps/list/')
+              i.fa.fa-cubes
+              span 应用模块
+
+      li(class="treeview #{isActive('/system')}")
+        a(href='/system/user')
+          i.fa.fa-gear
+          span 系统管理
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li(class="#{isActive('/system/meta')}")
+            a(href='/system/meta/')
+              i.fa.fa-list
+              span 元数据
+          li(class="#{isActive('/system/module')}")
+            a(href='/system/module/')
+              i.fa.fa-gear
+              span 功能模块
+          li(class="#{isActive('/system/menu')}")
+            a(href='/system/menu/')
+              i.fa.fa-gear
+              span 菜单设置
+           li(class="#{isActive('/system/user')}")
+            a(href='/system/user/')
+              i.fa.fa-gear
+              span 系统用户
+          li(class="#{isActive('/system/role')}")
+            a(href='/system/role/')
+              i.fa.fa-gear
+              span 系统角色
+          li(class="#{isActive('/system/permission')}")
+            a(href='/system/permission/')
+              i.fa.fa-gear
+              span 权限管理
+          li(class="#{isActive('/system/setting')}")
+            a(href='/system/setting')
+              i.fa.fa-gear
+              span 系统设定
+          li(class="#{isActive('/system/message')}")
+            a(href='/system/message')
+              i.fa.fa-gear
+              span 提示信息
+          li(class="#{isActive('/system/payment')}")
+            a(href='/system/payment')
+              i.fa.fa-gear
+              span 支付方式
+          li(class="#{isActive('/system/sms')}")
+            a(href='/system/sms')
+              i.fa.fa-gear
+              span 短信通道
+          li(class="#{isActive('/system/job')}")
+            a(href='/system/job/list')
+              i.fa.fa-gear
+              span 定时任务
+          li(class="#{isActive('/system/api')}")
+            a(href='/system/api/list')
+              i.fa.fa-gear
+              span 接口设置
+
+
+      li
+        a(href='/notification/list')
+          i.fa.fa-comments
+          span 消息管理
+      li(class="treeview #{isActive('/assist')}")
+        a(href='#')
+          i.fa.fa-smile-o
+          span 辅助
+          i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li(class="#{isActive('/assist/icons')}")
+            a(href='#{theme}/pages/UI/icons.html')
+              i.fa.fa-info
+              span 图标
+
+// /.sidebar-menu
+// /.sidebar

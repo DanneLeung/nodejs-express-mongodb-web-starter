@@ -12,8 +12,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "app": "nodemon app/app.js",
-    "admin": "nodemon admin/server.js",
+    "app": "nodemon app/server.js",
     "test": "mocha"
   },
   "author": "DanneLeung",

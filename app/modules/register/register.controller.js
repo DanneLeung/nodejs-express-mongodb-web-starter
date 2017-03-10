@@ -11,9 +11,6 @@ var fs = require('fs');
 var path = require('path');
 var captcha = require(config.root + '/helper/captcha');
 
-var WechatToken = mongoose.model('WechatToken'),
-  WechatAuthToken = mongoose.model('WechatAuthToken'),
-  WechatJsTicket = mongoose.model('WechatJsTicket');
 
 /**
  * 微信端上传图片到微信服务器,下载到本地
@@ -196,65 +193,6 @@ exports.save = function (req, res) {
   });
 }
 
-/**
- * 提交审批
- * @param req
- * @param res
- */
-exports.submitApply = function (req, res) {
-  var id = req.param("id");
-  Member.update({
-    "_id": id
-  }, {
-    "approvedStatus": "01"
-  }, {
-    multi: false,
-    upsert: false
-  }, function (e, o) {
-    if (!e) {
-      res.send({
-        "success": "1"
-      });
-    } else {
-      res.send({
-        "success": "0",
-        "msg": "提交审批失败"
-      });
-    }
-  });
-}
-
-/**
- * 审批失败后修改再审批
- * @param req
- * @param res
- */
-exports.submitReApply = function (req, res) {
-  var id = req.param("id");
-  var fullname = req.param("fullname");
-  var email = req.param("email");
-  Member.update({
-    "_id": id
-  }, {
-    "approvedStatus": "01",
-    "fullname": fullname,
-    "email": email
-  }, {
-    multi: false,
-    upsert: false
-  }, function (e, o) {
-    if (!e) {
-      res.send({
-        "success": "1"
-      });
-    } else {
-      res.send({
-        "success": "0",
-        "msg": "提交审批失败"
-      });
-    }
-  });
-}
 
 /**
  * 验证一个openid,mobile,numberID只能注册一个账户
@@ -391,93 +329,5 @@ exports.datatable = function (req, res) {
     }
   }, function (err, data) {
     res.send(data);
-  });
-}
-
-//同步粉丝信息
-exports.syncWechatFans = function (req, res) {
-  var channelWechat = req.params.id;
-  //1.修改公众号下的粉丝关注标记为 未关注
-  WechatFans.update({
-    "channelWechat": channelWechat
-  }, {
-    "flag": false
-  }, {
-    multi: true,
-    upsert: false
-  }, function (e, o) {
-    if (!e) {
-      ChannelWechat.findOne({
-        "_id": channelWechat
-      }, function (err, wechat) {
-        if (!err && wechat != null) {
-          var api = new WechatAPI(o.appid, o.appsecret, WechatToken.readToken, WechatToken.saveToken);
-          console.log('get user info start');
-          //获取关注列表
-          api.getFollowers(function (err, obj) {
-            if (err) {
-              console.log(err);
-            } else {
-              //总数
-              var total = obj.total;
-              console.log('total:', total);
-              //单次取出数量
-              var count = obj.count;
-              //下一个起始的openid
-              var next_openid = obj.next_openid;
-              var data = obj.data.openid;
-
-              if (data) {
-                //循环取用户openid，存入db
-                //判断openid是否存过，存过之后不再存储
-                for (var i in data) {
-                  //取最后一条的openid
-                  next_openid = obj.next_openid;
-                  var openid = data[i];
-                  api.getUser(openid, function (err, result) {
-                    if (!err) {
-                      result.flag = true; //关注公众号的粉丝
-                      result.channelWechat = channelWechat; //渠道公众号
-                      WechatFans.findAndSave(result);
-                    }
-                  });
-                }
-              }
-
-              //如果total大于10000，则取后面的数据时需要加上next_openid，一次循环直到取完为止
-              while (total > count) {
-                api.getFollowers(next_openid, function (err, result) {
-                  if (!err) {
-                    count += result.count;
-                    next_openid = result.next_openid;
-                    //循环存入db
-                    data = result.data.openid;
-                    if (data) {
-                      for (var i in data) {
-                        var openid = data[i];
-                        api.getUser(openid, function (err, result) {
-                          if (!err) {
-                            result.flag = true; //关注公众号的粉丝
-                            result.channelWechat = channelWechat; //渠道公众号
-                            WechatFans.findAndSave(result);
-                          }
-                        });
-                      }
-                    }
-                  }
-                });
-              }
-            }
-            req.flash('success', '同步成功!');
-            res.redirect('/channel/wechatFans/list/' + channelWechat);
-          });
-          console.log('get user info end');
-        } else {
-          console.log('同步失败,未找到公众号信息');
-        }
-      });
-    } else {
-      console.log('同步失败，更新粉丝标记失败');
-    }
   });
 }
