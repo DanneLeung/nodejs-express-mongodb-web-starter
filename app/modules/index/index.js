@@ -14,7 +14,6 @@ router.use(function (req, res, next) {
     url = url.replace('//', '/');
   }
   req.absBaseUrl = url;
-  //console.log("$$$$$$$$$$$$$$$$$$$$ url ", req.absBaseUrl);
   return next();
 });
 router
@@ -27,6 +26,5 @@ router
   .get('/logout', ctrl.logout)
   .get(['/captcha', '/captcha/:type'], captcha.getCaptcha);
 //logout
-router.all(['/', '/index'], ctrl.index)
-;
+router.all(['/', '/index'], ctrl.index);
 module.exports = router;
