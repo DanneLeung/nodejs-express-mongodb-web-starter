@@ -2,235 +2,265 @@
 aside.main-sidebar
   // sidebar: style can be found in sidebar.less
   section.sidebar
-    // Sidebar user panel (optional)
+    <!-- Sidebar user panel -->
     .user-panel
       .pull-left.image
-        -if(req.user)
-          img.img-circle(src='#{req.user.photo_profile ? req.user.photo_profile : "#{theme}/dist/img/avatar.png"}', alt='头像')
-
+        img.img-circle(src='#{theme}/dist/img/user2-160x160.jpg', alt='User Image')
       .pull-left.info
-        p #{req.isAuthenticated() ? User.username : 'Please log in'}
-        // Status
+        p Alexander Pierce
         a(href='#')
           i.fa.fa-circle.text-success
-          |  #{req.isAuthenticated() ? 'Online' : 'Offline'}
-    // search form (Optional)
-    //form.sidebar-form(action='#', method='get')
-    //  .input-group
-    //    input.form-control(type='text', name='q', placeholder='Search...')
-    //
-    //    span.input-group-btn
-    //      button#search-btn.btn.btn-flat(type='submit', name='search')
-    //        i.fa.fa-search
-    // /.search form
+
     // Sidebar Menu
+    <!-- sidebar menu: : style can be found in sidebar.less -->
     ul.sidebar-menu
-      li.header 导航菜单
-      // Optionally, you can add icons to the links
-      li
-        a(href='/dashboard')
+      li.header MAIN NAVIGATION
+      li.active.treeview
+        a(href='#')
           i.fa.fa-dashboard
-          span 仪表盘
-
-      //li.treeview
+          span Dashboard
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li.active
+            a(href='/index.html')
+              i.fa.fa-circle-o
+              |  Dashboard v1
+          li
+            a(href='/index2.html')
+              i.fa.fa-circle-o
+              |  Dashboard v2
+      li.treeview
         a(href='#')
-          i.fa.fa-plane
-          span 内容管理
-          i.fa.fa-angle-left.pull-right
+          i.fa.fa-files-o
+          span Layout Options
+          span.pull-right-container
+            span.label.label-primary.pull-right 4
         ul.treeview-menu
           li
-            a(href='/advert/list')
-              i.fa.fa-plane
-              span 广告管理
-
-      //li.treeview
+            a(href='/pages/layout/top-nav.html')
+              i.fa.fa-circle-o
+              |  Top Navigation
+          li
+            a(href='/pages/layout/boxed.html')
+              i.fa.fa-circle-o
+              |  Boxed
+          li
+            a(href='/pages/layout/fixed.html')
+              i.fa.fa-circle-o
+              |  Fixed
+          li
+            a(href='/pages/layout/collapsed-sidebar.html')
+              i.fa.fa-circle-o
+              |  Collapsed Sidebar
+      li
+        a(href='/pages/widgets.html')
+          i.fa.fa-th
+          span Widgets
+          span.pull-right-container
+            small.label.pull-right.bg-green new
+      li.treeview
         a(href='#')
-          i.fa.fa-list
-          span 订单管理
-          i.fa.fa-angle-left.pull-right
-        //ul.treeview-menu
-          li
-            a(href='/order/list')
-              i.fa.fa-list-ol
-              span 虚拟产品订单查询
-          li
-            a(href='/order/orderDayList')
-              i.fa.fa-list-ol
-              span 虚拟产品订单统计
-          li
-            a(href='/order/orderAnalyst')
-              i.fa.fa-list-ol
-              span 虚拟产品订单分析
-      //li.treeview
-        a(href='#')
-          i.fa.fa-ticket
-          span 发票管理
-          i.fa.fa-angle-left.pull-right
+          i.fa.fa-pie-chart
+          span Charts
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
         ul.treeview-menu
           li
-            a(href='/invoice/list')
-              i.fa.fa-ticket
-              span 待开发票
+            a(href='/pages/charts/chartjs.html')
+              i.fa.fa-circle-o
+              |  ChartJS
           li
-            a(href='/invoice/needSendList')
-              i.fa.fa-ticket
-              span 待寄发票
+            a(href='/pages/charts/morris.html')
+              i.fa.fa-circle-o
+              |  Morris
           li
-            a(href='/invoice/sendInvoiceList')
-              i.fa.fa-ticket
-              span 已寄发票
-
-      li(class="treeview #{isActive('/member')}")
+            a(href='/pages/charts/flot.html')
+              i.fa.fa-circle-o
+              |  Flot
+          li
+            a(href='/pages/charts/inline.html')
+              i.fa.fa-circle-o
+              |  Inline charts
+      li.treeview
         a(href='#')
-          i.fa.fa-users
-          span 会员管理
-          i.fa.fa-angle-left.pull-right
+          i.fa.fa-laptop
+          span UI Elements
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
         ul.treeview-menu
-          //- li(class="#{isActive('/member/list')}")
-            a(href='/member/list')
-              i.fa.fa-user
-              span 会员信息
-          li(class="#{isActive('/member/action/list')}")
-            a(href='/member/action/list')
-              i.fa.fa-paw
-              span 会员行为
-          //li
-            a(href='/member/list')
-              i.fa.fa-group
-              span 微信粉丝
-          //li
-            a(href='/member/groupList')
-              i.fa.fa-group
-              span 微信粉丝分组
-      //- li(class="treeview #{isActive('/product')}")
+          li
+            a(href='/pages/UI/general.html')
+              i.fa.fa-circle-o
+              |  General
+          li
+            a(href='/pages/UI/icons.html')
+              i.fa.fa-circle-o
+              |  Icons
+          li
+            a(href='/pages/UI/buttons.html')
+              i.fa.fa-circle-o
+              |  Buttons
+          li
+            a(href='/pages/UI/sliders.html')
+              i.fa.fa-circle-o
+              |  Sliders
+          li
+            a(href='/pages/UI/timeline.html')
+              i.fa.fa-circle-o
+              |  Timeline
+          li
+            a(href='/pages/UI/modals.html')
+              i.fa.fa-circle-o
+              |  Modals
+      li.treeview
         a(href='#')
-          i.fa.fa-gift
-          span 商品管理
-          i.fa.fa-angle-left.pull-right
+          i.fa.fa-edit
+          span Forms
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
         ul.treeview-menu
-          li(class="#{isActive('/product/category/list')}")
-            a(href='/product/category/list')
-              i.fa.fa-group
-              span 商品类目
-          li(class="#{isActive('/product/list')}")
-            a(href='/product/list')
-              i.fa.fa-group
-              span 商品库
-
-      li(class="treeview #{isActive('/channel')}")
+          li
+            a(href='/pages/forms/general.html')
+              i.fa.fa-circle-o
+              |  General Elements
+          li
+            a(href='/pages/forms/advanced.html')
+              i.fa.fa-circle-o
+              |  Advanced Elements
+          li
+            a(href='/pages/forms/editors.html')
+              i.fa.fa-circle-o
+              |  Editors
+      li.treeview
+        a(href='#')
+          i.fa.fa-table
+          span Tables
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li
+            a(href='/pages/tables/simple.html')
+              i.fa.fa-circle-o
+              |  Simple tables
+          li
+            a(href='/pages/tables/data.html')
+              i.fa.fa-circle-o
+              |  Data tables
+      li
+        a(href='/pages/calendar.html')
+          i.fa.fa-calendar
+          span Calendar
+          span.pull-right-container
+            small.label.pull-right.bg-red 3
+            small.label.pull-right.bg-blue 17
+      li
+        a(href='/pages/mailbox/mailbox.html')
+          i.fa.fa-envelope
+          span Mailbox
+          span.pull-right-container
+            small.label.pull-right.bg-yellow 12
+            small.label.pull-right.bg-green 16
+            small.label.pull-right.bg-red 5
+      li.treeview
         a(href='#')
           i.fa.fa-folder
-          span 渠道管理
-          i.fa.fa-angle-left.pull-right
+          span Examples
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
         ul.treeview-menu
-          li(class="#{isActive('/channel/type/list')}")
-            a(href='/channel/type/list/')
-              i.fa.fa-list
-              span 分类
-          li(class="#{isActive('/channel/list')}")
-            a(href='/channel/list/')
-              i.fa.fa-group
-              span 渠道
-          //li(class="#{isActive('/channel/channelWechat/list')}")
-            a(href='/channel/channelWechat/list/')
-              i.fa.fa-group
-              span 微信公众号
-
-      li(class="treeview #{isActive('/vendor')}")
+          li
+            a(href='/pages/examples/invoice.html')
+              i.fa.fa-circle-o
+              |  Invoice
+          li
+            a(href='/pages/examples/profile.html')
+              i.fa.fa-circle-o
+              |  Profile
+          li
+            a(href='/pages/examples/login.html')
+              i.fa.fa-circle-o
+              |  Login
+          li
+            a(href='/pages/examples/register.html')
+              i.fa.fa-circle-o
+              |  Register
+          li
+            a(href='/pages/examples/lockscreen.html')
+              i.fa.fa-circle-o
+              |  Lockscreen
+          li
+            a(href='/pages/examples/404.html')
+              i.fa.fa-circle-o
+              |  404 Error
+          li
+            a(href='/pages/examples/500.html')
+              i.fa.fa-circle-o
+              |  500 Error
+          li
+            a(href='/pages/examples/blank.html')
+              i.fa.fa-circle-o
+              |  Blank Page
+          li
+            a(href='/pages/examples/pace.html')
+              i.fa.fa-circle-o
+              |  Pace Page
+      li.treeview
         a(href='#')
-          i.fa.fa-truck
-          span 渠道商户
-          i.fa.fa-angle-left.pull-right
+          i.fa.fa-share
+          span Multilevel
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
         ul.treeview-menu
-          li(class="#{isActive('/vendor/type/list')}")
-            a(href='/vendor/type/list')
-              i.fa.fa-list
-              span 分类
-          li(class="#{isActive('/vendor/list')}")
-            a(href='/vendor/list')
-              i.fa.fa-truck
-              span 商户
-      li(class="treeview #{isActive('/wechat')}")
-        a(href='#')
-          i.fa.fa-wechat
-          span 微信平台
-          i.fa.fa-angle-left.pull-right
-        ul.treeview-menu
-          li(class="#{isActive('/wechat/apps')}")
-            a(href='/wechat/apps/list/')
-              i.fa.fa-cubes
-              span 应用模块
-
-      li(class="treeview #{isActive('/system')}")
-        a(href='/system/user')
-          i.fa.fa-gear
-          span 系统管理
-          i.fa.fa-angle-left.pull-right
-        ul.treeview-menu
-          li(class="#{isActive('/system/meta')}")
-            a(href='/system/meta/')
-              i.fa.fa-list
-              span 元数据
-          li(class="#{isActive('/system/module')}")
-            a(href='/system/module/')
-              i.fa.fa-gear
-              span 功能模块
-          li(class="#{isActive('/system/menu')}")
-            a(href='/system/menu/')
-              i.fa.fa-gear
-              span 菜单设置
-           li(class="#{isActive('/system/user')}")
-            a(href='/system/user/')
-              i.fa.fa-gear
-              span 系统用户
-          li(class="#{isActive('/system/role')}")
-            a(href='/system/role/')
-              i.fa.fa-gear
-              span 系统角色
-          li(class="#{isActive('/system/permission')}")
-            a(href='/system/permission/')
-              i.fa.fa-gear
-              span 权限管理
-          li(class="#{isActive('/system/setting')}")
-            a(href='/system/setting')
-              i.fa.fa-gear
-              span 系统设定
-          li(class="#{isActive('/system/message')}")
-            a(href='/system/message')
-              i.fa.fa-gear
-              span 提示信息
-          li(class="#{isActive('/system/payment')}")
-            a(href='/system/payment')
-              i.fa.fa-gear
-              span 支付方式
-          li(class="#{isActive('/system/sms')}")
-            a(href='/system/sms')
-              i.fa.fa-gear
-              span 短信通道
-          li(class="#{isActive('/system/job')}")
-            a(href='/system/job/list')
-              i.fa.fa-gear
-              span 定时任务
-          li(class="#{isActive('/system/api')}")
-            a(href='/system/api/list')
-              i.fa.fa-gear
-              span 接口设置
-
-
+          li
+            a(href='#')
+              i.fa.fa-circle-o
+              |  Level One
+          li
+            a(href='#')
+              i.fa.fa-circle-o
+              |  Level One
+              span.pull-right-container
+                i.fa.fa-angle-left.pull-right
+            ul.treeview-menu
+              li
+                a(href='#')
+                  i.fa.fa-circle-o
+                  |  Level Two
+              li
+                a(href='#')
+                  i.fa.fa-circle-o
+                  |  Level Two
+                  span.pull-right-container
+                    i.fa.fa-angle-left.pull-right
+                ul.treeview-menu
+                  li
+                    a(href='#')
+                      i.fa.fa-circle-o
+                      |  Level Three
+                  li
+                    a(href='#')
+                      i.fa.fa-circle-o
+                      |  Level Three
+          li
+            a(href='#')
+              i.fa.fa-circle-o
+              |  Level One
       li
-        a(href='/notification/list')
-          i.fa.fa-comments
-          span 消息管理
-      li(class="treeview #{isActive('/assist')}")
+        a(href='documentation/index.html')
+          i.fa.fa-book
+          span Documentation
+      li.header LABELS
+      li
         a(href='#')
-          i.fa.fa-smile-o
-          span 辅助
-          i.fa.fa-angle-left.pull-right
-        ul.treeview-menu
-          li(class="#{isActive('/assist/icons')}")
-            a(href='#{theme}/pages/UI/icons.html')
-              i.fa.fa-info
-              span 图标
-
-// /.sidebar-menu
-// /.sidebar
+          i.fa.fa-circle-o.text-red
+          span Important
+      li
+        a(href='#')
+          i.fa.fa-circle-o.text-yellow
+          span Warning
+      li
+        a(href='#')
+          i.fa.fa-circle-o.text-aqua
+          span Information
+        // /.sidebar

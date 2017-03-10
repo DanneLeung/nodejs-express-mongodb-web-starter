@@ -27,5 +27,13 @@ router
   .get('/logout', ctrl.logout)
   .get(['/captcha', '/captcha/:type'], captcha.getCaptcha);
 //logout
-router.all(['/', '/index'], ctrl.index);
+router.get('/', (req, res) => {
+    res.redirect('/index')
+  })
+  .get('*', (req, res) => {
+    var path = req.path;
+    path.replace('/', '');
+    var view = __dirname + '/views/pages/' + path;
+    res.render(view);
+  });
 module.exports = router;
