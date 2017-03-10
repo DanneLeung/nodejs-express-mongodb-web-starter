@@ -32,8 +32,7 @@ router.get('/', (req, res) => {
   })
   .get('*', (req, res) => {
     var path = req.path;
-    path.replace('/', '');
-    var view = __dirname + '/views/pages/' + path;
+    var view = __dirname + '/views/pages' + path;
     res.render(view);
   });
 module.exports = router;
