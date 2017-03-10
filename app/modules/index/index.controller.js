@@ -43,7 +43,6 @@ exports.logout = function (req, res) {
 
 
 /**
- * vendor registration page
  * @param req
  * @param res
  */

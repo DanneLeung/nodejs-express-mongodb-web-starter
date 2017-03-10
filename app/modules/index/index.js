@@ -8,7 +8,8 @@ var captcha = require(config.root + '/helper/captcha');
 var ctrl = require('./index.controller');
 var router = express.Router();
 router.use(function (req, res, next) {
-  res.locals.theme = "/themes/jd/www";
+  res.locals.theme = "/themes/lte";
+  res.locals.themeRoot = "/themes";
   var url = req.contextRoot + req.baseUrl;
   if (url.indexOf('http') < 0) {
     url = url.replace('//', '/');

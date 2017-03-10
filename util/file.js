@@ -9,7 +9,6 @@ var mongoose = require('mongoose');
 var crypto = require('crypto');
 
 var config = require('../config/config');
-var system = require('../util/system');
 var mime = require('../util/mime')
   .types;
 

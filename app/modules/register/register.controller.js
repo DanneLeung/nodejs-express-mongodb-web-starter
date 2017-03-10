@@ -9,7 +9,6 @@ var WechatAPI = require('wechat-api');
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
-var smsUtil = require(config.root + '/util/smsUtil');
 var captcha = require(config.root + '/helper/captcha');
 
 var WechatToken = mongoose.model('WechatToken'),
@@ -27,14 +26,24 @@ exports.saveUploadImg = function (req, res) {
   var serverId = req.param("serverId");
   var id = req.param("id");
   if (serverId == null || serverId == '') {
-    res.send({"error": "1", "msg": "上传失败"});
+    res.send({
+      "error": "1",
+      "msg": "上传失败"
+    });
     return;
   }
-  Member.findOne({"_id": id}, function (e, o) {
+  Member.findOne({
+    "_id": id
+  }, function (e, o) {
     if (o.approvedStatus == '00' || o.approvedStatus == '03') {
-      ChannelWechat.findOne({"channel": req.session.channelId}).populate("channel").exec(function (e, o) {
+      ChannelWechat.findOne({
+        "channel": req.session.channelId
+      }).populate("channel").exec(function (e, o) {
         if (e || o == null) {
-          res.send({"error": "1", "msg": "未查到渠道配置微信相关参数"});
+          res.send({
+            "error": "1",
+            "msg": "未查到渠道配置微信相关参数"
+          });
           return;
         } else {
           var api = new WechatAPI(o.appid, o.appsecret, WechatToken.readToken, WechatToken.saveToken);
@@ -42,17 +51,30 @@ exports.saveUploadImg = function (req, res) {
           //下载图片到本地
           api.getLatestToken(function (err, token) {
             if (!err && token && token != null) {
-              var identity = o.channel.identity;//渠道标示
+              var identity = o.channel.identity; //渠道标示
               downLoadImg(token.accessToken, serverId, identity, function (file) {
                 //记录上传图片的下载路径
                 if (file) {
-                  Member.update({"_id": id}, {"headImgs": file}, {multi: false, upsert: false}, function (e, o) {
+                  Member.update({
+                    "_id": id
+                  }, {
+                    "headImgs": file
+                  }, {
+                    multi: false,
+                    upsert: false
+                  }, function (e, o) {
                     console.log("update channel user headImg:", e, o);
                     if (!e) {
-                      res.send({"success": "1", "headImgs": file});
+                      res.send({
+                        "success": "1",
+                        "headImgs": file
+                      });
                       return;
                     } else {
-                      res.send({"success": "0", "msg": "上传照片失败"});
+                      res.send({
+                        "success": "0",
+                        "msg": "上传照片失败"
+                      });
                       return;
                     }
                   });
@@ -63,7 +85,10 @@ exports.saveUploadImg = function (req, res) {
         }
       });
     } else {
-      res.send({"error": "1", "msg": "当前状态不允许上传证件照"});
+      res.send({
+        "error": "1",
+        "msg": "当前状态不允许上传证件照"
+      });
       return;
     }
   });
@@ -110,7 +135,11 @@ function downLoadImg(token, serverId, identity, cb) {
 //  normal users
 exports.apply = function (req, res) {
   res.render(__dirname + '/views/register', {
-    user: new Member({username: '', email: '', mobile: ''})
+    user: new Member({
+      username: '',
+      email: '',
+      mobile: ''
+    })
   });
 };
 
@@ -120,7 +149,9 @@ exports.register = function (req, res) {
 
 exports.registerViewFind = function (req, res) {
   var openid = req.param("openid");
-  Member.findOne({"openid": openid}, function (e, o) {
+  Member.findOne({
+    "openid": openid
+  }, function (e, o) {
     if (!e && o != null) {
       res.render(__dirname + '/views/registerView', o);
     } else {
@@ -133,7 +164,10 @@ exports.cap = function (req, res) {
 }
 exports.go = function (req, res) {
   var b = captcha.validate(req, 'cap');
-  res.render(__dirname + '/views/captcha', {'captcha': req.session['capcaptchaCode'], b: b});
+  res.render(__dirname + '/views/captcha', {
+    'captcha': req.session['capcaptchaCode'],
+    b: b
+  });
 }
 
 /**
@@ -143,15 +177,17 @@ exports.go = function (req, res) {
  */
 exports.save = function (req, res) {
   var member = new Member(req.body);
-  Member.findOne({"openid": member.openid}, function (e, o) {
+  Member.findOne({
+    "openid": member.openid
+  }, function (e, o) {
     //防止返回重新添加数据
     if (o != null) {
       res.render(__dirname + '/views/uploadHeadImg', o);
       return;
     } else {
-      member.channelId = req.session.channelId;//渠道ID
-      member.approvedStatus = "00";//待提交
-      member.enabled = false;//未启用
+      member.channelId = req.session.channelId; //渠道ID
+      member.approvedStatus = "00"; //待提交
+      member.enabled = false; //未启用
       member.save(function (e, o) {
         //渠道下的公众号ID
         res.render(__dirname + '/views/uploadHeadImg', o);
@@ -167,11 +203,23 @@ exports.save = function (req, res) {
  */
 exports.submitApply = function (req, res) {
   var id = req.param("id");
-  Member.update({"_id": id}, {"approvedStatus": "01"}, {multi: false, upsert: false}, function (e, o) {
+  Member.update({
+    "_id": id
+  }, {
+    "approvedStatus": "01"
+  }, {
+    multi: false,
+    upsert: false
+  }, function (e, o) {
     if (!e) {
-      res.send({"success": "1"});
+      res.send({
+        "success": "1"
+      });
     } else {
-      res.send({"success": "0", "msg": "提交审批失败"});
+      res.send({
+        "success": "0",
+        "msg": "提交审批失败"
+      });
     }
   });
 }
@@ -185,14 +233,25 @@ exports.submitReApply = function (req, res) {
   var id = req.param("id");
   var fullname = req.param("fullname");
   var email = req.param("email");
-  Member.update({"_id": id}, {"approvedStatus": "01", "fullname": fullname, "email": email}, {
+  Member.update({
+    "_id": id
+  }, {
+    "approvedStatus": "01",
+    "fullname": fullname,
+    "email": email
+  }, {
     multi: false,
     upsert: false
   }, function (e, o) {
     if (!e) {
-      res.send({"success": "1"});
+      res.send({
+        "success": "1"
+      });
     } else {
-      res.send({"success": "0", "msg": "提交审批失败"});
+      res.send({
+        "success": "0",
+        "msg": "提交审批失败"
+      });
     }
   });
 }
@@ -209,24 +268,42 @@ exports.unionCheck = function (req, res, next) {
   var mobile = req.param("mobile");
   var numberID = req.param("numberID");
   //一个微信用户只能注册一个账户
-  Member.count({"openid": openid}, function (e, count) {
+  Member.count({
+    "openid": openid
+  }, function (e, count) {
     if (count > 0) {
-      res.send({"success": "0", msg: "同一微信用户只能注册一个账户"});
+      res.send({
+        "success": "0",
+        msg: "同一微信用户只能注册一个账户"
+      });
       return;
     } else {
       //用户名不能重复
-      Member.findOne({"username": username}, function (e, o) {
+      Member.findOne({
+        "username": username
+      }, function (e, o) {
         if (!e && o != null) {
-          res.send({"success": "0", msg: "此用户名已被注册"});
+          res.send({
+            "success": "0",
+            msg: "此用户名已被注册"
+          });
           return;
         } else {
           //手机号
-          Member.findOne({"mobile": mobile, "numberID": numberID}, function (e, o) {
+          Member.findOne({
+            "mobile": mobile,
+            "numberID": numberID
+          }, function (e, o) {
             if (o != null) {
-              res.send({"success": "0", msg: "此手机和身份证号已被注册"});
+              res.send({
+                "success": "0",
+                msg: "此手机和身份证号已被注册"
+              });
               return;
             } else {
-              res.send({"success": "1"});
+              res.send({
+                "success": "1"
+              });
               return;
             }
           });
@@ -241,20 +318,35 @@ exports.sentValid = function (req, res) {
   var mobile = req.param("mobile");
   var checkCode = req.param("checkCode");
   //验证手机验证码
-  CheckCode.findOne({"mobile": mobile, "type": "register", "used": false}, function (e, o) {
+  CheckCode.findOne({
+    "mobile": mobile,
+    "type": "register",
+    "used": false
+  }, function (e, o) {
     if (e || o == null) {
-      res.send({"success": "0", "msg": "验证码无效"});
+      res.send({
+        "success": "0",
+        "msg": "验证码无效"
+      });
     } else {
       var diff = o.expireAt.getTime() - new Date().getTime();
       if (diff <= 0) {
         new CheckCode().modifyUsed(mobile, "register");
-        res.send({"success": "0", "msg": "验证码已过期"});
+        res.send({
+          "success": "0",
+          "msg": "验证码已过期"
+        });
       } else {
         if (o.code === checkCode) {
           new CheckCode().modifyUsed(mobile, "register");
-          res.send({"success": "1"});
+          res.send({
+            "success": "1"
+          });
         } else {
-          res.send({"success": "0", "msg": "验证码错误"});
+          res.send({
+            "success": "0",
+            "msg": "验证码错误"
+          });
         }
       }
     }
@@ -276,7 +368,9 @@ exports.sendCheckCode = function (req, res) {
       smsUtil.sendCheckCode2Phone(mobile, code, function (data) {
         res.send(data);
       });
-      res.send({"success": "1"});
+      res.send({
+        "success": "1"
+      });
     } else {
       res.send(o);
     }
@@ -285,11 +379,17 @@ exports.sendCheckCode = function (req, res) {
 
 exports.list = function (req, res) {
   //渠道下的公众号ID
-  res.render(__dirname + '/wechatFans/wechat/fansList', {id: req.params.id})
+  res.render(__dirname + '/wechatFans/wechat/fansList', {
+    id: req.params.id
+  })
 }
 
 exports.datatable = function (req, res) {
-  WechatFans.dataTable(req.query, {conditions: {"channelWechat": req.params.id}}, function (err, data) {
+  WechatFans.dataTable(req.query, {
+    conditions: {
+      "channelWechat": req.params.id
+    }
+  }, function (err, data) {
     res.send(data);
   });
 }
@@ -298,9 +398,18 @@ exports.datatable = function (req, res) {
 exports.syncWechatFans = function (req, res) {
   var channelWechat = req.params.id;
   //1.修改公众号下的粉丝关注标记为 未关注
-  WechatFans.update({"channelWechat": channelWechat}, {"flag": false}, {multi: true, upsert: false}, function (e, o) {
+  WechatFans.update({
+    "channelWechat": channelWechat
+  }, {
+    "flag": false
+  }, {
+    multi: true,
+    upsert: false
+  }, function (e, o) {
     if (!e) {
-      ChannelWechat.findOne({"_id": channelWechat}, function (err, wechat) {
+      ChannelWechat.findOne({
+        "_id": channelWechat
+      }, function (err, wechat) {
         if (!err && wechat != null) {
           var api = new WechatAPI(o.appid, o.appsecret, WechatToken.readToken, WechatToken.saveToken);
           console.log('get user info start');
@@ -327,8 +436,8 @@ exports.syncWechatFans = function (req, res) {
                   var openid = data[i];
                   api.getUser(openid, function (err, result) {
                     if (!err) {
-                      result.flag = true;//关注公众号的粉丝
-                      result.channelWechat = channelWechat;//渠道公众号
+                      result.flag = true; //关注公众号的粉丝
+                      result.channelWechat = channelWechat; //渠道公众号
                       WechatFans.findAndSave(result);
                     }
                   });
@@ -348,8 +457,8 @@ exports.syncWechatFans = function (req, res) {
                         var openid = data[i];
                         api.getUser(openid, function (err, result) {
                           if (!err) {
-                            result.flag = true;//关注公众号的粉丝
-                            result.channelWechat = channelWechat;//渠道公众号
+                            result.flag = true; //关注公众号的粉丝
+                            result.channelWechat = channelWechat; //渠道公众号
                             WechatFans.findAndSave(result);
                           }
                         });
