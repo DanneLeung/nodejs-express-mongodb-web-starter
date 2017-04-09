@@ -116,7 +116,6 @@ module.exports = function (app, express, passport) {
     if (/api/i.test(path)) {
       return next();
     } else if (req.header('X-Requested-With') === 'XMLHttpRequest' || ajax) {
-      console.log("ajax request ,skip csrf");
       return next();
     } else {
       // if (_.indexOf(csrfExclude, req.originalUrl) >= 0) return next();

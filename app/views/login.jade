@@ -1,49 +1,92 @@
-extends layout/default
+extends layouts/front
 block header
-  link(rel='stylesheet', href='#{theme}/css/login.css')
+  style.
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
 block main
-  header#header(style='display:block;')
-    span.icon.icon-goback
-    |     京东登录
+  .login-box
+    .login-logo
+      a(href='/')
+        b #{req.session.channel ? req.session.channel.channelName : appName}
+    // /.login-logo
+    .login-box-body
+      p.login-box-msg 使用用户密码登录系统
+      form#loginForm(action='/login?_#{Date.now()}', method='post')
+        input(type='hidden', name='_csrf', value=_csrf)
+        //input(type='hidden', name='channelId', value='#{channel._id}')
+        .form-group.has-feedback
+          input#username.form-control(type='text', placeholder='请使用用户名登录', name="username")
+          span.glyphicon.glyphicon-envelope.form-control-feedback
+        .form-group.has-feedback
+          input#password.form-control.required(type='password', placeholder='请输入登录密码', name="password")
+          span.glyphicon.glyphicon-lock.form-control-feedback
+        .form-group.has-feedback
+          .row
+            .col-sm-6
+              input#captcha.form-control.col-md-3(type='text', placeholder='请输入验证码', name="captcha")
+            .col-sm-6
+              img#captchaImg
+        .checkbox.icheck
+          label
+            input#rememberMe(type='checkbox',name="rememberMe")
+            | &nbsp;&nbsp;记住我
+        //- .row
+          a#register.btn.pull-left(href='/register') 立即注册
+          a.btn.pull-right(href='/forgetPass') 忘记密码?
+        .form-group
+          button#login.btn.btn-success.btn-block.btn-flat(type="submit") 登 录
+      p
+        a#forget(href='/forgetPass') 忘记密码?
+      if(!req.session.channelId)
+        p
+          a#register.text-center(href='/register') 立即注册成为渠道商
 
-  section.page
-    .wrap.loginPage
-      .input-container
-        input#username.acc-input.username.txt-input.J_ping(type='text', placeholder='用户名/邮箱/已验证手机', autocomplete='off', onkeyup='CtoH(this);', report-eventid='MLoginRegister_Username')
-        i.icon.icon-clear
-      .input-container
-        input#password.acc-input.password.txt-input.J_ping(type='password', placeholder='请输入密码', autocomplete='off', report-eventid='MLoginRegister_Password', onkeyup='CtoH(this);')
-        i.icon.icon-clear
-        label.label-checkbox.J_ping(for='onOff_pwd', report-eventid='MLoginRegister_Plaintext')
-          input#onOff_pwd(type='checkbox')
-          .checkbtn
-            span.b-text abc
-            span.b-pwd ...
-      #input-code.input-container(style='display:;')
-        input#code.acc-input.imgverify.txt-input(type='text', placeholder='请输入验证码', autocomplete='off', onkeyup='CtoH(this);', size='11', maxlength='6')
-        span.code-box
-          img#imgCode(src='/cgi-bin/m/authcode?mod=login', alt='')
-        i.icon.icon-clear
-      .notice  
-      a#loginBtn.btn.J_ping(href='javascript:;', report-eventid='MLoginRegister_Login') 登 录
-      label.remberme.J_ping(for='remberme', report-eventid='MLoginRegister_AutoLogin')
-        input#remberme(type='checkbox', checked='')
-        span.icon.icon-rember
-        |             一个月内免登录
-      .quick-nav.clearfix
-        a.J_ping.findpwd(href='javascript:;', report-eventid='MLoginRegister_FindPassword')
-          i.icon.icon-clock
-          | 找回密码
-        a.J_ping.quickReg(href='javascript:;', report-eventid='MLoginRegister_PhoneRegister')
-          i.icon.icon-reg
-          | 快速注册
-      .quick-login
-        h4 其他登录方式
-        a.J_ping.quick-qq(href='javascript:;', report-eventid='MLoginRegister_QQLogin')
-          i.icon.icon-qq
-          br
-          | QQ
-        a.J_ping.quick-wx(href='javascript:;', report-eventid='MLoginRegister_WxLogin', style='display:none')
-          i.icon.icon-wx
-          br
-          | 微信
+    // /.login-box-body
+    // /.login-box
+block scripts
+  script.
+    $(function () {
+       $('input').iCheck({
+        checkboxClass: 'icheckbox_square-grey',
+        radioClass: 'iradio_square-grey',
+        increaseArea: '20%' // optional
+      });
+      $('#captchaImg').attr('src', '/captcha?' + Date.now()).on('click', function () {
+        $(this).attr('src', '/captcha?' + Date.now());
+      });
+      var form = $("#loginForm");
+
+      $('#username').val($.cookie('username'))
+      var check = $.cookie('rememberMe');
+      if (check == "true") {
+        $('#rememberMe').iCheck('check');
+      } else {
+        $('#rememberMe').iCheck('uncheck');
+      }
+
+      form.validate({
+        rules: {
+          username: {required: true},
+          password: {required: true},
+          captcha: {required: true}
+        },
+        messages: {
+          username: {required: "请输入登录用户名"},
+          password: {required: "请输入登录密码"},
+          captcha: {required: "请输入验证码"}
+        }
+      });
+
+      $("#loginForm").on('submit', function () {
+        var rememberMe = $("#rememberMe").is(":checked");
+        if (rememberMe) {
+          $.cookie('username', $('#username').val(), {expires: 7});
+          $.cookie('rememberMe', true, {expires: 7});
+        } else {
+          $.cookie('username', '', {expires: -1}); // 删除 cookie
+          $.cookie('rememberMe', '', {expires: -1}); // 删除 cookie
+        }
+      })
+    });

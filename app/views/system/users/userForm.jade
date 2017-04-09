@@ -1,0 +1,175 @@
+//
+  Created by danne on 2015/10/29.
+extends ../layout
+block header
+//应用的page title
+block pageTitle
+  if user.isNew
+    h1 用户新增
+      small 添加用户信息
+  if !user.isNew
+    h1 用户编辑
+      small 编辑用户信息
+  if viewType == 'view'
+    h1 用户查看
+      small 查看用户信息
+
+block main
+  .box
+    .box-header.with-border
+      if user.isNew
+        h3.box-title 添加用户信息
+      if !user.isNew
+        h3.box-title 编辑用户信息
+      if viewType == 'view'
+        h3.box-title 查看用户信息
+
+      .box-tools
+        a.btn.btn-sm.btn-default(href='/system/user',title="返回")
+          i.fa.fa-reply
+        | &nbsp;
+        if user.isNew || !user.isNew
+          button#save.btn.btn-sm.btn-default(title="保存")
+            i.fa.fa-save
+        | &nbsp;
+        if !user.isNew
+          a.btn.btn-box-tool.btn-default(href='/system/user/reset/#{user._id}')
+            i.fa.fa-repeat
+            span  重置密码
+    .box-body
+      #roleEdit.row
+        .col-md-12
+
+          form#channelForm.form-horizontal(name='channelForm', action='/system/user/save', method='post')
+            //新增时不能有id
+            if(!user.isNew)
+              input#id(type='hidden', name='id', value="#{user._id}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+            if !user.isAdmin
+              input#isAdmin(type='hidden', name='isAdmin', value="0")
+            if user.isAdmin
+              input#isAdmin(type='hidden', name='isAdmin', value="1")
+
+            //-.form-group
+              label.control-label.col-sm-2 用户类型：
+              .col-sm-10.row
+                each t in types
+                  div.radio.col-sm-3
+                    label
+                      if t.value === user.type
+                        input.form-control(name='type', type='radio', value="#{user != null ? user.type : ''}",checked="checked")
+                        | &nbsp;&nbsp;#{t.label}
+                      else
+                        input.form-control(name='type', type='radio', value="#{t.value}")
+                        | &nbsp;&nbsp;#{t.label}
+
+            .form-group
+              label.control-label.col-sm-2 用户组：
+                span
+              .col-sm-10
+                select#group.form-control(name='group')
+                  option(value="") 请选择
+                  each m in groups
+                    if(m.id == user.group)
+                      option(value="#{m.id}", selected="selected") #{m.name}
+                    else
+                      option(value="#{m.id}") #{m.name}
+            .form-group
+              label.control-label.col-sm-2.required 用户名：
+              .col-sm-10
+                input#username.form-control.required(name='username', placeholder='请输入用户名', value="#{user != null ? user.username : ''}")
+            .form-group
+              label.control-label.col-sm-2 姓名：
+                span
+              .col-sm-10
+                input#fullname.form-control(name='fullname', placeholder='请输入姓名', value="#{user != null ? user.fullname : ''}")
+            .form-group
+              label.control-label.col-sm-2 手机号：
+                span
+              .col-sm-10
+                input#mobile.form-control(name='mobile', placeholder='请输入手机号', value="#{user != null ? user.mobile : ''}")
+            .form-group
+              label.control-label.col-sm-2 邮箱：
+                span
+              .col-sm-10
+                input#email.form-control(type='email',name='email', placeholder='请输入邮箱', value="#{user != null ? user.email : ''}")
+            if user && !user.isAdmin
+            
+            if user.isNew
+              .form-group
+                label.control-label.col-sm-2.required 登录密码：
+                .col-sm-10
+                  input#password.form-control.required(type='password',name='password', placeholder='请输入登录密码', value="")
+              .form-group
+                label.control-label.col-sm-2.required 确认密码：
+                .col-sm-10
+                  input#password1.form-control.required(type='password',name='password1', placeholder='请输入确认密码和密码一致',value="")
+                  p.help-block 注：确认密码和登录密码一致
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      var form = $('#channelForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+      form.validate({
+        rules: {
+          username: {
+            required: true,
+            stringCheck: true,
+            remote: '/system/user/checkName?oldName=#{user ? user.username : ''}'
+          }, empNo: {
+            stringCheck: true,
+            remote: '/system/user/checkNo?oldNo=#{user ? user.empNo : ''}'
+          }, mobile: {
+            mobileCN: true
+          }, email: {
+            emailCN: true
+          }, password: {
+            rangelength: [6, 18]
+          }, password1: {
+            equalTo: "#password"
+          }, numberID: {
+            required: true,
+            numberID: true
+          }
+        },
+        messages: {
+          username: {
+            remote: '该用户名已存在!'
+          }, password: {
+            rangelength: "请输入6-18位长度的密码!"
+          }, password1: {
+            equalTo: "必须与登录密码一致"
+          }
+        }
+      });
+
+      $('#del').on('click', function () {
+        bootbox.confirm("确定要删除数据吗?", function (result) {
+          if (result) {
+            $("#delForm").submit();
+          }
+        });
+      });
+
+      $("#branchGroup").on('change', function (e) {
+        var id = $(this).val();
+        $.get('/bank/branch/getBranchByGroup/' + id, function (data, status) {
+          if (data) {
+            $("#branch").html("");
+            $("#branch").append("<option value=''>请选择</option>");
+            $.each(data, function (i, item) {
+              $("#branch").append("<option value='" + item._id + "'>" + item.name + "</option>");
+            });
+          } else {
+            bootbox.alert("该二级行中没有网点信息");
+          }
+        });
+
+      });
+
+    });

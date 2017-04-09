@@ -1,13 +1,12 @@
 {
-  "name": "9Cubic",
+  "name": "ExtrasAdmin",
   "version": "0.0.1",
-  "description": "9Cubic Console",
+  "description": "Extras Admin Console",
   "keywords": [
     "express",
     "express4",
     "mongoose",
-    "mongodb",
-    "9cubic"
+    "mongodb"
   ],
   "main": "app.js",
   "scripts": {

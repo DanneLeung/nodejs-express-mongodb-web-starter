@@ -1,0 +1,95 @@
+//
+   Created by danne on 2015/10/24.
+extends ../../layout
+block header
+  
+
+//应用的page title
+block pageTitle
+    h1 用户分组信息管理
+      small 添加，删除，更新系统中用户分组信息
+block main
+  .box
+    .box-header.with-border
+      h3.box-title 用户分组信息
+      .box-tools
+        a.btn.btn-sm.btn-default(href="/system/group/add" title="添加用户组")
+          i.fa.fa-fw.fa-plus
+          | 添加用户组
+    .box-body
+      #tableWrapper(style="display:none")
+        table#groupList.table.table-bordered.table-hover.table-striped
+          thead
+            th 名称
+            th 描述
+            th 激活
+            th.text-center(width="160") 操作
+          tbody
+
+        form#groupDelForm(method='post', style='display:none', action='/system/group/del/')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+//应用添加的脚本在scripts block中定义
+block scripts
+  
+  
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "#{theme}/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        serverSide: true,
+        deferRender: true
+
+      };
+      var t = $('#groupList').DataTable($.extend(opts, {
+        ajax: {url: '/system/group/datatable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              return "<div class='btn-group' >"+
+                  "<a title='编辑' class='btn btn-default btn-sm edit' href='/system/group/edit/" + row._id + "'><i class='fa fa-edit'></i></a>"+
+                  "<button title='删除' class='btn btn-default btn-sm del' type='button'><i class='fa fa-trash-o'></i></button>"+
+                "</div>";
+            }
+          }
+        ],
+        columns: [
+          //{data: ""},
+          {data: "name",defaultContent: '',render: function ( data, type, full, meta ) {
+              return data;
+          }},
+          {data: "description",defaultContent: '',render: function ( data, type, full, meta ) {
+            return data;
+          }},{data: "enabled",defaultContent: '',className: 'text-center',render: function ( data, type, full, meta ) {
+            var result = "";
+            if (data == '1') {
+              result = "<a class='btn btn-sm btn-default key' title='激活/禁用' href='/system/group/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+            } else {
+              result = "<a class='btn btn-sm btn-default key' title='激活/禁用' href='/system/group/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+            }
+            return result;
+          }},
+          {data: ""}
+        ]
+      }));
+      $('#groupList').on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#groupDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#groupDelForm").submit();
+            }
+          });
+        }
+      });
+    });

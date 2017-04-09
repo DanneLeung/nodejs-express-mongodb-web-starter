@@ -6,7 +6,7 @@ var passport = require('passport');
 var config = require(__dirname + '/../config/config');
 
 var app = express();
-app.appName = 'front';
+app.appName = 'admin';
 
 if (process.env.NODE_ENV === 'production') {
   app.enable('trust proxy');

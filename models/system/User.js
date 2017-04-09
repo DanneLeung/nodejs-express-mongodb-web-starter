@@ -18,8 +18,8 @@ var UserSchema = new Schema({
   username: {type: String, require: true, index: true, default: ""},
   roles: [{type: mongoose.Schema.Types.ObjectId, ref: 'Role'}], /*关联角色ID*/
   email: {type: String, unique: true, require: true, lowercase: true, default: ""},
-  firstname: {type: String, default: ""},
-  lastname: {type: String, default: ""},
+  mobile: {type: String, default: ""},
+  fullname: {type: String, default: ""},
   photo_profile: String,
   tokens: [],
   provider: {type: String, default: 'local'},
@@ -29,6 +29,7 @@ var UserSchema = new Schema({
   reset_password_expires: Date,
   lastLoginIp: String,//最后登录ip
   lastLoginTime: Date,//最后登录时间
+  isAdmin: {type:Boolean},
   enabled: {type: Boolean, trim: true, default: true}//是否启用
 }, {timestamps: {}});
 
@@ -37,12 +38,6 @@ RBAC.plugin(UserSchema);
 /**
  * Virtuals
  */
-UserSchema
-  .virtual('fullname')
-  .get(function () {
-    return this.lastname + this.firstname;
-  });
-
 UserSchema
   .virtual('password')
   .set(function (password) {

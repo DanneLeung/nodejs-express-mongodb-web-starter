@@ -1,0 +1,85 @@
+//
+  Created by pc on 2015/10/27.
+extends layout
+//应用的page title
+block header
+  link(href="#{theme}/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+
+block pageTitle
+  h1 系统设定
+block main
+  form.form-horizontal(name='channelForm', action='/system/base/save', method='post',enctype='multipart/form-data')
+    .box
+      .box-header.with-border
+        h3.box-title 基础设置
+      .box-body
+        #channelEdit
+          .col-md-12
+            input#id(type='hidden', name='id', value="#{channel ? channel._id : ''}")
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-sm-2(for="identity") 二级域名：
+              .col-sm-4
+                input#identity1.form-control.required(name='identity', value="#{channel ? channel.identity : ''}", readonly="readonly")
+              .col-sm-6
+                p.help-block
+                  i.fa.fa-info-circle
+                  | &nbsp;二级域名是您自助平台和Html5前端站点的访问入口，最终访问URL
+              p#url1.col-sm-10.col-sm-offset-2.form-control-static
+                a(target="_blank", href="#{channel ? (channel.url ? channel.url : 'http://' + channel.identity + '.' + (setting['domain'] ? setting['domain'] : '.9cubic.cn')) : ''}")
+                  | 预览: #{channel ? (channel.url ? channel.url : ('http://' + channel.identity + '.' + (setting['domain'] ? setting['domain'] : '.9cubic.cn'))) : ''}
+            .form-group
+              label.control-label.col-sm-2(for="identity") 绑定域名：
+              .col-sm-4
+                input#identity.form-control.required(name='domain', value="#{channel ? channel.domain : ''}")
+              .col-sm-6
+                p.help-block
+                  i.fa.fa-info-circle
+                  | &nbsp;绑定你的域名，并将你的域名解析到IP:#{setting['ip']}，则可以直接使用域名访问
+              p#url.col-sm-10.col-sm-offset-2.form-control-static
+                a(target="_blank", href="#{channel ? (channel.domain?'http://'+channel.domain:'') : ''}")
+                  i.fa.fa-preview
+                  | 预览: #{channel ? (channel.domain?'http://'+channel.domain:'') : ''}
+            .form-group
+              label.control-label.col-sm-2(for="channelName") 显示名称：
+              .col-sm-4
+                input#channelName.form-control.required(name='channelName', value="#{channel ? channel.channelName : ''}")
+              .col-sm-6
+                p.help-block
+                  i.fa.fa-info-circle
+                  | &nbsp;系统登录页面和系统左上角显示的名称
+
+            .form-group
+              label.control-label.col-sm-2(for="logo") Logo：
+              .col-sm-4
+                input#logo.form-control(name='logo', value="#{channel ? channel.logo : ''}",type="file")
+              .col-sm-6
+                p.help-block
+                  i.fa.fa-info-circle
+                  | &nbsp;设置系统左上角显示的Logo，仅限jpg、png格式，尺寸230X50
+            if(channel.logo)
+              .form-group
+                .col-sm-10.col-sm-offset-2
+                  img.img-responsive.img-thumbnail(src='#{url(channel.logo)}', width='150')
+            .form-group
+              label.control-label.col-sm-2(for="channelName") 统计代码：
+              .col-sm-4
+                textarea#channelName.form-control.required(name='analystScript', rows="10")
+                  | !{channel ? channel.analystScript : ''}
+              .col-sm-6
+                p.help-block
+                  i.fa.fa-info-circle
+                  | &nbsp;插入系统中的第三方统计代码，比如
+                  a(href="http://tongji.baidu.com", target="_blank")百度统计
+                  |，需要包含“script”标签
+      .box-footer
+        .col-sm-10.col-sm-offset-2
+          button#save.btn.btn-primary(type="submit")
+            i.fa.fa-fw.fa-save 
+            span 保存
+block scripts
+  script(src="#{theme}/plugins/uploadify/jquery.uploadify.min.js")
+  script(src="#{theme}/plugins/uploadify/dora.public.js")
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script.
+    $("#logo").filestyle({buttonText: '上传图片'});

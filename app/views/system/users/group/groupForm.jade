@@ -1,0 +1,93 @@
+//
+   Created by danne on 2015/10/29.
+extends ../../layout
+block header
+//应用的page title
+block pageTitle
+  if group.isNew
+    h1 用户分组信息新增
+      small 添加用户分组信息
+  if !group.isNew
+    h1 用户分组信息编辑
+      small 编辑用户分组信息
+  if viewType == 'view'
+    h1 用户分组信息查看
+      small 查看用户分组信息
+
+block main
+  .box
+    .box-header.with-border
+      if group.isNew
+        h3.box-title 添加用户分组信息
+      if !group.isNew
+        h3.box-title 编辑用户分组信息
+      if viewType == 'view'
+        h3.box-title 查看用户分组信息
+
+      .box-tools
+        a.btn.btn-box-tool.btn-default(href='/system/group/list')
+          i.fa.fa-reply
+          span  返回
+        | &nbsp;
+        if group.isNew || !group.isNew
+          button#save.btn.btn-box-tool.btn-default
+            i.fa.fa-save
+            span  保存
+        | &nbsp;
+      //button.btn.btn-box-tool(data-widget="collapse")
+      //  i.fa.fa-caret-left
+    .box-body
+      div#userEdit.row
+        .col-md-12
+
+          form#groupForm.form-horizontal(name='groupForm', action='/system/group/save', method='post')
+            if !group.isNew
+              input#id(type='hidden', name='id', value="#{group._id}")
+
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-md-3.required 名称：
+              .controls.col-md-9
+                input#name.form-control.required(name='name',placeholder='用户分组名称', value="#{group ? group.name : ''}")
+            .form-group
+              label.control-label.col-md-3 描述：
+              .controls.col-md-9
+                textarea#description.form-control(name='description',rows="3", placeholder='用户分组的描述')
+                  | #{group ? group.description : ''}
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+
+      var form = $('#groupForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+
+      form.validate({
+        ignore: '.ignore',
+        rules: {
+          name: {
+            required: true,
+            remote: '/system/group/checkName?oldName=#{group ? group.name : ''}'
+          }
+        },
+        messages: {
+          name: {
+            remote: '分组名称已存在'
+          }
+        }
+      });
+
+      $('#del').on('click', function () {
+        bootbox.confirm("确定要删除数据吗?", function (result) {
+          if (result) {
+            $("#groupDelForm").submit();
+          }
+        });
+      });
+
+    });
+

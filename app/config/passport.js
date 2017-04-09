@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var LocalStrategy = require('passport-local').Strategy;
-var User = mongoose.model('Member');
+var User = mongoose.model('User');
 
 module.exports = function (app, passport) {
   // serialize sessions

@@ -1,56 +1,55 @@
-head
-  meta(charset="utf-8")
-  meta(http-equiv="Content-Type", content="text/html; charset=utf-8")
-  meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
-  meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no")
-  title #{appName}运营管理平台
-  meta(name="keywords", content=pkg.keywords.join(","))
-  meta(name="description", content=pkg.description)
+meta(charset='utf-8')
+meta(http-equiv='X-UA-Compatible', content='IE=edge')
+title #{appName}
+// Tell the browser to be responsive to screen width
+meta(name='keywords', content='')
+meta(name='description', content='')
+meta(name='format-detection', content='telephone=no,email=no')
+meta(name='viewport', content='width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1.0, user-scalable=no, minimal-ui')
+meta(name='apple-mobile-web-app-capable', content='yes')
+meta(name='apple-mobile-web-app-status-bar-style', content='grey')
+meta(name='screen-orientation', content='portrait')
+meta(name='x5-orientation', content='portrait')
+meta(http-equiv='pragma', content='no-cache')
+meta(http-equiv='Cache-Control', content='no-cache, must-revalidate')
 
-  //link(href="/favicon.png", rel="shortcut icon", type="image/x-icon")
+link(rel='shortcut icon', href='/favicon.png')
+// Bootstrap 3.3.7
+link(rel='stylesheet', href='//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css')
+// Font Awesome
+link(rel='stylesheet', href='//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css')
+// Ionicons
+//link(rel='stylesheet', href='//cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css')
+// datatables
+link(rel="stylesheet" href="//cdn.bootcss.com/datatables/1.10.13/css/dataTables.bootstrap.min.css")
+//- link( rel="stylesheet" href="#{theme}/plugins/datatables/select.bootstrap.min.css")
 
-  //script(src='//cdn.bootcss.com/modernizr/2.8.3/modernizr.min.js')
-  //Bootstrap 3.3.5
-  link( rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css")
-  //Font Awesome
-  link( rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css")
-  //Ionicons
-  //- link( rel="stylesheet" href="//cdn.bootcss.com/ionicons/2.0.1/css/ionicons.min.css")
-  link( rel="stylesheet" href="//cdn.bootcss.com/toastr.js/2.1.2/toastr.min.css")
+link( rel="stylesheet" href="//cdn.bootcss.com/toastr.js/2.1.2/toastr.min.css")
+//- link( rel="stylesheet" href="#{theme}/plugins/pace/pace.min.css" type="text/css")
 
-  style.
-    .table tbody td {
-      vertical-align: middle !important;
-    }
-  block header
+// iCheck
+link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/grey.css')
+if NODE_ENV == 'development'
+  link( rel="stylesheet" href="#{theme}/dist/css/AdminLTE.css" type="text/css")
+  //link( rel="stylesheet" href="#{theme}/dist/css/skins/skin-blue.css" type="text/css")
+  link( rel="stylesheet" href="#{theme}/dist/css/skins/_all-skins.css" type="text/css")
 
-  if NODE_ENV == 'development'
-    link( rel="stylesheet", href="#{theme}/dist/css/AdminLTE.css")
-    //AdminLTE Skins. Choose a skin from the css/skins
-          folder instead of downloading all of them to reduce the load.
-    //link(rel='stylesheet', href='#{theme}/dist/css/skins/_all-skins.min.css')
-    link( rel="stylesheet", href="#{theme}/dist/css/skins/skin-blue.min.css")
+if NODE_ENV == 'production'
+  link( rel="stylesheet" href="#{theme}/dist/css/AdminLTE.min.css" type="text/css")
+  link( rel="stylesheet" href="#{theme}/dist/css/skins/_all-skins.min.css" type="text/css")
 
-    //link( rel="stylesheet", href="#{theme}/plugins/pace/pace.min.css")
-    // iCheck
-    link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
-  if NODE_ENV == 'production'
-    link( rel="stylesheet", href="#{theme}/dist/css/AdminLTE.min.css")
-    link( rel="stylesheet", href="#{theme}/dist/css/skins/skin-blue.min.css")
-    // iCheck
-    link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
+//HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
+//WARNING: Respond.js doesn't work if you view the page via file:
+//[if lt IE 9]
+  script(src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js")
+  script(src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js")
+//[end if]
+script(type='text/javascript').
+  var contextRoot = '#{contextRoot}';
+  var contextFront = '#{contextFront}';
+  var theme = '#{theme}';
+  var staticRoot = '';
+//- if (req.session.setting && req.session.setting.analystScript)
+  //  插入统计代码
+  !{req.session.channel.analystScript}
 
-  //HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries
-  //WARNING: Respond.js doesn't work if you view the page via file:
-  //[if lt IE 9]>
-    <script src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-
-  //script.
-    var _hmt = _hmt || [];
-    (function () {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?278190ab2a22211d9b8e0dffbdd1b5f1";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
