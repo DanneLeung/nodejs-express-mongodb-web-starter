@@ -9,10 +9,10 @@
     "mongodb",
     "9cubic"
   ],
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "app": "nodemon app/server.js",
+    "start": "nodemon app.js",
+    "app": "nodemon app/app.js",
     "test": "mocha"
   },
   "author": "DanneLeung",

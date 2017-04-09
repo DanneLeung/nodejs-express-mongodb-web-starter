@@ -1,7 +1,7 @@
 function getQueryString(name) {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   var r = decodeURI(window.location.search).substr(1).match(reg);
-  if (r != null) return unescape(r[2]);
+  if(r != null) return unescape(r[2]);
   return null;
 }
 
@@ -10,23 +10,23 @@ function getQueryString(name) {
  * @param names 名字数组
  */
 function removeQueryString(url, names) {
-  if (names && url && url.indexOf('?') >= 0) {
+  if(names && url && url.indexOf('?') >= 0) {
     var s = url.substr(0, url.indexOf('?'));
     var q = url.substr(url.indexOf('?') + 1);
     console.log("s: %s, q: %s", s, q);
-    if (q) {
+    if(q) {
       var array = q.split('&');
       console.log("array ", array);
-      if (array) {
+      if(array) {
         var newQs = '';
-        for (var i = 0; i < array.length; i++) {
+        for(var i = 0; i < array.length; i++) {
           var qs = array[i];
           qs = qs.indexOf('=') >= 0 ? qs.substr(0, qs.indexOf('=')) : qs;
-          if (!inarray(qs, names)) {
+          if(!inarray(qs, names)) {
             newQs += "&" + array[i];
           }
         }
-        if (newQs.length > 0) {
+        if(newQs.length > 0) {
           //s += '?' + (newQs.startsWith('&') ? newQs.substr(1) : newQs);
           s += '?' + (newQs.indexOf('&') == 0 ? newQs.substr(1) : newQs);
           s += '&_' + Date.now();
@@ -40,6 +40,16 @@ function removeQueryString(url, names) {
   return url;
 }
 
+function inarray(s, array) {
+  if(array && array.length > 0) {
+    for(var i = 0; i < array.length; i++) {
+      if(s == array[i]) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 function getLocationURL() {
   return location.href.split('#')[0];
@@ -51,12 +61,12 @@ function getLocationURL() {
 function getLocation(cb) {
   //打开一次浏览器重新获取一次地址
   var geolocation = sessionStorage.geolocation;
-  if (geolocation) {
+  if(geolocation) {
     cb(geolocation.split(','));
     return;
   }
   //从url中获取坐标(通过微信端发送位置,回复的图文消息中传递的坐标)
-  if (getQueryString("lat") && getQueryString("lng")) {
+  if(getQueryString("lat") && getQueryString("lng")) {
     var lat = getQueryString("lat");
     var lng = getQueryString("lng");
     var geolocation = [lng, lat];
@@ -67,7 +77,7 @@ function getLocation(cb) {
 
   //geolocation = [121.473701, 31.230416];
   //获取当前位置坐标
-  if (is_weixn()) {
+  if(is_weixn()) {
     //通过微信地图定位,取得gps坐标
     W.location(function (lat, lng) {
       var geolocation = [lng, lat];
@@ -75,7 +85,7 @@ function getLocation(cb) {
       cb(geolocation);
     });
   } else {
-    if (navigator.geolocation) {
+    if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (p) {
         var latitude = p.coords.latitude; //纬度
         var longitude = p.coords.longitude;
@@ -94,10 +104,32 @@ function getLocation(cb) {
   }
 }
 
+function _getCityName() {
+  if(window.localStorage) {
+    if(localStorage["cityName"])
+      return localStorage["cityName"];
+    else
+      return null;
+  } else {
+    "上海";
+  }
+}
+
+function _getCityId() {
+  if(window.localStorage) {
+    if(localStorage["cityId"])
+      return localStorage["cityId"];
+    else
+      return null;
+  } else {
+    "3";
+  }
+}
+
 function is_weixn() {
   var ua = navigator.userAgent.toLowerCase();
   //S.alert(ua);
-  if (ua.match(/micromessenger/i) == "micromessenger") {
+  if(ua.match(/micromessenger/i) == "micromessenger") {
     return true;
   } else {
     return false;
@@ -106,7 +138,7 @@ function is_weixn() {
 
 // 非微信浏览器
 function nwx() {
-  if (!is_weixn()) {
+  if(!is_weixn()) {
     //$indexHeaderLeft = $(".indexHeader-left");
     //$indexHeaderLeft[0].className = "indexHeader-left-nwx";
     //$indexHeaderLeft.bind("click", function(){
@@ -118,8 +150,42 @@ function nwx() {
       $("#brand-detail-guide").toggleClass("hide");
       $("#brand-detail-guide").bind("click", function () {
         $("#brand-detail-guide").addClass("hide");
-      }, false)
+      }, false);
     }, false);
+  }
+}
+
+var getStrSize = function (str) {
+  var realLength = 0,
+    len = str.length,
+    charCode = -1;
+  for(var i = 0; i < len; i++) {
+    charCode = str.charCodeAt(i);
+    if(charCode >= 0 && charCode <= 128) realLength += 1;
+    else realLength += 2;
+  }
+  return realLength;
+};
+
+function showShare() {
+  $("#brand-detail-guide").toggleClass("hide");
+  $("#brand-detail-guide").bind("click", function () {
+    $("#brand-detail-guide").addClass("hide");
+  }, false);
+}
+
+function closeShare() {
+  $("#brand-detail-guide").addClass("hide");
+}
+
+function _getUserId() {
+  if(window.sessionStorage) {
+    if(sessionStorage["user.openid"])
+      return sessionStorage["user.openid"];
+    else
+      return null;
+  } else {
+    return null;
   }
 }
 

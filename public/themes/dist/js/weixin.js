@@ -1,5 +1,5 @@
-/** 
- * 9cubic 0.0.1 
+/**
+ * 9cubic 0.0.1
  * y Mingai Info Tech
  * http://www.9cubic.cn
  */
@@ -84,7 +84,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * @param redirectUri
    */
   function oauth(appid, scope, redirectUri, state) {
-    var redirectURL = encodeURIComponent('http://9cubic.cn/wxroute/' + redirectUri.replace('http://', ''));
+    var redirectURL = encodeURIComponent('http://9cubic.cn/wxroute/' + redirectUri.replace('https://', '').replace('http://', ''));
     //var redirectURL = encodeURIComponent(redirectUri);
     var oauthURL = weixinOauthURL;
     oauthURL += '?appid=' + appid;
@@ -158,7 +158,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
     // 第一次进入,浏览器本地无openid,执行base认证获取openid
     if ((!openid || openid == 'undefined') && (!unionid || unionid == 'undefined')) {
       if (!code) {
-        console.log('向微信发起网页授权请求');
+        // console.log('向微信发起网页授权请求1111');
         /*先靜默方式找用户信息，
          *如果静默方式找不到则要求用户授权
          */
@@ -174,10 +174,10 @@ var shortUrl = contextRoot + '/api/getShortUrl';
           window.location.href = removeQueryString(redirectUri, ['code', 'state']);
         });
       }
-    } else if (user && openid && openid != '') { //console.log('获取到本地用户信息');
+    } else if (user && openid && openid != '' && openid != 'null') { //console.log('获取到本地用户信息');
       console.log('获取到本地用户信息'); //console.log('获取到本地用户信息');
       return callback(user ? JSON.parse(user) : {});
-    } else if (openid && openid != '') {
+    } else if (openid && openid != '' && openid != 'null') {
       return getUser(wid, openid, callback);
     } else if (unionid) {
       return getUserByUnionId(wid, unionid, callback);
@@ -260,6 +260,9 @@ var shortUrl = contextRoot + '/api/getShortUrl';
           var speed = res.speed; // 速度，以米/每秒计
           var accuracy = res.accuracy; // 位置精度
           cb(latitude, longitude);
+        },
+        fail: function(res){
+          cb();
         }
       });
     });
@@ -301,8 +304,22 @@ var shortUrl = contextRoot + '/api/getShortUrl';
         link: setting.link || htmlUrl, // 分享链接
         imgUrl: setting.imgUrl || htmlUrl + 'img/xiao_zhi_300X300.jpg', // 分享图标
         success: function () {
-          if (typeof successHandle !== 'undefined' && successHandle)
+          if(setting.contextRoot){
+            $.ajax({
+              url: setting.contextRoot+ '/api/save/menuShareTimeline',
+              type: 'post',
+              data: {"openid": setting.openid, "link": setting.link, "desc": setting.title},
+              success: function(data){
+
+              }
+            });
+
+            var kv = {"link": setting.link, "openid": setting.openid, "desc": setting.title, "type": "2"}
+            TDAPP.onEvent(setting.title, "发送到朋友圈分享", kv);
+          }
+          if (typeof successHandle !== 'undefined' && successHandle){
             successHandle();
+          }
         },
         cancel: function () {
         }

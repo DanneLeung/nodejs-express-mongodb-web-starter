@@ -42,7 +42,7 @@ module.exports = function (ROOT_PATH) {
       maxRenders: 50
     }
   };
-  config.database.url = process.env.MONGOHQ_URL
-    || 'mongodb://' + (config.database.user ? config.database.user + ':' + config.database.password + '@' : '') + config.database.host + '/' + config.database.db;
+  config.database.url = process.env.MONGOHQ_URL ||
+    'mongodb://' + (config.database.user ? config.database.user + ':' + config.database.password + '@' : '') + config.database.host + '/' + config.database.db;
   return config;
 };

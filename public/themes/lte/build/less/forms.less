@@ -2,10 +2,19 @@
  * Component: Form
  * ---------------
  */
+ .form-inline {
+   .control-label {
+     margin-right: 10px;
+   }
+   .form-group {
+     margin-right: 10px;
+   }
+ }
 .form-control {
   .border-radius(@input-radius);
   box-shadow: none;
   border-color: @gray-lte;
+  font-size: @font-base-size;
   &:focus {
     border-color: @light-blue;
     box-shadow: none;
@@ -25,6 +34,17 @@
 }
 
 .form-group {
+  label {
+    &.control-label {
+      &.required {
+        &:before {
+          color: red;
+          content: " * ";
+          
+        }
+      }
+    } 
+  }  
   &.has-success {
     label {
       color: @green;
