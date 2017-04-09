@@ -1,0 +1,15 @@
+-var ms = []
+- cmenu = currentMenu
+while cmenu
+  if cmenu.parentId
+    - ms.push(cmenu)
+  - cmenu = cmenu.parentId
+  
+ol.breadcrumb
+  - var len = ms.length
+  while len
+    li
+      a(href='#{ms[len-1].link}')
+        i(class="#{ms[len-1].iconClass}")
+        |#{ms[len-1].title}
+    - len = len -1

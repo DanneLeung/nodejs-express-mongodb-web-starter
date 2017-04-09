@@ -14,6 +14,22 @@ module.exports = function (ROOT_PATH) {
       db: 'starter',
       url: ''
     },
+        redis: {
+      mode: "single",
+      single: {
+        host: 'r-bp142d4cace71894.redis.rds.aliyuncs.com',
+        port: 6379, // Redis port,
+        password: 'Dan784444'
+      },
+      cluster: [
+        { host: '10.25.63.211', port: 30001 },
+        { host: '10.25.63.211', port: 30002 }
+      ],
+      options: {
+        maxRedirections: 16,
+        retryDelayOnFailover: 1000
+      }
+    },
     root: ROOT_PATH,
     app: {
       name: 'NodeJS ExpressJs Mongodb Starter'

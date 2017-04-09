@@ -10,7 +10,9 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var csrf = require('lusca').csrf();
-var mongoStore = require('connect-mongo')({session: session});
+var mongoStore = require('connect-mongo')({
+  session: session
+});
 
 var expressValidator = require('express-validator');
 var env = process.env.NODE_ENV || 'development';
@@ -43,39 +45,60 @@ module.exports = function (app, express, passport) {
       skip: function (req, res) {
         return res.statusCode < 400
       },
-      stream: require('fs').createWriteStream(app.config.root + '/access.log', {flags: 'a'})
+      stream: require('fs').createWriteStream(app.config.root + '/access.log', {
+        flags: 'a'
+      })
     }))
   }
 
-  app.use(bodyParser.urlencoded({extended: true}));
+  app.use(bodyParser.urlencoded({
+    extended: true
+  }));
   app.use(bodyParser.json());
-  app.use(bodyParser.text({type: 'text/*'}));
+  app.use(bodyParser.text({
+    type: 'text/*'
+  }));
   app.use(expressValidator());
   app.use(methodOverride());
-  app.use(cookieParser('notagoodsecretnoreallydontusethisone'));
+  app.use(cookieParser(pkg.name + 'app'));
 
   app.use('/api', require('../api'));
 
+  //微信事件推送监听
+  //TODO: 使用express 中间件机制拦截处理维系推送消息，而不是全部写死处理，拦截器无法处理是自动传递给最后的默认处理器
+  // router.use('/checkWx', function (req, res, nect) {
+  //
+  // });
+  var wechatProcessor = require('../middleware/wechat-processor');
+  app.get("/checkWx", wechatProcessor.checkWxg) //服务器验证
+    .post("/checkWx", wechatProcessor.checkWxp); //微信推送默认处理
+
   //session store
-  app.use(session({
-    name: [pkg.name, 'front', '.sid'].join(),
-    httpOnly: true,
+  var opts = {
+    name: [pkg.name, 'portal', '.sid'].join(),
     proxy: true,
     resave: true,
     saveUninitialized: true,
-    secret: pkg.name + 'front',
-    unset: 'keep',
+    secret: pkg.name + 'portal',
+    unset: 'destroy',
     cookie: {
       maxAge: 3600 * 1000
-    },
-    // genid: function (req) {
-    //   return require('node-uuid').v4(); // use UUIDs for session IDs
-    // },
-    store: new mongoStore({
-      url: app.config.database.url,
-      collection: 'sessions'
-    })
-  }));
+    }
+  };
+
+  if (env === 'production') {
+    if ("cluster" === app.config.redis.mode)
+      app.redis = new Redis.Cluster(app.config.redis.cluster);
+    else
+      app.redis = new Redis(app.config.redis.single);
+    opts.store = new RedisStore({
+      client: app.redis
+    });
+  } else {
+    // opts.store = new RedisStore({ client: app.redis });
+  }
+
+  app.use(session(opts));
 
   // connect flash
   app.use(flash());
@@ -126,10 +149,11 @@ module.exports = function (app, express, passport) {
   // will print stacktrace
   if (app.get('env') === 'development') {
     app.use(responseTime());
-  } else {
-  }
+  } else {}
 
   // static content
-  app.use(express.static(path.normalize(app.config.root + '/public', {maxAge: 3600})));
+  app.use(express.static(path.normalize(app.config.root + '/public', {
+    maxAge: 3600
+  })));
 
 };

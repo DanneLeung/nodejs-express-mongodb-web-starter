@@ -24,20 +24,7 @@ dataTable.configure({verbose: false, debug: false});
 mongoose.plugin(dataTable.init);
 
 // Models
-var models_path = __dirname + '/../models';
-fs.readdirSync(models_path).forEach(function (file) {
-  console.log("**** Loading model " + file);
-  if (file.indexOf('.js') > 0)
-    require(models_path + '/' + file);
-});
-
-//var allowCrossDomain = function (req, res, next) {
-//  res.header("Access-Control-Allow-Origin", "*");
-//  res.header('Access-Control-Allow-Credentials', true);
-//  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//  next();
-//};
-//app.use(allowCrossDomain);
+require('../models');
 
 // Passports
 require('./config/passport')(app, passport);

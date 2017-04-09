@@ -1,0 +1,26 @@
+ul.nav.navbar-nav.navbar-right
+  if (req.isAuthenticated())
+    li.dropdown.user.user-menu
+      // Menu Toggle Button
+      a.dropdown-toggle(href='#', data-toggle='dropdown')
+        // The user image in the navbar
+        if(req.user)
+          img.user-image(src="#{req.user != null && req.user.photo_profile ? req.user.photo_profile : theme+'/dist/img/avatar.png'}")
+          // hidden-xs hides the username on small devices so only the image appears.
+          span.hidden-xs &nbsp;#{req.user.username}
+          b.caret
+      ul.dropdown-menu(style="width:auto;")
+        li
+          a(href='/profile/#{req.user.username}')
+            i.fa.fa-edit
+            | 个人资料
+        li.divider
+        li
+          a(href='/logout?_#{Date.now()}')
+            i.fa.fa-sign-out
+            | 退出
+        
+    // Control Sidebar Toggle Button
+    li
+      a(href='#', data-toggle='control-sidebar')
+        i.fa.fa-gears

@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
 
 var crypto = require('crypto');
 var oAuthTypes = ['twitter', 'facebook', 'google'];
-var RBAC = require('../middleware/rbac.js');
+var RBAC = require('../../middleware/rbac.js');
 
 /**
  * User Schema

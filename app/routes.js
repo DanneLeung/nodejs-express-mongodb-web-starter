@@ -22,21 +22,8 @@ module.exports = function (app, express) {
   });
 
   // load modules
-  var modulePath = __dirname + '/' + 'modules';
-  fs.readdirSync(modulePath).forEach(function (file) {
-    if (file.indexOf('.') < 0) {
-      var module = "./modules/" + file;
-      var p = "/";
-      if (!('index' == file || 'home' == file)) {
-        p = p + file;
-      }
-      console.log("**** routes " + p + " to " + module);
-      // module static contents
-      app.use(p, express.static(__dirname + '/' + module + '/static'));
-      // module routes
-      app.use(p, require(module));
-    }
-  });
+  // loadin modules...
+  app.use(require('./modules/_'));
 
   // All undefined asset or api routes should return a 404
   //app.route('/:url(api|auth|components|app|bower_components|assets)/*')

@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 var async = require('async');
-var config = require('../config/config');
+var config = require('../../config/config');
 
 var FileSchema = mongoose.Schema({
   mime: {type: String, default: ''}, //MIME

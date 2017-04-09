@@ -7,16 +7,7 @@ var captcha = require(config.root + '/helper/captcha');
 
 var ctrl = require('./index.controller');
 var router = express.Router();
-router.use(function (req, res, next) {
-  res.locals.theme = "/themes/lte";
-  res.locals.themeRoot = "/themes";
-  var url = req.contextRoot + req.baseUrl;
-  if (url.indexOf('http') < 0) {
-    url = url.replace('//', '/');
-  }
-  req.absBaseUrl = url;
-  return next();
-});
+ 
 router
   .get('/login', ctrl.login) //登录页面
   .post('/login',
@@ -30,9 +21,11 @@ router
 router.get('/', (req, res) => {
     res.redirect('/index')
   })
-  .get('*', (req, res) => {
-    var path = req.path;
-    var view = __dirname + '/views/pages' + path;
-    res.render(view);
-  });
+  .get('/index', ctrl.index)
+  // .get('*', (req, res) => {
+  //   var path = req.path;
+  //   var view = __dirname + '/views/pages' + path;
+  //   res.render(view);
+  // })
+  ;
 module.exports = router;
