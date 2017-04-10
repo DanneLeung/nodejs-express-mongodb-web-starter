@@ -25,7 +25,7 @@ block main
         h3.box-title 查看用户分组信息
 
       .box-tools
-        a.btn.btn-box-tool.btn-default(href='/system/group/list')
+        a.btn.btn-box-tool.btn-default(href='#{baseUrl}/group/list')
           i.fa.fa-reply
           span  返回
         | &nbsp;
@@ -40,7 +40,7 @@ block main
       div#userEdit.row
         .col-md-12
 
-          form#groupForm.form-horizontal(name='groupForm', action='/system/group/save', method='post')
+          form#groupForm.form-horizontal(name='groupForm', action='#{baseUrl}/group/save', method='post')
             if !group.isNew
               input#id(type='hidden', name='id', value="#{group._id}")
 
@@ -71,7 +71,7 @@ block scripts
         rules: {
           name: {
             required: true,
-            remote: '/system/group/checkName?oldName=#{group ? group.name : ''}'
+            remote: '#{baseUrl}/group/checkName?oldName=#{group ? group.name : ''}'
           }
         },
         messages: {

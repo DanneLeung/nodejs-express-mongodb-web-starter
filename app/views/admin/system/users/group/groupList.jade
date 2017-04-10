@@ -13,7 +13,7 @@ block main
     .box-header.with-border
       h3.box-title 用户分组信息
       .box-tools
-        a.btn.btn-sm.btn-default(href="/system/group/add" title="添加用户组")
+        a.btn.btn-sm.btn-default(href="#{baseUrl}/group/add" title="添加用户组")
           i.fa.fa-fw.fa-plus
           | 添加用户组
     .box-body
@@ -26,7 +26,7 @@ block main
             th.text-center(width="160") 操作
           tbody
 
-        form#groupDelForm(method='post', style='display:none', action='/system/group/del/')
+        form#groupDelForm(method='post', style='display:none', action='#{baseUrl}/group/del/')
           input#ids(type='hidden',name='ids')
           input#_csrf(type='hidden', name='_csrf', value=_csrf)
 //应用添加的脚本在scripts block中定义
@@ -49,14 +49,14 @@ block scripts
 
       };
       var t = $('#groupList').DataTable($.extend(opts, {
-        ajax: {url: '/system/group/datatable'},
+        ajax: {url: '#{baseUrl}/group/datatable'},
         order: [[1, 'asc']],
         columnDefs: [
           {
             targets: -1, visible: true, sortable: false, className: 'text-center',
             render: function (data, type, row) {
               return "<div class='btn-group' >"+
-                  "<a title='编辑' class='btn btn-default btn-sm edit' href='/system/group/edit/" + row._id + "'><i class='fa fa-edit'></i></a>"+
+                  "<a title='编辑' class='btn btn-default btn-sm edit' href='#{baseUrl}/group/edit/" + row._id + "'><i class='fa fa-edit'></i></a>"+
                   "<button title='删除' class='btn btn-default btn-sm del' type='button'><i class='fa fa-trash-o'></i></button>"+
                 "</div>";
             }
@@ -72,9 +72,9 @@ block scripts
           }},{data: "enabled",defaultContent: '',className: 'text-center',render: function ( data, type, full, meta ) {
             var result = "";
             if (data == '1') {
-              result = "<a class='btn btn-sm btn-default key' title='激活/禁用' href='/system/group/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+              result = "<a class='btn btn-sm btn-default key' title='激活/禁用' href='#{baseUrl}/group/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
             } else {
-              result = "<a class='btn btn-sm btn-default key' title='激活/禁用' href='/system/group/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+              result = "<a class='btn btn-sm btn-default key' title='激活/禁用' href='#{baseUrl}/group/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
             }
             return result;
           }},

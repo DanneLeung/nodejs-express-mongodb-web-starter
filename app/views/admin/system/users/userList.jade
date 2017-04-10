@@ -13,7 +13,7 @@ block main
       h3.box-title 用户信息
       .box-tools
         if req.user.isAdmin
-          a.btn.btn-sm.btn-default(href="/system/user/add" title="添加用户")
+          a.btn.btn-sm.btn-default(href="#{baseUrl}/user/add" title="添加用户")
             i.fa.fa-plus
           //- a.btn.btn-default.btn-sm(href="/file/template/user.xlsx" target='_black' title='下载模板')
             i.fa.fa-fw.fa-cloud-download
@@ -60,11 +60,11 @@ block main
             th.text-center() 操作
           tbody
 
-      form#delForm(method='post', style='display:none', action='/system/user/del')
+      form#delForm(method='post', style='display:none', action='#{baseUrl}/user/del')
         input#ids(type='hidden',name='ids')
         input#_csrf1(type='hidden', name='_csrf', value=_csrf)
 
-      form#resetForm(method='post', style='display:none', action='/system/user/resetPwd')
+      form#resetForm(method='post', style='display:none', action='#{baseUrl}/user/resetPwd')
         input#users(type='hidden',name='users')
         input#_csrf4(type='hidden', name='_csrf', value=_csrf)
 
@@ -77,7 +77,7 @@ block main
             span(aria-hidden="true") &times;
           h4.modal-title 修改密码
         .modal-body
-          form#updataForm.form-horizontal(method='post', action='/system/user/editPassWord')
+          form#updataForm.form-horizontal(method='post', action='#{baseUrl}/user/editPassWord')
             input#_csrf2(type='hidden', name='_csrf', value=_csrf)
             input#userId(type='hidden',name='userId')
             .form-group
@@ -121,7 +121,7 @@ block main
             span(aria-hidden="true") &times;
           h4.modal-title 用户分组
         .modal-body
-          form#setgroupForm.form-horizontal(method='post', action='/system/user/setGroup')
+          form#setgroupForm.form-horizontal(method='post', action='#{baseUrl}/user/setGroup')
             input#groupUserIds(type='hidden',name='groupUserIds')
             input#_csrf(type='hidden', name='_csrf', value=_csrf)
             .form-group
@@ -145,7 +145,7 @@ block main
             span(aria-hidden="true") &times;
           h4.modal-title 导入用户信息
         .modal-body
-          form#inputbranchForm.form-horizontal(method='post', action='/system/user/importUser',enctype="multipart/form-data")
+          form#inputbranchForm.form-horizontal(method='post', action='#{baseUrl}/user/importUser',enctype="multipart/form-data")
             input#_csrf3(type='hidden', name='_csrf', value=_csrf)
             .form-group
               label.control-label.col-sm-3 选择文件：
@@ -170,7 +170,7 @@ block scripts
 
       //下载用户导入模版
       $('#exportModal').on("click", function (e) {
-        window.location.href = '/system/user/exportUser';
+        window.location.href = '#{baseUrl}/user/exportUser';
       });
 
       var d = $("#selectMonth").val();
@@ -192,18 +192,17 @@ block scripts
         deferRender: true
       };
       var t = $('#userList').DataTable($.extend(opts, {
-          ajax: {url: '/system/user/datatable'},
+          ajax: {url: '#{baseUrl}/user/datatable'},
           order: [[2, 'asc']],
           columnDefs: [
-            //{targets: 0, visible: true, sortable: false, searchable: false, defaultContent: ''},
             {
               targets: -1, visible: true, sortable: false, className: 'text-center',
               render: function (data, type, row) {
                 var id = "#{req.user.id}";
-                var result = "<div class='btn-group'><a class='btn btn-default btn-sm edit' title='编辑' href='/system/user/edit/" + row._id + "'><i class='fa fa-edit'></i></a>";
+                var result = "<div class='btn-group'><a class='btn btn-default btn-sm edit' title='编辑' href='#{baseUrl}/user/edit/" + row._id + "'><i class='fa fa-edit'></i></a>";
                 if (id != row._id && !row.isAdmin) {
                   result += "<button class='btn btn-default btn-sm del' title='移除' type='button'><i class='fa fa-trash-o'></i></button>";
-                  result += "<a class='btn btn-default btn-sm key' title='审核' href='/system/user/approved/" + row._id + "'><i class='fa fa-gavel'></i></a>";
+                  result += "<a class='btn btn-default btn-sm key' title='审核' href='#{baseUrl}/user/approved/" + row._id + "'><i class='fa fa-gavel'></i></a>";
                   result += "<button class='btn btn-default btn-sm set' title='设置网点和职位'><i class='fa fa-cog'></i></button>";
                 }
                 result += "<button class='btn btn-default btn-sm edit' title='修改密码' type='button' onClick=updatePwd('" + row._id + "');> <i class='fa fa-key'></i></button>";
@@ -233,9 +232,9 @@ block scripts
               data: "enabled", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
               var result = "";
               if (data == '1') {
-                result = "<a class='btn key' title='激活/禁用' href='/system/user/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
+                result = "<a class='btn key' title='激活/禁用' href='#{baseUrl}/user/isEnable/" + full._id + "'><i class='fa fa-check-square'/></a>"
               } else {
-                result = "<a class='btn key' title='激活/禁用' href='/system/user/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
+                result = "<a class='btn key' title='激活/禁用' href='#{baseUrl}/user/isEnable/" + full._id + "'><i class='fa fa-square-o'/></a>"
               }
               return result;
             }
@@ -368,7 +367,7 @@ block scripts
       $('#search').on("click", function (e) {
         var data = $('#searchForm').serialize();
         var TT = $('#userList').DataTable();
-        TT.ajax.url('/system/user/datatable?' + data + '').load();
+        TT.ajax.url('#{baseUrl}/user/datatable?' + data + '').load();
       });
 
       $('#export').on("click", function (e) {
@@ -377,7 +376,7 @@ block scripts
           } else {
             var data = $('#searchForm').serialize();
             window.location.href = '/bank/buy/order/stats/exportOrder?' + data;
-            window.location.href = '/system/user/export?' + data;
+            window.location.href = '#{baseUrl}/user/export?' + data;
           }
         });
       });
@@ -461,7 +460,7 @@ block scripts
       $("#autoBtn").on('click', function () {
         $.ajax({
           type: 'get', //数据发送方式
-          url: '/system/user/autoGeneration',
+          url: '#{baseUrl}/user/autoGeneration',
           data: {}, //要传递的数据
           success: function (data) { //成功
             $("#PassWord").val(data);

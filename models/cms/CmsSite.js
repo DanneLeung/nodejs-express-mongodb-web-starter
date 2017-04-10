@@ -9,7 +9,6 @@ var ShortId = require('shortid');
 
 var SiteSchema = mongoose.Schema({
   _id: { type: String, default: ShortId.generate },
-  channel: { type: ObjectId, ref: "Channel" }, //所属渠道
   wechat: { type: ObjectId, ref: "ChannelWechat" }, //使用的微信号
   template: { type: String, ref: "Template" },
   name: { type: String, required: true, default: '' }, //名称

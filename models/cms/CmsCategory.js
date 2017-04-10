@@ -10,7 +10,6 @@ let ShortId = require('shortid');
 
 let CmsCategorySchema = new Schema({
   _id: { type: String, default: ShortId.generate },
-  channel: { type: ObjectId, ref: "Channel" }, //所属渠道
   parent: { type: String, ref: 'CmsCategory' },//父节点
   name: { type: String, default: '' }, //分类名称，
   description: { type: String, default: '' }, //描述

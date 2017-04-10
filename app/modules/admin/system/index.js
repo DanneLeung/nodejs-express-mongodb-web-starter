@@ -6,7 +6,7 @@
 
 var express = require('express');
 var router = express.Router();
-var config = require('../../../config/config');
+var config = require('../../../../config/config');
 var Auth = require(config.root + '/middleware/authorization');
 
 var systemCtrl = require('./system.controller');

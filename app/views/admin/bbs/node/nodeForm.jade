@@ -1,0 +1,99 @@
+//
+  Created by danne on 2015/10/29.
+extends ../layout
+block header
+//应用的page title
+block pageTitle
+  if node.isNew
+    h1 版块信息新增
+      small 添加版块信息
+  if !node.isNew
+    h1 版块信息编辑
+      small 编辑版块信息
+  if viewType == 'view'
+    h1 版块信息查看
+      small 查看版块信息
+
+block main
+  form#nodeForm.form-horizontal(name='nodeForm', action='#{baseUrl}/node/save', method='post')
+    .box
+      .box-header
+        if node.isNew
+          h3.box-title 添加版块信息
+        if !node.isNew
+          h3.box-title 编辑版块信息
+        if viewType == 'view'
+          h3.box-title 查看版块信息
+ 
+      .box-body
+        div#userEdit
+          if !node.isNew
+            input#id(type='hidden', name='id', value="#{node._id}")
+
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+          .form-group
+            label.control-label.col-sm-2.required 标题：
+            .col-sm-8
+              input#title.form-control.required(name='title',placeholder='版块标题', value="#{node ? node.title : ''}")
+          .form-group
+            label.control-label.col-sm-2.required 排序：
+            .col-sm-8
+              input#sort.form-control.required(name='sort',placeholder='显示', value="#{node ? node.sort : ''}")
+          .form-group
+            label.control-label.col-sm-2 说明：
+            .col-sm-8
+              textarea#description.form-control(name='description',rows="3", placeholder='版块的描述')
+                | #{node ? node.description : ''}
+          .form-group
+              label.control-label.col-sm-2 激活：
+              .col-sm-8
+                label.checkbox
+                  if (node && node.enabled)
+                    input#enabled(type='checkbox', name='enabled', checked="checked")
+                  else
+                    input#enabled(type='checkbox', name='enabled')
+      .box-footer
+        button.btn.btn-primary.margin-r-10(type='submit') 
+          i.fa.fa-fw.fa-save
+          | 保存
+        a.btn.btn-default(href='#{baseUrl}/node')
+          i.fa.fa-fw.fa-reply
+          span  返回
+          | &nbsp;
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+
+      var form = $('#nodeForm');
+      $("#save").on('click', function () {
+        form.submit();
+      });
+
+      form.validate({
+        ignore: '.ignore',
+        rules: {
+          name: {
+            required: true,
+            remote: '#{baseUrl}/node/checkName?oldName=#{node ? node.name : ''}'
+          }
+        },
+        messages: {
+          name: {
+            remote: '分组名称已存在'
+          }
+        }
+      });
+
+      $('#del').on('click', function () {
+        bootbox.confirm("确定要删除数据吗?", function (result) {
+          if (result) {
+            $("#nodeDelForm").submit();
+          }
+        });
+      });
+
+    });
+

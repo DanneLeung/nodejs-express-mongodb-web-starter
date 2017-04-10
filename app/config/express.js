@@ -10,9 +10,8 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var csrf = require('lusca').csrf();
-var mongoStore = require('connect-mongo')({
-  session: session
-});
+var Redis = require('ioredis');
+var RedisStore = require('connect-redis')(session);
 
 var expressValidator = require('express-validator');
 var env = process.env.NODE_ENV || 'development';
@@ -20,7 +19,6 @@ var views_helpers = require('../../helper/views-helper');
 var pkg = require('../../package.json');
 var flash = require('express-flash');
 var _ = require('lodash');
-
 
 module.exports = function (app, express, passport) {
   // settings
@@ -34,7 +32,7 @@ module.exports = function (app, express, passport) {
   // Express use middlewares
   app.use(favicon(path.join(app.config.root + '/public/favicon.png')));
   //app.use(allowCrossDomain);
-  if (env === 'development') {
+  if(env === 'development') {
     app.use(morgan('dev', {
       skip: function (req, res) {
         return res.statusCode < 400;
@@ -86,16 +84,17 @@ module.exports = function (app, express, passport) {
     }
   };
 
-  if (env === 'production') {
-    if ("cluster" === app.config.redis.mode)
-      app.redis = new Redis.Cluster(app.config.redis.cluster);
-    else
-      app.redis = new Redis(app.config.redis.single);
+  if("cluster" === app.config.redis.mode)
+    app.redis = new Redis.Cluster(app.config.redis.cluster);
+  else
+    app.redis = new Redis(app.config.redis.single);
+
+  if(env === 'production') {
     opts.store = new RedisStore({
       client: app.redis
     });
   } else {
-    // opts.store = new RedisStore({ client: app.redis });
+    opts.store = new RedisStore({ client: app.redis });
   }
 
   app.use(session(opts));
@@ -113,9 +112,9 @@ module.exports = function (app, express, passport) {
   app.use(function (req, res, next) {
     var path = req.path.split('/')[1];
     var ajax = req.params.ajax || req.param.ajax || req.body.ajax;
-    if (/api/i.test(path)) {
+    if(/api/i.test(path)) {
       return next();
-    } else if (req.header('X-Requested-With') === 'XMLHttpRequest' || ajax) {
+    } else if(req.header('X-Requested-With') === 'XMLHttpRequest' || ajax) {
       return next();
     } else {
       // if (_.indexOf(csrfExclude, req.originalUrl) >= 0) return next();
@@ -139,14 +138,14 @@ module.exports = function (app, express, passport) {
     res.locals.pkg = pkg;
     res.locals.NODE_ENV = env;
     res.locals.moment = require('moment');
-    if (_.isObject(req.user)) {
+    if(_.isObject(req.user)) {
       res.locals.User = req.user
     }
     next();
   });
 
   // will print stacktrace
-  if (app.get('env') === 'development') {
+  if(app.get('env') === 'development') {
     app.use(responseTime());
   } else {}
 

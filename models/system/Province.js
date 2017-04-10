@@ -8,9 +8,9 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var ProvinceSchema = mongoose.Schema({
-    id: ObjectId,
-    name: {type: String, required: true},
-    code: {type: String, required: true}
+  id: ObjectId,
+  name: { type: String, required: true },
+  code: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Province', ProvinceSchema, 'provinces');

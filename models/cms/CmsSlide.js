@@ -8,7 +8,6 @@ var ShortId = require('shortid');
 
 var SlideSchema = mongoose.Schema({
   _id: { type: String, default: ShortId.generate },
-  channel: { type: ObjectId, ref: "Channel" }, //所属渠道
   type: { type: String, default: '' },//类型
   name: { type: String, required: true, index: true, default: '' },//名称
   images: [{

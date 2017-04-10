@@ -6,7 +6,6 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 var AwardItemSchema = new Schema({
-  channel: {type: ObjectId, ref: "Channel"}, //渠道
   award: {type: ObjectId, index: true, ref: "Award"}, //使用的微信号
   stock: {type: Number, default: 1}, //库存数量，默认库存1，虚拟商品兑换码一类，每个码一个库存记录
   no: {type: String, default: '',index:true},//编号

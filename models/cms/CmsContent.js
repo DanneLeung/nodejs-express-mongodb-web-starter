@@ -10,7 +10,6 @@ var ShortId = require('shortid');
 
 var ContentSchema = new Schema({
   _id: { type: String, default: ShortId.generate },
-  channel: { type: ObjectId, ref: "Channel" }, //所属渠道
   category: { type: String, ref: 'CmsCategory' }, //文章分类
   template: { type: String, ref: 'Template' }, //模板
   params: [{ name: String, label: String, value: String }],

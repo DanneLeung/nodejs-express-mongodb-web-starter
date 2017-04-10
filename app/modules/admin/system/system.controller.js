@@ -5,7 +5,7 @@
  * Created by ZhangXiao on 2015/6/11.
  */
 var mongoose = require('mongoose');
-var config = require('../../../config/config');
+var config = require('../../../../config/config');
 var async = require('async');
 var ObjectId = mongoose.Types.ObjectId;
 var system = require(config.root + '/util/system');
@@ -23,14 +23,14 @@ var Setting = mongoose.model('Setting');
  * @param res
  */
 exports.index = function (req, res) {
-  res.render('system/index');
+  res.render('admin/system/index');
 };
 
 exports.base = function (req, res) {
   Channel.findOne({
     '_id': req.session.channelId
   }, function (err, channel) {
-    res.render('system/base', {
+    res.render('admin/system/base', {
       channel: channel
     });
   })
@@ -54,7 +54,7 @@ exports.baseSave = function (req, res) {
     } else {
       req.flash('success', '数据保存成功!');
     }
-    res.redirect('/system/base');
+    res.redirect('/admin/system/base');
   };
 
   if (!req.files || req.files.length <= 0) {
@@ -99,7 +99,7 @@ exports.mailSetting = function (req, res) {
   Channel.findOne({
     '_id': channel
   }, function (err, channel) {
-    res.render('system/email/emailSetting', {
+    res.render('admin/system/email/emailSetting', {
       channel: channel
     });
   });
@@ -131,7 +131,7 @@ exports.saveEmail = function (req, res) {
       } else {
         req.flash('success', '保存成功!');
       }
-      res.redirect('/system/mail');
+      res.redirect('/admin/system/mail');
     })
   });
 };

@@ -7,7 +7,6 @@ var shortId = require("shortid");
 var ObjectId = Schema.ObjectId;
 
 var ShortUrlSchema = new Schema({
-  channel: {type: ObjectId, ref: "Channel"},
   wechat: {type: ObjectId, ref: "Wechat"},
   longUrl: {type: String, require: true, default: ""},
   host: {type: String, require: true, default: ""},

@@ -11,7 +11,7 @@ var excal = require('excel-export');
 var ObjectId = mongoose.Types.ObjectId;
 var _ = require('lodash');
 
-var config = require('../../../config/config');
+var config = require('../../../../config/config');
 
 var User = mongoose.model('User');
 var UserGroup = mongoose.model('UserGroup');
@@ -27,7 +27,7 @@ exports.list = function (req, res) {
       UserGroup.all(req.session.channelId, groups => callback(null, groups))
     }
   }, function (err, result) {
-    res.render('system/users/userList', {
+    res.render('admin/system/users/userList', {
       user: "",
       groups: result.groups
     });
@@ -85,7 +85,7 @@ exports.edit = function (req, res) {
       UserGroup.all(channelId, groups => callback(null, groups))
     }
   }, function (err, result) {
-    res.render('system/users/userForm', {
+    res.render('admin/system/users/userForm', {
       user: result.user,
       groups: result.groups
     });
@@ -107,7 +107,7 @@ exports.add = function (req, res) {
       UserGroup.all(channelId, groups => callback(null, groups))
     }
   }, function (err, result) {
-    res.render('system/users/userForm', {
+    res.render('admin/system/users/userForm', {
       user: new User(),
       groups: result.groups
     });
@@ -122,7 +122,7 @@ exports.approved = function (req, res) {
   var id = req.params.id || req.body.id;
   User.findOne({'_id': id}, function (err, user) {
     if (!err) {
-      res.render('system/users/UserApprForm', {
+      res.render('admin/system/users/UserApprForm', {
         viewType: "view",
         user: user ? user : new User()
       })
@@ -148,7 +148,7 @@ exports.resetUserPwd = function (req, res) {
         } else {
           req.flash('success', '密码已重置成功!');
         }
-        return res.redirect('/system/user/edit/' + id);
+        return res.redirect('/admin/system/user/edit/' + id);
 
       });
     }
@@ -170,7 +170,7 @@ exports.resetPwd = function (req, res) {
       });
     }
     req.flash('success', "密码重置成功：123456");
-    res.redirect('/system/user');
+    res.redirect('/admin/system/user');
   });
 };
 exports.changepwd = function (req, res) {
@@ -180,7 +180,7 @@ exports.changepwd = function (req, res) {
   console.log("************ id, oldPassWord, newPassWord ", id, oldPassWord, newPassWord);
   if (id) {
     if (!oldPassWord || !newPassWord) {
-      res.render("system/users/changepwd", {id: id});
+      res.render("admin/system/users/changepwd", {id: id});
       return;
     }
     User.findOne({'_id': id}, function (err, user) {
@@ -189,7 +189,7 @@ exports.changepwd = function (req, res) {
         if (user.hashed_password !== oldPassWord) {
           console.error('("************ 输入的原登录密码不正确，请重试!');
           req.flash('error', '输入的原登录密码不正确，请重试!');
-          return res.redirect('/system/user/changepwd/' + id);
+          return res.redirect('/admin/system/user/changepwd/' + id);
           return;
         }
         newPassWord = user.encryptPassword(newPassWord);
@@ -201,14 +201,14 @@ exports.changepwd = function (req, res) {
           } else {
             req.flash('success', '修改登录密码成功，请使用新密码登录系统!');
           }
-          return res.redirect('/system/user/changepwd/' + id);
+          return res.redirect('/admin/system/user/changepwd/' + id);
         });
       } else {
-        return res.redirect('/system/user/changepwd/' + id);
+        return res.redirect('/admin/system/user/changepwd/' + id);
       }
     });
   } else {
-    return res.redirect('/system/user/changepwd/' + id);
+    return res.redirect('/admin/system/user/changepwd/' + id);
   }
 };
 /**
@@ -290,7 +290,7 @@ exports.enable = function (req, res) {
         User.update({'_id': id}, updata, options, function (err, info) {
           if (!err) {
             req.flash('success', msg);
-            res.redirect('/system/user');
+            res.redirect('/admin/system/user');
           }
         });
       }
@@ -307,7 +307,7 @@ exports.del = function (req, res) {
   var id = req.user._id;
   if (ids == id) {
     req.flash('error', '不可删除自己');
-    res.redirect('/system/user');
+    res.redirect('/admin/system/user');
   } else {
     ids = ids.split(',');
 
@@ -317,7 +317,7 @@ exports.del = function (req, res) {
         req.flash('error', err);
       } else {
         req.flash('success', '数据删除成功!');
-        res.redirect('/system/user');
+        res.redirect('/admin/system/user');
       }
     });
   }
@@ -338,7 +338,7 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '数据保存成功!');
       }
-      res.redirect('/system/user');
+      res.redirect('/admin/system/user');
     });
   } else {
 
@@ -348,7 +348,7 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '数据修改成功!');
       }
-      res.redirect('/system/user');
+      res.redirect('/admin/system/user');
     });
   }
 };
@@ -375,7 +375,7 @@ exports.saveApproved = function (req, res) {
         } else {
           req.flash('success', '用户审核处理成功!');
         }
-        res.redirect('/system/user');
+        res.redirect('/admin/system/user');
       });
     }
   })
@@ -397,7 +397,7 @@ exports.setGroup = function (req, res) {
     });
   }
   req.flash('success', '用户已分组');
-  res.redirect('/system/user');
+  res.redirect('/admin/system/user');
 };
 
 /**
@@ -416,7 +416,7 @@ exports.setGroupAndBranch = function (req, res) {
     });
   }
   req.flash('success', '用户二级行和网点修改成功');
-  res.redirect('/system/user');
+  res.redirect('/admin/system/user');
 };
 
 /**
@@ -451,14 +451,14 @@ exports.editPassWord = function (req, res) {
             req.flash('success', user.username + ' 的密码修改成功! 密码为：' + password);
           }
           if (req.user.isAdmin && !(req.user._id == user._id)) {
-            res.redirect('/system/user/list');
+            res.redirect('/admin/system/user/list');
           } else {
             res.redirect('/login');
           }
         });
       } else {
         req.flash('error', "原密码不正确");
-        res.redirect('/system/user');
+        res.redirect('/admin/system/user');
       }
 
     }
@@ -521,13 +521,13 @@ exports.importUser = function (req, res) {
       var obj = excelUtil.readXls(files[0].path, 1);
       if (!obj || !obj.length) {
         req.flash('error', "读入失败！");
-        return res.redirect('/system/user/list');
+        return res.redirect('/admin/system/user/list');
       }
       console.log("*************** read excel end ...");
       var data = obj[0].data;
       if (data == null) {
         req.flash('error', "导入文件格式不正确");
-        return res.redirect('/system/user/list');
+        return res.redirect('/admin/system/user/list');
       } else {
         hanble(data, channel, function (err, result) {
           if (result) {
@@ -539,12 +539,12 @@ exports.importUser = function (req, res) {
           } else if (err) {
             req.flash('error', err);
           }
-          res.redirect('/system/user/list');
+          res.redirect('/admin/system/user/list');
         });
       }
     } else {
       req.flash('error', "未选择文件");
-      res.redirect('/system/user/list');
+      res.redirect('/admin/system/user/list');
     }
   })
 };

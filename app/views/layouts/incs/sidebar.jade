@@ -13,21 +13,40 @@ aside.main-sidebar
     // Sidebar Menu
     ul.sidebar-menu
       li.header 导航菜单
+      li
+        a(href='/admin/dashboard')
+          i.fa.fa-dashboard
+          span 仪表盘
       li.treeview
         a(href='#')
-          i.fa.fa-dashboard
-          span Dashboard
+          i.fa.fa-leaf
+          span 内容管理
           span.pull-right-container
             i.fa.fa-angle-left.pull-right
         ul.treeview-menu
-          li
-            a(href='/index')
-              i.fa.fa-circle-o
-              |  Dashboard v1
-          li
-            a(href='/index2')
-              i.fa.fa-circle-o
-              |  Dashboard v2
+          li(class="#{isActive('/admin/cms/category')}")
+            a(href='/admin/cms/category')
+              i.fa.fa-fw.fa-th
+              |  分类管理
+          li(class="#{isActive('/admin/cms/article')}")
+            a(href='/admin/cms/article')
+              i.fa.fa-fw.fa-book
+              |  文章管理
+      li.treeview
+        a(href='#')
+          i.fa.fa-gear
+          span 论坛管理
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li(class="#{isActive('/admin/bbs/node')}")
+            a(href='/admin/bbs/node')
+              i.fa.fa-fw.fa-th
+              |  版块管理
+          li(class="#{isActive('/admin/bbs/topic')}")
+            a(href='/admin/bbs/topic')
+              i.fa.fa-fw.fa-book
+              |  帖子管理
       li.treeview
         a(href='#')
           i.fa.fa-gear
@@ -35,12 +54,12 @@ aside.main-sidebar
           span.pull-right-container
             i.fa.fa-angle-left.pull-right
         ul.treeview-menu
-          li(class="#{isActive('/system/user')}")
-            a(href='/system/user')
+          li(class="#{isActive('/admin/system/user')}")
+            a(href='/admin/system/user')
               i.fa.fa-user
               |  用户
-          li(class="#{isActive('/system/group')}")
-            a(href='/system/group')
+          li(class="#{isActive('/admin/system/group')}")
+            a(href='/admin/system/group')
               i.fa.fa-users
               |  用户组
       li.treeview

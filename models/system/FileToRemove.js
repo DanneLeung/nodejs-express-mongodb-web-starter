@@ -15,11 +15,11 @@ var FileToRemoveSchema = mongoose.Schema({
 });
 
 FileToRemoveSchema.statics.queue = function (files, callback) {
-  if (!files || files.length <= 0) {
+  if(!files || files.length <= 0) {
     callback(null, null);
   } else {
     var removeFiles = [];
-    for (var i = 0; i < files.length; i++) {
+    for(var i = 0; i < files.length; i++) {
       var f = files[i]; //{filename: newFileName, path: path, destination: uploadDir, size: file.size}
       var fobj = new FileToRemove({
         file: f,
@@ -28,7 +28,7 @@ FileToRemoveSchema.statics.queue = function (files, callback) {
       removeFiles.push(fobj);
     }
     console.log('******** remove files:', files);
-    if (removeFiles.length > 0) {
+    if(removeFiles.length > 0) {
       async.map(removeFiles, function (f, cb) {
         f.save(function (err, file) {
           cb(null, file);

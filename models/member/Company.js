@@ -8,7 +8,6 @@ var ObjectId = Schema.ObjectId;
 var ShortId = require('shortid');
 var CompanySchema = mongoose.Schema({
   _id: {type: String, default: ShortId.generate},
-  channel: {type: ObjectId, ref: "Channel"},//渠道
   shortname: {type: String, default: ''}, //姓名
   fullname: {type: String, default: ''}, //姓名
   tel: {type: String, default: ''}, //电话

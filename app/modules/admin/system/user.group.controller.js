@@ -5,7 +5,7 @@
 
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
-var config = require('../../../config/config');
+var config = require('../../../../config/config');
 var UserGroup = mongoose.model('UserGroup');
 var moment = require('moment');
 var async = require('async');
@@ -16,7 +16,7 @@ var Menu = mongoose.model('Menu');
  * list
  */
 exports.list = function (req, res) {
-  res.render('system/users/group/groupList');
+  res.render('admin/system/users/group/groupList');
 };
 
 /*role list table json datasource*/
@@ -41,9 +41,9 @@ exports.edit = function (req, res) {
     if (err) {
       console.log(err);
       req.flash('error', err);
-      res.redirect('/system/group');
+      res.redirect('/admin/system/group');
     } else {
-      res.render('system/users/group/groupForm', {
+      res.render('admin/system/users/group/groupForm', {
         group: group
       })
     }
@@ -56,7 +56,7 @@ exports.edit = function (req, res) {
  * @param res
  */
 exports.add = function (req, res) {
-  res.render('system/users/group/groupForm', {
+  res.render('admin/system/users/group/groupForm', {
     group: new UserGroup()
   })
 };
@@ -108,7 +108,7 @@ exports.enable = function (req, res) {
       }, updata, options, function (err, info) {
         if (!err) {
           req.flash('success', msg);
-          res.redirect('/system/group');
+          res.redirect('/admin/system/group');
         }
       });
     }
@@ -129,7 +129,7 @@ exports.del = function (req, res) {
       req.flash('error', err);
     } else {
       req.flash('success', '数据删除成功!');
-      res.redirect('/system/group');
+      res.redirect('/admin/system/group');
     }
   });
 };
@@ -150,7 +150,7 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '数据保存成功!');
       }
-      res.redirect('/system/group');
+      res.redirect('/admin/system/group');
     });
   } else {
     // update
@@ -162,7 +162,7 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '数据修改成功!');
       }
-      res.redirect('/system/group');
+      res.redirect('/admin/system/group');
     });
   }
 };
@@ -189,7 +189,7 @@ exports.menu = function (req, res) {
     if (err) {
       console.error(err);
     } else {
-      res.render('system/users/group/menuList', {
+      res.render('admin/system/users/group/menuList', {
         userGroup: ch
       })
     }

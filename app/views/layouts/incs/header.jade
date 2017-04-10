@@ -44,12 +44,16 @@ if NODE_ENV == 'production'
   script(src="//cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js")
   script(src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js")
 //[end if]
+style.
+  .table tbody td {
+    vertical-align: middle !important;
+  }
 script(type='text/javascript').
   var contextRoot = '#{contextRoot}';
   var contextFront = '#{contextFront}';
   var theme = '#{theme}';
+  var baseUrl = '#{baseUrl}';
   var staticRoot = '';
 //- if (req.session.setting && req.session.setting.analystScript)
   //  插入统计代码
   !{req.session.channel.analystScript}
-

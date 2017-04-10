@@ -1,9 +1,9 @@
 /**
  * Created by JiBingKun on 2015/7/25.
  */
-var mongoose = require('mongoose')
-  , Schema = mongoose.Schema
-  , ObjectId = Schema.ObjectId;
+var mongoose = require('mongoose'),
+  Schema = mongoose.Schema,
+  ObjectId = Schema.ObjectId;
 /**
  * 权限
  * @type {Schema}
@@ -14,12 +14,12 @@ var mongoose = require('mongoose')
  */
 var PermissionSchema = mongoose.Schema({
   id: ObjectId,
-  subject: {type: String, default: ''},
-  action: {type: String, default: ''},
-  name: {type: String, default: ''},
+  subject: { type: String, default: '' },
+  action: { type: String, default: '' },
+  name: { type: String, default: '' },
   //urlPrefix: {type: String, default: ''},
-  url: {type: String, default: ''},
-  description: {type: String, default: ''}
+  url: { type: String, default: '' },
+  description: { type: String, default: '' }
 });
 
 /**
@@ -36,10 +36,9 @@ PermissionSchema.methods = {
    * @param {Function} callback 回调函数
    */
   delPermissionById: function (params, callback) {
-    Permission.remove({_id: params}, callback);
+    Permission.remove({ _id: params }, callback);
   }
 };
-
 
 /**
  * Permission的静态方法
@@ -49,13 +48,13 @@ PermissionSchema.statics.findOrCreate = function (params, callback) {
 
   function findOrCreateOne(params, callback) {
     that.findOne(params, function (err, permission) {
-      if (err) return callback(err);
-      if (permission) return callback(null, permission);
+      if(err) return callback(err);
+      if(permission) return callback(null, permission);
       that.create(params, callback);
     });
   }
 
-  if (Array.isArray(params)) {
+  if(Array.isArray(params)) {
     var permissions = [];
     async.forEachSeries(params, function (param, next) {
       findOrCreateOne(param, function (err, permission) {
@@ -65,8 +64,7 @@ PermissionSchema.statics.findOrCreate = function (params, callback) {
     }, function (err) {
       callback.apply(null, [err].concat(permissions));
     });
-  }
-  else {
+  } else {
     findOrCreateOne(params, callback);
   }
 };

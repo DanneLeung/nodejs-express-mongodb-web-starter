@@ -1267,6 +1267,7 @@ hr {
   box-shadow: none;
   border-color: #d2d6de;
   font-size: 12px;
+  height: 31px;
 }
 .form-control:focus {
   border-color: #3c8dbc;

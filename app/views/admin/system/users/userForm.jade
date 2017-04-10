@@ -25,7 +25,7 @@ block main
         h3.box-title 查看用户信息
 
       .box-tools
-        a.btn.btn-sm.btn-default(href='/system/user',title="返回")
+        a.btn.btn-sm.btn-default(href='#{baseUrl}/user',title="返回")
           i.fa.fa-reply
         | &nbsp;
         if user.isNew || !user.isNew
@@ -33,14 +33,14 @@ block main
             i.fa.fa-save
         | &nbsp;
         if !user.isNew
-          a.btn.btn-box-tool.btn-default(href='/system/user/reset/#{user._id}')
+          a.btn.btn-box-tool.btn-default(href='#{baseUrl}/user/reset/#{user._id}')
             i.fa.fa-repeat
             span  重置密码
     .box-body
       #roleEdit.row
         .col-md-12
 
-          form#channelForm.form-horizontal(name='channelForm', action='/system/user/save', method='post')
+          form#channelForm.form-horizontal(name='channelForm', action='#{baseUrl}/user/save', method='post')
             //新增时不能有id
             if(!user.isNew)
               input#id(type='hidden', name='id', value="#{user._id}")
@@ -120,10 +120,10 @@ block scripts
           username: {
             required: true,
             stringCheck: true,
-            remote: '/system/user/checkName?oldName=#{user ? user.username : ''}'
+            remote: '#{baseUrl}/user/checkName?oldName=#{user ? user.username : ''}'
           }, empNo: {
             stringCheck: true,
-            remote: '/system/user/checkNo?oldNo=#{user ? user.empNo : ''}'
+            remote: '#{baseUrl}/user/checkNo?oldNo=#{user ? user.empNo : ''}'
           }, mobile: {
             mobileCN: true
           }, email: {

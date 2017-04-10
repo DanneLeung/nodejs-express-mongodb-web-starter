@@ -1,3 +1,6 @@
+-var baseUrl = (req.baseUrl)
+-if (baseUrl.indexOf('http')<0)
+-baseUrl = baseUrl.replace('//','/');
 doctype html
 html.app(lang='en')
 
@@ -68,13 +71,5 @@ html.app(lang='en')
     if (success&&success.length)
       script.
         toastr.success('!{success.join('<br/>').replace('\n\r','<br/>')}');
-    script.      
-      $(document).ready(function () {
-        $('input').iCheck({
-          checkboxClass: 'icheckbox_square-blue',
-          radioClass: 'iradio_square-blue',
-          increaseArea: '20%' // optional
-        });
-      });
     // App scripts go here
     block scripts
