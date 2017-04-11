@@ -127,6 +127,7 @@ exports.del = function (req, res) {
  */
 exports.save = function (req, res) {
   var id = req.body.id;
+  if(!req.body.enabled) req.body.enabled = false;
   if(!id) {
     var user = new Node(req.body);
     console.log("user======================>>>>>>>>>>>>>>>>", user);

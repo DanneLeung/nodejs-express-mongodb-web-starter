@@ -9,6 +9,9 @@ block pageTitle
   h1 版块信息管理
     small 添加，删除，更新系统中版块信息
 block main
+  form#nodeDelForm(method='post', style='display:none', action='#{baseUrl}/node/del/')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
   .box
     .box-header
       h3.box-title 版块
@@ -17,16 +20,16 @@ block main
           i.fa.fa-fw.fa-plus
           | 添加版块
     .box-body.no-padding
-      table.table.table-hover
+      table#nodeList.table.table-hover
         tbody
           tr
             th #
             th 标题
             th.text-right 帖子数
-            th.text-right 排序
+            th.text-right 显示排序
             th.text-center 状态
             th 说明
-            th 
+            th.text-center 操作
           each node,idx in nodes
             tr
               td #{idx+1}
@@ -35,19 +38,29 @@ block main
               td.text-right=node.sort
               td.text-center
                 if node.enabled 
-                  span.label.label-success 活动
+                  span.label.label-success 激活
                 else
                   span.label.label-default 禁用
               td=node.description
-              td
+              td.text-center
                 .btn-group
                   a.btn.btn-default.btn-sm.edit(title='编辑', href='#{baseUrl}/node/edit/#{node._id}')
                     i.fa.fa-edit
-                  button.btn.btn-default.btn-sm.del(title='删除', type='button')
+                  button.btn.btn-default.btn-sm.del(title='删除', type='button', data-id='#{node._id}')
                     i.fa.fa-trash-o
 //应用添加的脚本在scripts block中定义
 block scripts
   script.
     $(document).ready(function () {
-
+      $('#nodeList').on('click', 'button.del', function () {
+        var id = $(this).data("id");
+        $("#nodeDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#nodeDelForm").submit();
+            }
+          });
+        }
+      });
     });

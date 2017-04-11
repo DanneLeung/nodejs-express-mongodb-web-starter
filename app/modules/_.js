@@ -11,7 +11,6 @@ var Auth = require(config.root + '/middleware/authorization');
 // set global variables in locals.
 router.use((req, res, next) => {
   var baseUrl = req.baseUrl;
-  console.log("&&&&&&&&&&&&&&&&& baseUrl", baseUrl);
   // res.locals.baseUrl = baseUrl;
   res.locals.theme = "/themes/lte";
   res.locals.themeRoot = "/themes";

@@ -18,19 +18,12 @@ router
     }), ctrl.session) //登录form提交
   .get('/logout', ctrl.logout)
   .get(['/captcha', '/captcha/:type'], captcha.getCaptcha)
-  .use(Auth.requiresLogin)
-  .get('/profile/:username', ctrl.profile) //用户资料
+  .get('/profile/:username', Auth.requiresLogin, ctrl.profile) //用户资料
   .post('/profile/update/:username', ctrl.updateProfile) //保持更新用户资料
-  .post('/changePwd', ctrl.editPassword) //修改用户密码
-  .get('/validatePwd', ctrl.validatePwd) //验证密码是否正确
+  .post('/changePwd', Auth.requiresLogin, ctrl.editPassword) //修改用户密码
+  .get('/validatePwd', Auth.requiresLogin, ctrl.validatePwd) //验证密码是否正确
   .get('/', (req, res) => {
     res.redirect('/index')
   })
-  .get('/index', ctrl.index)
-// .get('*', (req, res) => {
-//   var path = req.path;
-//   var view = __dirname + '/views/pages' + path;
-//   res.render(view);
-// })
-;
+  .get('/index', ctrl.index);
 module.exports = router;

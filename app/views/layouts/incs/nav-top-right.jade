@@ -1,4 +1,4 @@
-ul.nav.navbar-nav.navbar-right
+ul.nav.navbar-nav
   if (req.isAuthenticated())
     li.dropdown.user.user-menu
       // Menu Toggle Button
@@ -21,6 +21,6 @@ ul.nav.navbar-nav.navbar-right
             | 退出
         
     // Control Sidebar Toggle Button
-    //- li
+    li
       a(href='#', data-toggle='control-sidebar')
         i.fa.fa-gears

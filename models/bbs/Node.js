@@ -21,7 +21,7 @@ let NodeSchema = new Schema({
 
 NodeSchema.statics = {
   all: function (done) {
-    Node.find({ enabled: true }).sort('sort').exec((err, nodes) => {
+    Node.find({}).sort('sort').exec((err, nodes) => {
       if(err) console.error(err);
       done(nodes);
     });
