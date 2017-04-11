@@ -11,7 +11,6 @@ var mongoose = require('mongoose'),
 var WechatFansSchema = new Schema({
   channelWechat: { type: ObjectId, index: true, ref: 'ChannelWechat' }, //渠道下的公众号
   wechatGroup: { type: ObjectId, ref: 'WechatGroup' }, //分组
-  member: { type: ObjectId, ref: 'Member' }, //关联的会员
   openid: { type: String, trim: true, index: true, default: '' },
   unionid: { type: String, trim: true, index: true, default: '' },
   nickname: { type: String, trim: true, index: true, default: '' },
@@ -27,12 +26,7 @@ var WechatFansSchema = new Schema({
   subscribe_time: { type: String, trim: true, default: '', index: true }, //关注事件
   subscribeTimes: { type: Number, default: 0 }, //关注成为粉丝次数，>= 1表示取消后重复关注，非新粉丝
   unsubscribe_time: { type: Date }, //取消关注时间
-  flag: { type: Boolean, trim: true, default: false }, //是否关注过公众号
-  identifyNo: { type: String, trim: true, index: true, default: '' }, //记录推广人员的标识码，没特殊推广标识码，则记录openid
   // createdAt: { type: Date, default: Date.now },
-  flowrateFlag: { type: Boolean }, //关注领取过流量
-  shareFlowrateFlag: { type: Boolean }, //分享领取过流量
-  phoneFareFlag: { type: String }, //抢话费标记 1:标记为有充值话费资格 2:已领取5元话费
   scanCount: { type: Number }, //推广二维码被扫描次数
   clear: { type: Number }, //清缓存数据
   note: String

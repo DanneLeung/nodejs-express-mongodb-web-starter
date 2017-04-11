@@ -1,26 +1,25 @@
 /**
  * Created by xingjie201 on 2016/2/19.
- * 用户组的Controller
+ * 帖子的Controller
  */
 
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
 var config = require('../../../../config/config');
-var UserGroup = mongoose.model('UserGroup');
+var Topic = mongoose.model('Topic');
 var moment = require('moment');
 var async = require('async');
-var Menu = mongoose.model('Menu');
 
 /*
  * list
  */
 exports.list = function (req, res) {
-  res.render('admin/system/users/group/groupList');
+  res.render('admin/bbs/topic/topicList');
 };
 
 /*role list table json datasource*/
 exports.datatable = function (req, res) {
-  UserGroup.dataTable(req.query, {
+  Topic.dataTable(req.query, {
     conditions: {}
   }, function (err, data) {
     res.send(data);
@@ -28,61 +27,40 @@ exports.datatable = function (req, res) {
 };
 
 /**
- * 修改分组信息
+ * 修改帖子信息
  * @param req
  * @param res
  */
 exports.edit = function (req, res) {
   var id = req.params.id;
-  UserGroup.findOne({
+  Topic.findOne({
     '_id': id
-  }, function (err, group) {
+  }, function (err, topic) {
     if(err) {
       console.log(err);
       req.flash('error', err);
-      res.redirect('/admin/system/group');
+      res.redirect('/admin/bbs/topic');
     } else {
-      res.render('admin/system/users/group/groupForm', {
-        group: group
-      })
+      res.render('admin/bbs/topic/topicForm', {
+        topic: topic
+      });
     }
   });
 };
 
 /**
- * 添加分组信息
+ * 添加帖子信息
  * @param req
  * @param res
  */
 exports.add = function (req, res) {
-  res.render('admin/system/users/group/groupForm', {
-    group: new UserGroup()
+  res.render('admin/bbs/topic/topicForm', {
+    topic: new Topic()
   });
 };
 
 /**
- * 检查分组名称是否已经存在^
- */
-exports.checkName = function (req, res) {
-  var newName = req.query.name;
-  var oldName = req.query.oldName;
-  if(newName === oldName) {
-    res.send('true');
-  } else {
-    UserGroup.count({
-      'name': newName
-    }, function (err, result) {
-      if(result > 0) {
-        res.send('false');
-      } else {
-        res.send('true');
-      }
-    });
-  }
-};
-
-/**
- * 是否激活用户组
+ * 是否激活帖子
  * @param req
  * @param res
  */
@@ -91,36 +69,36 @@ exports.enable = function (req, res) {
   var updata = {};
   var options = {};
   var msg = "";
-  UserGroup.findOne({
+  Topic.findOne({
     '_id': id
   }, function (err, info) {
     if(!err) {
       if(info.enabled == true) {
         updata.enabled = false;
-        msg = "已禁用"
+        msg = "已禁用";
       } else {
         updata.enabled = true;
-        msg = "已激活"
+        msg = "已激活";
       }
-      UserGroup.update({
+      Topic.update({
         '_id': id
       }, updata, options, function (err, info) {
         if(!err) {
           req.flash('success', msg);
-          res.redirect('/admin/system/group');
+          res.redirect('/admin/bbs/topic');
         }
       });
     }
-  })
+  });
 };
 /**
- * 删除用户组
+ * 删除帖子
  * @param req
  * @param res
  */
 exports.del = function (req, res) {
   var ids = req.body.ids || req.params.ids;
-  UserGroup.remove({
+  Topic.remove({
     '_id': ids
   }, function (err, result) {
     if(err) {
@@ -128,7 +106,7 @@ exports.del = function (req, res) {
       req.flash('error', err);
     } else {
       req.flash('success', '数据删除成功!');
-      res.redirect('/admin/system/group');
+      res.redirect('/admin/bbs/topic');
     }
   });
 };
@@ -140,7 +118,7 @@ exports.del = function (req, res) {
 exports.save = function (req, res) {
   var id = req.body.id;
   if(!id) {
-    var user = new UserGroup(req.body);
+    var user = new Topic(req.body);
     console.log("user======================>>>>>>>>>>>>>>>>", user);
     user.save(function (err, result) {
       console.log("err======================>>>>>>>>>>>>>>>>", err);
@@ -149,11 +127,11 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '数据保存成功!');
       }
-      res.redirect('/admin/system/group');
+      res.redirect('/admin/bbs/topic');
     });
   } else {
     // update
-    UserGroup.update({
+    Topic.update({
       '_id': id
     }, req.body, function (err, result) {
       if(err) {
@@ -161,35 +139,7 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '数据修改成功!');
       }
-      res.redirect('/admin/system/group');
+      res.redirect('/admin/bbs/topic');
     });
   }
-};
-/**
- * 新增或编辑时保存数据
- * @param req
- * @param res
- */
-exports.getGroups = function (req, res) {
-  UserGroup.find({}, function (err, groups) {
-    res.send(groups);
-  })
-};
-
-/**
- * 修改用户组的信息
- * @param req
- * @param res
- */
-exports.menu = function (req, res) {
-  var id = req.params.id;
-  UserGroup.findById(id, (err, ch) => {
-    if(err) {
-      console.error(err);
-    } else {
-      res.render('admin/system/users/group/menuList', {
-        userGroup: ch
-      })
-    }
-  });
 };

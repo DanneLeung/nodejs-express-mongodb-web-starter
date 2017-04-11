@@ -11,8 +11,10 @@ let ObjectId = Schema.ObjectId;
 let TopicSchema = new Schema({
   node: { type: ObjectId, ref: 'Node' },
   user: { type: ObjectId, ref: 'User' },
+  fans: { type: ObjectId, ref: 'WechatFans' },
   title: { type: String, default: '' }, //分类名称，
   content: { type: String, default: '' }, //描述
+  images:[], //图片
   top: Boolean,
   essence: Boolean,
   weight: Number,

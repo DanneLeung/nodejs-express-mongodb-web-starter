@@ -1,0 +1,76 @@
+//
+  Created by danne on 2015/10/24.
+extends ../layout
+block pageTitle
+  h1  论坛帖子管理
+    small 添加，删除，更新系统中帖子信息
+block main
+  form#topicDelForm(method='post', style='display:none', action='#{baseUrl}/topic/del/')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+  .box
+    //- .box-header
+      .box-tools
+        a.btn.btn-sm.btn-success(href="#{baseUrl}/topic/add" title="发布新帖子")
+          i.fa.fa-fw.fa-plus
+          | 发布新帖子
+    .box-body
+      .pull-right
+        a.btn.btn-success(href="#{baseUrl}/topic/add", title="发布新帖子")
+          i.fa.fa-fw.fa-plus
+          | 发布新帖子
+      h4 帖子列表
+      table#topicList.table.table-hover
+        
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "#{theme}/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: false,
+        searching: false,
+        processing: false,
+        //scrollX:true,
+        serverSide: true,
+        deferRender: true
+
+      };
+      var t = $('#topicList').DataTable($.extend(opts, {
+        ajax: {url: '#{baseUrl}/topic/datatable'},
+        columns: [
+          //{data: ""},
+          {data: "title", defaultContent: '', sortable: false, render: function ( data, type, row, meta ) {
+            var str ='';
+            str +='      <div class="post">'
+            str +='        <div class="user-block">'
+            str +='          <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">'
+            str +='          <span class="username">'
+            str +='            <a href="#">' + row.fans?row.fans.nickname:(row.user?row.user.username:"") + '</a>'
+            str +='            <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>'
+            str +='          </span>'
+            str +='          <span class="description">' + row.createdAt + '</span>'
+            str +='        </div>'
+            str +='        <p>'
+            str +='        ' + row.content
+            str +='        </p>'
+            str +='        <ul class="list-inline">'
+            str +='          <li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>'
+            str +='          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a>'
+            str +='          </li>'
+            str +='          <li class="pull-right">'
+            str +='            <a href="#" class="link-black text-sm"><i class="fa fa-comments-o margin-r-5"></i> Comments (5)</a></li>'
+            str +='        </ul>'
+            str +='        <input class="form-control input-sm" type="text" placeholder="Type a comment">'
+            str +='      </div>';
+            return str;
+          }},
+          {data: "content", sortable: false, visiable: false},
+          {data: "user", sortable: false, visiable: false},
+          {data: "fans", sortable: false, visiable: false}
+        ]
+      }));
+    });

@@ -32,6 +32,10 @@ aside.main-sidebar
             a(href='/admin/cms/article')
               i.fa.fa-fw.fa-book
               |  文章管理
+          li(class="#{isActive('/admin/cms/article')}")
+            a(href='/admin/cms/article')
+              i.fa.fa-fw.fa-book
+              |  粉丝用户
       li.treeview
         a(href='#')
           i.fa.fa-gear
@@ -62,7 +66,7 @@ aside.main-sidebar
             a(href='/admin/system/group')
               i.fa.fa-users
               |  用户组
-      li.treeview
+      //- li.treeview
         a(href='#')
           i.fa.fa-share
           span Multilevel
@@ -103,20 +107,20 @@ aside.main-sidebar
             a(href='#')
               i.fa.fa-circle-o
               |  Level One
-      li
+      //- li
         a(href='documentation/index')
           i.fa.fa-book
           span Documentation
-      li.header LABELS
-      li
+      //- li.header LABELS
+      //- li
         a(href='#')
           i.fa.fa-circle-o.text-red
           span Important
-      li
+      //- li
         a(href='#')
           i.fa.fa-circle-o.text-yellow
           span Warning
-      li
+      //- li
         a(href='#')
           i.fa.fa-circle-o.text-aqua
           span Information
