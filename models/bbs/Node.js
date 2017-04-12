@@ -16,7 +16,7 @@ let NodeSchema = new Schema({
   topics: { type: Number, default: 0 },
   sort: { type: Number, default: 1 },
   enabled: { type: Boolean, default: true } //可用
-});
+}, { timestamps: {} });
 // NodeSchema.plugin(tree);
 
 NodeSchema.statics = {

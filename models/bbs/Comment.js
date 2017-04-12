@@ -16,7 +16,6 @@ let CommentSchema = new Schema({
   toFans: { type: ObjectId, ref: 'WechatFans' },
   content: { type: String, default: '' }, //描述
   blocked: { type: Boolean, default: false } //屏蔽
-});
-
+}, { timestamps: {} });
 var Comment = mongoose.model('Comment', CommentSchema, 'comments')
 module.exports = Comment;

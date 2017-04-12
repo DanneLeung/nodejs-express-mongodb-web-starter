@@ -20,7 +20,7 @@ let TopicSchema = new Schema({
   weight: Number,
   status: Number,
   blocked: { type: Boolean, default: false } //屏蔽
-});
+}, { timestamps: {} });
 
 var Topic = mongoose.model('Topic', TopicSchema, 'topics')
 module.exports = Topic;

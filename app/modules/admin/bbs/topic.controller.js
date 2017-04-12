@@ -117,6 +117,7 @@ exports.del = function (req, res) {
  */
 exports.save = function (req, res) {
   var id = req.body.id;
+  req.body.user = req.user;
   if(!id) {
     var user = new Topic(req.body);
     console.log("user======================>>>>>>>>>>>>>>>>", user);
