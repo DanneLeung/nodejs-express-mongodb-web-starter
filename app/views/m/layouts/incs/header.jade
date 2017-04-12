@@ -13,8 +13,9 @@ link(href='/themes/dist/images/icon.png', rel='apple-touch-icon-precomposed')
 link(href='/themes/dist/images/icon.png', rel='Shortcut Icon', type='image/x-icon')
 link(rel="stylesheet", href="#{theme}/css/mzui.min.css")
 
-script(type='text/javascript').
+script.
+  var context = 'http://xcesys.com/s/m';
   var baseUrl = '#{baseUrl}';
-  var appId = '#{req.session.appid}';
+  var appid = '#{req.session.appid}';
   var version = 3.2;
-  console.log("appid: " + appId + ", wid: " + wid, "authAppid: " + authAppid + ", authWid: " + authWid);
+  console.log("appid: " + appid);
