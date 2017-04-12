@@ -66,9 +66,9 @@ module.exports = function (app, express) {
           mongoose.model('Setting').getValuesByKeys(['context.root', 'context.front', 'theme.root', 'static.root'], function (setting) {
             console.log("############# 读取系统参数" + JSON.stringify(setting));
             if(setting) {
-              var contextRoot = setting['context.root'];
-              var contextFront = setting['context.front'];
-              var staticRoot = setting['static.root'];
+              var contextRoot = setting['context.root'] || '';
+              var contextFront = setting['context.front'] || '';
+              var staticRoot = setting['static.root'] || '';
               //替换protocol
               if(contextRoot) {
                 contextRoot = contextRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
