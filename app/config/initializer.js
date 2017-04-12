@@ -84,7 +84,7 @@ module.exports = function (app, express) {
               res.locals.contextFront = req.session.contextFront = contextFront.indexOf('://') ? contextFront : contextFront.replace('//', '/');
               res.locals.staticRoot = req.session.staticRoot = staticRoot.indexOf('://') ? staticRoot : staticRoot.replace('//', '/');
 
-              var themeRoot = setting['theme.root'] || '';
+              var themeRoot = setting['theme.root'] || 'themes';
               if(themeRoot) {
                 themeRoot = themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
               }

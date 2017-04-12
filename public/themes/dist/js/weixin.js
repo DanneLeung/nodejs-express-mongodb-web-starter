@@ -2,8 +2,6 @@
  * 微信JS
  * 依赖于global.js 和 $.js
  */
-var contextRoot = context || "/";
-
 var weixinOauthURL = 'https://open.weixin.qq.com/connect/oauth2/authorize';
 var getUserInfoOauthURL = contextRoot + '/api/getUserInfo';
 var signatureUrl = contextRoot + '/api/jsConfig';

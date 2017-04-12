@@ -14,8 +14,8 @@ link(href='/themes/dist/images/icon.png', rel='Shortcut Icon', type='image/x-ico
 link(rel="stylesheet", href="#{theme}/css/mzui.min.css")
 
 script.
-  var context = 'http://xcesys.com/s/m';
-  var baseUrl = '#{baseUrl}';
+  var baseUrl = '#{baseUrl}', contextRoot = "#{contextRoot}",contextFront = "#{contextFront}";
+  console.log('contextFront:', contextFront)
   var appid = '#{req.session.appid}';
   var version = 3.2;
   console.log("appid: " + appid);

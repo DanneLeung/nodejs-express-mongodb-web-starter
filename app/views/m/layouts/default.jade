@@ -20,8 +20,6 @@ html
       !{req.session.channel.analystScript}
 
     script.
-      var baseUrl = '#{baseUrl}', contextRoot = "#{contextRoot}",contextFront = "#{contextFront}";
-      console.log('contextFront:', contextFront)
       $('#flash-message .close').click(function () {
         $('#flash-message').remove();
       });
