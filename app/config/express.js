@@ -90,9 +90,7 @@ module.exports = function (app, express, passport) {
     app.redis = new Redis(app.config.redis.single);
 
   if(env === 'production') {
-    opts.store = new RedisStore({
-      client: app.redis
-    });
+    opts.store = new RedisStore({ client: app.redis });
   } else {
     opts.store = new RedisStore({ client: app.redis });
   }

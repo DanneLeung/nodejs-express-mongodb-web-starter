@@ -19,7 +19,7 @@ module.exports = function (ROOT_PATH) {
       single: {
         host: 'localhost',
         port: 6379, // Redis port,
-        password: ''
+        password: 'dan7844'
       },
       cluster: [
         { host: '10.25.63.211', port: 30001 },
