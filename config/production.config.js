@@ -14,12 +14,12 @@ module.exports = function (ROOT_PATH) {
       db: 'starter',
       url: ''
     },
-        redis: {
+    redis: {
       mode: "single",
       single: {
-        host: 'r-bp142d4cace71894.redis.rds.aliyuncs.com',
+        host: 'localhost',
         port: 6379, // Redis port,
-        password: 'Dan784444'
+        password: ''
       },
       cluster: [
         { host: '10.25.63.211', port: 30001 },
@@ -60,7 +60,7 @@ module.exports = function (ROOT_PATH) {
     }
   };
 
-  config.database.url = process.env.MONGOHQ_URL
-    || 'mongodb://' + config.database.user + ':' + config.database.password + '@' + config.database.host + '/' + config.database.db;
+  config.database.url = process.env.MONGOHQ_URL ||
+    'mongodb://' + config.database.user + ':' + config.database.password + '@' + config.database.host + '/' + config.database.db;
   return config;
 };

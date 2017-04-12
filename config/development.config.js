@@ -11,7 +11,7 @@ module.exports = function (ROOT_PATH) {
       password: '',
       host: 'localhost',
       port: '27017',
-      db: '9c',
+      db: 'starter',
       url: ''
     },
     redis: {

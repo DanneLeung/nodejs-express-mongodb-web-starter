@@ -46,4 +46,4 @@ UserGroupSchema.statics = {
   }
 };
 
-module.exports = mongoose.model('UserGroup', UserGroupSchema, 'Usergroups');
+module.exports = mongoose.model('UserGroup', UserGroupSchema, 'usergroups');
