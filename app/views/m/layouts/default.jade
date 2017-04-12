@@ -8,7 +8,6 @@ html
     include incs/header
     block header
   body 
-    include incs/flash
     block main
 
     script(type='text/javascript', src='#{contextRoot}#{theme}/js/mzui.js')
@@ -19,10 +18,11 @@ html
       //  插入统计代码
       !{req.session.channel.analystScript}
 
+    include incs/flash
     script.
-      $('#flash-message .close').click(function () {
-        $('#flash-message').remove();
-      });
+      //- $('#flash-message .close').click(function () {
+      //-   $('#flash-message').remove();
+      //- });
 
 
     block scripts
