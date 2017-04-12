@@ -9,7 +9,7 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var ActivityLogSchema = new Schema({
-  wechat: {type: ObjectId, ref: "ChannelWechat"}, //活动的微信号
+  wechat: {type: ObjectId, ref: "Wechat"}, //活动的微信号
   activity: {type: ObjectId, ref: "Activities"}, //参与的活动
   datetime: Date, //访问日期时间
   ip: {type: String, default: ''}, //访问ip

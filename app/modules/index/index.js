@@ -22,8 +22,5 @@ router
   .post('/profile/update/:username', ctrl.updateProfile) //保持更新用户资料
   .post('/changePwd', Auth.requiresLogin, ctrl.editPassword) //修改用户密码
   .get('/validatePwd', Auth.requiresLogin, ctrl.validatePwd) //验证密码是否正确
-  .get('/', (req, res) => {
-    res.redirect('/index')
-  })
-  .get('/index', ctrl.index);
+  .get(['/', '/index'], ctrl.index);
 module.exports = router;

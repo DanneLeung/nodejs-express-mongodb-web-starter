@@ -9,7 +9,7 @@ var ObjectId = Schema.ObjectId;
 
 var WechatMessageSchema = new Schema({
   channel: {type: ObjectId, ref: 'Channel'},
-  wechat: {type: ObjectId, ref: 'ChannelWechat'},
+  wechat: {type: ObjectId, ref: 'Wechat'},
   fans: {type: ObjectId, ref: 'WechatFans'},
   toUserName: {type: String, default: ''},	//开发者微信号,originalId
   fromUserName: {type: String, default: ''},		//发送方帐号（一个OpenID）

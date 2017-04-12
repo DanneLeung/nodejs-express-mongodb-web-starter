@@ -1,0 +1,36 @@
+
+if messages.error && messages.error.length
+  .weui_mask.weui_mask_visible.backError
+  .weui_dialog.weui_dialog_visible.backError
+    .weui_dialog_hd
+      strong.weui_dialog_title 提示
+    for err in messages.error
+      .weui_dialog_bd #{err}
+    .weui_dialog_ft
+      a.weui_btn_dialog.primary(href="javascript:") 确定
+
+if messages.info && messages.info.length
+  .weui_mask.weui_mask_visible.backError
+  .weui_dialog.weui_dialog_visible.backError
+    .weui_dialog_hd
+      strong.weui_dialog_title 信息
+    for i in messages.info
+      .weui_dialog_bd #{i}
+    .weui_dialog_ft
+      a.weui_btn_dialog.primary(href="javascript:") 确定
+
+if messages.success && messages.success.length
+  .weui_mask.weui_mask_visible.backError
+  .weui_dialog.weui_dialog_visible.backError
+    .weui_dialog_hd
+      strong.weui_dialog_title 操作成功
+    for s in messages.success
+      .weui_dialog_bd #{s}
+    .weui_dialog_ft
+      a.weui_btn_dialog.primary(href="javascript:") 确定
+
+script.
+  $(function() { $('a.weui_btn_dialog').click(function() { $('.backError').remove(); }); });
+
+
+

@@ -11,7 +11,7 @@ var moment = require('moment')
  * User Schema
  */
 var WechatMenuShareSchema = new Schema({
-  wechat: {type: ObjectId, index: true, ref: 'ChannelWechat'}, //渠道下的公众号
+  wechat: {type: ObjectId, index: true, ref: 'Wechat'}, //渠道下的公众号
   wechatFans: {type: ObjectId, ref: 'WechatFans'}, //粉丝
   link: {type: String, trim: true, default: ''}, //分享链接
   desc: {type: String, trim: true, default: ''},//分享界面描述

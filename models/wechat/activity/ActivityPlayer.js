@@ -13,7 +13,7 @@ var moment = require('moment');
 
 var ActivityPlayerSchema = new Schema({
   channel: { type: ObjectId, ref: "Channel" }, //渠道
-  wechat: { type: ObjectId, index: true, ref: "ChannelWechat" }, //使用的微信号
+  wechat: { type: ObjectId, index: true, ref: "Wechat" }, //使用的微信号
   activity: { type: ObjectId, index: true, ref: "Activities" }, //参与的活动
   currAwardId: { type: ObjectId, ref: "Award" }, //中奖存id
   user: {
@@ -401,7 +401,7 @@ ActivityPlayerSchema.statics.pushAwards = function (user, awardInfo, done) {
         ChargeOrder.find({
           day: moment().format('YYYYMMDD'),
           openid: openid,
-          channelWechat: wid
+          wechat: wid
         }, function (err, orders) {
           if(err) {
             callback('流量充值失败！');
@@ -417,7 +417,7 @@ ActivityPlayerSchema.statics.pushAwards = function (user, awardInfo, done) {
             clientOrderId: no, //info.clientOrderId, //playerId
             no: no,
             day: moment().format('YYYYMMDD'),
-            channelWechat: wid,
+            wechat: wid,
             wechat: info.fansId,
             openid: openid,
             mobile: mobile,

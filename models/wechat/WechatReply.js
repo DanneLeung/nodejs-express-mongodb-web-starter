@@ -8,7 +8,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var ChannelWechat = mongoose.model('ChannelWechat');
+var Wechat = mongoose.model('Wechat');
 var ObjectId = Schema.ObjectId;
 
 var WechatReplySchema = new Schema({
@@ -57,7 +57,7 @@ WechatReplySchema.statics.createAutoReplyNews = function(channelWechatId, ruleNa
     if(channelWechatId == null){
         return cb('渠道微信ID为空', null);
     }
-    ChannelWechat.findOne({"_id": channelWechatId}, function(e, cw){
+    Wechat.findOne({"_id": channelWechatId}, function(e, cw){
         if(e){
             return cb(e, null);
         }

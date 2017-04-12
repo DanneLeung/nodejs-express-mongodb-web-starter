@@ -10,7 +10,7 @@ var ObjectId = Schema.ObjectId;
 
 var WhiteListSchema = new Schema({
   channel: { type: ObjectId, ref: "Channel" }, //渠道
-  wechat: { type: ObjectId, ref: "ChannelWechat" }, //使用的微信号
+  wechat: { type: ObjectId, ref: "Wechat" }, //使用的微信号
   name: { type: String, default: '' },
   total: { type: Number, default: 0 }, //白名单内人数
   description: { type: String, default: '' },

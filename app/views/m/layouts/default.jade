@@ -1,0 +1,30 @@
+-var baseUrl = (contextFront + req.baseUrl)
+-if (baseUrl.indexOf('http')<0)
+-baseUrl = baseUrl.replace('//','/');
+-var version = "3.8.4"
+html
+  head
+    block title
+    include incs/header
+    block header
+  body 
+    include incs/flash
+    block main
+
+    script(type='text/javascript', src='#{theme}/js/mzui.js')
+    script(type='text/javascript', src='//res.wx.qq.com/open/js/jweixin-1.0.0.js')
+    script(type='text/javascript', src='/themes/dist/js/global.min.js?v=#{version}')
+    script(type='text/javascript', src='/themes/dist/js/weixin.min.js?v=#{version}')
+    if (req.session.channel && req.session.channel.analystScript)
+      //  插入统计代码
+      !{req.session.channel.analystScript}
+
+    script.
+      var baseUrl = '#{baseUrl}', contextRoot = "#{contextRoot}",contextFront = "#{contextFront}";
+      console.log('contextFront:', contextFront)
+      $('#flash-message .close').click(function () {
+        $('#flash-message').remove();
+      });
+
+
+    block script

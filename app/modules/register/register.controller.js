@@ -33,7 +33,7 @@ exports.saveUploadImg = function (req, res) {
     "_id": id
   }, function (e, o) {
     if (o.approvedStatus == '00' || o.approvedStatus == '03') {
-      ChannelWechat.findOne({
+      Wechat.findOne({
         "channel": req.session.channelId
       }).populate("channel").exec(function (e, o) {
         if (e || o == null) {
@@ -325,7 +325,7 @@ exports.list = function (req, res) {
 exports.datatable = function (req, res) {
   WechatFans.dataTable(req.query, {
     conditions: {
-      "channelWechat": req.params.id
+      "wechat": req.params.id
     }
   }, function (err, data) {
     res.send(data);

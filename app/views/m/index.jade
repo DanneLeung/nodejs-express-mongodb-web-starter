@@ -1,0 +1,11 @@
+//
+   Created by danne on 2016/1/15.
+extends layouts/default
+block main
+  p authenticating with wechat
+block script
+  script.
+    W.oauthUser(appid, function (user) {
+      console.log(JSON.stringify(user));
+    });
+

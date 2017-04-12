@@ -10,7 +10,7 @@ var mongoose = require('mongoose')
  * wechat fans group Schema
  */
 var WechatMsgTemplateSchema = new Schema({
-  channelWechat: {type: ObjectId, index: true, ref: 'ChannelWechat'}, //渠道下的公众号
+  wechat: {type: ObjectId, index: true, ref: 'Wechat'}, //渠道下的公众号
   templateId: {type: String, trim: true, default: ""},//模板消息ID
   title: {type: String, trim: true, default: ""},//标题
   primaryIndustry: {type: String, trim: true, default: ""},//一级行业

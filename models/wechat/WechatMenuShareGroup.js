@@ -14,7 +14,7 @@ var config = require( '../../config/config');
  * User Schema
  */
 var WechatMenuShareGroupSchema = new Schema({
-  wechat: {type: ObjectId, index: true, ref: 'ChannelWechat'}, //渠道下的公众号
+  wechat: {type: ObjectId, index: true, ref: 'Wechat'}, //渠道下的公众号
   wechatFans: {type: ObjectId, ref: 'WechatFans'}, //粉丝
   nickname: {type: String}, //粉丝昵称
   shareDateRange: {type: String, default: ''}, //分享日期范围 YYYY-MM-DD

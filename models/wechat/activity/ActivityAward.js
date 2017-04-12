@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 var ObjectId = Schema.ObjectId;
 var AwardSchema = new Schema({
   channel: { type: ObjectId, ref: "Channel" }, //渠道
-  wechat: { type: ObjectId, index: true, ref: "ChannelWechat" }, //使用的微信号
+  wechat: { type: ObjectId, index: true, ref: "Wechat" }, //使用的微信号
   type: { type: String, default: '01' }, //类型：01:实物，02.票类，03.优惠券，04.兑换码
   name: { type: String, default: '' }, //名称
   mark: { type: String, default: '' }, //名称标示，用于区分不同活动中不同奖品的区分

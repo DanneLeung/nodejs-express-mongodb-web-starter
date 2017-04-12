@@ -8,7 +8,7 @@ var config = require(__dirname + '/../config/config');
 var app = express();
 app.appName = 'admin';
 
-if (process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {
   app.enable('trust proxy');
   //app.use(require('express-enforces-ssl')());
 }
@@ -20,7 +20,7 @@ require('../config/database')(app.config.database.url, mongoose);
 
 // init datatable
 var dataTable = require('mongoose-datatable');
-dataTable.configure({verbose: false, debug: false});
+dataTable.configure({ verbose: false, debug: false });
 mongoose.plugin(dataTable.init);
 
 // Models
@@ -31,7 +31,8 @@ require('./config/passport')(app, passport);
 
 // Express settings
 require('./config/express')(app, express, passport);
-
+// app initializer middleware
+require('./config/initializer')(app, express);
 // Routes
 require('./routes')(app, express);
 

@@ -11,7 +11,7 @@ var _ = require("lodash");
 
 var PageSchema = mongoose.Schema({
   _id: {type: String, default: ShortId.generate},
-  wechat: [{type: ObjectId, ref: "ChannelWechat"}], //使用的微信号
+  wechat: [{type: ObjectId, ref: "Wechat"}], //使用的微信号
   site: {type: String, ref: "Site"}, //所属站点
   name: {type: String, required: true, default: ''},//名称
   title: {type: String, required: false, default: ''},//标题

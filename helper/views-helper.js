@@ -29,7 +29,7 @@ function helpers(name) {
     res.locals.stripScript = stripScript;
     res.locals.createPagination = createPagination(req);
 
-    if (typeof req.flash !== 'undefined') {
+    if(typeof req.flash !== 'undefined') {
       res.locals.info = req.flash('info');
       res.locals.errors = req.flash('error');
       res.locals.success = req.flash('success');
@@ -57,7 +57,7 @@ function helpers(name) {
       var view = template + '.mobile.' + req.app.get('view engine');
       var file = req.app.get('views') + '/' + view;
 
-      if (/mobile/i.test(ua) && fs.existsSync(file)) {
+      if(/mobile/i.test(ua) && fs.existsSync(file)) {
         res._render(view, locals, cb);
       } else {
         res._render(template, locals, cb);
@@ -68,7 +68,6 @@ function helpers(name) {
 }
 
 module.exports = helpers;
-
 
 /**
  * Pagination helper
@@ -84,7 +83,7 @@ function createPagination(req) {
     var str = '';
     params.page = 1;
     var clas = page == 1 ? "active" : "no";
-    for (var p = 1; p <= pages; p++) {
+    for(var p = 1; p <= pages; p++) {
       params.page = p;
       clas = page == p ? "active" : "no";
       var href = '?' + qs.stringify(params);
@@ -116,7 +115,7 @@ function formatDate(date) {
  */
 
 function formatDatetime(date) {
-  if (!date || date == 'undefined') {
+  if(!date || date == 'undefined') {
     return "";
   }
   date = new Date(date);
@@ -133,7 +132,7 @@ function formatDatetime(date) {
  */
 function paddingLeft(str, char, len) {
   var s = " ";
-  while (len > 0) {
+  while(len > 0) {
     s = s + char;
     len--;
   }

@@ -1,13 +1,9 @@
 /**
- * 9cubic 0.0.1
- * y Mingai Info Tech
- * http://www.9cubic.cn
- */
-/**
  * 微信JS
- * 依赖于global.js 和 zepto.js
- * V1.1 梁沈凡更新修改认证逻辑
+ * 依赖于global.js 和 $.js
  */
+var contextRoot = context || "/";
+
 var weixinOauthURL = 'https://open.weixin.qq.com/connect/oauth2/authorize';
 var getUserInfoOauthURL = contextRoot + '/api/getUserInfo';
 var signatureUrl = contextRoot + '/api/jsConfig';
@@ -51,8 +47,8 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * 且使用JSSDK方法应在具体页面内的wx.ready()方法内使用
    */
   function config(appid) {
-    $.post(signatureUrl, {url: getLocationURL(), 'appid': appid}, function (data, status, xhr) {
-      if (status && status == 'success' && data) {
+    $.post(signatureUrl, { url: getLocationURL(), 'appid': appid }, function (data, status, xhr) {
+      if(status && status == 'success' && data) {
         console.log('********* config data:' + JSON.stringify(data));
         wx.config(data);
       } else {
@@ -105,20 +101,18 @@ var shortUrl = contextRoot + '/api/getShortUrl';
     //var openid = null;
     var state = getQueryString('state'); //通过state区分是base还是userinfo请求 alert('state: ' + state);
     var code = getQueryString('code');
-    var wid = getQueryString('wid');
-    if (!wid) wid = '';
-    var openid = localStorage.getItem(wid + '.user.openid');
-    var unionid = localStorage.getItem(wid + '.user.unionid');
-    var user = localStorage.getItem(wid + '.user');
+    var openid = localStorage.getItem(appid + '.user.openid');
+    var unionid = localStorage.getItem(appid + '.user.unionid');
+    var user = localStorage.getItem(appid + '.user');
 
-    if (!openid || openid == 'undefined') { //console.log('本地无用户信息');
-      if (!code || code == 'undefined') { //console.log('向微信发起授权请求');
+    if(!openid || openid == 'undefined') { //console.log('本地无用户信息');
+      if(!code || code == 'undefined') { //console.log('向微信发起授权请求');
         /*
          * 先靜默方式找用户信息
          */
         oauthUserBase(appid, redirectUri);
       } else {
-        if (state == 'base') {
+        if(state == 'base') {
           //console.log('静默回调');
           getUserInfoOauth(appid, callback); //静默获取open
         }
@@ -146,24 +140,19 @@ var shortUrl = contextRoot + '/api/getShortUrl';
     var state = getQueryString('state'); //通过state区分是base还是userinfo请求 alert('state: ' + state);
     var code = getQueryString('code');
 
-    if (typeof wid == 'undefined') {
-      wid = getQueryString('wid');
-    }
-    if (!wid) wid = '';
-
     //console.log('执行微信权限认证');
-    var openid = localStorage.getItem(wid + '.user.openid');
-    var unionid = localStorage.getItem(wid + '.user.unionid');
-    var user = localStorage.getItem(wid + '.user');
+    var openid = localStorage.getItem(appid + '.user.openid');
+    var unionid = localStorage.getItem(appid + '.user.unionid');
+    var user = localStorage.getItem(appid + '.user');
     // 第一次进入,浏览器本地无openid,执行base认证获取openid
-    if ((!openid || openid == 'undefined') && (!unionid || unionid == 'undefined')) {
-      if (!code) {
+    if((!openid || openid == 'undefined') && (!unionid || unionid == 'undefined')) {
+      if(!code) {
         // console.log('向微信发起网页授权请求1111');
         /*先靜默方式找用户信息，
          *如果静默方式找不到则要求用户授权
          */
         oauthUserInfo(appid, redirectUri);
-      } else if (state) {
+      } else if(state) {
         getUserInfoOauth(appid, function (user) {
           // 重定向到没有code和state的url
           console.log('&&&&&&&&&&&&& user: ', JSON.stringify(user));
@@ -174,13 +163,13 @@ var shortUrl = contextRoot + '/api/getShortUrl';
           window.location.href = removeQueryString(redirectUri, ['code', 'state']);
         });
       }
-    } else if (user && openid && openid != '' && openid != 'null') { //console.log('获取到本地用户信息');
+    } else if(user && openid && openid != '' && openid != 'null') { //console.log('获取到本地用户信息');
       console.log('获取到本地用户信息'); //console.log('获取到本地用户信息');
       return callback(user ? JSON.parse(user) : {});
-    } else if (openid && openid != '' && openid != 'null') {
-      return getUser(wid, openid, callback);
-    } else if (unionid) {
-      return getUserByUnionId(wid, unionid, callback);
+    } else if(openid && openid != '' && openid != 'null') {
+      return getUser(appid, openid, callback);
+    } else if(unionid) {
+      return getUserByUnionId(appid, unionid, callback);
     }
     // callback();
   }
@@ -191,18 +180,12 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    */
   function getUserInfoOauth(appid, callback) {
     var code = getQueryString('code');
-
-    if (typeof wid == 'undefined') {
-      wid = getQueryString('wid');
-    }
-    if (!wid) wid = '';
-
     var scope = 'snsapi_' + getQueryString('state');
     //console.log(code);
     /***/
-    Zepto.post(getUserInfoOauthURL, {'appid': appid, 'code': code, 'scope': scope, 'wid': wid}, function (data) {
-      if (data && data.error == '0' && data.result) {
-        callback(userInfoLocalStorage(wid, data.result));
+    $.post(getUserInfoOauthURL, { 'appid': appid, 'code': code, 'scope': scope, 'appid': appid }, function (data) {
+      if(data && data.error == '0' && data.result) {
+        callback(userInfoLocalStorage(appid, data.result));
         //callback在ajax返回后且设置localStorage之后执行，以保存在回调中能拿取到信息
       } else {
         console.log('获取微信用户信息错误');
@@ -212,25 +195,25 @@ var shortUrl = contextRoot + '/api/getShortUrl';
     });
   }
 
-  function getUser(wid, openid, callback) {
-    Zepto.post(userUrl, {'openid': openid}, function (user) {
-      callback(userInfoLocalStorage(wid, user));
+  function getUser(appid, openid, callback) {
+    $.post(userUrl, { 'openid': openid }, function (user) {
+      callback(userInfoLocalStorage(appid, user));
     });
   }
 
-  function getUserByUnionId(wid, unionid, callback) {
-    Zepto.post(userByUioinIdUrl, {wid: wid, unionid: unionid}, function (user) {
-      callback(userInfoLocalStorage(wid, user));
+  function getUserByUnionId(appid, unionid, callback) {
+    $.post(userByUioinIdUrl, { appid: appid, unionid: unionid }, function (user) {
+      callback(userInfoLocalStorage(appid, user));
     });
   }
 
-  function userInfoLocalStorage(wid, user) {
-    if (!user)
+  function userInfoLocalStorage(appid, user) {
+    if(!user)
       return user;
-    //localStorage.setItem(wid + '.user.openid', (user.hasOwnProperty('openid') ? user.openid : null));
-    //localStorage.setItem(wid + '.user.unionid', (user.hasOwnProperty('unionid') ? user.unionid : null));
-    localStorage.setItem(wid + '.user.openid', user.openid);
-    localStorage.setItem(wid + '.user.unionid', user.unionid);
+    //localStorage.setItem(appid + '.user.openid', (user.hasOwnProperty('openid') ? user.openid : null));
+    //localStorage.setItem(appid + '.user.unionid', (user.hasOwnProperty('unionid') ? user.unionid : null));
+    localStorage.setItem(appid + '.user.openid', user.openid);
+    localStorage.setItem(appid + '.user.unionid', user.unionid);
     var user = {
       openid: user.openid,
       nickname: user.nickname,
@@ -242,7 +225,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
       headimgurl: user.headimgurl,
       unionid: user.unionid
     };
-    localStorage.setItem(wid + '.user', JSON.stringify(user));
+    localStorage.setItem(appid + '.user', JSON.stringify(user));
     return user;
   }
 
@@ -261,7 +244,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
           var accuracy = res.accuracy; // 位置精度
           cb(latitude, longitude);
         },
-        fail: function(res){
+        fail: function (res) {
           cb();
         }
       });
@@ -292,11 +275,10 @@ var shortUrl = contextRoot + '/api/getShortUrl';
         type: 'link', // 分享类型,music、video或link，不填默认为link
         dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
         success: function () {
-          if (typeof successHandle !== 'undefined' && successHandle)
+          if(typeof successHandle !== 'undefined' && successHandle)
             successHandle();
         },
-        cancel: function () {
-        }
+        cancel: function () {}
       });
 
       wx.onMenuShareTimeline({
@@ -304,25 +286,24 @@ var shortUrl = contextRoot + '/api/getShortUrl';
         link: setting.link || htmlUrl, // 分享链接
         imgUrl: setting.imgUrl || htmlUrl + 'img/xiao_zhi_300X300.jpg', // 分享图标
         success: function () {
-          if(setting.contextRoot){
+          if(setting.contextRoot) {
             $.ajax({
-              url: setting.contextRoot+ '/api/save/menuShareTimeline',
+              url: setting.contextRoot + '/api/save/menuShareTimeline',
               type: 'post',
-              data: {"openid": setting.openid, "link": setting.link, "desc": setting.title},
-              success: function(data){
+              data: { "openid": setting.openid, "link": setting.link, "desc": setting.title },
+              success: function (data) {
 
               }
             });
 
-            var kv = {"link": setting.link, "openid": setting.openid, "desc": setting.title, "type": "2"}
+            var kv = { "link": setting.link, "openid": setting.openid, "desc": setting.title, "type": "2" }
             TDAPP.onEvent(setting.title, "发送到朋友圈分享", kv);
           }
-          if (typeof successHandle !== 'undefined' && successHandle){
+          if(typeof successHandle !== 'undefined' && successHandle) {
             successHandle();
           }
         },
-        cancel: function () {
-        }
+        cancel: function () {}
       });
     });
   }
@@ -331,12 +312,11 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * 获取粉丝列表，或更新粉丝信息
    */
   function userList() {
-    Zepto.post(userListUrl, {}, function (data) {
-    });
+    $.post(userListUrl, {}, function (data) {});
   }
 
   function getLatestToken() {
-    Zepto.post(getLatestTokenUrl, {}, function (data) {
+    $.post(getLatestTokenUrl, {}, function (data) {
       //console.log(data.accessToken);
     });
   }
@@ -409,14 +389,14 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * @param serverId
    */
   function saveUploadImg(serverId) {
-    Zepto.post(saveUploadImgUrl, {serverId: serverId}, function (data) {
+    $.post(saveUploadImgUrl, { serverId: serverId }, function (data) {
 
     });
   }
 
   function getShortUrl(longUrl, callback) {
     //var longUrl = 'http://www.baidu.com';
-    Zepto.post(shortUrl, {longUrl: longUrl}, function (data) {
+    $.post(shortUrl, { longUrl: longUrl }, function (data) {
       callback(data);
     });
   }

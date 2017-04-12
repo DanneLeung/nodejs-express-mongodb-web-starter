@@ -41,7 +41,6 @@ exports.logout = function (req, res) {
   res.redirect('/')
 };
 
-
 /**
  * @param req
  * @param res
@@ -56,13 +55,12 @@ exports.register = function (req, res) {
   });
 };
 
-
 exports.profile = function (req, res) {
   var username = req.params.username;
   User.findOne({
     username: username
   }, (err, user) => {
-    if (err) {
+    if(err) {
       console.error(err);
       req.flash('error', err);
     }
@@ -81,12 +79,12 @@ exports.profile = function (req, res) {
 exports.updateProfile = function (req, res) {
   var id = req.body.id;
   console.log(req.body);
-  if (id) {
+  if(id) {
     // update
     User.update({
       '_id': id
     }, req.body, function (err, result) {
-      if (err) {
+      if(err) {
         res.send({
           success: false,
           msg: err
@@ -101,7 +99,6 @@ exports.updateProfile = function (req, res) {
   }
 };
 
-
 /**
  * 修改用户密码
  * @param req
@@ -113,16 +110,16 @@ exports.editPassword = function (req, res) {
   var newPwd = req.body.newPwd;
   var affirmPwd = req.body.affirmPwd;
   console.log(req.body);
-  if (id) {
+  if(id) {
     User.findOne({
       _id: id
     }, function (err, user) {
-      if (!user || !user.authenticate(oldPwd)) {
+      if(!user || !user.authenticate(oldPwd)) {
         res.status(200).send({
           err: '原登录密码错误，请重新输入!'
         });
       } else {
-        if (newPwd === affirmPwd) {
+        if(newPwd === affirmPwd) {
           user.password = newPwd;
           user.save(function (err, ff) {
             res.status(200).send({
@@ -143,14 +140,13 @@ exports.editPassword = function (req, res) {
   }
 };
 
-
 exports.updatepref = function (req, res) {
   var id = req.body.id || req.user.id;
   var key = req.body.key || req.query.key;
   var value = req.body.value || req.query.value;
   User.setPreference(id, key, value, (user) => {
-    if (user) {
-      if (req.user) {
+    if(user) {
+      if(req.user) {
         req.user.preferences[key] = value;
       }
       res.status(200).send({
@@ -171,7 +167,7 @@ exports.updatepref = function (req, res) {
 exports.resetPassword = function (req, res) {
   var id = req.body.userId;
   console.log(req.body);
-  if (id) {
+  if(id) {
     User.findOne({
       _id: id
     }, function (err, user) {
@@ -184,7 +180,7 @@ exports.resetPassword = function (req, res) {
         _id: id
       }, updata, options, function (err, ff) {
         req.flash("success", "密码已重置!");
-        if (user.approvedStatus == '01') {
+        if(user.approvedStatus == '01') {
           res.redirect('/user/waitList')
         } else {
           res.redirect('/user/list')
@@ -205,7 +201,7 @@ exports.validatePwd = function (req, res) {
   var id = req.user._id;
   var pwd = req.params.oldPwd || req.query.oldPwd;
   User.findById(id, function (err, user) {
-    if (!user || !user.authenticate(pwd)) {
+    if(!user || !user.authenticate(pwd)) {
       console.log("输入的原密码不正确");
       res.send('false');
     } else {
@@ -216,5 +212,7 @@ exports.validatePwd = function (req, res) {
 };
 
 exports.index = function (req, res) {
-  res.render('index')
+  if(req.isMobile) res.redirect('/m');
+  else
+    res.render('index')
 };

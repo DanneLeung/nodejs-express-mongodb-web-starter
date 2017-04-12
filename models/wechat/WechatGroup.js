@@ -10,7 +10,7 @@ var mongoose = require('mongoose')
  */
 var WechatGroupSchema = new Schema({
   id: ObjectId,
-  channelWechat: {type: ObjectId, index: true, ref: 'ChannelWechat'}, //渠道下的公众号
+  wechat: {type: ObjectId, index: true, ref: 'Wechat'}, //渠道下的公众号
   name: {type: String, trim: true, default: ""},
   groupId: {type: String, trim: true, default: ""},
   description: {type: String, trim: true, default: ""},

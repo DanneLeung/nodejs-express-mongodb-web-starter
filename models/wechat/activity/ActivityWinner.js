@@ -10,7 +10,7 @@ var ObjectId = Schema.ObjectId;
 
 var ActivityWinnerSchema = new Schema({
   channel: { type: ObjectId, ref: "Channel" }, //渠道
-  wechat: { type: ObjectId, ref: "ChannelWechat" }, //使用的微信号
+  wechat: { type: ObjectId, ref: "Wechat" }, //使用的微信号
   activity: { type: ObjectId, ref: "Activities" }, //参与的活动
   user: {
     member: { type: ObjectId, ref: 'Member' },

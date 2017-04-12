@@ -10,7 +10,7 @@ var ObjectId = Schema.ObjectId;
 
 var ActivitiesSchema = mongoose.Schema({
   channel: { type: ObjectId, ref: "Channel" }, //所属渠道
-  wechat: { type: ObjectId, index: true, ref: "ChannelWechat" }, //使用的微信号
+  wechat: { type: ObjectId, index: true, ref: "Wechat" }, //使用的微信号
   type: { type: String, required: false, default: '' }, //活动类型
   code: { type: String, required: false, default: '' }, //代号
   name: { type: String, required: true, default: '' }, //名称

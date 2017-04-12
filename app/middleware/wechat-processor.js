@@ -4,7 +4,7 @@
  */
 var mongoose = require('mongoose'),
   _ = require('lodash'),
-  ChannelWechat = mongoose.model('ChannelWechat'),
+  Wechat = mongoose.model('Wechat'),
   WechatReply = mongoose.model('WechatReply'),
   WechatReplyLogs = mongoose.model('WechatReplyLogs'),
   WechatShareLogs = mongoose.model('WechatShareLogs'),
@@ -184,7 +184,7 @@ exports.checkWxp = function (req, res) {
  * @param originalId
  */
 function tagWechatFans(openid, ticket, originalId) {
-  ChannelWechat.findOne({ "originalId": originalId }, function (err, obj) {
+  Wechat.findOne({ "originalId": originalId }, function (err, obj) {
     if(!obj) {
       return;
     }
@@ -329,11 +329,11 @@ function phoneFare(openid, originalId, res) {
 function nearBranches(openid, originalId, x, y, res) {
   async.waterfall([function (cb) {
     //type:4 微信认证公众号, "type": "4"
-    ChannelWechat.findOne({ "originalId": originalId }).populate("channel").exec(function (e, channelWechat) {
-      if(e || channelWechat == null) {
+    Wechat.findOne({ "originalId": originalId }).populate("channel").exec(function (e, wechat) {
+      if(e || wechat == null) {
         cb("附近无相关网点", null);
       } else {
-        cb(null, channelWechat.channel);
+        cb(null, wechat.channel);
       }
     });
   }, function (channel, cb) {
@@ -570,7 +570,7 @@ function unsubscribe(openid, res) {
  * @param {*} cb
  */
 function updateUserInfo(openid, originalId, ticket, cb) {
-  ChannelWechat.findOne({ "originalId": originalId }, function (e, cw) {
+  Wechat.findOne({ "originalId": originalId }, function (e, cw) {
     if(e || cw == null) {
       console.log("公众号不存在");
       return;
@@ -579,7 +579,7 @@ function updateUserInfo(openid, originalId, ticket, cb) {
       //微信api获取用户信息
       api.getUser(openid, function (err, userInfo) {
         if(!err) {
-          userInfo.channelWechat = cw._id; //渠道公众号
+          userInfo.wechat = cw._id; //渠道公众号
           userInfo.flag = userInfo.subscribe && (userInfo.subscribe == "1" || userInfo.subscribe == 1);
           //TODO: 修改下面代码
           // 微信推广，ticket为识别字符串
@@ -589,9 +589,9 @@ function updateUserInfo(openid, originalId, ticket, cb) {
               userInfo.identifyNo = wb.identifyNo;
             }
             //检查appid是否有多个配置channelWechat
-            ChannelWechat.find({ "originalId": originalId }, function (e, cws) {
+            Wechat.find({ "originalId": originalId }, function (e, cws) {
               async.map(cws, (we, cbb) => {
-                userInfo.channelWechat = we._id;
+                userInfo.wechat = we._id;
                 //不同渠道绑定的相同公众号的粉丝信息均要更新
                 WechatFans.findAndSave(userInfo, function (fan) {
                   return cbb(fan);
@@ -639,7 +639,7 @@ function updateUserInfo(openid, originalId, ticket, cb) {
  * @param {*} cb
  */
 function updateFansByUnionid(originalId, unionid, fan, cb) {
-  ChannelWechat.find({ "originalId": originalId }, function (e, cws) {
+  Wechat.find({ "originalId": originalId }, function (e, cws) {
     async.map(cws, (we, cbb) => {
       WechatFans.findAndSaveByUnionId(we._id, unionid, fan, function (ff) {
         if(!ff || !ff.openid)
@@ -920,7 +920,7 @@ function saveWechatMessage(result) {
     msgId: result.xml.MsgId != null ? result.xml.MsgId[0] : null
   });
   async.waterfall([function (cb) {
-    ChannelWechat.findOne({ "originalId": wm.toUserName }, function (err, cw) {
+    Wechat.findOne({ "originalId": wm.toUserName }, function (err, cw) {
       if(err || !cw) {
         cb(err, null);
       } else {

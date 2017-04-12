@@ -1,12 +1,7 @@
-/** 
- * 9cubic 0.0.1 
- * y Mingai Info Tech
- * http://www.9cubic.cn
- */
 function getQueryString(name) {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   var r = decodeURI(window.location.search).substr(1).match(reg);
-  if (r != null) return unescape(r[2]);
+  if(r != null) return unescape(r[2]);
   return null;
 }
 
@@ -15,23 +10,23 @@ function getQueryString(name) {
  * @param names 名字数组
  */
 function removeQueryString(url, names) {
-  if (names && url && url.indexOf('?') >= 0) {
+  if(names && url && url.indexOf('?') >= 0) {
     var s = url.substr(0, url.indexOf('?'));
     var q = url.substr(url.indexOf('?') + 1);
     console.log("s: %s, q: %s", s, q);
-    if (q) {
+    if(q) {
       var array = q.split('&');
       console.log("array ", array);
-      if (array) {
+      if(array) {
         var newQs = '';
-        for (var i = 0; i < array.length; i++) {
+        for(var i = 0; i < array.length; i++) {
           var qs = array[i];
           qs = qs.indexOf('=') >= 0 ? qs.substr(0, qs.indexOf('=')) : qs;
-          if (!inarray(qs, names)) {
+          if(!inarray(qs, names)) {
             newQs += "&" + array[i];
           }
         }
-        if (newQs.length > 0) {
+        if(newQs.length > 0) {
           //s += '?' + (newQs.startsWith('&') ? newQs.substr(1) : newQs);
           s += '?' + (newQs.indexOf('&') == 0 ? newQs.substr(1) : newQs);
           s += '&_' + Date.now();
@@ -46,9 +41,9 @@ function removeQueryString(url, names) {
 }
 
 function inarray(s, array) {
-  if (array && array.length > 0) {
-    for (var i = 0; i < array.length; i++) {
-      if (s == array[i]) {
+  if(array && array.length > 0) {
+    for(var i = 0; i < array.length; i++) {
+      if(s == array[i]) {
         return true;
       }
     }
@@ -66,12 +61,12 @@ function getLocationURL() {
 function getLocation(cb) {
   //打开一次浏览器重新获取一次地址
   var geolocation = sessionStorage.geolocation;
-  if (geolocation) {
+  if(geolocation) {
     cb(geolocation.split(','));
     return;
   }
   //从url中获取坐标(通过微信端发送位置,回复的图文消息中传递的坐标)
-  if (getQueryString("lat") && getQueryString("lng")) {
+  if(getQueryString("lat") && getQueryString("lng")) {
     var lat = getQueryString("lat");
     var lng = getQueryString("lng");
     var geolocation = [lng, lat];
@@ -82,7 +77,7 @@ function getLocation(cb) {
 
   //geolocation = [121.473701, 31.230416];
   //获取当前位置坐标
-  if (is_weixn()) {
+  if(is_weixn()) {
     //通过微信地图定位,取得gps坐标
     W.location(function (lat, lng) {
       var geolocation = [lng, lat];
@@ -90,19 +85,18 @@ function getLocation(cb) {
       cb(geolocation);
     });
   } else {
-    if (navigator.geolocation) {
+    if(navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (p) {
-          var latitude = p.coords.latitude;//纬度
-          var longitude = p.coords.longitude;
-          console.log("经纬度" + (longitude + "," + latitude));
-          geolocation = [longitude, latitude];
-          sessionStorage.geolocation = geolocation;
-          cb(geolocation);
-        }, function (e) {
-          sessionStorage.geolocation = geolocation;
-          cb(geolocation);
-        }
-      );
+        var latitude = p.coords.latitude; //纬度
+        var longitude = p.coords.longitude;
+        console.log("经纬度" + (longitude + "," + latitude));
+        geolocation = [longitude, latitude];
+        sessionStorage.geolocation = geolocation;
+        cb(geolocation);
+      }, function (e) {
+        sessionStorage.geolocation = geolocation;
+        cb(geolocation);
+      });
     } else {
       //cb([121.473701, 31.230416]);
       alert("浏览器不支持定位功能!");
@@ -111,8 +105,8 @@ function getLocation(cb) {
 }
 
 function _getCityName() {
-  if (window.localStorage) {
-    if (localStorage["cityName"])
+  if(window.localStorage) {
+    if(localStorage["cityName"])
       return localStorage["cityName"];
     else
       return null;
@@ -122,8 +116,8 @@ function _getCityName() {
 }
 
 function _getCityId() {
-  if (window.localStorage) {
-    if (localStorage["cityId"])
+  if(window.localStorage) {
+    if(localStorage["cityId"])
       return localStorage["cityId"];
     else
       return null;
@@ -132,11 +126,10 @@ function _getCityId() {
   }
 }
 
-
 function is_weixn() {
   var ua = navigator.userAgent.toLowerCase();
   //S.alert(ua);
-  if (ua.match(/micromessenger/i) == "micromessenger") {
+  if(ua.match(/micromessenger/i) == "micromessenger") {
     return true;
   } else {
     return false;
@@ -145,7 +138,7 @@ function is_weixn() {
 
 // 非微信浏览器
 function nwx() {
-  if (!is_weixn()) {
+  if(!is_weixn()) {
     //$indexHeaderLeft = $(".indexHeader-left");
     //$indexHeaderLeft[0].className = "indexHeader-left-nwx";
     //$indexHeaderLeft.bind("click", function(){
@@ -163,10 +156,12 @@ function nwx() {
 }
 
 var getStrSize = function (str) {
-  var realLength = 0, len = str.length, charCode = -1;
-  for (var i = 0; i < len; i++) {
+  var realLength = 0,
+    len = str.length,
+    charCode = -1;
+  for(var i = 0; i < len; i++) {
     charCode = str.charCodeAt(i);
-    if (charCode >= 0 && charCode <= 128) realLength += 1;
+    if(charCode >= 0 && charCode <= 128) realLength += 1;
     else realLength += 2;
   }
   return realLength;
@@ -184,8 +179,8 @@ function closeShare() {
 }
 
 function _getUserId() {
-  if (window.sessionStorage) {
-    if (sessionStorage["user.openid"])
+  if(window.sessionStorage) {
+    if(sessionStorage["user.openid"])
       return sessionStorage["user.openid"];
     else
       return null;

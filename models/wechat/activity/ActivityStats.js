@@ -9,7 +9,7 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var ActivityStatSchema = new Schema({
-  wechat: { type: ObjectId, ref: "ChannelWechat" }, //活动的微信号
+  wechat: { type: ObjectId, ref: "Wechat" }, //活动的微信号
   activity: { type: ObjectId, ref: "Activities" }, //参与的活动
   datetime: { type: Date, required: false, default: Date.now }, //统计时间段，每1或10分钟，根据系统合计精度而定
   userCount: { type: Number, default: 0 }, //访问和参与的用户数

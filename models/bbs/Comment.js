@@ -15,6 +15,7 @@ let CommentSchema = new Schema({
   to: { type: ObjectId, ref: 'User' },
   toFans: { type: ObjectId, ref: 'WechatFans' },
   content: { type: String, default: '' }, //描述
+  hot: Boolean, // 热门评论
   blocked: { type: Boolean, default: false } //屏蔽
 }, { timestamps: {} });
 var Comment = mongoose.model('Comment', CommentSchema, 'comments')
