@@ -5,7 +5,6 @@
 var weixinOauthURL = 'https://open.weixin.qq.com/connect/oauth2/authorize';
 var getUserInfoOauthURL = contextRoot + '/api/getUserInfo';
 var signatureUrl = contextRoot + '/api/jsConfig';
-
 var userListUrl = contextRoot + '/api/userList';
 var userUrl = contextRoot + '/api/getUser';
 var userByUioinIdUrl = contextRoot + '/api/getUserByUnionId';
