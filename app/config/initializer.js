@@ -96,7 +96,7 @@ module.exports = function (app, express) {
 
               res.locals.theme = req.session.themeRoot + "/lte";
               res.locals.themeFront = req.session.themeRoot + '/' + themeFront;
-              console.log('########################## context, front, static, theme ', contextRoot, contextFront, staticRoot, themeRoot);
+              console.log('########################## context, front, static, themeRoot ', contextRoot, contextFront, staticRoot, themeRoot);
               return cb(null, setting);
             } else {
               return cb(null, null);
