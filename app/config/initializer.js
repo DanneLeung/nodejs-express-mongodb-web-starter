@@ -87,7 +87,7 @@ module.exports = function (app, express) {
               res.locals.staticRoot = req.session.staticRoot = staticRoot.indexOf('://') ? staticRoot : staticRoot.replace('//', '/');
 
               var themeRoot = setting['theme.root'] || '/themes';
-              var themeFront = setting['theme.front'] || '/mzui';
+              var themeFront = setting['theme.front'] || 'mzui';
               if(themeRoot) {
                 themeRoot = themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
               }
@@ -95,7 +95,7 @@ module.exports = function (app, express) {
               res.locals.themeRoot = req.session.themeRoot = themeRoot.indexOf('://') ? themeRoot : themeRoot.replace('//', '/');
 
               res.locals.theme = req.session.themeRoot + "/lte";
-              res.locals.themeFront = req.session.themeRoot + themeFront;
+              res.locals.themeFront = req.session.themeRoot + '/' + themeFront;
               // console.log('########################## context, front, static, theme ', contextRoot, contextFront, staticRoot, themeRoot);
               return cb(null, setting);
             } else {
