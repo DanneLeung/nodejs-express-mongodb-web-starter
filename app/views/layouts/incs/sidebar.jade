@@ -17,7 +17,7 @@ aside.main-sidebar
         a(href='/admin/dashboard')
           i.fa.fa-dashboard
           span 仪表盘
-      li.treeview
+      li.treeview(class="#{isActive('/admin/cms')}")
         a(href='#')
           i.fa.fa-leaf
           span 内容管理
@@ -32,11 +32,7 @@ aside.main-sidebar
             a(href='/admin/cms/article')
               i.fa.fa-fw.fa-book
               |  文章管理
-          li(class="#{isActive('/admin/cms/article')}")
-            a(href='/admin/cms/article')
-              i.fa.fa-fw.fa-book
-              |  粉丝用户
-      li.treeview
+      li.treeview(class="#{isActive('/admin/bbs')}")
         a(href='#')
           i.fa.fa-gear
           span 论坛管理
@@ -51,7 +47,26 @@ aside.main-sidebar
             a(href='/admin/bbs/topic')
               i.fa.fa-fw.fa-book
               |  帖子管理
+          li(class="#{isActive('/admin/bbs/comment')}")
+            a(href='/admin/bbs/comment')
+              i.fa.fa-fw.fa-comments
+              |  评论管理
       li.treeview
+        a(href='#')
+          i.fa.fa-wechat
+          span 微信公众号
+          span.pull-right-container
+            i.fa.fa-angle-left.pull-right
+        ul.treeview-menu
+          li(class="#{isActive('/admin/wechat')}")
+            a(href='/admin/wechat')
+              i.fa.fa-fw.fa-th
+              |  公众号配置
+          li(class="#{isActive('/admin/wechat/fans')}")
+            a(href='/admin/wechat/fans')
+              i.fa.fa-fw.fa-user
+              |  粉丝管理
+      li.treeview(class="#{isActive('/admin/system')}")
         a(href='#')
           i.fa.fa-gear
           span 系统管理

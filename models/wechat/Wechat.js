@@ -35,8 +35,9 @@ WechatSchema.statics.getDefault = function (done) {
         if(err) console.error(err);
         return done(err, w);
       });
+    } else {
+      return done(err, o);
     }
-    return done(err, o);
   });
 };
 /**
@@ -70,7 +71,7 @@ WechatSchema.statics.getWechat = function (appid, done) {
 WechatSchema.statics.getAuthWechat = function (done) {
   Wechat.find({ type: { $in: ['3', '4'] } }).exec(function (err, wechats) {
     if(err) console.error(err);
-    done(err, wechats);
+    return done(err, wechats);
   });
 };
 
