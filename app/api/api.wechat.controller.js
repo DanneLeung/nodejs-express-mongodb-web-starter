@@ -45,9 +45,7 @@ exports.jsConfig = function (req, res) {
     url: url
   };
   //TODO:要根据appid查某一个具体的参数配置
-  Wechat.findOne({
-    "appid": appid
-  }, function (e, o) {
+  Wechat.getWechat(appid, function (e, o) {
     if(e || !o) {
       res.send({ "error": "1", "msg": "未查到渠道配置微信相关参数" });
     } else {
@@ -78,7 +76,7 @@ exports.jsConfig = function (req, res) {
  */
 exports.getAppId = function (req, res) {
   console.log("**************** getAppId, channelId: ", req.session.channelId);
-  Wechat.getWechat(req.session.channelId, req.session.appid, function (appid) {
+  Wechat.getWechat(req.session.appid, function (appid) {
     if(!appid) {
       res.send({ "success": "0", "msg": "未查到渠道配置微信相关参数" });
       return;
@@ -95,12 +93,12 @@ exports.getAppId = function (req, res) {
  * @param res
  */
 exports.getUserByUnionId = function (req, res) {
-  var wid = req.query.wid || req.body.wid || req.params.wid;
+  var appid = req.query.appid || req.body.appid || req.params.appid;
   var unionid = req.query.unionid || req.body.unionid || req.params.unionid;
-  WechatFans.findByUnionId(wid, unionid, function (user) {
+  WechatFans.findByUnionId(appid, unionid, function (user) {
     //if (!user.hasOwnProperty('openid')) user.openid = '';
     if(!user) {
-      console.warn("***************** fans with unionid %s and wid %s not found.", unionid, wid);
+      console.warn("***************** fans with unionid %s and appid %s not found.", unionid, appid);
     }
 
     return res.status(200).json(user);
@@ -135,9 +133,8 @@ exports.getUserinfo = function (req, res) {
     return;
   }
   //使用认证服务号取得用户信息
-  Wechat.findOne({
-    "appid": appid
-  }, function (e, o) {
+  Wechat.getWechat(appid, function (e, o) {
+    let wid = o._id;
     if(e || o == null) {
       res.send({ "error": "1", "msg": "未查到渠道配置微信相关参数" });
     } else {
@@ -159,31 +156,23 @@ exports.getUserinfo = function (req, res) {
               if('snsapi_userinfo' == scope) {
                 client.getUser({ openid: openid, lang: 'zh_CN' }, function (err, userInfo) {
                   var unionid = userInfo.unionid;
-                  //检查appid是否有多个配置wechat
-                  console.log('%%%%%%%%%%%% snsapi_userinfo, 微信接口活动用户信息： ', userInfo);
-                  Wechat.find({ "appid": appid }, function (e, os) {
-                    async.map(os, (we, cbb) => {
-                      userInfo.wechat = we._id; //当前认证的wechatid
-                      WechatFans.findAndSave(userInfo, function (fan) {
-                        // 如果是借用服务号获取用户信息，则需要通过unionid获取
-                        console.log('%%%%%%%%%%%% snsapi_userinfo,更新所有渠道绑定微信号:%s的用户信息： ', we._id, fan);
-                        return cbb(fan);
+                  userInfo.wechat = we._id; //当前认证的wechatid
+                  WechatFans.findAndSave(userInfo, function (fan) {
+                    // 如果是借用服务号获取用户信息，则需要通过unionid获取
+                    console.log('%%%%%%%%%%%% snsapi_userinfo,更新所有渠道绑定微信号:%s的用户信息： ', we._id, fan);
+                    if(unionid) {
+                      // 有绑定微信开发平台有unionid
+                      WechatFans.findAndSaveByUnionId(unionid, userInfo, function (f) {
+                        if(!f || !f.openid)
+                          console.warn('********** 未找到wid: %s, unionid: %s 对应的微信粉丝，用户未关注微信, 先创建粉丝记录.', wid, unionid);
+                        // f.wechat = null;
+                        res.send({ "error": "0", "msg": "", result: f });
                       });
-                    }, (err, r) => {
-                      if(unionid) {
-                        // 有绑定微信开发平台有unionid
-                        WechatFans.findAndSaveByUnionId(wid, unionid, userInfo, function (f) {
-                          if(!f || !f.openid)
-                            console.warn('********** 未找到wid: %s, unionid: %s 对应的微信粉丝，用户未关注微信, 先创建粉丝记录.', wid, unionid);
-                          // f.wechat = null;
-                          res.send({ "error": "0", "msg": "", result: f });
-                        });
-                      } else {
-                        // 没有unionid，直接返回用户信息
-                        // userInfo.wechat = null;
-                        res.send({ "error": "0", "msg": "", result: userInfo });
-                      }
-                    });
+                    } else {
+                      // 没有unionid，直接返回用户信息
+                      // userInfo.wechat = null;
+                      res.send({ "error": "0", "msg": "", result: fan });
+                    }
                   });
                 });
               } else {
@@ -210,7 +199,7 @@ exports.getUserinfo = function (req, res) {
                       }, (err, r) => {
                         if(unionid) {
                           // 有绑定微信开发平台有unionid
-                          WechatFans.findAndSaveByUnionId(wid, unionid, userInfo, function (f) {
+                          WechatFans.findAndSaveByUnionId(unionid, userInfo, function (f) {
                             if(!f || !f.openid)
                               console.log(' !!!!!!!!!!!! 未找到wid: %s, unionid: %s 对应的微信粉丝，用户未关注微信, 直接创建粉丝了记录.', wid, f.unionid);
                             // f.wechat = null;
@@ -228,7 +217,7 @@ exports.getUserinfo = function (req, res) {
                 } else {
                   //粉丝有unionid，确定已绑定开放平台
                   //更新appid对应多个配置wechat的粉丝信息
-                  WechatFans.findAndSaveByUnionId(wid, fan.unionid, fan, function (ff) {
+                  WechatFans.findAndSaveByUnionId(fan.unionid, fan, function (ff) {
                     if(!ff || !ff.openid)
                       console.log(' @@@@@@@@@@@@ 未找到wid: %s, unionid: %s 对应的微信粉丝，用户未关注微信, 直接创建粉丝了记录.', wid, fan.unionid);
                     console.log(' @@@@@@@@@@@@ 程序使用wid：%s, 借用wid: %s, 返回粉丝：', wid, fan.wechat._id, ff);

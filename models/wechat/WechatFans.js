@@ -10,7 +10,7 @@ var mongoose = require('mongoose'),
  */
 var WechatFansSchema = new Schema({
   wechat: { type: ObjectId, index: true, ref: 'Wechat' }, //渠道下的公众号
-  wechatGroup: { type: ObjectId, ref: 'WechatGroup' }, //分组
+  group: { type: ObjectId, ref: 'WechatGroup' }, //分组
   openid: { type: String, trim: true, index: true, default: '' },
   unionid: { type: String, trim: true, index: true, default: '' },
   nickname: { type: String, trim: true, index: true, default: '' },
@@ -47,8 +47,8 @@ WechatFansSchema.statics.isFans = function (openid, wid, done) {
     q.wechat = wid;
   }
   WechatFans.findOne(q, function (err, fans) {
-    console.log('===============fans###################',openid, wid, fans);
-    if(err){
+    console.log('===============fans###################', openid, wid, fans);
+    if(err) {
       console.error(err);
     }
     if(fans && fans.subscribe == '1') {
@@ -110,7 +110,7 @@ WechatFansSchema.statics.findByOpenId = function (openid, cb) {
   if(!openid) openid = "";
   WechatFans.findOne({
     openid: openid
-  }).populate("wechat").select("wechat openid unionid nickname sex language city province country headimgurl subscribe subscribe_time flag subscribeTimes").exec(function (err, fans) {
+  }).populate("wechat").select("wechat openid unionid nickname sex language city province country headimgurl subscribe subscribe_time subscribeTimes").exec(function (err, fans) {
     if(err) console.error(err);
     cb(fans);
   });
@@ -134,7 +134,7 @@ WechatFansSchema.statics.findByWechatAndUnionId = function (wid, unionid, cb) {
       unionid: unionid
     })
     // .populate({ path: 'wechat', match: { appid: appid } })
-    .select("wechat openid unionid nickname sex language city province country headimgurl subscribe subscribe_time flag subscribeTimes").exec(function (err, fan) {
+    .select("wechat openid unionid nickname sex language city province country headimgurl subscribe subscribe_time subscribeTimes").exec(function (err, fan) {
       if(err) console.error(err);
       cb(fan);
     });
@@ -142,10 +142,8 @@ WechatFansSchema.statics.findByWechatAndUnionId = function (wid, unionid, cb) {
 /**
  * 通过微信id和unionid获取用户信息,信息不存在的话则创建
  */
-WechatFansSchema.statics.findAndSaveByUnionId = function (wid, unionid, obj, cb) {
+WechatFansSchema.statics.findAndSaveByUnionId = function (unionid, obj, cb) {
   var data = {
-    wechat: wid,
-    // openid: obj.openid,
     unionid: unionid,
     nickname: obj.nickname,
     sex: obj.sex,
@@ -157,12 +155,10 @@ WechatFansSchema.statics.findAndSaveByUnionId = function (wid, unionid, obj, cb)
     subscribe: obj.subscribe,
     subscribe_time: obj.subscribe_time,
     remark: obj.remark ? obj.remark : "",
-    note: 'WechatFans findAndSaveByUnionId with wid: ' + wid + ', unionid: ' + unionid
+    note: 'WechatFans findAndSaveByUnionId with unionid: ' + unionid
   };
-  data.flag = data.subscribe && (data.subscribe == "1" || data.subscribe == 1);
 
   WechatFans.findOneAndUpdate({
-    wechat: wid,
     unionid: unionid
   }, data, {
     new: true,
@@ -184,7 +180,6 @@ WechatFansSchema.statics.findAndSave = function (obj, cb) {
   }
 
   obj.scanCount ? obj.scanCount += 1 : obj.scanCount = 1;
-  obj.flag = obj.subscribe && (obj.subscribe == "1" || obj.subscribe == 1);
   var q = { openid: obj.openid };
   if(obj.wechat) q.wechat = obj.wechat;
   obj.note = 'WechatFans.findAndSave with subscribe: ' + obj.subscribe;

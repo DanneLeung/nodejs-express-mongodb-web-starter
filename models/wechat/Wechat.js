@@ -25,7 +25,6 @@ var WechatSchema = mongoose.Schema({
 
 /**
  * 查找渠道中配置的默认公众号
- * @param channelId 渠道id
  * @param done 回调
  */
 WechatSchema.statics.getDefault = function (done) {
@@ -55,8 +54,8 @@ WechatSchema.statics.findByAppid = function (appid, done) {
 /**
  * 根据渠道id，wechatid取得可以执行页面认证授权的微信公众号，借用则取借用的公众号
  **/
-WechatSchema.statics.getWechat = function (done) {
-  Wechat.findOne({}).populate('oauthWechat log').exec(function (err, wechat) {
+WechatSchema.statics.getWechat = function (appid, done) {
+  Wechat.findOne({ appid: appid }).populate('oauthWechat log').exec(function (err, wechat) {
     if(err) console.error(err);
 
     if(!wechat)
