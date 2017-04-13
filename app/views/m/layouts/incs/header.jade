@@ -14,7 +14,7 @@ link(href='/themes/dist/images/icon.png', rel='Shortcut Icon', type='image/x-ico
 link(rel="stylesheet", href="#{theme}/css/mzui.min.css")
 
 script.
-  var baseUrl = '#{baseUrl}', contextRoot = "",contextFront = "#{contextFront}";
+  var baseUrl = '#{baseUrl}', contextRoot = "#{contextRoot}",contextFront = "#{contextFront}";
   console.log('contextRoot: %s, contextFront: %s', contextRoot, contextFront);
   var appid = '#{req.session.appid}';
   var authAppid = '#{req.session.authAppid}';
