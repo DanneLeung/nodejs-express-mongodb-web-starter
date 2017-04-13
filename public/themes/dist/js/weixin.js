@@ -1,6 +1,6 @@
 /**
  * 微信JS
- * 依赖于global.js 和 $.js
+ * 依赖于global.js 和 zepto.js/jquery.js
  */
 var weixinOauthURL = 'https://open.weixin.qq.com/connect/oauth2/authorize';
 var getUserInfoOauthURL = contextRoot + '/api/getUserInfo';
@@ -21,14 +21,13 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    */
   var W = {
     configWx: config,
+    getUser: getUser,
     oauthUser: oauthUser,
     oauthQuiet: oauthQuiet,
     weixinShare: weixinShare,
     location: getLocation,
     openLocation: openLocation,
-    userList: userList,
     saveUploadImg: saveUploadImg,
-    latestToken: getLatestToken,
     chooseImage: chooseImage,
     previewImage: previewImage,
     uploadImage: uploadImage,
@@ -172,6 +171,9 @@ var shortUrl = contextRoot + '/api/getShortUrl';
     // callback();
   }
 
+  function getUser(appid) {
+    return localStorage.getItem(appid + '.user');
+  }
   /**
    * 用户授权公开信息后，通过微信返回code从服务端请求用户信息
    * @param callback
@@ -303,19 +305,6 @@ var shortUrl = contextRoot + '/api/getShortUrl';
         },
         cancel: function () {}
       });
-    });
-  }
-
-  /**
-   * 获取粉丝列表，或更新粉丝信息
-   */
-  function userList() {
-    $.post(userListUrl, {}, function (data) {});
-  }
-
-  function getLatestToken() {
-    $.post(getLatestTokenUrl, {}, function (data) {
-      //console.log(data.accessToken);
     });
   }
 

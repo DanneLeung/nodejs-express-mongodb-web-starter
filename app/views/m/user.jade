@@ -1,0 +1,59 @@
+extends layouts/default
+block header
+  style.
+    .profile-haeder {position: relative; overflow: hidden; min-height: 8rem}
+    .profile-haeder > .back {top: -2rem; left: -2rem; right: -2rem; bottom: -2rem; background-position: center; background-size: cover}
+    .profile-haeder > .front {background: rgba(0,0,0,.1); text-align: center; padding: 1.5rem}
+
+block main
+  header#haedNav.heading.primary.affix.dock-top.dock-auto
+    nav#headNav.nav
+      a.brand-name(href='#{contextFront}/home', data-page-name='index')
+        i.icon-home
+    .title
+    //- nav.nav
+      a(href='#{contextFront}/user')
+        i.icon-user
+  .profile-haeder.space.shadow
+    .dock.blur-lg.back(style='background-image: url(doc/img/img2.jpg)')
+    .front.dock.text-white
+      .avatar.avatar-xl.circle.space-sm
+        img#headimgurl(src='avatar.png', alt='')
+      h4#nickname.lead.text-shadow-black Catouse
+
+  .section
+    .list.with-divider
+      a.item.with-avatar
+        .avatar.text-gray
+          i.icon-list-ul
+        .title &#x8BA2;&#x5355;&#x5217;&#x8868;
+        i.icon.icon-chevron-right.muted
+      a.item.with-avatar
+        .avatar.text-gray
+          i.icon.icon-comments
+        .title &#x6211;&#x7684;&#x6D88;&#x606F;
+        i.icon.icon-chevron-right.muted
+      a.item.with-avatar
+        .avatar.text-gray
+          i.icon.icon-lock
+        .title &#x5B89;&#x5168;&#x4E2D;&#x5FC3;
+        i.icon.icon-chevron-right.muted
+      a.item.with-avatar
+        .avatar.text-gray
+          i.icon-cog
+        .title &#x4E2A;&#x4EBA;&#x8BBE;&#x7F6E;
+        i.icon.icon-chevron-right.muted
+      a.item.with-avatar
+        .avatar.text-gray
+          i.icon-qrcode
+        .title &#x6211;&#x7684;&#x4E8C;&#x7EF4;&#x7801;
+        i.icon.icon-chevron-right.muted
+block scripts
+  script.
+    $(document).ready(function(){
+      var user = W.getUser(appid);
+      console.log(JSON.stringify(user));
+      $('h4#nickname').html(user.nickname ? user.nickname : '未知用户');
+      $('#headimgurl').attr('src', user.headimgurl ? user.headimgurl : '#{baseUrl}/imgs/headimg_default.jpg');
+    });
+

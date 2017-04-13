@@ -33,7 +33,7 @@ module.exports = function (app, express) {
         if(wechat) {
           req.session.wechat = res.locals.wechat = wechat; //当前使用公众号
           req.session.appid = res.locals.appid = wechat.appid; //当前使用公众号的appid
-          
+
           if(wechat.oauthWechat) {
             req.session.authAppid = res.locals.authAppid = wechat.oauthWechat.appid; //认证授权使用的appid
             req.session.authWid = res.locals.authWid = wechat.oauthWechat.id; //认证授权使用的wid
@@ -55,10 +55,11 @@ module.exports = function (app, express) {
     }, function (cb) {
       if(env == 'development') {
         //开发模式时访问本地localhost
-        res.locals.contextFront = req.session.contextFront = '/';
+        res.locals.contextRoot = req.session.contextRoot = '';
+        res.locals.contextFront = req.session.contextFront = '/m';
         res.locals.staticRoot = req.session.staticRoot = '';
         req.session.themeRoot = "/themes";
-        res.locals.theme = req.session.themeRoot + "/jquery-weui";
+        res.locals.theme = req.session.themeRoot + "/mzui";
         cb(null, null);
         //next();
       } else {

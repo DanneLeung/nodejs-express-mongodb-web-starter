@@ -136,25 +136,6 @@ function is_weixn() {
   }
 }
 
-// 非微信浏览器
-function nwx() {
-  if(!is_weixn()) {
-    //$indexHeaderLeft = $(".indexHeader-left");
-    //$indexHeaderLeft[0].className = "indexHeader-left-nwx";
-    //$indexHeaderLeft.bind("click", function(){
-    //	history.go(-1);
-    //});
-    $("#banner-header-right-share").css("display", "none");
-  } else {
-    $("#banner-header-right-share").bind("click", function () {
-      $("#brand-detail-guide").toggleClass("hide");
-      $("#brand-detail-guide").bind("click", function () {
-        $("#brand-detail-guide").addClass("hide");
-      }, false)
-    }, false);
-  }
-}
-
 var getStrSize = function (str) {
   var realLength = 0,
     len = str.length,

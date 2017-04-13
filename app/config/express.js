@@ -84,15 +84,15 @@ module.exports = function (app, express, passport) {
     }
   };
 
-  if("cluster" === app.config.redis.mode)
-    app.redis = new Redis.Cluster(app.config.redis.cluster);
-  else
-    app.redis = new Redis(app.config.redis.single);
 
   if(env === 'production') {
+    if("cluster" === app.config.redis.mode)
+      app.redis = new Redis.Cluster(app.config.redis.cluster);
+    else
+      app.redis = new Redis(app.config.redis.single);
     opts.store = new RedisStore({ client: app.redis });
   } else {
-    opts.store = new RedisStore({ client: app.redis });
+    // opts.store = new RedisStore({ client: app.redis });
   }
 
   app.use(session(opts));
