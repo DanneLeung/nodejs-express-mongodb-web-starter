@@ -73,14 +73,18 @@ aside.main-sidebar
           span.pull-right-container
             i.fa.fa-angle-left.pull-right
         ul.treeview-menu
+          li(class="#{isActive('/admin/system/setting')}")
+            a(href='/admin/system/setting')
+              i.fa.fa-user
+              |  系统参数
           li(class="#{isActive('/admin/system/user')}")
             a(href='/admin/system/user')
               i.fa.fa-user
-              |  用户
+              |  系统用户
           li(class="#{isActive('/admin/system/group')}")
             a(href='/admin/system/group')
               i.fa.fa-users
-              |  用户组
+              |  用户分组
       //- li.treeview
         a(href='#')
           i.fa.fa-share

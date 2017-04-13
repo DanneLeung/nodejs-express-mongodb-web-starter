@@ -37,16 +37,16 @@ module.exports = function (app, express, passport) {
       skip: function (req, res) {
         return res.statusCode < 400;
       }
-    }))
+    }));
   } else {
     app.use(morgan('combined', {
       skip: function (req, res) {
-        return res.statusCode < 400
+        return res.statusCode < 400;
       },
       stream: require('fs').createWriteStream(app.config.root + '/access.log', {
         flags: 'a'
       })
-    }))
+    }));
   }
 
   app.use(bodyParser.urlencoded({
@@ -64,12 +64,12 @@ module.exports = function (app, express, passport) {
 
   //微信事件推送监听
   //TODO: 使用express 中间件机制拦截处理维系推送消息，而不是全部写死处理，拦截器无法处理是自动传递给最后的默认处理器
-  // router.use('/checkWx', function (req, res, nect) {
+  // router.use('/wx', function (req, res, nect) {
   //
   // });
   var wechatProcessor = require('../middleware/wechat-processor');
-  app.get("/checkWx", wechatProcessor.checkWxg) //服务器验证
-    .post("/checkWx", wechatProcessor.checkWxp); //微信推送默认处理
+  app.get("/wx", wechatProcessor.wxg) //服务器验证
+    .post("/wx", wechatProcessor.wxp); //微信推送默认处理
 
   //session store
   var opts = {
@@ -124,7 +124,7 @@ module.exports = function (app, express, passport) {
   //compression
   app.use(compression({
     filter: function (req, res) {
-      return /json|text|javascript|css/.test(res.getHeader('Content-Type'))
+      return /json|text|javascript|css/.test(res.getHeader('Content-Type'));
     },
     level: 9
   }));
@@ -137,7 +137,7 @@ module.exports = function (app, express, passport) {
     res.locals.NODE_ENV = env;
     res.locals.moment = require('moment');
     if(_.isObject(req.user)) {
-      res.locals.User = req.user
+      res.locals.User = req.user;
     }
     next();
   });

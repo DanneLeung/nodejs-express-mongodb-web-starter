@@ -1,0 +1,76 @@
+//
+   Created by yu869 on 2016/1/13.
+
+extends ../layout
+block header
+  
+//应用的page title
+block pageTitle
+  h1 系统参数
+    small 查看系统中的参数设定信息
+block main
+  .box
+    .box-header.with-border
+      h3.box-title 系统参数
+      .box-tools
+        a.btn.btn-sm.btn-default(href="#{baseUrl}/setting/add" title="添加系统参数")
+          i.fa.fa-fw.fa-plus
+          | 添加参数
+    .box-body
+      #tableWrapper(style="display:none")
+        table#settingList.table.table-hover.table-bordered.table-striped
+          thead
+            th 设定组
+            th 名称
+            th 设定值
+            th 描述
+            th.text-center(width="80") 操作
+          tbody
+        form#settingDelForm(method='post', style='display:none', action='#{baseUrl}/setting/del')
+          input#ids(type='hidden',name='ids')
+          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "#{theme}/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        serverSide: true,
+        deferRender: true
+      };
+      // 订单表格
+      var t = $('#settingList').DataTable($.extend(opts, {
+        ajax: {url: '#{baseUrl}/setting/datatable'},
+        order: [[1, 'asc']],
+        columns: [
+          {data: "group", defaultContent: ''},
+          {data: "key", defaultContent: ''},
+          {data: "value", defaultContent: ''},
+          {data: "description", defaultContent: ''},
+          {
+            data: "_id", sortable: false, className: 'text-center', render: function (data, type, row) {
+            return "<div class='btn-group'><a class='btn btn-default btn-sm edit' title='编辑' href='#{baseUrl}/setting/edit/" + data + "' ><i class='fa fa-edit'></i></a>"
+                    + " <button class='btn btn-default btn-sm del' type='button'><i class='fa fa-trash-o'></i></button></div>";
+          }
+          }
+        ]
+      }));
+      $('#settingList').on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#settingDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#settingDelForm").submit();
+            }
+          });
+        }
+      });
+    });

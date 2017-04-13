@@ -11,7 +11,6 @@ var ObjectId = mongoose.Types.ObjectId;
 var system = require(config.root + '/util/system');
 var path = require("path");
 
-
 var fileUtl = require(config.root + '/util/file');
 var imgUtil = require(config.root + '/util/imgutil');
 
@@ -33,7 +32,7 @@ exports.base = function (req, res) {
     res.render('admin/system/base', {
       channel: channel
     });
-  })
+  });
 };
 
 exports.baseSave = function (req, res) {
@@ -49,7 +48,7 @@ exports.baseSave = function (req, res) {
     });
   };
   var handleResult = function (err, result) {
-    if (err) {
+    if(err) {
       req.flash('error', err.message);
     } else {
       req.flash('success', '数据保存成功!');
@@ -57,7 +56,7 @@ exports.baseSave = function (req, res) {
     res.redirect('/admin/system/base');
   };
 
-  if (!req.files || req.files.length <= 0) {
+  if(!req.files || req.files.length <= 0) {
     saveOrUpdate(channelId, req, handleResult);
   } else {
     fileUtl.saveUploadFiles(req.files, req.session.channel.identity, 'logo', false, function (fs) {
@@ -66,7 +65,7 @@ exports.baseSave = function (req, res) {
       imgUtil.thumbnail(fs, 200, function (ffs) {
         console.log("********** files thumbnailed: " + JSON.stringify(ffs));
         fileUtl.normalize(ffs, function (err, files) {
-          if (err) req.flash('warning', '文件保存时发生错误');
+          if(err) req.flash('warning', '文件保存时发生错误');
           console.log("********** files saved: " + JSON.stringify(files));
           // 返回的文件path为URL路径
           /*if (files && files.length > 0) {
@@ -79,7 +78,7 @@ exports.baseSave = function (req, res) {
            if (!req.body.logo) {
            delete req.body.logo
            }*/
-          if (files) {
+          if(files) {
             req.body.logo = files[0].thumb;
           }
           // 更新时处理替换文件情况，新文件保存后旧文件删除
@@ -87,12 +86,11 @@ exports.baseSave = function (req, res) {
             // queue files that should be removed.
             saveOrUpdate(channelId, req, handleResult);
           });
-        })
+        });
       });
     });
   }
 };
-
 
 exports.mailSetting = function (req, res) {
   var channel = req.user.channelId; //会员所属渠道
@@ -111,13 +109,13 @@ exports.saveEmail = function (req, res) {
   Channel.findOne({
     '_id': channel
   }, function (err, channel) {
-    if (req.body.ssl == 'on') {
+    if(req.body.ssl == 'on') {
       req.body.ssl = true;
     } else {
       req.body.ssl = false;
     }
 
-    if (req.body.check == 'on') {
+    if(req.body.check == 'on') {
       req.body.check = true;
     } else {
       req.body.check = false;
@@ -125,13 +123,13 @@ exports.saveEmail = function (req, res) {
     channel.email = req.body;
 
     channel.save(function (err, reslult) {
-      if (err) {
+      if(err) {
         console.log(err);
         req.flash('fail', '保存失败!');
       } else {
         req.flash('success', '保存成功!');
       }
       res.redirect('/admin/system/mail');
-    })
+    });
   });
 };

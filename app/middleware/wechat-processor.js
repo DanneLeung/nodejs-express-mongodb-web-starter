@@ -49,7 +49,7 @@ exports.authRoute = function (req, res, next) {
   }
 };
 
-exports.checkWxg = function (req, res) {
+exports.wxg = function (req, res) {
   console.log('echostr+++++++++++++++++++++++++++++++> ' + req.param("echostr"));
   res.setHeader('content-type', 'text/plain');
   res.send(req.param("echostr"));
@@ -60,7 +60,7 @@ exports.checkWxg = function (req, res) {
  * @param req
  * @param res
  */
-exports.checkWxp = function (req, res) {
+exports.wxp = function (req, res) {
   xml2js.parseString(req.body, function (err, result) {
     console.log(err, result);
     if(err) {

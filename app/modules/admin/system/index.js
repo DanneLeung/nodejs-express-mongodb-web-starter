@@ -11,6 +11,7 @@ var Auth = require(config.root + '/middleware/authorization');
 
 var systemCtrl = require('./system.controller');
 
+var settingCtrl = require('./setting.controller');
 var userCtrl = require('./user.controller');
 var groupCtrl = require('./user.group.controller');
 var multer = require('multer');
@@ -59,4 +60,12 @@ router.get("/group", groupCtrl.list)
   .get("/group/isEnable/:id", groupCtrl.enable)
   //渠道授权
   .get("/group/grant/:id", groupCtrl.menu);
+
+router.get('/setting', settingCtrl.list)
+  .all("/setting/datatable", settingCtrl.dataTable)
+  .get('/setting/add', settingCtrl.add)
+  .get('/setting/checkName', settingCtrl.checkName)
+  .post('/setting/save', settingCtrl.save)
+  .get('/setting/edit/:id', settingCtrl.edit)
+  .post('/setting/del', settingCtrl.del);
 module.exports = router;

@@ -32,7 +32,7 @@ module.exports = function (ROOT_PATH) {
     },
     root: ROOT_PATH,
     app: {
-      name: 'NodeJS ExpressJs Mongodb Starter'
+      name: 'ExtrasAdmin'
     },
     template: {
       //系统模板配置

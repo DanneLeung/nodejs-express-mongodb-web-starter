@@ -17,7 +17,7 @@ var url = require('url'),
 
 function helpers(name) {
   return function (req, res, next) {
-    res.locals.appName = name || '九宫格';
+    res.locals.appName = name || 'Extras Admin';
     res.locals.req = req;
     res.locals.isActive = function (link) {
       //console.log("####### origin url: " + req.originalUrl + ", link: " + link);
