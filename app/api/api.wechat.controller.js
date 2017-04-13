@@ -161,10 +161,10 @@ exports.getUserinfo = function (req, res) {
               if('snsapi_userinfo' == scope) {
                 client.getUser({ openid: openid, lang: 'zh_CN' }, function (err, userInfo) {
                   var unionid = userInfo.unionid;
-                  userInfo.wechat = we._id; //当前认证的wechatid
+                  userInfo.wechat = wid; //当前认证的wechatid
                   WechatFans.findAndSave(userInfo, function (fan) {
                     // 如果是借用服务号获取用户信息，则需要通过unionid获取
-                    console.log('%%%%%%%%%%%% snsapi_userinfo,更新所有渠道绑定微信号:%s的用户信息： ', we._id, fan);
+                    console.log('%%%%%%%%%%%% snsapi_userinfo,更新所有渠道绑定微信号:%s的用户信息： ', wid, fan);
                     if(unionid) {
                       // 有绑定微信开发平台有unionid
                       WechatFans.findAndSaveByUnionId(unionid, userInfo, function (f) {
