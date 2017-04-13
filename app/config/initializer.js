@@ -33,7 +33,7 @@ module.exports = function (app, express) {
         if(wechat) {
           req.session.wechat = res.locals.wechat = wechat; //当前使用公众号
           req.session.appid = res.locals.appid = wechat.appid; //当前使用公众号的appid
-
+          
           if(wechat.oauthWechat) {
             req.session.authAppid = res.locals.authAppid = wechat.oauthWechat.appid; //认证授权使用的appid
             req.session.authWid = res.locals.authWid = wechat.oauthWechat.id; //认证授权使用的wid

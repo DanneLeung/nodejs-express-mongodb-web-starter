@@ -124,6 +124,9 @@ exports.getUser = function (req, res) {
  */
 exports.getUserinfo = function (req, res) {
   var code = req.query.code || req.body.code;
+  //页面运行的微信号id，如果借用授权，则该wid与appid对应的wid不一样
+  var wid = req.query.wid || req.body.wid;
+  //认证授权使用的appid
   var appid = req.query.appid || req.body.appid;
   var scope = req.query.scope || req.body.scope;
 
@@ -134,9 +137,11 @@ exports.getUserinfo = function (req, res) {
   }
   //使用认证服务号取得用户信息
   Wechat.getWechat(appid, function (e, o) {
-    let wid = o._id;
+    if(!wid) wid = o._id;
+    if(wid != o._id) console.log(" >>>>>>>>>>>>> wid: %s 借用微信号%s进行认证授权，类型: %s，名称: %s!", wid, o._id, o.type, o.name);
+
     if(e || o == null) {
-      res.send({ "error": "1", "msg": "未查到渠道配置微信相关参数" });
+      res.send({ "error": "1", "msg": "系统中未配置appid:" + appid + "的微信微信公众号参数" });
     } else {
       var client = new OAuth(o.appid, o.appsecret, WechatAuthToken.readAuthToken, WechatAuthToken.saveAuthToken);
       //根据授权code换取access token，openid
