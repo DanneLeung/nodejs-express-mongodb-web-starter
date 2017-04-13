@@ -59,12 +59,13 @@ module.exports = function (app, express) {
         res.locals.contextFront = req.session.contextFront = '/m';
         res.locals.staticRoot = req.session.staticRoot = '';
         req.session.themeRoot = "/themes";
-        res.locals.theme = req.session.themeRoot + "/mzui";
+        res.locals.theme = req.session.themeRoot + "/lte";
+        res.locals.themeFront = req.session.themeRoot + "/mzui";
         cb(null, null);
         //next();
       } else {
         if(!req.session.themeRoot || !req.session.contextRoot || !req.session.staticRoot || !req.session.themeRoot) {
-          mongoose.model('Setting').getValuesByKeys(['context.root', 'context.front', 'theme.root', 'static.root'], function (setting) {
+          mongoose.model('Setting').getValuesByKeys(['context.root', 'context.front', 'theme.root', 'theme.front', 'static.root'], function (setting) {
             console.log("############# 读取系统参数" + JSON.stringify(setting));
             if(setting) {
               var contextRoot = setting['context.root'] || '';
@@ -85,14 +86,16 @@ module.exports = function (app, express) {
               res.locals.contextFront = req.session.contextFront = contextFront.indexOf('://') ? contextFront : contextFront.replace('//', '/');
               res.locals.staticRoot = req.session.staticRoot = staticRoot.indexOf('://') ? staticRoot : staticRoot.replace('//', '/');
 
-              var themeRoot = setting['theme.root'] || 'themes';
+              var themeRoot = setting['theme.root'] || '/themes';
+              var themeFront = setting['theme.front'] || '/mzui';
               if(themeRoot) {
                 themeRoot = themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
               }
 
               res.locals.themeRoot = req.session.themeRoot = themeRoot.indexOf('://') ? themeRoot : themeRoot.replace('//', '/');
 
-              res.locals.theme = req.session.themeRoot + "/jquery-weui";
+              res.locals.theme = req.session.themeRoot + "/lte";
+              res.locals.themeFront = req.session.themeRoot + themeFront;
               // console.log('########################## context, front, static, theme ', contextRoot, contextFront, staticRoot, themeRoot);
               return cb(null, setting);
             } else {
@@ -104,7 +107,8 @@ module.exports = function (app, express) {
           res.locals.contextFront = req.session.contextFront = req.session.contextFront.replace("http://", protocol + "://").replace("https://", protocol + "://");
           res.locals.staticRoot = req.session.staticRoot = req.session.staticRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
           res.locals.themeRoot = req.session.themeRoot = req.session.themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
-          res.locals.theme = req.session.themeRoot + "/jquery-weui";
+          res.locals.theme = req.session.themeRoot + "/lte";
+          res.locals.themeFront = req.session.themeRoot + "/mzui";
           // console.log('********************** context, front, static, theme in sessions.', req.session.contextRoot, req.session.contextFront, req.session.staticRoot, req.session.themeRoot);
           return cb(null, null);
         }

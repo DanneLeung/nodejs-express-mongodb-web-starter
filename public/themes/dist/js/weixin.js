@@ -164,7 +164,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
       console.log('获取到本地用户信息'); //console.log('获取到本地用户信息');
       return callback(user ? JSON.parse(user) : {});
     } else if(openid && openid != '' && openid != 'null') {
-      return getUser(appid, openid, callback);
+      return getUserAndSave(appid, openid, callback);
     } else if(unionid) {
       return getUserByUnionId(appid, unionid, callback);
     }
@@ -195,7 +195,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
     });
   }
 
-  function getUser(appid, openid, callback) {
+  function getUserAndSave(appid, openid, callback) {
     $.post(userUrl, { 'openid': openid }, function (user) {
       callback(userInfoLocalStorage(appid, user));
     });
