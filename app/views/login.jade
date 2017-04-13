@@ -9,7 +9,7 @@ block main
   .login-box
     .login-logo
       a(href='/')
-        b #{req.session.channel ? req.session.channel.channelName : appName}
+        b #{appName}
     // /.login-logo
     .login-box-body
       p.login-box-msg 使用用户密码登录系统
@@ -39,7 +39,7 @@ block main
           button#login.btn.btn-success.btn-block.btn-flat(type="submit") 登 录
       p
         a#forget(href='/forgetPass') 忘记密码?
-      if(!req.session.channelId)
+      //- if(!req.session.channelId)
         p
           a#register.text-center(href='/register') 立即注册成为渠道商
 

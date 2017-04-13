@@ -14,7 +14,7 @@ html
     script(type='text/javascript', src='//res.wx.qq.com/open/js/jweixin-1.0.0.js')
     script(type='text/javascript', src='/themes/dist/js/global.js?v=#{version}')
     script(type='text/javascript', src='/themes/dist/js/weixin.js?v=#{version}')
-    if (req.session.channel && req.session.channel.analystScript)
+    //- if (req.session.channel && req.session.channel.analystScript)
       //  插入统计代码
       !{req.session.channel.analystScript}
 
