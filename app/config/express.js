@@ -92,7 +92,8 @@ module.exports = function (app, express, passport) {
       app.redis = new Redis(app.config.redis.single);
     opts.store = new RedisStore({ client: app.redis });
   } else {
-    // opts.store = new RedisStore({ client: app.redis });
+    app.redis = new Redis(app.config.redis.single);
+    opts.store = new RedisStore({ client: app.redis });
   }
 
   app.use(session(opts));

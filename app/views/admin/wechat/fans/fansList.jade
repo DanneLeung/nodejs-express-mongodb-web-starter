@@ -1,0 +1,366 @@
+//
+   Created by yu869 on 2015/10/26.
+
+extends ../../layout
+block pageTitle
+  h1 公众号粉丝管理
+block main
+  .box(style="min-height:100%")
+    .box-header.with-border
+      h3.box-title 用户列表
+      .box-tools
+          a#syncGroup.btn.btn-sm.btn-primary(title='同步标签', href='#{baseUrl}/fans/syncGroup/#{wechatId?wechatId:""}')
+            i.fa.fa-refresh
+            span  同步标签
+          a#addGroup.btn.btn-sm.btn-primary(title='新建标签')
+            i.fa.fa-plus
+            span  新建标签
+          a#setGroup.btn.btn-sm.btn-primary(title='设置粉丝分组')
+            i.fa.fa-gear
+            span  设置分组
+          a#syncWechatFans.btn.btn-sm.btn-info(title='同步微信粉丝')
+            i.fa.fa-refresh
+            span  手动同步用户
+    .box-body
+      ul.nav.nav-pills
+        each w in wechats
+          li(class="#{w._id == wechatId?'active':''}")
+            a(href="#{baseUrl}/fans/#{w._id}")=w.name
+      hr
+      #tableWrapper.pull-left(style="display:none;width:80%;")
+        table#wechatFansList.table.table-bordered.table-hover.table-striped
+          thead
+            //th.text-center
+              input#selectAll(type="checkbox" title="全选")
+            //th openid
+            th.text-center 头像
+            th 标签
+            th 昵称
+            th.text-center 性别
+            th 国家
+            th 省
+            th 城市
+            th.text-center 已关注
+            th.text-center 关注时间
+            th 备注
+            th 备注
+            th 操作
+          tbody
+
+      .pull-right(style="border:1px solid #ccc;padding:20px 0;width:18%;")
+        .bd
+          .group-list
+            .inner_menu_box
+              dl.inner_menu#groupTree
+                dt.inner_menu_item.selected(style="padding-left:10px") 全部用户
+
+  #wechatGroupModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="createGroupModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 设置分组
+        .modal-body
+          form#wechatGroupForm.form-horizontal(method='post', action='#{baseUrl}/fans/moveUserToGroup')
+            input#Ids(type='hidden',name='Ids')
+            input#groupIds(type='hidden',name='groupIds')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            #groups.form-group(style='padding: 10px; font-size: 16px')
+            span#errorMsg(style="color:red; font-size: 15px; font-weight: 500")
+        .modal-footer
+          .center-block.pull-right
+          button#wechatGroup.btn.btn-primary(type="button"/*, data-dismiss="modal" */) 确定
+
+  #remarkModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="remarkModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 设置备注
+        .modal-body
+          form#remarkForm.form-horizontal(method='post', action='#{baseUrl}/fans/setRemark')
+            input#fansId(type='hidden',name='fansId')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-xs-3 备注:
+              .controls.col-xs-9
+                input#remark.form-control(type='text', name='remark')
+                span#errRemark(style="color:red")
+        .modal-footer
+          .center-block.pull-right
+          button#fanRemark.btn.btn-primary(type="button") 确定
+
+  #addGroupModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="addGroupModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 新建标签
+        .modal-body
+          form#addGroupForm.form-horizontal(method='post', action='#{baseUrl}/fans/addGroup/#{wechatId?wechatId:""}')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-xs-3 标签名称:
+              .controls.col-xs-9
+                input#group.form-control(type='text', name='group')
+                span#errMsg(style="color:red")
+        .modal-footer
+          .center-block.pull-right
+          button#addGroupBtn.btn.btn-primary(type="button") 确定
+
+  #updateGroupModal.modal.fade.createInvoice(tabindex="-1", role="dialog", aria-labelledby="updateGroupModal", aria-hidden='true')
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button",data-dismiss="modal", aria-label="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title 重命名标签
+        .modal-body
+          form#updateGroupForm.form-horizontal(method='post', action='#{baseUrl}/fans/update')
+            input#_csrf(type='hidden', name='_csrf', value=_csrf)
+            .form-group
+              label.control-label.col-xs-3 标签名称:
+              .controls.col-xs-9
+                input#updateGroupName.form-control(type='text', name='updateGroupName')
+                input#updateGroupId.form-control(type='hidden', name='updateGroupId')
+                span#updateErrMsg(style="color:red")
+        .modal-footer
+          .center-block.pull-right
+          button#updateGroupBtn.btn.btn-primary(type="button") 确定
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(document).ready(function () {
+      var tt = $('#wechatFansList')
+              .DataTable({
+                language: {
+                  "url": "#{theme}/plugins/datatables/Chinese.json"
+                },
+                searching: true,
+                lengthChange: true,
+                serverSide: true,
+                autoWidth: false,
+                select: true,
+                stateSave: true,
+                ajax: {url: '#{baseUrl}/fans/datatable/#{wechatId?wechatId:""}'},
+                rowid: '_id',
+                order: [[2, 'asc'],[7, 'asc']],
+                columnDefs: [
+                  {
+                    targets: -1, visible: true, sortable: false, className: 'text-center',
+                    render: function (data, type, row) {
+                      return " <button class='btn btn-default btn-xs remark' type='button'><i class='fa fa-commenting-o'></i></button>";
+                    }
+                  }
+                ],
+                columns: [
+                  {
+                    data: "headimgurl", sortable: false, defaultContent: '', class: 'text-center', width: "60px",
+                    render: function (data, type, full, meta) {
+                      return '<img width=40 height=40 class="" src="' + data + '" />';
+                    }
+                  },
+                  {data: "groupId", defaultContent: ''},
+                  {data: "nickname", defaultContent: ''},
+                  {
+                    data: "sex", defaultContent: '', class: 'text-center', width: "30px",
+                    render: function (data, type, row) {
+                      return data == 1 ? '男' : '女';
+                    }
+                  },
+                  {data: "country", sortable: false, defaultContent: '', width: "60px"},
+                  {data: "province", sortable: false, defaultContent: '', width: "90px"},
+                  {data: "city", sortable: false, defaultContent: '', width: "80px"},
+                  {data: "subscribe", sortable: true, defaultContent: '', width: "40px", render: function (data, type, full, meta) {
+                    return data?"<i class='fa fa-fw fa-check'></i>":"";
+                  }},
+                  {
+                    data: "subscribe_time", defaultContent: '', class: 'text-center', width: "120px",
+                    render: function (data, type, full, meta) {
+                      var b = moment(new Date(parseInt(data)) * 1000);
+                      var date = "";
+                      if (data != null) {
+                        date = b.format("YYYY-MM-DD HH:mm:ss");
+                      }
+                      return date;
+                    }
+                  },
+                  {data: "remark", sortable: true, defaultContent: ''},
+                  {data: "openid", visible: false},
+                  {data: ""}
+                ]
+              });
+      $('#wechatFansList').on('click', 'button.remark', function () {
+        var id = tt.row($(this).parents('tr')).data()._id;
+        var remark = tt.row($(this).parents('tr')).data().remark;
+        $("#remarkForm #fansId").val(id);
+        $("#remarkForm #remark").val(remark);
+        $('#remarkModal').modal('show');
+      });
+      $.ajax({
+        type: 'get', //数据发送方式
+        url: '#{baseUrl}/fans/getAllGroup/#{wechatId?wechatId:""}',
+        data: {}, //要传递的数据
+        success: function (data) { //成功
+          $.each(data,function(i,e) {
+            if(e.groupId >= 100 || e.groupId == 2){}
+            $("#groups").append("<input type='checkbox' value='"+ e.groupId +"' onchange='checkGroup(this)'>&nbsp;"+ e.name+ "&nbsp;&nbsp;&nbsp;&nbsp;");
+              //$("#groupName").append("<option value='" + e.groupId + "'>" + e.name + "</option>");
+
+              //设置树形分组
+              $("#groupTree").append("<dd class='inner_menu_item' style='padding-left:20px'>"+ e.name +"("+ e.count +")" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;<a class='inner_menu_link js_group_link' href='javascript:;' onclick='delGroup("+ e.groupId +")' title='删除'><strong>删除</strong></a>" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;<a class='inner_menu_link js_group_link' href='javascript:;' onclick=updateGroup('"+ e.groupId +"','"+ e.name +"') title='重命名'><strong>重命名</strong></a></dd>");
+
+          });
+        }
+      });
+
+      // 设置分组功能
+      $("#setGroup").on("click", function (e) {
+        var datas = tt.rows({selected: true}).data();
+        var len = datas ? datas.length : 0;
+        if (len > 0) {
+          var ids = [];
+          datas.each(function (d) {
+            //ids.push(d._id);
+            ids.push(d.openid);
+          });
+          //console.log("Datas selected: " + ids);
+          $('#Ids').val(ids);
+          $('#wechatGroupModal').modal('show');
+        } else {
+          bootbox.alert("请选择微信粉丝用户");
+        }
+      });
+      // 设置备注
+      $("#fanRemark").on("click", function (e) {
+        var remark=$("#remarkForm #remark").val();
+        var data = $("#remarkForm").serialize();
+        if(remark != "" && remark != undefined){
+          $("#errRemark").html("");
+          $('#remarkModal').modal('hide');
+          $.ajax({
+            type: 'post', //数据发送方式
+            url: '#{baseUrl}/fans/setRemark',
+            data: data, //要传递的数据
+            success: function (data) { //成功
+              if(data.code == "1"){
+                bootbox.alert(data.meg);
+                loadTable("#wechatFansList");
+              }else{
+                bootbox.alert(data.meg);
+              }
+            }
+          });
+        }else{
+          $("#errRemark").html("请输入备注名称");
+        }
+      });
+
+      //同步粉丝信息
+      $("#syncWechatFans").on("click", function (e) {
+        $.ajax({
+          type: 'post', //数据发送方式
+          url: '#{baseUrl}/fans/syncWechatFans/',
+          //data: data, //要传递的数据
+          success: function (data) { 
+            //成功
+            if(data && !data.err){
+              bootbox.alert("粉丝数据同步完成!");
+              loadTable("#wechatFansList");
+            }else{
+              bootbox.alert("粉丝数据同步异常，请检查公众号配置!<br>" + JSON.stringify(data.err));
+            }
+          }
+        });
+      })
+
+      $("#wechatGroup").on("click", function (e) {
+        var groups = "";
+        $("#groups").find("input[type=checkbox]:checked").each(function(i, o){
+          groups += ","+ o.value;
+        })
+        if(groups){
+          groups = groups.substr(1);
+        }
+        $("#groupIds").val(groups)
+        $("#wechatGroupForm").submit();
+      });
+      //新建分组
+      $("#addGroup").on('click', function(){
+        $('#addGroupModal').modal('show');
+      });
+      //保存分组
+      $("#addGroupBtn").on('click', function(){
+        var group = $("#group").val();
+        if(!group){
+          $("#errMsg").html("请输入标签名称");
+        }else{
+          $.ajax({
+            url: '#{baseUrl}/fans/checkGroup',
+            type: 'post',
+            data: {group: $("#group").val()},
+            success: function(data){
+              console.log('data:', data);
+              if(data == 'ok'){
+                $("#addGroupForm").submit();
+              }else{
+                $("#errMsg").html("该标签名字已存在，请重新输入");
+              }
+            }
+          })
+        }
+      });
+      //重命名
+      $("#updateGroupBtn").on('click', function () {
+        var group = $("#updateGroupName").val();
+        if (!group) {
+          $("#updateErrMsg").html("请输入标签名称");
+        } else {
+          $("#updateGroupForm").submit();
+        }
+      });
+    });
+    function loadTable(listId){
+      var TT = $(listId).DataTable();
+      TT.ajax.url('#{baseUrl}/fans/datatable/').load();
+    }
+
+    function delGroup(groupId){
+      if(confirm('确定删除标签?')){
+        $.ajax({
+          url: '#{baseUrl}/fans/delGroup/'+groupId,
+          type: 'get',
+          success: function(data){
+            if(data == 'ok'){
+              alert('删除成功');
+              location.href = '#{baseUrl}/fans';
+            }else{
+              alert('删除失败');
+            }
+          }
+        })
+      }
+    }
+
+    function updateGroup(groupId, name){
+      $("#updateGroupName").val(name);
+      $("#updateGroupId").val(groupId);
+      $("#updateGroupModal").modal('show');
+    }
+
+    function checkGroup(obj){
+      //检查选中的checkBox,最多只能选择3个
+      if ($("#groups").find("input[type=checkbox]:checked").length > 3) {
+        obj.checked = false;//不允许选择第四个标签
+        $("#errorMsg").text("最多只能选择3个标签");
+        return
+      }else{
+        $("#errorMsg").text("");
+      }
+    }
