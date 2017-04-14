@@ -58,60 +58,59 @@ module.exports = function (app, express) {
         res.locals.contextRoot = req.session.contextRoot = '';
         res.locals.contextFront = req.session.contextFront = '/m';
         res.locals.staticRoot = req.session.staticRoot = '';
-        req.session.themeRoot = "/themes";
+        res.locals.themeRoot = req.session.themeRoot = "/themes";
         res.locals.theme = req.session.themeRoot + "/lte";
         res.locals.themeFront = req.session.themeRoot + "/mzui";
-        cb(null, null);
-        //next();
+        return cb(null, null);
       } else {
-        // if(!req.session.contextFront || !req.session.contextRoot || !req.session.staticRoot || !req.session.themeRoot) {
-        mongoose.model('Setting').getValuesByKeys(['context.root', 'context.front', 'theme.root', 'theme.front', 'static.root'], function (setting) {
-          console.log("############# 读取系统参数" + JSON.stringify(setting));
-          if(setting) {
-            var contextRoot = setting['context.root'] || '';
-            var contextFront = setting['context.front'] || '';
-            var staticRoot = setting['static.root'] || '';
-            //替换protocol
-            if(contextRoot) {
-              contextRoot = contextRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
-            }
-            if(contextFront) {
-              contextFront = contextFront.replace("http://", protocol + "://").replace("https://", protocol + "://");
-            }
-            if(staticRoot) {
-              staticRoot = staticRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
-            }
+        if(!req.session.contextFront || !req.session.contextRoot || !req.session.staticRoot || !req.session.themeRoot) {
+          mongoose.model('Setting').getValuesByKeys(['context.root', 'context.front', 'theme.root', 'theme.front', 'static.root'], function (setting) {
+            console.log("############# 读取系统参数" + JSON.stringify(setting));
+            if(setting) {
+              var contextRoot = setting['context.root'] || '';
+              var contextFront = setting['context.front'] || '';
+              var staticRoot = setting['static.root'] || '';
+              //替换protocol
+              if(contextRoot) {
+                contextRoot = contextRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
+              }
+              if(contextFront) {
+                contextFront = contextFront.replace("http://", protocol + "://").replace("https://", protocol + "://");
+              }
+              if(staticRoot) {
+                staticRoot = staticRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
+              }
 
-            res.locals.contextRoot = req.session.contextRoot = contextRoot.indexOf('://') ? contextRoot : contextRoot.replace('//', '/');
-            res.locals.contextFront = req.session.contextFront = contextFront.indexOf('://') ? contextFront : contextFront.replace('//', '/');
-            res.locals.staticRoot = req.session.staticRoot = staticRoot.indexOf('://') ? staticRoot : staticRoot.replace('//', '/');
+              res.locals.contextRoot = req.session.contextRoot = contextRoot.indexOf('://') ? contextRoot : contextRoot.replace('//', '/');
+              res.locals.contextFront = req.session.contextFront = contextFront.indexOf('://') ? contextFront : contextFront.replace('//', '/');
+              res.locals.staticRoot = req.session.staticRoot = staticRoot.indexOf('://') ? staticRoot : staticRoot.replace('//', '/');
 
-            var themeRoot = setting['theme.root'] || '/themes';
-            var themeFront = setting['theme.front'] || 'mzui';
-            if(themeRoot) {
-              themeRoot = themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
+              var themeRoot = setting['theme.root'] || '/themes';
+              var themeFront = setting['theme.front'] || 'mzui';
+              if(themeRoot) {
+                themeRoot = themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
+              }
+
+              res.locals.themeRoot = req.session.themeRoot = themeRoot.indexOf('://') ? themeRoot : themeRoot.replace('//', '/');
+
+              res.locals.theme = req.session.themeRoot + "/lte";
+              res.locals.themeFront = req.session.themeRoot + '/' + themeFront;
+              console.log('########################## context, front, static, themeRoot ', contextRoot, contextFront, staticRoot, themeRoot);
+              return cb(null, setting);
+            } else {
+              return cb(null, null);
             }
-
-            res.locals.themeRoot = req.session.themeRoot = themeRoot.indexOf('://') ? themeRoot : themeRoot.replace('//', '/');
-
-            res.locals.theme = req.session.themeRoot + "/lte";
-            res.locals.themeFront = req.session.themeRoot + '/' + themeFront;
-            console.log('########################## context, front, static, themeRoot ', contextRoot, contextFront, staticRoot, themeRoot);
-            return cb(null, setting);
-          } else {
-            return cb(null, null);
-          }
-        });
-        // } else {
-        //   res.locals.contextRoot = req.session.contextRoot = req.session.contextRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
-        //   res.locals.contextFront = req.session.contextFront = req.session.contextFront.replace("http://", protocol + "://").replace("https://", protocol + "://");
-        //   res.locals.staticRoot = req.session.staticRoot = req.session.staticRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
-        //   res.locals.themeRoot = req.session.themeRoot = req.session.themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
-        //   res.locals.theme = req.session.themeRoot + "/lte";
-        //   res.locals.themeFront = req.session.themeRoot + "/mzui";
-        //   // console.log('********************** context, front, static, theme in sessions.', req.session.contextRoot, req.session.contextFront, req.session.staticRoot, req.session.themeRoot);
-        //   return cb(null, null);
-        // }
+          });
+        } else {
+          res.locals.contextRoot = req.session.contextRoot = req.session.contextRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
+          res.locals.contextFront = req.session.contextFront = req.session.contextFront.replace("http://", protocol + "://").replace("https://", protocol + "://");
+          res.locals.staticRoot = req.session.staticRoot = req.session.staticRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
+          res.locals.themeRoot = req.session.themeRoot = req.session.themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
+          res.locals.theme = req.session.themeRoot + "/lte";
+          res.locals.themeFront = req.session.themeRoot + "/mzui";
+          console.log('********************** context, front, static, themeRoot in sessions.', req.session.contextRoot, req.session.contextFront, req.session.staticRoot, req.session.themeRoot);
+          return cb(null, null);
+        }
       }
     }], function (result) {
       if(result && result.length) console.log('应用当前运行在微信公众号：', result[0]);

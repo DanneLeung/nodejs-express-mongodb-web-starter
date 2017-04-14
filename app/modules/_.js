@@ -12,8 +12,6 @@ var Auth = require(config.root + '/middleware/authorization');
 router.use((req, res, next) => {
   var baseUrl = req.baseUrl;
   // res.locals.baseUrl = baseUrl;
-  res.locals.theme = "/themes/lte";
-  res.locals.themeRoot = "/themes";
   var url = req.contextRoot + baseUrl;
   if(url.indexOf('http') < 0) {
     url = url.replace('//', '/');

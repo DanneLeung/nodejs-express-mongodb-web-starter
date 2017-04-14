@@ -21,7 +21,7 @@ exports.list = function (req, res) {
   //渠道下的公众号ID
   var wechatId = req.params.wechatId || req.query.wechatId;
   if(!wechatId) {
-    Wechat.findOne({}).sort("default").exec((err, wechat) => {
+    Wechat.findOne({}).exec((err, wechat) => {
       if(err) console.error(err);
       if(wechat) {
         wechatId = wechat._id;
