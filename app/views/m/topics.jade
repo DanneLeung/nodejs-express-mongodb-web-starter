@@ -25,5 +25,5 @@
             .row.imgs.gutter-sm
               each img in t.images
                 .cell-3
-                  a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{img}' alt='' class='no-margin'>")
-                    img(src='#{img}', alt='')
+                  a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot + '/' + img}' alt='' class='no-margin'>")
+                    img(src='#{contextRoot + '/' + img}', alt='')
