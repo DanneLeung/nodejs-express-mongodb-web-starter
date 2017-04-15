@@ -28,7 +28,8 @@ exports.topics = function (req, res) {
 };
 
 exports.home = function (req, res) {
-  res.render('m/home');
+  var node = req.params.node || req.query.node;
+  res.render('m/home', { node: node ? node : '' });
 };
 
 exports.user = function (req, res) {

@@ -9,6 +9,6 @@ router
   .use(ctrl.nodes)
   .get(['/'], ctrl.index)
   .get(['/topics','/topics/:node'], ctrl.topics)
-  .get(['/home'], ctrl.home)
+  .get(['/home','/home/:node'], ctrl.home)
   .get(['/user'], ctrl.user);
 module.exports = router;

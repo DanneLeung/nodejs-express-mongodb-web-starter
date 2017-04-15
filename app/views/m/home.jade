@@ -1,51 +1,19 @@
-extends layouts/default
+extends layouts/bbs
 block header
   style.
-    #partial {
-      padding: 0;
+    .item {
+      background-color: #fff;
     }
-block main
-  header#haedNav.heading.primary.affix.dock-top.dock-auto
-    nav#headNav.nav
-      a.brand-name(href='home', data-page-name='index')
-        i.icon-home
-      each n in nodes
-        a(href='topics/#{n._id}', data-page-name='#{n.title}')=n.title
-    .title
-    nav.nav
-      a(href='user')
-        .avatar.circle
-          img#headimgurl(src='/avatar.png', alt='')
-  #pageLoading.loading.loading-light
-  #partial.container
-
-block scripts
+block content
+  .heading
+    .title 
+  div
+    .list#topics
+block contentScripts
   script.
     $(document).ready(function(){
-      var user = W.getUser(appid);
-      if(user){
-        console.log(JSON.stringify(user));
-        $('h4#nickname').html(user.nickname ? user.nickname : '未知用户');
-        $('#headimgurl').attr('src', user.headimgurl ? user.headimgurl : '#{baseUrl}/imgs/headimg_default.jpg');
-      }
-      var $headNav = $('#headNav');
-      var $partial = $('#partial');
-      $headNav.display({
-        selector: 'a:not(.brand-name)',
-        activeClass: 'active',
-        target: '#partial',
-        trigger: 'click',
-        name: 'headNav',
-        show: function() {
-          $partial.empty();
-          $('body').removeClass('has-index-content');
-        },
-        shown: function() {
-           
-        },
-        displayed: function(options) {
-        }
-    });
-
+      $.get('topics/#{node}', function(data){
+        $('#topics').append(data);
+      });
     });
 
