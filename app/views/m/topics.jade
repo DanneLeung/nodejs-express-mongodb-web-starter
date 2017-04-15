@@ -2,6 +2,9 @@
   .title 
 .section
   .list
+    if(!topics || !topics.length)
+      .box.article
+        p 暂时没有帖子哦~~~
     each t in topics
       .item.with-avatar.multi-lines
         a(href="fans/#{t.fans?t.fans._id}")
