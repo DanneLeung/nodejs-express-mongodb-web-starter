@@ -8,18 +8,18 @@ block header
 block main
   header#haedNav.heading.primary.affix.dock-top.dock-auto
     nav#headNav.nav
-      a.brand-name(href='#{contextFront}/home', data-page-name='index')
+      a.brand-name(href='home', data-page-name='index')
         i.icon-home
     .title
     //- nav.nav
-      a(href='#{contextFront}/user')
+      a(href='user')
         i.icon-user
   .profile-haeder.space.shadow
     .dock.blur-lg.back(style='background-image: url(doc/img/img2.jpg)')
     .front.dock.text-white
       .avatar.avatar-xl.circle.space-sm
-        img#headimgurl(src='avatar.png', alt='')
-      h4#nickname.lead.text-shadow-black Catouse
+        img#headimgurl(src='/avatar.png', alt='')
+      h4#nickname.lead.text-shadow-black
 
   .section
     .list.with-divider

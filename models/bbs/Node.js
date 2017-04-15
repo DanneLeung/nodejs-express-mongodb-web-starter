@@ -25,7 +25,14 @@ NodeSchema.statics = {
       if(err) console.error(err);
       done(nodes);
     });
-  }
+  },
+  enabledNodes: function (done) {
+    Node.find({ enabled: true }).sort('sort').exec((err, nodes) => {
+      if(err) console.error(err);
+      done(nodes);
+    });
+  },
+
 }
 
 var Node = mongoose.model('Node', NodeSchema, 'nodes')

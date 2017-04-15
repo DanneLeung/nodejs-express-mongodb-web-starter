@@ -1,24 +1,51 @@
 extends layouts/default
 block header
-
+  style.
+    #partial {
+      padding: 0;
+    }
 block main
   header#haedNav.heading.primary.affix.dock-top.dock-auto
     nav#headNav.nav
-      a.brand-name(href='#{contextFront}/home', data-page-name='index')
+      a.brand-name(href='home', data-page-name='index')
         i.icon-home
-      a#beginLink(href='doc/base.html', data-page-name='base') 基础
-      a(href='doc/element.html', data-page-name='element') 控件
-      a(href='doc/javascript.html', data-page-name='javascript') JS
-      a(href='doc/examples.html', data-page-name='examples') 示例
+      each n in nodes
+        a(href='topics/#{n._id}', data-page-name='#{n.title}')=n.title
     .title
     nav.nav
-      a(href='#{contextFront}/user')
-        i.icon-user
+      a(href='user')
+        .avatar.circle
+          img#headimgurl(src='/avatar.png', alt='')
   #pageLoading.loading.loading-light
   #partial.container
 
 block scripts
   script.
     $(document).ready(function(){
+      var user = W.getUser(appid);
+      if(user){
+        console.log(JSON.stringify(user));
+        $('h4#nickname').html(user.nickname ? user.nickname : '未知用户');
+        $('#headimgurl').attr('src', user.headimgurl ? user.headimgurl : '#{baseUrl}/imgs/headimg_default.jpg');
+      }
+      var $headNav = $('#headNav');
+      var $partial = $('#partial');
+      $headNav.display({
+        selector: 'a:not(.brand-name)',
+        activeClass: 'active',
+        target: '#partial',
+        trigger: 'click',
+        name: 'headNav',
+        show: function() {
+          $partial.empty();
+          $('body').removeClass('has-index-content');
+        },
+        shown: function() {
+           
+        },
+        displayed: function(options) {
+        }
+    });
+
     });
 

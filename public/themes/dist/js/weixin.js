@@ -172,7 +172,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
 
   function getUser(appid) {
     var user = localStorage.getItem(appid + '.user');
-    return user ? JSON.parse(user) : {};
+    return user ? JSON.parse(user) : null;
   }
   /**
    * 用户授权公开信息后，通过微信返回code从服务端请求用户信息

@@ -29,6 +29,14 @@ TopicSchema.statics = {
       if(err) console.error(err);
       done(result);
     });
+  },
+  topicsWithNode: function (node, offset, limit, done) {
+    var q = {};
+    if(node) q.node = node;
+    Topic.find(q).sort("top -createdAt").skip(offset).limit(limit).populate("fans user").exec((err, topics) => {
+      if(err) console.error(err);
+      done(topics);
+    });
   }
 }
 var Topic = mongoose.model('Topic', TopicSchema, 'topics')
