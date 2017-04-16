@@ -7,15 +7,15 @@ mixin topicContent(t)
       div
         a.strong(href="fans/#{t.fans?t.fans._id}") 
           | #{t.fans?t.fans.nickname:(t.user?t.user.username:"")}
-          small.muted   #{formatDatetime(t.createdAt)}
+          small.muted.pull-right   #{formatDatetime(t.createdAt)}
         //- .pull-right.muted
-          i.icon-eye-open
-          |  #{t.readCount}
+          //- i.icon-eye-open
+          //- |  #{t.readCount}
 
       //- small.muted
-        if t.title 
-          | #{t.title} - 
-        | #{formatDatetime(t.createdAt)}
+        //- if t.title 
+        //-   | #{t.title} - 
+        //- | #{formatDatetime(t.createdAt)}
   div.topic(data-id="#{t._id}")
     .space-sm=t.content
     if(t.images && t.images.length)
