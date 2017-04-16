@@ -76,5 +76,5 @@ exports.home = function (req, res) {
 };
 
 exports.user = function (req, res) {
-  res.render('m/bbs/user');
+  res.render('m/user');
 };

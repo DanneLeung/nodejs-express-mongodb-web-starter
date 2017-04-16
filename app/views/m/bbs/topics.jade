@@ -5,7 +5,7 @@ each t in topics
   .item.with-avatar.multi-lines.space-sm(data-id="#{t._id}")
     a(href="fans/#{t.fans?t.fans._id}")
       .avatar.circle
-        img(src='#{contextRoot}/avatar.png', alt='')
+        img(src='#{t.fans.headimgurl}', alt='#{t.fans.nickname}')
 
     .content
       div
