@@ -6,15 +6,15 @@ block header
 block headNav
 
 block content
-  .box.space-sm
+  .space-sm
     if(!topic)
-      .box.article
+      .article
         p 帖子不存在哦，可能已经被删除 ~~~ 
     .list#topic
-      .item.with-avatar
+      .item.with-avatar.no-padding
         a(href="fans/#{topic.fans?topic.fans._id}")
           .avatar.circle
-            img(src='#{contextRoot}/avatar.png', alt='')
+            img(src='#{topic.fans?topic.fans.headimgurl:""}', alt='')
 
         .content
           div
@@ -36,7 +36,7 @@ block content
               if topic.title 
                 | #{topic.title} - 
               | #{formatDatetime(topic.createdAt)}
-    .title.space-sm=topic.content
+    .space-sm=topic.content
     if(topic.images && topic.images.length>0)
       each img in topic.images
         if img

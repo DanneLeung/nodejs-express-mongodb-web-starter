@@ -19,7 +19,7 @@ let TopicSchema = new Schema({
   commentCount: { type: Number, default: 0 }, //评论条数
   likeCount: { type: Number, default: 0 }, //评论条数
   heartCount: { type: Number, default: 0 }, //评论条数
-  top: Boolean, //置顶
+  top: { type: Boolean, default: false }, //置顶
   essence: Boolean,
   weight: Number, //权重，可以排序
   status: Number,
@@ -32,10 +32,20 @@ TopicSchema.statics = {
       done(result);
     });
   },
-  topicsWithNode: function (node, offset, limit, done) {
-    var q = {};
+  topTopic: function (node, done) {
+    var q = { top: true };
     if(node) q.node = node;
-    Topic.find(q).populate("fans user").sort("top -createdAt").skip(offset).limit(limit).exec((err, topics) => {
+    Topic.findOne(q).populate("fans user").exec((err, topic) => {
+      if(err) console.error(err);
+      done(topic);
+    });
+  },
+  topicsWithNode: function (node, offset, limit, done) {
+    var q = {
+      $or: [{ top: false }, { top: { $exists: false } }]
+    };
+    if(node) q.node = node;
+    Topic.find(q).populate("fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);
       done(topics);
     });

@@ -1,4 +1,6 @@
 extends default
+block header
+  style.
 block main
   block headNav
     header#haedNav.heading.primary.affix.dock-top.dock-auto
@@ -13,7 +15,7 @@ block main
           .avatar.circle
             img#headimgurl(src='/avatar.png', alt='')
   //- #pageLoading.loading.loading-light
-  #partial.container(style="padding: 0;")
+  #partial.container(style="padding: 0.5rem;background-color: #fff")
     block content
 
 block scripts

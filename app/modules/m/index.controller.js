@@ -54,7 +54,7 @@ exports.newSave = function (req, res) {
     // res.status(403).json({err:'粉丝信息没有传输，请确认!'});
   }
   if(!req.body.images || !req.body.images.length)
-    req.body.images =[];
+    req.body.images = [];
   console.log(" ************* topic body: ", req.body);
   WechatFans.findOne({ openid: openid }, (err, fans) => {
     if(err) console.error(err);
@@ -72,7 +72,10 @@ exports.newSave = function (req, res) {
 
 exports.home = function (req, res) {
   var node = req.params.node || req.query.node;
-  res.render('m/bbs/home', { node: node ? node : '' });
+  Topic.topTopic(node, (topTopic) => {
+    console.log(">>>>>>>>>>>>> top ", topTopic);
+    res.render('m/bbs/home', { node: node ? node : '', topTopic: topTopic });
+  });
 };
 
 exports.user = function (req, res) {

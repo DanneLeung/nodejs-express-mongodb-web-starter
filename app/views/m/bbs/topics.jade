@@ -1,37 +1,49 @@
-if(!topics || !topics.length)
-  .box.article
-    p 暂时没有帖子哦~~~
-each t in topics
-  .item.with-avatar.multi-lines.space-sm(data-id="#{t._id}")
-    a(href="fans/#{t.fans?t.fans._id}")
-      .avatar.circle
+mixin topicContent(t)
+  .item.with-avatar.space-sm.no-padding(data-id="#{t._id}")
+    a(href="/fans/#{t.fans?t.fans._id:''}")
+      .avatar.avatar-sm.circle
         img(src='#{t.fans.headimgurl}', alt='#{t.fans.nickname}')
-
     .content
       div
-        a.text-link.strong(href="fans/#{t.fans?t.fans._id}") 
+        a.strong(href="fans/#{t.fans?t.fans._id}") 
           | #{t.fans?t.fans.nickname:(t.user?t.user.username:"")}
-        .pull-right.muted
+          small.muted   #{formatDatetime(t.createdAt)}
+        //- .pull-right.muted
           i.icon-eye-open
           |  #{t.readCount}
-      .subtitle
-        span
-          if t.title 
-            | #{t.title} - 
-          | #{formatDatetime(t.createdAt)}
-      .title.space-sm=t.content
-      if(t.images && t.images.length)
-        .row.imgs.gutter-sm
-          each img in t.images
-            if img
-              .cell-3
-                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
-                  img(src='#{contextRoot}#{img}', alt='')
-      .muted.clearfix
-        .pull-right
-          a.btn(href="topic/#{t._id}")
-            i.icon-chat-dot
-          a.bnt(href="topic/#{t._id}")
-            i.icon-thumbs-o-up
-            small.muted 12
-          
+
+      //- small.muted
+        if t.title 
+          | #{t.title} - 
+        | #{formatDatetime(t.createdAt)}
+  div.topic(data-id="#{t._id}")
+    .space-sm=t.content
+    if(t.images && t.images.length)
+      .row.imgs.gutter-smser
+        each img in t.images
+          if img
+            .cell-4
+              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
+                img(src='#{contextRoot}#{img}', alt='')
+  .muted.clearfix
+    .pull-left
+      a.btn
+        i.icon-eye-open
+        small.muted  #{t.readCount?t.readCount:0}
+      a.btn(href="topic/view/#{t._id}")
+        i.icon-chat-dot
+        small.muted  #{t.commentCount?t.commentCount:0}
+      a.btn(href="#")
+        i.icon-thumbs-o-up
+        small.muted  #{t.likeCount?t.likeCount:0}
+  .divider.space-sm(style="margin: 0 -0.5rem 0.5rem -0.5rem")
+
+
+
+
+//- if(!topics || !topics.length)
+//-   .box.article
+//-     p 暂时没有帖子哦~~~
+//- else
+each t in topics
+  +topicContent(t)

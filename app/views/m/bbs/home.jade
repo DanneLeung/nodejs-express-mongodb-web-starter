@@ -7,18 +7,26 @@ block header
     .subtitle{
       margin-bottom: 0.5rem;
     }
+    .topic{background-color:#fff}
 block content
   //- .heading
     .title 
-  div
-    .list#topics
+  
+  .list#topics
+    if(topTopic)
+      .item.with-avatar.space-sm.no-padding(data-id="#{topTopic._id}")
+        .avatar.avatar-sm.circle.yellow 顶
+        .content
+          | #{topTopic.title?topTopic.title:topTopic.content}
+      .divider.space-sm(style="margin: 0 -0.5rem 0.5rem -0.5rem")
+
   nav.fab.affix.dock-bottom.dock-right.shadow-none
-    a.btn.circle.shadow-2.has-margin-sm.btn-lg.green(title='发布新帖',href="topic/new/#{node}")
+    a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary(title='发布新帖',href="topic/new/#{node}")
       i.icon.icon-plus
 block contentScripts
   script.
     $(document).ready(function(){
-      $(".list").on("click",".item", function(){
+      $(".list").on("click",".item,.topic", function(){
         var id = $(this).data("id");
         if(id){
           window.location.href=contextFront+"/topic/view/"+id;
