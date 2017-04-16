@@ -84,7 +84,6 @@ module.exports = function (app, express, passport) {
     }
   };
 
-
   if(env === 'production') {
     if("cluster" === app.config.redis.mode)
       app.redis = new Redis.Cluster(app.config.redis.cluster);

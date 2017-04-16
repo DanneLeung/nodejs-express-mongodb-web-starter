@@ -1,0 +1,56 @@
+
+style.
+  .comments .item>.content>.imgs {
+  margin-top: 0
+  }
+  .comments .item>.content>.imgs img {
+  margin: 0
+  }
+  .comments>.list {
+  box-shadow: inset .1rem 0 0 rgba(0, 0, 0, .1)
+  }
+  #fabNav {
+  display: none!important
+  }
+.section(data-display='modal', data-selector='.btn-reply', data-remote='/part/examples/comments-reply.html', data-placement='bottom')
+  .heading
+    .title
+      i.icon.icon-comments-alt.muted
+      strong &#x8BC4;&#x8BBA;
+      small.muted (122)
+  .list.comments
+    .item.with-avatar.multi-lines
+      a.avatar.circle(data-dark='true', data-skin='') &#x8D75;
+      .content
+        div
+          a.text-link.strong &#x8D75;&#x5927;&#x5B9D;
+          .muted.small.pull-right 33 &#x5206;&#x949F;&#x524D;
+        .btn-reply.state &#x770B;&#x770B;&#x6211;&#x53D4;&#x53D4;&#x4ECE;&#x706B;&#x661F;&#x53D1;&#x6765;&#x7684;&#x7167;&#x7247;~~
+        .row.imgs.gutter-sm
+          .cell-3
+            a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='/img/img1.jpg' alt='' class='no-margin'>")
+              img(src='/img/img1.jpg', alt='')
+          .cell-3
+            a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='/img/img2.jpg' alt='' class='no-margin'>")
+              img(src='/img/img2.jpg', alt='')
+          .cell-3
+            a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='/img/img3.jpg' alt='' class='no-margin'>")
+              img(src='/img/img3.jpg', alt='')
+          .cell-3
+            a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='/img/img4.jpg' alt='' class='no-margin'>")
+              img(src='/img/img4.jpg', alt='')
+  .divider
+  nav.nav.justified.pager
+    a.pager-more
+      span
+        strong 20
+        strong 57
+        span.text-link
+          i.icon.icon-double-angle-down
+.text-center.text-gray.small
+  i.icon-lightbulb
+nav.fab.affix.dock-bottom.dock-right.shadow-none
+  //- a.btn.circle.shadow-2.has-margin-sm.dark(href='https://github.com/easysoft/mzui/blob/master//part/examples/comments.html', target='_blank')
+    i.icon-code
+  a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary(title='评论', data-display='modal', data-remote='#{baseUrl}/topic/comments', data-placement='bottom')
+    i.icon.icon-comments

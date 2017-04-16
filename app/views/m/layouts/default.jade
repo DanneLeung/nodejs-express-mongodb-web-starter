@@ -8,7 +8,8 @@ html
     block title
     include incs/header
     block header
-  body.with-heading-top.has-index-content
+  body(class="#{showHeading?'with-heading-top':''} has-index-content")
+
     block main
 
     script(type='text/javascript', src='#{themeFront}/js/mzui.js')
@@ -16,7 +17,7 @@ html
     script(type='text/javascript', src='#{themeRoot}/dist/js/global.js?v=#{version}')
     script(type='text/javascript', src='#{themeRoot}/dist/js/weixin.js?v=#{version}')
     //- if (req.session.channel && req.session.channel.analystScript)
-      //  插入统计代码
+    //-  插入统计代码
       !{req.session.channel.analystScript}
 
     include incs/flash

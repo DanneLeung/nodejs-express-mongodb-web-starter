@@ -33,7 +33,7 @@ TopicSchema.statics = {
   topicsWithNode: function (node, offset, limit, done) {
     var q = {};
     if(node) q.node = node;
-    Topic.find(q).sort("top -createdAt").skip(offset).limit(limit).populate("fans user").exec((err, topics) => {
+    Topic.find(q).populate("fans user").sort("top -createdAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);
       done(topics);
     });

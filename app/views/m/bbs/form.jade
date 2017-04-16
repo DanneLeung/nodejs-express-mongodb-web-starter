@@ -1,0 +1,50 @@
+extends ../layouts/bbs-topic
+block header
+
+block content
+  .section
+    .heading
+      .title 
+        strong 发表新帖子
+    form#topicForm.box(method="post" action="#{contextFront}/topic/new", enctype="application/x-www-form-urlencoded")
+      input#openid(type="hidden" name="openid")
+      input#node(type="hidden" name="node" value="#{node}")
+      input(type="hidden" name="images" vaule="/img/img1.jpg")
+      input(type="hidden" name="images" vaule="/img/img2.jpg")
+      input(type="hidden" name="images" vaule="/img/img3.jpg")
+
+      .control
+        textarea#content.textarea(name="content", rows=5, placeholder="输入文字发表新帖子~~~")
+          
+      .control.space-sm
+        button.btn.primary.outline(type='submit') 发表
+        button.btn.outline(type='button') 取消
+      .box.outline
+        .row
+          .cell-3
+            .avatar.avatar-xl
+              img(src='#{contextRoot}/img/img1.jpg', alt='')
+          .cell-3
+            .avatar.avatar-xl
+              img(src='#{contextRoot}/img/img2.jpg', alt='')
+          .cell-3
+            .avatar.avatar-xl
+              img(src='#{contextRoot}/img/img3.jpg', alt='')
+          .cell-3
+            .avatar.avatar-xl(data-skin='')
+              i.icon.icon-plus
+block contentScripts
+  script.
+    $(document).ready(function(){
+      $("#topicForm").ajaxform({
+        onSuccess: function(data){
+          console.log(data);
+          window.location.href="/home/#{node}"
+        },
+        onError: function(status){
+          console.log(status);
+          //- window.location.href="/home/#{node}"
+        }
+      });
+    });
+

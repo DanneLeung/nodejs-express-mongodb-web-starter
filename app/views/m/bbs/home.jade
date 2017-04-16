@@ -1,17 +1,26 @@
-extends layouts/bbs
+extends ../layouts/bbs
 block header
   style.
     .item {
       background-color: #fff;
     }
+    .subtitle{
+      margin-bottom: 0.5rem;
+    }
 block content
-  .heading
+  //- .heading
     .title 
   div
     .list#topics
 block contentScripts
   script.
     $(document).ready(function(){
+      $(".list").on("click",".item", function(){
+        var id = $(this).data("id");
+        if(id){
+          window.location.href=contextFront+"/topic/view/"+id;
+        }
+      });
       $.get('topics/#{node}', function(data){
         $('#topics').append(data);
       });

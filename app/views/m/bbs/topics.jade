@@ -2,7 +2,7 @@ if(!topics || !topics.length)
   .box.article
     p 暂时没有帖子哦~~~
 each t in topics
-  .item.with-avatar.multi-lines.space-sm
+  .item.with-avatar.multi-lines.space-sm(data-id="#{t._id}")
     a(href="fans/#{t.fans?t.fans._id}")
       .avatar.circle
         img(src='#{contextRoot}/avatar.png', alt='')
@@ -12,10 +12,13 @@ each t in topics
         a.text-link.strong(href="fans/#{t.fans?t.fans._id}") 
           | #{t.fans?t.fans.nickname:(t.user?t.user.username:"")}
       .subtitle
-        span #{t.title} - #{formatDatetime(t.createdAt)}
-        .muted.small.pull-right
-          i.icon-eye
-          | #{t.readCount}
+        span
+          if t.title 
+            | #{t.title} - 
+          | #{formatDatetime(t.createdAt)}
+        .pull-right
+          i.icon-eye-open
+          |  #{t.readCount}
       .title.space-sm=t.content
       if(t.images && t.images.length)
         .row.imgs.gutter-sm
@@ -23,3 +26,11 @@ each t in topics
             .cell-3
               a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
                 img(src='#{contextRoot}#{img}', alt='')
+      .tools.clearfix
+        .pull-right
+          a(href="topic/#{t._id}")
+            i.icon-chat-dot
+          a(href="topic/#{t._id}")
+            i.icon-thumbs-o-up
+            small.muted 12
+          

@@ -45,7 +45,7 @@ block scripts
             var str ='';
             str +='      <div class="post">';
             str +='        <div class="user-block">';
-            str +='          <img class="img-circle img-bordered-sm" src="../../dist/img/user1-128x128.jpg" alt="user image">';
+            str +='          <img class="img-circle img-bordered-sm" src="' + (row.fans && row.fans.headimgurl ? row.fans.headimgurl:"") + '" alt="user image">';
             str +='          <span class="username">';
             str +='            <a href="#">' + (row.fans && row.fans.nickname?row.fans.nickname:(row.user?row.user.username:"")) + '</a>';
             str +='            <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>';
@@ -60,15 +60,17 @@ block scripts
             str +='          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a>';
             str +='          </li>';
             str +='          <li class="pull-right">';
-            str +='            <a href="#" class="link-black text-sm"><i class="fa fa-comments-o margin-r-5"></i> Comments (5)</a></li>';
+            str +='            <a href="#" class="link-black text-sm"><i class="fa fa-comments-o margin-r-5"></i> 评论 (' + row.commentCount?row.commentCount: 0 + ') </a></li>';
             str +='        </ul>';
             str +='      </div>';
             return str;
           }},
           {data: "content", sortable: false, visible: false},
-          {data: "user", sortable: false, visible: false},
+          //- {data: "user", sortable: false, visible: false},
           {data: "createdAt", sortable: false, visible: false},
-          {data: "fans", sortable: false, visible: false}
+          {data: "commentCount", sortable: false, visible: false},
+          {data: "fans.nickname", sortable: false, visible: false},
+          {data: "fans.headimgurl", sortable: false, visible: false}
         ]
       }));
     });

@@ -1,0 +1,37 @@
+extends ../layouts/bbs
+block header
+  style.
+    .img {width: 100%;}
+block content
+  .box
+    if(!topic)
+      .box.article
+        p 帖子不存在哦，可能已经被删除 ~~~ 
+    .list#topic
+      .item.with-avatar
+        a(href="fans/#{topic.fans?topic.fans._id}")
+          .avatar.circle
+            img(src='#{contextRoot}/avatar.png', alt='')
+
+        .content
+          div
+            a.text-link.strong(href="fans/#{topic.fans?topic.fans._id}") 
+              | #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:"")}
+          .subtitle
+            span
+              if topic.title 
+                | #{topic.title} - 
+              | #{formatDatetime(topic.createdAt)}
+            .pull-right
+              div
+                i.icon-eye-open
+                |  #{topic.readCount}
+                a(href="topic/#{topic._id}")
+                  i.icon-thumbs-o-up
+                  small.muted 12
+    .title.space-sm=topic.content
+    if(topic.images && topic.images.length)
+        each img in topic.images
+          img.img(src='#{contextRoot}#{img}', alt='')
+  include comments
+              

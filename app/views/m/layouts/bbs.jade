@@ -1,17 +1,18 @@
 extends default
 
 block main
-  header#haedNav.heading.primary.affix.dock-top.dock-auto
-    nav#headNav.nav
-      a.brand-name(href='home', data-page-name='index')
-        i.icon-home
-      each n in nodes
-        a(href='home/#{n._id}', data-page-name='#{n.title}')=n.title
-    .title
-    nav.nav
-      a(href='user')
-        .avatar.circle
-          img#headimgurl(src='/avatar.png', alt='')
+  if showHeading
+    header#haedNav.heading.primary.affix.dock-top.dock-auto
+      nav#headNav.nav
+        a.brand-name(href='home', data-page-name='index')
+          i.icon-home
+        each n in nodes
+          a(href='home/#{n._id}', data-page-name='#{n.title}')=n.title
+      .title
+      nav.nav
+        a(href='user')
+          .avatar.circle
+            img#headimgurl(src='/avatar.png', alt='')
   //- #pageLoading.loading.loading-light
   #partial.container(style="padding: 0;")
     block content
@@ -22,7 +23,8 @@ block scripts
       var user = W.getUser(appid);
       if(user){
         console.log(JSON.stringify(user));
-        $('h4#nickname').html(user.nickname ? user.nickname : '未知用户');
+        $('#nickname').html(user.nickname ? user.nickname : '未知用户');
+        $('#openid').html(user.openid ? user.openid : '');
         $('#headimgurl').attr('src', user.headimgurl ? user.headimgurl : '#{baseUrl}/imgs/headimg_default.jpg');
       }else{
         //- window.location.href="index";
