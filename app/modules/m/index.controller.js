@@ -53,6 +53,8 @@ exports.newSave = function (req, res) {
     req.body.openid = openid = "oxVEQuN3xDA1r8aBD_hh-xMQeir4";
     // res.status(403).json({err:'粉丝信息没有传输，请确认!'});
   }
+  if(!req.body.images || !req.body.images.length)
+    req.body.images =[];
   console.log(" ************* topic body: ", req.body);
   WechatFans.findOne({ openid: openid }, (err, fans) => {
     if(err) console.error(err);

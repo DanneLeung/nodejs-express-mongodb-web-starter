@@ -39,7 +39,8 @@ block content
     .title.space-sm=topic.content
     if(topic.images && topic.images.length>0)
       each img in topic.images
-        img.img(src='#{contextRoot}#{img}', alt='')
+        if img
+          img.img(src='#{contextRoot}#{img}', alt='')
   include comments
   block contentScripts
     script.

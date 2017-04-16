@@ -10,9 +10,9 @@ block content
     form#topicForm.box(method="post" action="#{contextFront}/topic/new", enctype="application/x-www-form-urlencoded")
       input#openid(type="hidden" name="openid")
       input#node(type="hidden" name="node" value="#{node}")
-      input(type="hidden" name="images" vaule="/img/img1.jpg")
-      input(type="hidden" name="images" vaule="/img/img2.jpg")
-      input(type="hidden" name="images" vaule="/img/img3.jpg")
+      input(type="hidden" name="images" value="/img/img1.jpg")
+      input(type="hidden" name="images" value="/img/img2.jpg")
+      input(type="hidden" name="images" value="/img/img3.jpg")
 
       .control
         textarea#content.textarea(name="content", rows=5, placeholder="输入文字发表新帖子~~~")
@@ -41,7 +41,7 @@ block contentScripts
       $("#topicForm").ajaxform({
         onSuccess: function(data){
           console.log(data);
-          window.location.href="/home/#{node}"
+          window.location.href="#{contextFront}/home/#{node}"
         },
         onError: function(status){
           console.log(status);
