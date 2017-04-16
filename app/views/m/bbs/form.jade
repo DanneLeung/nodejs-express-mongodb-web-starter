@@ -3,11 +3,11 @@ block header
 block headNav
 
 block content
-  .section
+  div
     .heading
       .title 
         strong 发表新帖子
-    form#topicForm.box(method="post" action="#{contextFront}/topic/new", enctype="application/x-www-form-urlencoded")
+    form#topicForm(method="post" action="#{contextFront}/topic/new", enctype="application/x-www-form-urlencoded")
       input#openid(type="hidden" name="openid")
       input#node(type="hidden" name="node" value="#{node}")
       input(type="hidden" name="images" value="/img/img1.jpg")
