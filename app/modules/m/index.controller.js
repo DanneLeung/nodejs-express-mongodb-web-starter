@@ -11,7 +11,6 @@ var Topic = mongoose.model('Topic');
 exports.nodes = function (req, res, next) {
   Node.enabledNodes((nodes) => {
     res.locals.nodes = nodes;
-    res.locals.showHeading = true;
     next();
   });
 

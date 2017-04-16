@@ -17,6 +17,8 @@ let TopicSchema = new Schema({
   images: [], //图片
   readCount: { type: Number, default: 0 }, //阅读次数
   commentCount: { type: Number, default: 0 }, //评论条数
+  likeCount: { type: Number, default: 0 }, //评论条数
+  heartCount: { type: Number, default: 0 }, //评论条数
   top: Boolean, //置顶
   essence: Boolean,
   weight: Number, //权重，可以排序

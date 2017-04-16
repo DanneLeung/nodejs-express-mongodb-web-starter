@@ -1,5 +1,6 @@
-extends ../layouts/bbs-topic
+extends ../layouts/bbs
 block header
+block headNav
 
 block content
   .section
@@ -17,8 +18,8 @@ block content
         textarea#content.textarea(name="content", rows=5, placeholder="输入文字发表新帖子~~~")
           
       .control.space-sm
-        button.btn.primary.outline(type='submit') 发表
-        button.btn.outline(type='button') 取消
+        a.btn(href='home/#{node}') 取消
+        button.btn.primary(type='submit') 发表
       .box.outline
         .row
           .cell-3
@@ -35,6 +36,7 @@ block content
               i.icon.icon-plus
 block contentScripts
   script.
+    $("body").removeClass("with-heading-top"); 
     $(document).ready(function(){
       $("#topicForm").ajaxform({
         onSuccess: function(data){

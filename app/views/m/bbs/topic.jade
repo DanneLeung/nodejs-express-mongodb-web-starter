@@ -1,9 +1,12 @@
+
 extends ../layouts/bbs
 block header
   style.
     .img {width: 100%;}
+block headNav
+
 block content
-  .box
+  .box.space-sm
     if(!topic)
       .box.article
         p 帖子不存在哦，可能已经被删除 ~~~ 
@@ -17,21 +20,29 @@ block content
           div
             a.text-link.strong(href="fans/#{topic.fans?topic.fans._id}") 
               | #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:"")}
+            .pull-right.muted
+              div
+                a.btn
+                  i.icon-eye-open
+                  |  #{topic.readCount?topic.readCount:0}
+                a.btn(href="#")
+                  i.icon-thumbs-o-up
+                  small.muted  #{topic.likeCount?topic.likeCount:0}
+                a.btn(href="#")
+                  i.icon-heart
+                  small.muted  #{topic.commentCount?topic.commentCount:0}
           .subtitle
             span
               if topic.title 
                 | #{topic.title} - 
               | #{formatDatetime(topic.createdAt)}
-            .pull-right
-              div
-                i.icon-eye-open
-                |  #{topic.readCount}
-                a(href="topic/#{topic._id}")
-                  i.icon-thumbs-o-up
-                  small.muted 12
     .title.space-sm=topic.content
-    if(topic.images && topic.images.length)
-        each img in topic.images
-          img.img(src='#{contextRoot}#{img}', alt='')
+    if(topic.images && topic.images.length>0)
+      each img in topic.images
+        img.img(src='#{contextRoot}#{img}', alt='')
   include comments
-              
+  block contentScripts
+    script.
+      $(function(){
+        $("body").removeClass("with-heading-top");
+      });
