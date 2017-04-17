@@ -37,6 +37,7 @@ block contentScripts
     });
     $(document).ready(function(){
       $("body").on("click","#selectImg", function(e){
+        alert(this);
         var that = this;
         W.chooseImage(function(localIds){
           alert(localIds);
