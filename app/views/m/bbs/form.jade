@@ -22,22 +22,31 @@ block content
         button.btn.primary(type='submit') 发表
       .box.outline
         .row
-          .cell-3
+          //- .cell-3
             .avatar.avatar-xl
               img(src='#{contextRoot}/img/img1.jpg', alt='')
-          .cell-3
-            .avatar.avatar-xl
-              img(src='#{contextRoot}/img/img2.jpg', alt='')
-          .cell-3
-            .avatar.avatar-xl
-              img(src='#{contextRoot}/img/img3.jpg', alt='')
-          .cell-3
+          #selectImg.cell-3
             .avatar.avatar-xl(data-skin='')
               i.icon.icon-plus
 block contentScripts
   script.
     $("body").removeClass("with-heading-top"); 
+    W.config(appid);
     $(document).ready(function(){
+      wx.ready(function(){
+        $("body").on("click","#selectImg", function(e){
+          var that = this;
+          W.chooseImage(function(localIds){
+            if(localIds&&localIds.length>0){
+              for(var id in localIds){
+                var img = "<img src='"+ id + "'>"
+                var html = "<div class='cell-3'><div class='avatar.avatar-xl'>" + img + "</div></div>";
+                that.before(html);
+              }
+            }
+          });
+        });
+      });
       $("#topicForm").ajaxform({
         onSuccess: function(data){
           console.log(data);

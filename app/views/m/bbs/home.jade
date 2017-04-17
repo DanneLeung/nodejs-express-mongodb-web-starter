@@ -7,18 +7,17 @@ block header
     .subtitle{
       margin-bottom: 0.5rem;
     }
-    .topic{background-color:#fff}
+    .topic{background-color:#fff;padding:0 .5rem}
 block content
   //- .heading
     .title 
   
   .list#topics
     if(topTopic)
-      .item.with-avatar.space-sm.no-padding(data-id="#{topTopic._id}")
+      .item.with-avatar.space-sm(data-id="#{topTopic._id}")
         .avatar.avatar-sm.circle.yellow 顶
         .content
           | #{topTopic.title?topTopic.title:topTopic.content}
-      .divider.space-sm(style="margin: 0 -0.5rem 0.5rem -0.5rem")
 
   nav.nav.justified.pager
     a.pager-more

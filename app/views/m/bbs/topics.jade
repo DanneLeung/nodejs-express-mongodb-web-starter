@@ -1,13 +1,12 @@
 mixin topicContent(t)
-  .item.with-avatar.space-sm.no-padding(data-id="#{t._id}")
+  .item.with-avatar.muti-lines(data-id="#{t._id}")
     a(href="/fans/#{t.fans?t.fans._id:''}")
-      .avatar.avatar-sm.circle
+      .avatar
         img(src='#{t.fans.headimgurl}', alt='#{t.fans.nickname}')
     .content
-      div
-        a.strong(href="fans/#{t.fans?t.fans._id}") 
+        a.title(href="fans/#{t.fans?t.fans._id}") 
           | #{t.fans?t.fans.nickname:(t.user?t.user.username:"")}
-          small.muted.pull-right   #{formatDatetime(t.createdAt)}
+        .subtitle.muted.no-margin  #{formatDate(t.createdAt)}
         //- .pull-right.muted
           //- i.icon-eye-open
           //- |  #{t.readCount}
@@ -16,8 +15,9 @@ mixin topicContent(t)
         //- if t.title 
         //-   | #{t.title} - 
         //- | #{formatDatetime(t.createdAt)}
-  div.topic(data-id="#{t._id}")
-    .space-sm=t.content
+  .topic.space-sm(data-id="#{t._id}")
+    .space-sm
+      | #{t.content}
     if(t.images && t.images.length)
       .row.imgs.gutter-smser
         each img in t.images
@@ -25,18 +25,18 @@ mixin topicContent(t)
             .cell-4
               a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
                 img(src='#{contextRoot}#{img}', alt='')
-  .muted.clearfix
-    .pull-left
-      a.btn
-        i.icon-eye-open
-        small.muted  #{t.readCount?t.readCount:0}
-      a.btn(href="topic/view/#{t._id}")
-        i.icon-chat-dot
-        small.muted  #{t.commentCount?t.commentCount:0}
-      a.btn(href="#")
-        i.icon-thumbs-o-up
-        small.muted  #{t.likeCount?t.likeCount:0}
-  .divider.space-sm(style="margin: 0 -0.5rem 0.5rem -0.5rem")
+    .muted.clearfix
+      .pull-left
+        a.btn
+          i.icon-eye-open
+          small.muted  #{t.readCount?t.readCount:0}
+        a.btn(href="topic/view/#{t._id}")
+          i.icon-chat-dot
+          small.muted  评 #{t.commentCount?t.commentCount:0}
+        a.btn(href="#")
+          i.icon-thumbs-o-up
+          small.muted  赞 #{t.likeCount?t.likeCount:0}
+  //- .divider.space-sm(style="margin: 0 -0.5rem 0.5rem -0.5rem")
 
 
 
