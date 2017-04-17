@@ -33,9 +33,13 @@ block contentScripts
     $("body").removeClass("with-heading-top"); 
     W.config(appid);
     wx.ready(function(){
+      alert("wx ready~")
+    });
+    $(document).ready(function(){
       $("body").on("click","#selectImg", function(e){
         var that = this;
         W.chooseImage(function(localIds){
+          alert(localIds);
           if(localIds&&localIds.length>0){
             for(var i in localIds){
               var img = "<img src='"+ localIds[i] + "'>"
@@ -45,8 +49,6 @@ block contentScripts
           }
         });
       });
-    });
-    $(document).ready(function(){
       $("#topicForm").ajaxform({
         onSuccess: function(data){
           console.log(data);
