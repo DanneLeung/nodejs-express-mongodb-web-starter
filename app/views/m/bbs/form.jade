@@ -38,8 +38,8 @@ block contentScripts
           var that = this;
           W.chooseImage(function(localIds){
             if(localIds&&localIds.length>0){
-              for(var id in localIds){
-                var img = "<img src='"+ id + "'>"
+              for(var i in localIds){
+                var img = "<img src='"+ localIds[i] + "'>"
                 var html = "<div class='cell-3'><div class='avatar.avatar-xl'>" + img + "</div></div>";
                 $(that).before(html);
               }
