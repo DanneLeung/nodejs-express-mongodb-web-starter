@@ -32,21 +32,21 @@ block contentScripts
   script.
     $("body").removeClass("with-heading-top"); 
     W.config(appid);
-    $(document).ready(function(){
-      wx.ready(function(){
-        $("body").on("click","#selectImg", function(e){
-          var that = this;
-          W.chooseImage(function(localIds){
-            if(localIds&&localIds.length>0){
-              for(var i in localIds){
-                var img = "<img src='"+ localIds[i] + "'>"
-                var html = "<div class='cell-3'><div class='avatar.avatar-xl'>" + img + "</div></div>";
-                $(that).before(html);
-              }
+    wx.ready(function(){
+      $("body").on("click","#selectImg", function(e){
+        var that = this;
+        W.chooseImage(function(localIds){
+          if(localIds&&localIds.length>0){
+            for(var i in localIds){
+              var img = "<img src='"+ localIds[i] + "'>"
+              var html = "<div class='cell-3'><div class='avatar.avatar-xl'>" + img + "</div></div>";
+              $(that).before(html);
             }
-          });
+          }
         });
       });
+    });
+    $(document).ready(function(){
       $("#topicForm").ajaxform({
         onSuccess: function(data){
           console.log(data);
