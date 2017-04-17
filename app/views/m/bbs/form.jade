@@ -36,8 +36,8 @@ block contentScripts
       alert("wx ready~")
     });
     $(document).ready(function(){
-      $("body").on("click","#selectImg", function(e){
-        alert(this);
+      $("#selectImg").on("click", function(e){
+        console.log("*****");
         var that = this;
         W.chooseImage(function(localIds){
           alert(localIds);
