@@ -19,7 +19,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * *********************************************
    */
   var W = {
-    configWx: config,
+    config: config,
     getUser: getUser,
     oauthUser: oauthUser,
     oauthQuiet: oauthQuiet,
