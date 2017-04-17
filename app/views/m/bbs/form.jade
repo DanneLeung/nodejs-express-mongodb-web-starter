@@ -41,7 +41,7 @@ block contentScripts
               for(var id in localIds){
                 var img = "<img src='"+ id + "'>"
                 var html = "<div class='cell-3'><div class='avatar.avatar-xl'>" + img + "</div></div>";
-                that.before(html);
+                $(that).before(html);
               }
             }
           });
