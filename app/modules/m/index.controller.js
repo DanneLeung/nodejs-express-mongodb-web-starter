@@ -83,9 +83,9 @@ exports.newSave = function (req, res) {
         return callback(err, wm ? wm.path : '');
       });
     }, (err, result) => {
-      console.log(" ************* topic body will be saved: ", result, req.body);
       // req.body.images = _.remove(result, (el) => { return !el; });
       req.body.images = result;
+      console.log(" ************* topic body will be saved: ", result, req.body);
       
       WechatFans.findOne({ openid: openid }, (err, fans) => {
         if(err) console.error(err);

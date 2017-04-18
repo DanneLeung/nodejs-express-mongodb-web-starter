@@ -30,7 +30,6 @@ block content
 block contentScripts
   script.
     var count = 0;
-    var images = [];
     var serverIds = [];
     $("body").removeClass("with-heading-top"); 
     W.config(appid);
@@ -49,7 +48,6 @@ block contentScripts
               }
               var localId = localIds[i] ;
               if(localId){
-                images.push(localId);
                 wx.getLocalImgData({
                   localId: localId, // 图片的localID
                   success: function (res) {
@@ -57,9 +55,11 @@ block contentScripts
                     var img = "<img src='"+ localData + "'>"
                     var html = "<div class='cell-4'><div class='avatar.avatar-xl'>" + img + "</div></div>";
                     $(that).before(html);
-                    W.uploadImage(images[i], function(serverId){
+                    W.uploadImage(localId, function(serverId){
+                      alert(" upload image "+ localId);
                       if(serverId){
                         serverIds.push(serverId);
+                        alert(serverIds.join(','));
                         $("#serviceIds").val(serverIds.join(','));
                       }
                     });
