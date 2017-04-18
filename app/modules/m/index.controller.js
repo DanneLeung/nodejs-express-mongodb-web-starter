@@ -51,10 +51,14 @@ exports.new = function (req, res) {
 
 exports.newSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
-  var node = req.body.node;
+  var node = req.body.node || null;
   var openid = req.body.openid;
   var serviceIds = req.body.serviceIds || '';
   console.log(" ************* topic body : ", req.body);
+
+  if(!node) {
+    delete req.body.node;
+  }
 
   if(!openid) {
     req.body.openid = openid = "oxVEQuN3xDA1r8aBD_hh-xMQeir4";
