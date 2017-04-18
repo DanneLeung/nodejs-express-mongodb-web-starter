@@ -51,7 +51,7 @@ module.exports = function (appid, appsecret) {
       }
       // 本地不存在
       if(!media) {
-        api.getMedia(mediaId, (err, data, res) => { handleSave(err, data, res, callback) });
+        api.getMedia(mediaId, (err, data, res) => { handleSave(mediaId, err, data, res, callback) });
       } else {
         console.log("************* 本地读取 mediaId %s 文件.", mediaId);
         return callback(err, media);
@@ -87,7 +87,7 @@ module.exports = function (appid, appsecret) {
       }
       // 本地不存在
       if(!media) {
-        api.getMaterial(mediaId, (err, data, res) => { handleSave(err, data, res, callback) });
+        api.getMaterial(mediaId, (err, data, res) => { handleSave(mediaId, err, data, res, callback) });
       } else {
         console.log("************* 本地读取 mediaId %s 文件.", mediaId);
         return callback(err, media);
@@ -237,7 +237,7 @@ module.exports = function (appid, appsecret) {
     });
   }
 
-  function handleSave(err, data, res, callback) {
+  function handleSave(mediaId, err, data, res, callback) {
     if(err) {
       console.error("**************** 微信接口读取mediaId %s 错误.", err);
       return callback(err);
