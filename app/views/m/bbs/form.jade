@@ -34,7 +34,6 @@ block contentScripts
     $("body").removeClass("with-heading-top"); 
     W.config(appid);
     wx.ready(function(){
-      alert("wx ready~")
     });
     $(document).ready(function(){
       $("#selectImg").on("click", function(e){
@@ -53,7 +52,7 @@ block contentScripts
                 W.uploadImage(images[i], function(serverId){
                   if(serverId){
                     serverIds.push(serverId);
-                    $("#serviceIds").value(serverIds.join(','));
+                    $("#serviceIds").val(serverIds.join(','));
                     wx.getLocalImgData({
                       localId: localId, // 图片的localID
                       success: function (res) {
