@@ -243,31 +243,13 @@ module.exports = function (appid, appsecret) {
       return callback(err);
     }
     var contentType = res.headers['content-type'];
-    console.log("************* mediaId %s 不存在，微信远程获取.", mediaId);
+    console.log("************* mediaId %s 素材不存在，微信远程获取.", mediaId, contentType);
     if(contentType === 'application/json' || contentType === 'text/plain') {
       // json，写入db
       data = JSON.parse(data);
       data.downloaded = true;
       WechatMedia.findOneAndUpdate({ 'media_id': mediaId, 'appid': api.appid }, data, { new: true, upsert: true }, (err, wm) => {
         if(err) console.error(err);
-        //if (wm.type === 'news') {
-        //  var items = wm.content.news_item;
-        //  if (items && items.length > 0) {
-        //    async.map(items, (item, c)=> {
-        //      getMaterial(item.thumb_media_id, (err, media)=> {
-        //        item.thumb_url = media.url;
-        //        item.thumb_path = media.path;
-        //        item.save();
-        //        return c(null, media);
-        //      });
-        //    }, (err, result)=> {
-        //      return callback(err, err ? null : wm);
-        //    });
-        //  }
-        //} else {
-        //  return callback(err, err ? null : wm);
-        //}
-
         return callback(err, err ? null : wm);
       });
     } else {
