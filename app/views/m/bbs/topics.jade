@@ -22,9 +22,9 @@ mixin topicContent(t)
       .row.imgs.gutter-smser
         each img in t.images
           if img
-            .cell-4
+            .cell-4.img
               a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
-                img(src='#{contextRoot}#{img}', alt='')
+                .img(style="background-image:url('#{contextRoot}#{img}');")
     .muted.clearfix
       .pull-left
         a.btn
