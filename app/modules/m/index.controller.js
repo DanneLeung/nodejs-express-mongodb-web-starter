@@ -7,6 +7,7 @@ var config = require('../../../config/config');
 var mediaUtil = require(config.root + '/util/wechat/mediaUtil');
 
 var User = mongoose.model('User');
+var Wechat = mongoose.model('Wechat');
 var WechatFans = mongoose.model('WechatFans');
 var Node = mongoose.model('Node');
 var Topic = mongoose.model('Topic');
