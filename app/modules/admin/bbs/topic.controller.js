@@ -97,9 +97,9 @@ exports.enable = function (req, res) {
  * @param res
  */
 exports.del = function (req, res) {
-  var ids = req.body.ids || req.params.ids;
+  var id = req.body.id || req.params.id || req.query.id;
   Topic.remove({
-    '_id': ids
+    '_id': id
   }, function (err, result) {
     if(err) {
       console.log(err);

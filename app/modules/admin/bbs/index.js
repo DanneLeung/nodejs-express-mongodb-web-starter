@@ -36,7 +36,7 @@ router.get("/node", nodeCtrl.list)
 router.get(["/topic"], topicCtrl.list)
   .all(["/topic/datatable", "/topic/datatable/:node"], topicCtrl.datatable)
   .post("/topic/save", topicCtrl.save)
-  .post("/topic/del", topicCtrl.del)
+  .all(["/topic/del", "/topic/del/:id"], topicCtrl.del)
   .get("/topic/edit/:id", topicCtrl.edit)
   .get("/topic/add", topicCtrl.add)
   .get("/topic/enable/:id", topicCtrl.enable);
