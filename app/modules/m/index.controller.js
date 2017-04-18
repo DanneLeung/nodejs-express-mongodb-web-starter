@@ -103,7 +103,6 @@ exports.newSave = function (req, res) {
 exports.home = function (req, res) {
   var node = req.params.node || req.query.node;
   Topic.topTopic(node, (topTopic) => {
-    console.log(">>>>>>>>>>>>> top ", topTopic);
     res.render('m/bbs/home', { node: node ? node : '', topTopic: topTopic });
   });
 };

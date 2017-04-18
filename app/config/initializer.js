@@ -71,7 +71,7 @@ module.exports = function (app, express) {
       } else {
         if(!req.session.contextFront || !req.session.contextRoot || !req.session.staticRoot || !req.session.themeRoot) {
           mongoose.model('Setting').getValuesByKeys(['context.root', 'context.front', 'theme.root', 'theme.front', 'static.root'], function (setting) {
-            console.log("############# 读取系统参数" + JSON.stringify(setting));
+            // console.log("############# 读取系统参数" + JSON.stringify(setting));
             if(setting) {
               var contextRoot = setting['context.root'] || '';
               var contextFront = setting['context.front'] || '';
@@ -101,7 +101,7 @@ module.exports = function (app, express) {
 
               res.locals.theme = req.session.themeRoot + "/lte";
               res.locals.themeFront = req.session.themeRoot + '/' + themeFront;
-              console.log('########################## context, front, static, themeRoot ', contextRoot, contextFront, staticRoot, themeRoot);
+              // console.log('########################## context, front, static, themeRoot ', contextRoot, contextFront, staticRoot, themeRoot);
               return cb(null, setting);
             } else {
               return cb(null, null);
@@ -114,7 +114,7 @@ module.exports = function (app, express) {
           res.locals.themeRoot = req.session.themeRoot = req.session.themeRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
           res.locals.theme = req.session.themeRoot + "/lte";
           res.locals.themeFront = req.session.themeRoot + "/mzui";
-          console.log('********************** context, front, static, themeRoot in sessions.', req.session.contextRoot, req.session.contextFront, req.session.staticRoot, req.session.themeRoot);
+          // console.log('********************** context, front, static, themeRoot in sessions.', req.session.contextRoot, req.session.contextFront, req.session.staticRoot, req.session.themeRoot);
           return cb(null, null);
         }
       }

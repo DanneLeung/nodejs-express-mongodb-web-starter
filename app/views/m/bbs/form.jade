@@ -11,7 +11,7 @@ block content
       input#appid(type="hidden" name="appid" value="#{appid}")
       input#openid(type="hidden" name="openid")
       input#node(type="hidden" name="node" value="#{node}")
-      input#serviceIds(type="hidden" name="serviceIds" value="")
+      input#serviceIds(type="hidden" name="serviceIds")
 
       .control
         textarea#content.textarea(name="content", rows=5, placeholder="输入文字发表新帖子~~~")
@@ -49,6 +49,7 @@ block contentScripts
               }
               var localId = localIds[i] ;
               if(localId){
+              (function(localId){
                 images.push(localId);
                 wx.getLocalImgData({
                   localId: localId, // 图片的localID
@@ -65,6 +66,7 @@ block contentScripts
                     });
                   }
                 });
+              })();
               }
             }
           }
