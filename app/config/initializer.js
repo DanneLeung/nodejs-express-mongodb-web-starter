@@ -27,8 +27,10 @@ module.exports = function (app, express) {
       if(wechat) {
         console.log("*********** found wechat in session wechat name: %s, id: %s. ", req.session.wechat.name, req.session.wechat._id);
         res.locals.appid = wechat.appid;
-        res.locals.authAppid = wechat.oauthWechat.appid; //认证授权使用的appid
-        res.locals.authWid = wechat.oauthWechat.id; //认证授权使用的wid
+        if(wechat.oauthWechat) {
+          res.locals.authAppid = wechat.oauthWechat.appid; //认证授权使用的appid
+          res.locals.authWid = wechat.oauthWechat.id; //认证授权使用的wid
+        }
         return cb(null, wechat);
       }
       // 参数中带有wechat id，从wechatid中得到wechat
