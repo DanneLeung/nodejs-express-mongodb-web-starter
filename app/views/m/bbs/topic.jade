@@ -6,14 +6,14 @@ block header
 block headNav
 
 block content
-  .space-sm
+  .space-sm.container
     if(!topic)
       .article
         p 帖子不存在哦，可能已经被删除 ~~~ 
     .list#topic
-      .item.with-avatar.no-padding
+      .item.with-avatar
         a(href="fans/#{topic.fans?topic.fans._id}")
-          .avatar.circle
+          .avatar
             img(src='#{topic.fans?topic.fans.headimgurl:""}', alt='')
 
         .content
