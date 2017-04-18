@@ -25,7 +25,7 @@ block scripts
       if(user){
         console.log(JSON.stringify(user));
         $('#nickname').html(user.nickname ? user.nickname : '未知用户');
-        $('#openid').html(user.openid ? user.openid : '');
+        $('#openid').val(user.openid ? user.openid : '');
         $('#headimgurl').attr('src', user.headimgurl ? user.headimgurl : '#{baseUrl}/imgs/headimg_default.jpg');
       }else{
         //- window.location.href="index";
