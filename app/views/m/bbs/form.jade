@@ -8,7 +8,7 @@ block content
       .title 
         strong 发表新帖子
     form#topicForm(method="post" action="#{contextFront}/topic/new", enctype="application/x-www-form-urlencoded")
-      input#appid(type="hidden" name="appid")
+      input#appid(type="hidden" name="appid" value="#{appid}")
       input#openid(type="hidden" name="openid")
       input#node(type="hidden" name="node" value="#{node}")
       input#serviceIds(type="hidden" name="serviceIds" value="")
