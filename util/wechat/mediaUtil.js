@@ -12,7 +12,8 @@ let WechatApi = require('./wechatApiUtil');
 let mongoose = require('mongoose');
 let WechatMedia = mongoose.model('WechatMedia');
 
-const basePath = path.join(config.root, config.file.local, '/wecaht/meterial');
+const baseDir = '/wecaht/material';
+const basePath = path.join(config.root, config.file.local, baseDir);
 /**
  * 素材管理
  * @param appid
@@ -255,14 +256,14 @@ module.exports = function (appid, appsecret) {
     } else {
       // buffer data
       fileUtil.mkdirsSync(basePath);
-      fs.writeFile(basePath + '/' + mediaId, data, (err) => {
+      fs.writeFile(path.join(basePath, mediaId), data, (err) => {
         if(err) {
           console.error(err);
           return callback(err, null)
         }
         WechatMedia.findOneAndUpdate({ 'media_id': mediaId }, {
           'media_id': mediaId,
-          path: '/' + mediaId,
+          path: path.join(baseDir, mediaId),
           downloaded: true
         }, {
           new: true,
