@@ -53,7 +53,7 @@ exports.newSave = function (req, res) {
   var appid = req.body.appid;
   var node = req.body.node;
   var openid = req.body.openid;
-  var serviceIds = req.body.serviceIds || [];
+  var serviceIds = req.body.serviceIds || '';
   console.log(" ************* topic body : ", req.body);
 
   if(!openid) {
@@ -61,8 +61,10 @@ exports.newSave = function (req, res) {
     req.body.openid = openid = "oxVEQuN3xDA1r8aBD_hh-xMQeir4";
     // res.status(403).json({err:'粉丝信息没有传输，请确认!'});
   }
-  if(serviceIds) {
+  if(serviceIds && serviceIds.indexOf(',')) {
     serviceIds = serviceIds.split(",");
+  } else {
+    serviceIds = [serviceIds];
   }
 
   //读取微信公众号配置
