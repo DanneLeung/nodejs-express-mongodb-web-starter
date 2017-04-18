@@ -23,9 +23,13 @@ module.exports = function (app, express) {
 
     async.parallel([function (cb) {
       //TODO：wechatId与session里的wid不一致时，需要重新读取wechat
-      if(req.session.wechat) {
+      var wechat = req.session.wechat;
+      if(wechat) {
         console.log("*********** found wechat in session wechat name: %s, id: %s. ", req.session.wechat.name, req.session.wechat._id);
-        return cb(null, req.session.wechat);
+        res.locals.appid = wechat.appid;
+        res.locals.authAppid = wechat.oauthWechat.appid; //认证授权使用的appid
+        res.locals.authWid = wechat.oauthWechat.id; //认证授权使用的wid
+        return cb(null, wechat);
       }
       // 参数中带有wechat id，从wechatid中得到wechat
       Wechat.getDefault(function (err, wechat) {

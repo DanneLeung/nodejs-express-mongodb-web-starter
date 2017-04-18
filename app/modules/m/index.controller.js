@@ -50,16 +50,19 @@ exports.new = function (req, res) {
 };
 
 exports.newSave = function (req, res) {
-  var appid = req.body.appid;
+  var appid = req.body.appid || req.session.appid;
   var node = req.body.node;
   var openid = req.body.openid;
   var serviceIds = req.body.serviceIds || '';
   console.log(" ************* topic body : ", req.body);
 
   if(!openid) {
-    console.error(" openid");
     req.body.openid = openid = "oxVEQuN3xDA1r8aBD_hh-xMQeir4";
-    // res.status(403).json({err:'粉丝信息没有传输，请确认!'});
+    return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
+  }
+
+  if(!appid) {
+    return res.status(403).json({ err: '公众号配置信息错误，请确认!' });
   }
   if(serviceIds && serviceIds.indexOf(',')) {
     serviceIds = serviceIds.split(",");
