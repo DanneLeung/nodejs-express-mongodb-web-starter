@@ -7,9 +7,9 @@ module.exports = function (ROOT_PATH) {
       hostname: process.env.HOSTNAME || '127.0.0.1'
     },
     database: {
-      user: '',
-      password: '',
-      host: 'localhost',
+      user: 'starter',
+      password: 'starter',
+      host: 'xcesys.com',
       port: '27017',
       db: 'starter',
       url: ''

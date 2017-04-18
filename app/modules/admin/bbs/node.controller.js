@@ -92,12 +92,22 @@ exports.enable = function (req, res) {
   var updata = {};
   var options = {};
   var msg = "";
-  Node.update({
-    '_id': id
-  }, updata, options, function (err, info) {
+  Node.findOne({ '_id': id }, function (err, info) {
     if(!err) {
-      req.flash('success', msg);
-      res.redirect('/admin/bbs/node');
+      if(info.enabled == true) {
+        updata.enabled = false;
+        msg = "版块已禁用";
+      } else {
+        updata.enabled = true;
+        msg = "版块已激活";
+      }
+      Node.update({ '_id': id }, updata, options, function (err, info) {
+        if(!err) {
+          req.flash('success', msg);
+          res.redirect('/admin/bbs/node');
+        }
+      });
+
     }
   });
 };

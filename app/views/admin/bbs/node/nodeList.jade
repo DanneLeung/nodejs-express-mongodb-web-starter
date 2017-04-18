@@ -27,8 +27,9 @@ block main
             th 标题
             th.text-right 帖子数
             th.text-right 显示排序
-            th.text-center 状态
+            //- th.text-center 状态
             th 说明
+            th.text-center 激活
             th.text-center 操作
           each node,idx in nodes
             tr
@@ -36,12 +37,19 @@ block main
               td=node.title
               td.text-right=node.topics
               td.text-right=node.sort
-              td.text-center
+              //- td.text-center
                 if node.enabled 
                   span.label.label-success 激活
                 else
                   span.label.label-default 禁用
               td=node.description
+              td.text-center
+                a.btn.btn-default.btn-sm(href="#{baseUrl}/node/enable/#{node._id}")
+                  if node.enabled
+                    i.fa.fa-fw.fa-check-square
+                  else
+                    i.fa.fa-fw.fa-square-o
+
               td.text-center
                 .btn-group
                   a.btn.btn-default.btn-sm.edit(title='编辑', href='#{baseUrl}/node/edit/#{node._id}')

@@ -1,7 +1,10 @@
 'use strict';
 
 var _ = require('lodash');
+var async = require('async');
 var mongoose = require('mongoose');
+var config = require('../../../config/config');
+var mediaUtil = require(config.root + '/util/wechat/mediaUtil');
 
 var User = mongoose.model('User');
 var WechatFans = mongoose.model('WechatFans');
@@ -46,25 +49,40 @@ exports.new = function (req, res) {
 };
 
 exports.newSave = function (req, res) {
+  var appid = req.body.appid;
   var node = req.body.node;
   var openid = req.body.openid;
+  var serviceIds = req.body.serviceIds || [];
   if(!openid) {
     console.error(" openid");
     req.body.openid = openid = "oxVEQuN3xDA1r8aBD_hh-xMQeir4";
     // res.status(403).json({err:'粉丝信息没有传输，请确认!'});
   }
-  if(!req.body.images || !req.body.images.length)
-    req.body.images = [];
-  console.log(" ************* topic body: ", req.body);
-  WechatFans.findOne({ openid: openid }, (err, fans) => {
-    if(err) console.error(err);
+  if(serviceIds) {
+    serviceIds = serviceIds.split(",");
+  }
 
-    var topic = new Topic(req.body);
-    topic.fans = fans;
-    topic.save((err, t) => {
-      if(err) console.error(err);
-      res.status(200).json(t);
-      // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
+  //读取微信公众号配置
+  Wechat.findByAppid(appid, (err, wechat) => {
+    if(err) res.status(200).json({ error: 1, msg: '公众号配置信息错误，图片无法上传' });
+    var mutil = mediaUtil(wecaht.appid, wechat.appsecret);
+    async.map(serviceIds, (serviceId, callback) => {
+      mutil.getMedia(serviceId, (err, wm) => {
+        return callback(err, wm ? wm.path : '');
+      });
+    }, (err, result) => {
+      req.body.images = _.remove(result, (el) => { return !el; });
+      console.log(" ************* topic body will be saved: ", req.body);
+      WechatFans.findOne({ openid: openid }, (err, fans) => {
+        if(err) console.error(err);
+        var topic = new Topic(req.body);
+        topic.fans = fans;
+        topic.save((err, t) => {
+          if(err) console.error(err);
+          res.status(200).json(t);
+          // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
+        });
+      });
     });
   });
 

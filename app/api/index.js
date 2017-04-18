@@ -15,4 +15,7 @@ router.post("/getUserinfo", wechatCtrl.getUserinfo);
 router.all("/jsConfig", wechatCtrl.jsConfig);
 router.all("/save/menuShareTimeline", wechatCtrl.saveMenuShareTimeline);
 
+var uploadCtrl = require('./api.wechat.upload.controller');
+router.all("/uploadImage", uploadCtrl.uploadImages);
+
 module.exports = router;

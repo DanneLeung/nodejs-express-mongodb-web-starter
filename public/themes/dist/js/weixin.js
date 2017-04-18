@@ -340,15 +340,13 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * @param callback
    */
   function uploadImage(localId, callback) {
-    wx.ready(function () {
-      wx.uploadImage({
-        localId: localId, // 需要上传的图片的本地ID，由chooseImage接口获得
-        isShowProgressTips: 1, // 默认为1，显示进度提示
-        success: function (res) {
-          var serverId = res.serverId; // 返回图片的服务器端ID
-          callback(serverId);
-        }
-      });
+    wx.uploadImage({
+      localId: localId, // 需要上传的图片的本地ID，由chooseImage接口获得
+      isShowProgressTips: 1, // 默认为1，显示进度提示
+      success: function (res) {
+        var serverId = res.serverId; // 返回图片的服务器端ID
+        callback(serverId);
+      }
     });
   }
 

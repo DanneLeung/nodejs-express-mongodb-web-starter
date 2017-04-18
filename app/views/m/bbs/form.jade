@@ -10,26 +10,27 @@ block content
     form#topicForm(method="post" action="#{contextFront}/topic/new", enctype="application/x-www-form-urlencoded")
       input#openid(type="hidden" name="openid")
       input#node(type="hidden" name="node" value="#{node}")
-      input(type="hidden" name="images" value="/img/img1.jpg")
-      input(type="hidden" name="images" value="/img/img2.jpg")
-      input(type="hidden" name="images" value="/img/img3.jpg")
+      input#serviceIds(type="hidden" name="serviceIds" value="")
 
       .control
         textarea#content.textarea(name="content", rows=5, placeholder="输入文字发表新帖子~~~")
-          
+
       .control.space-sm
         a.btn(href='home/#{node}') 取消
         button.btn.primary(type='submit') 发表
       .box.outline
-        .row
-          //- .cell-3
+        .row#images
+          //- .cell-4
             .avatar.avatar-xl
               img(src='#{contextRoot}/img/img1.jpg', alt='')
-          #selectImg.cell-3
+          #selectImg.cell-4
             .avatar.avatar-xl(data-skin='')
               i.icon.icon-plus
 block contentScripts
   script.
+    var count = 0;
+    var images = [];
+    var serverIds = [];
     $("body").removeClass("with-heading-top"); 
     W.config(appid);
     wx.ready(function(){
@@ -37,26 +38,39 @@ block contentScripts
     });
     $(document).ready(function(){
       $("#selectImg").on("click", function(e){
-        console.log("*****");
         var that = this;
         W.chooseImage(function(localIds){
-          alert(localIds);
           if(localIds&&localIds.length>0){
             for(var i in localIds){
+              count++;
+              if(count>9){
+                $(that).remove();
+                break;
+              }
               var localId = localIds[i] ;
-              wx.getLocalImgData({
-                localId: localId, // 图片的localID
-                success: function (res) {
-                  var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-                  var img = "<img src='"+ localData + "'>"
-                  var html = "<div class='cell-3'><div class='avatar.avatar-xl'>" + img + "</div></div>";
-                  $(that).before(html);
-                }
-              });
+              if(localId){
+                images.push(localId);
+                W.uploadImage(images[i], function(serverId){
+                  if(serverId){
+                    serverIds.push(serverId);
+                    $("#serviceIds").value(serverIds.join(','));
+                    wx.getLocalImgData({
+                      localId: localId, // 图片的localID
+                      success: function (res) {
+                        var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+                        var img = "<img src='"+ localData + "'>"
+                        var html = "<div class='cell-4'><div class='avatar.avatar-xl'>" + img + "</div></div>";
+                        $(that).before(html);
+                      }
+                    });
+                  }
+                });
+              }
             }
           }
         });
       });
+
       $("#topicForm").ajaxform({
         onSuccess: function(data){
           console.log(data);
