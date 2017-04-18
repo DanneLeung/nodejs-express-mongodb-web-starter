@@ -66,7 +66,7 @@ exports.newSave = function (req, res) {
   //读取微信公众号配置
   Wechat.findByAppid(appid, (err, wechat) => {
     if(err) res.status(200).json({ error: 1, msg: '公众号配置信息错误，图片无法上传' });
-    var mutil = mediaUtil(wecaht.appid, wechat.appsecret);
+    var mutil = mediaUtil(wechat.appid, wechat.appsecret);
     async.map(serviceIds, (serviceId, callback) => {
       mutil.getMedia(serviceId, (err, wm) => {
         return callback(err, wm ? wm.path : '');
