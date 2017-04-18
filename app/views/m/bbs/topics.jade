@@ -4,7 +4,7 @@ mixin topicContent(t)
       .avatar
         img(src='#{t.fans.headimgurl}', alt='#{t.fans.nickname}')
     .content
-        a.title(href="fans/#{t.fans?t.fans._id}") 
+        a.title(href="fans/#{t.fans?t.fans._id}", style="width: 100%") 
           | #{t.fans?t.fans.nickname:(t.user?t.user.username:"")}
         .subtitle.muted.no-margin  #{formatDate(t.createdAt)}
         //- .pull-right.muted
