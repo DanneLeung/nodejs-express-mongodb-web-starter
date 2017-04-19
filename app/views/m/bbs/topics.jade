@@ -29,7 +29,7 @@ each t in topics
           i.icon-yen &nbsp;
           small.muted  赏 
             span#likeCount #{t.donated?t.donated : 0}
-        a.btnLike.btn(href="javascript:;", data-id="#{t._id}" )
+        a.btnShare.btn(href="javascript:;", data-id="#{t._id}" )
           i.icon-share-alt &nbsp;
           small.muted  转 
             span#likeCount #{t.likeCount?t.likeCount : 0}
@@ -37,6 +37,6 @@ each t in topics
           i.icon-thumbs-up &nbsp;
           small.muted  赞 
             span#likeCount #{t.likeCount?t.likeCount : 0}
-        a.btn(href="topic/view/#{t._id}")
+        a.btnComment.btn(href="topic/view/#{t._id}")
           i.icon-chat-dot &nbsp;
           small.muted  评 #{t.commentCount?t.commentCount : 0}
