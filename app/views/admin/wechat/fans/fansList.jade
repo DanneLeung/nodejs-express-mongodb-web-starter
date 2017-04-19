@@ -40,11 +40,11 @@ block main
             th 国家
             th 省
             th 城市
-            th.text-center 已关注
+            th.text-center 关注
             th.text-center 关注时间
             th 备注
-            th 备注
             th 操作
+            th 论坛权限
           tbody
 
       .pull-right(style="border:1px solid #ccc;padding:20px 0;width:18%;")
@@ -149,14 +149,6 @@ block scripts
                 ajax: {url: '#{baseUrl}/fans/datatable/#{wechatId?wechatId:""}'},
                 rowid: '_id',
                 order: [[2, 'asc'],[7, 'asc']],
-                columnDefs: [
-                  {
-                    targets: -1, visible: true, sortable: false, className: 'text-center',
-                    render: function (data, type, row) {
-                      return " <button class='btn btn-default btn-xs remark' type='button'><i class='fa fa-commenting-o'></i></button>";
-                    }
-                  }
-                ],
                 columns: [
                   {
                     data: "headimgurl", sortable: false, defaultContent: '', class: 'text-center', width: "60px",
@@ -190,8 +182,19 @@ block scripts
                     }
                   },
                   {data: "remark", sortable: true, defaultContent: ''},
-                  {data: "openid", visible: false},
-                  {data: ""}
+                  {data: "", visible: true, sortable: false, className: 'text-center',
+                    render: function (data, type, row) {
+                      return " <button class='btn btn-default btn-sm remark' type='button'><i class='fa fa-commenting-o'></i></button>";
+                    }
+                  },
+                  {data: "blocked", visible: true, sortable: false, className: 'text-center',
+                    render: function (data, type, row) {
+                      if(data)
+                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-default btn-sm' type='button' title='点击屏蔽发言'><i class='fa fa-check'></i> 可发言</a>";
+                      else
+                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-warning btn-sm' type='button' title='点击激活发言'><i class='fa fa-ban'></i> 被屏蔽</a>";
+                    }
+                  }
                 ]
               });
       $('#wechatFansList').on('click', 'button.remark', function () {

@@ -30,6 +30,7 @@ block scripts
         "language": {
           "url": "#{theme}/plugins/datatables/Chinese.json"
         },
+        sortable: false,
         autoWidth: false,
         lengthChange: false,
         searching: false,
@@ -39,9 +40,10 @@ block scripts
       };
       var t = $('#topicList').DataTable($.extend(opts, {
         ajax: {url: '#{baseUrl}/topic/datatable'},
+        order: [[2, 'desc']],
         columns: [
           //{data: ""},
-          {data: "title", defaultContent: '', sortable: false, render: function ( data, type, row, meta ) {
+          {data: "createdAt", defaultContent: '', sortable: false, render: function ( data, type, row, meta ) {
             var str ='';
             str +='      <div class="post">';
             str +='        <div class="user-block">';
@@ -59,6 +61,7 @@ block scripts
             str +='          <li><a href="#{baseUrl}/topic/del/' + row._id + '" class="link-black text-sm"><i class="fa fa-times margin-r-5"></i>删除</a></li>';
             str +='          <li><a href="#{baseUrl}/topic/block/' + row._id + '" class="link-black text-sm"><i class="fa fa-ban margin-r-5"></i>屏蔽</a></li>';
             str +='          <li><a href="'+ '#{baseUrl}/topic/top/' + row._id +'" class="link-black text-sm"><i class="fa fa-arrow-up margin-r-5"></i> 置顶</a> </li>';
+            str +='          <li><a href="'+ '#{baseUrl}/topic/hot/' + row._id +'" class="link-black text-sm"><i class="fa fa-fire margin-r-5"></i> 热帖</a> </li>';
             str +='          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> 赞 (' + (row.likeCount ? row.likeCount: 0) + ')</a> </li>';
             str +='          <li><a href="#" class="link-black text-sm"><i class="fa fa-comments-o margin-r-5"></i> 评论 (' + (row.commentCount ? row.commentCount: 0) + ') </a></li>';
             str +='        </ul>';

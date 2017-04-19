@@ -1,46 +1,36 @@
 
 extends ../layouts/bbs
-block header
-  style.
-    .img {width: 100%;}
 block headNav
 
 block content
-  .space-sm.container
+  div
     if(!topic)
       .article
         p 帖子不存在哦，可能已经被删除 ~~~ 
-    .list#topic
+    #topic.list.space-sm 
       .item.with-avatar
         a(href="fans/#{topic.fans?topic.fans._id}")
           .avatar
             img(src='#{topic.fans?topic.fans.headimgurl:""}', alt='')
 
         .content
-          div
-            a.text-link.strong(href="fans/#{topic.fans?topic.fans._id}") 
-              | #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:"")}
-            .pull-right.muted
-              div
-                a.btn
-                  i.icon-eye-open
-                  |  #{topic.readCount?topic.readCount:0}
-                a.btn(href="#")
-                  i.icon-thumbs-o-up
-                  small.muted  #{topic.likeCount?topic.likeCount:0}
-                a.btn(href="#")
-                  i.icon-heart
-                  small.muted  #{topic.commentCount?topic.commentCount:0}
-          .subtitle
-            span
-              if topic.title 
-                | #{topic.title} - 
-              | #{formatDatetime(topic.createdAt)}
-    .space-sm=topic.content
-    if(topic.images && topic.images.length>0)
-      each img in topic.images
-        if img
-          img.img(src='#{contextRoot}#{img}', alt='')
+           a.title(href="fans/#{topic.fans?topic.fans._id:''}") 
+            span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
+            span.label.primary.rounded(style='margin-right: 0.25rem') V #{topic.fans?topic.fans.level:1}
+            if topic.hot
+              span.label.red.rounded(style='margin-right: 0.25rem') 
+                i.icon-sun
+           .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+              
+      .topic.space-sm 
+        .space-sm 
+          if topic.node
+            span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
+          | #{topic.content}
+        if(topic.images && topic.images.length>0)
+          each img in topic.images
+            if img
+              img.img(src='#{contextRoot}#{img}', alt='')
   include comments
   block contentScripts
     script.

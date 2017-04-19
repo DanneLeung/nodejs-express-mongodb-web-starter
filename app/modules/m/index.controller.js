@@ -43,7 +43,7 @@ exports.view = function (req, res) {
   Topic.incsCountField(id, 'readCount', (err, result) => {
     if(err) console.error(err);
     console.log(result);
-    Topic.findById(id).populate("fans").exec((err, topic) => {
+    Topic.findById(id).populate("node fans user comments").exec((err, topic) => {
       if(err) console.error(err);
       res.render('m/bbs/topic', { topic: topic ? topic : null });
     });

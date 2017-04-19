@@ -51,6 +51,7 @@ router.use((req, res, next) => {
 
 router
   .get(["/fans", "/fans/:wechatId"], fansCtrl.list)
+  .all("/fans/block/:id", fansCtrl.block)
   .all("/fans/datatable/:wechatId", fansCtrl.datatable)
   .post("/fans/syncWechatFans/:wechatId", fansCtrl.syncWechatFans)
   .post("/fans/setRemark", fansCtrl.setRemark)

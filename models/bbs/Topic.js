@@ -16,10 +16,12 @@ let TopicSchema = new Schema({
   content: { type: String, default: '' }, //描述
   images: [], //图片
   readCount: { type: Number, default: 0 }, //阅读次数
+  comments: [{ type: ObjectId, ref: 'Comment' }], //评论
   commentCount: { type: Number, default: 0 }, //评论条数
   likeCount: { type: Number, default: 0 }, //评论条数
   heartCount: { type: Number, default: 0 }, //收藏条数
   top: { type: Boolean, default: false }, //置顶
+  hot: { type: Boolean, default: false }, //热帖
   essence: Boolean,
   weight: Number, //权重，可以排序
   status: Number,

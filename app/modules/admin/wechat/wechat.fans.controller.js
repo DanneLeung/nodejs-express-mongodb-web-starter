@@ -25,8 +25,10 @@ exports.list = function (req, res) {
       if(err) console.error(err);
       if(wechat) {
         wechatId = wechat._id;
+        res.redirect('/admin/wechat/fans/' + wechatId);
+      } else {
+        res.render('admin/wechat/fans/fansList', { wechatId: wechatId });
       }
-      res.render('admin/wechat/fans/fansList', { wechatId: wechatId })
     });
   } else {
     res.render('admin/wechat/fans/fansList', { wechatId: wechatId });
@@ -34,19 +36,22 @@ exports.list = function (req, res) {
 }
 
 exports.datatable = function (req, res) {
-  WechatGroup.find({ "wechat": req.params.wechatId || req.query.wechatId }, (err, wgs) => {
+  var wechatId = req.params.wechatId || req.query.wechatId || req.body.wechatId;
+  var q = { "wechat": wechatId };
+  WechatGroup.find(q, (err, wgs) => {
     WechatFans.dataTable(req.query, {
       conditions: {
-        "wechat": req.params.wechatId || req.query.wechatId
+        "wechat": wechatId
       }
     }, function (err, data) {
+      if(!data) return res.send(data);
       async.map(data.data, (wf, cb) => {
         wf.groupId = getGroupNames(wf.groupId, wgs);
         cb(null, wf);
       }, (err, objs) => {
         data.data = objs;
         res.send(data);
-      })
+      });
     });
   })
 }
@@ -286,6 +291,17 @@ exports.update = (req, res) => {
       }
     });
   })
+}
+exports.block = (req, res) => {
+  var id = req.params.id || req.query.id;
+  var blocked = req.params.blocked || req.query.blocked;
+  WechatFans.findOneAndUpdate({ _id: id }, { blocked: blocked }, { new: true }, (err, fans) => {
+    if(err) {
+      console.error(err);
+      req.flash("error", "数据处理时发生错误!");
+    }
+    res.redirect("/admin/wechat/fans/" + (fans.wechat ? fans.wechat : ""));
+  });
 }
 /**
  * 移动用户到分组

@@ -26,9 +26,11 @@ var WechatFansSchema = new Schema({
   subscribe_time: { type: String, trim: true, default: '', index: true }, //关注事件
   subscribeTimes: { type: Number, default: 0 }, //关注成为粉丝次数，>= 1表示取消后重复关注，非新粉丝
   unsubscribe_time: { type: Date }, //取消关注时间
+  level: { type: Number, default: 1 }, //推广二维码被扫描次数
   // createdAt: { type: Date, default: Date.now },
   scanCount: { type: Number }, //推广二维码被扫描次数
   clear: { type: Number }, //清缓存数据
+  blocked: { type: Boolean, default: false },//屏蔽拉黑
   note: String
 }, { timestamps: {} });
 
