@@ -1,31 +1,26 @@
-mixin topicContent(t)
-  .item.with-avatar.muti-lines(data-id="#{t._id}")
-    a(href="/fans/#{t.fans?t.fans._id:''}")
-      .avatar
-        img(src='#{t.fans.headimgurl}', alt='#{t.fans.nickname}')
-    .content
+each t in topics
+  .list
+    .item.with-avatar.muti-lines(data-id="#{t._id}")
+      a(href="/fans/#{t.fans?t.fans._id:''}")
+        .avatar
+          img(src='#{t.fans && t.fans.headimgurl ? t.fans.headimgurl : ""}', alt='#{t.fans?t.fans.nickname:""}')
+      .content
         a.title(href="fans/#{t.fans?t.fans._id}", style="width: 100%") 
-          | #{t.fans?t.fans.nickname:(t.user?t.user.username:"")}
+          | #{t.fans?t.fans.nickname:(t.user?t.user.username:'')}
         .subtitle.muted.no-margin  #{formatDate(t.createdAt)}
-        //- .pull-right.muted
-          //- i.icon-eye-open
-          //- |  #{t.readCount}
 
-      //- small.muted
-        //- if t.title 
-        //-   | #{t.title} - 
-        //- | #{formatDatetime(t.createdAt)}
-  .topic.space-sm(data-id="#{t._id}")
-    .space-sm
+    .topic.space-sm(data-id="#{t._id}")
+      if t.node
+        span.label.primary.rounded(style='margin-right: 0.25rem')=t.node.title
       | #{t.content}
-    if(t.images && t.images.length)
-      .row.imgs.gutter-smser
-        each img in t.images
-          if img
-            .cell-4
-              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
-                .img(style="background-image:url('#{contextRoot}#{img}');")
-    .muted.clearfix
+      if(t.images && t.images.length)
+        .row.imgs.gutter-smser
+          each img in t.images
+            if img
+              .cell-4
+                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
+                  .img(style="background-image:url('#{contextRoot}#{img}');")
+    .muted.clearfix.space-sm
       .pull-left
         a.btn
           i.icon-eye-open
@@ -33,17 +28,6 @@ mixin topicContent(t)
         a.btn(href="topic/view/#{t._id}")
           i.icon-chat-dot
           small.muted  评 #{t.commentCount?t.commentCount:0}
-        a.btn(href="#")
+        a#btnLike.btn(href="#", data-id="#{t._id}" )
           i.icon-thumbs-o-up
           small.muted  赞 #{t.likeCount?t.likeCount:0}
-  //- .divider.space-sm(style="margin: 0 -0.5rem 0.5rem -0.5rem")
-
-
-
-
-//- if(!topics || !topics.length)
-//-   .box.article
-//-     p 暂时没有帖子哦~~~
-//- else
-each t in topics
-  +topicContent(t)

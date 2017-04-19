@@ -21,7 +21,7 @@ block main
           h3.box-title 修改帖子
         if viewType == 'view'
           h3.box-title 帖子详情
- 
+
       .box-body
         div#userEdit
           if !topic.isNew
@@ -29,20 +29,29 @@ block main
 
           input#_csrf(type='hidden', name='_csrf', value=_csrf)
           .form-group
-            label.control-label.col-sm-2.required 标题：
+            label.control-label.col-sm-2 版块：
             .col-sm-8
-              input#title.form-control.required(name='title',placeholder='版块标题', value="#{topic ? topic.title : ''}")
+              select#node.form-control(name='node')
+                each n in nodes
+                  if(n._id == topic.node)
+                    option(value="#{n._id}", selected="selected") #{n.title}
+                  else
+                    option(value="#{n._id}") #{n.title}
           .form-group
-            label.control-label.col-sm-2 帖子内容：
+            label.control-label.col-sm-2 标题：
             .col-sm-8
-              textarea#content.form-control(name='content',rows="5", placeholder='')
+              input#title.form-control(name='title',placeholder='版块标题', value="#{topic ? topic.title : ''}")
+          .form-group
+            label.control-label.col-sm-2.required 帖子内容：
+            .col-sm-8
+              textarea#content.form-control.required(name='content',rows="5", placeholder='')
                 | #{topic ? topic.content : ''}
       .box-footer
         button.btn.btn-primary.margin-r-10(type='submit') 
           i.fa.fa-fw.fa-save
           | 发布
         a.btn.btn-default(href='#{baseUrl}/topic')
-          i.fa.fa-fw.fa-delete
+          i.fa.fa-fw.fa-times
           span  取消
 
 

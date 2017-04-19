@@ -12,6 +12,7 @@ router
   .use(ctrl.nodes)
   .get(['/'], ctrl.index)
   .get(['/topic/view/:id'], ctrl.view)
+  .get(['/topic/incs/:id/:field'], ctrl.increase)
   .get(['/topic/new', '/topic/new/:node'], ctrl.new)
   .post(['/topic/new'], upload.any(), ctrl.newSave)
   .get(['/topics', '/topics/:node'], ctrl.topics)

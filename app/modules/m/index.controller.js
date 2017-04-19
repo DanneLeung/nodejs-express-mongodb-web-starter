@@ -12,6 +12,8 @@ var WechatFans = mongoose.model('WechatFans');
 var Node = mongoose.model('Node');
 var Topic = mongoose.model('Topic');
 
+const fieldMsg = { likeCount: '点赞', heartCount: '收藏' };
+
 exports.nodes = function (req, res, next) {
   Node.enabledNodes((nodes) => {
     res.locals.nodes = nodes;
@@ -38,9 +40,13 @@ exports.view = function (req, res) {
   if(!id) {
     return res.render('m/bbs/topic', { topic: null });
   }
-  Topic.findById(id).populate("fans").exec((err, topic) => {
+  Topic.incsCountField(id, 'readCount', (err, result) => {
     if(err) console.error(err);
-    res.render('m/bbs/topic', { topic: topic ? topic : null });
+    console.log(result);
+    Topic.findById(id).populate("fans").exec((err, topic) => {
+      if(err) console.error(err);
+      res.render('m/bbs/topic', { topic: topic ? topic : null });
+    });
   });
 };
 
@@ -86,7 +92,7 @@ exports.newSave = function (req, res) {
       // req.body.images = _.remove(result, (el) => { return !el; });
       req.body.images = result;
       console.log(" ************* topic body will be saved: ", result, req.body);
-      
+
       WechatFans.findOne({ openid: openid }, (err, fans) => {
         if(err) console.error(err);
         var topic = new Topic(req.body);
@@ -104,11 +110,27 @@ exports.newSave = function (req, res) {
 
 exports.home = function (req, res) {
   var node = req.params.node || req.query.node;
-  Topic.topTopic(node, (topTopic) => {
-    res.render('m/bbs/home', { node: node ? node : '', topTopic: topTopic });
+  Topic.topTopics(node, (topTopics) => {
+    res.render('m/bbs/home', { node: node ? node : '', topTopics: topTopics });
   });
 };
 
 exports.user = function (req, res) {
   res.render('m/user');
+};
+
+exports.increase = function (req, res) {
+  var id = req.params.id || req.query.id;
+  var field = req.params.field || req.query.field;
+  Topic.incsCountField(id, field, (err, result) => {
+    var ok = {};
+    if(err) {
+      console.error(err);
+      ok.error = 1;
+      ok.msg = '数据处理时发生错误!';
+      return res.status(200).json(ok);
+    }
+    ok.msg = (fieldMsg[field] ? fieldMsg[field] : '数据处理') + '成功!';
+    return res.status(200).json(ok);
+  });
 };

@@ -6,9 +6,18 @@
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
 var config = require('../../../../config/config');
+var Node = mongoose.model('Node');
 var Topic = mongoose.model('Topic');
 var moment = require('moment');
 var async = require('async');
+
+exports.nodes = function (req, res, next) {
+  Node.enabledNodes((nodes) => {
+    if(!nodes) nodes = [];
+    res.locals.nodes = nodes;
+    return next();
+  });
+}
 
 /*
  * list
@@ -143,4 +152,22 @@ exports.save = function (req, res) {
       res.redirect('/admin/bbs/topic');
     });
   }
+};
+
+/**
+ * 帖子置顶
+ * @param req
+ * @param res
+ */
+exports.top = function (req, res) {
+  var id = req.params.id;
+  Topic.toggleBoolField(id, 'top', (err, topic) => {
+    if(err) console.error(err);
+    if(err || !topic) {
+      req.flash('error', '数据更新时发生错误，请确认后重试!');
+    } else {
+      req.flash('success', topic.top ? '置顶' : '取消置顶' + '操作成功!');
+    }
+    res.redirect('/admin/bbs/topic');
+  });
 };

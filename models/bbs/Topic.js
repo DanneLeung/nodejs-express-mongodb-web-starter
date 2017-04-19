@@ -18,7 +18,7 @@ let TopicSchema = new Schema({
   readCount: { type: Number, default: 0 }, //阅读次数
   commentCount: { type: Number, default: 0 }, //评论条数
   likeCount: { type: Number, default: 0 }, //评论条数
-  heartCount: { type: Number, default: 0 }, //评论条数
+  heartCount: { type: Number, default: 0 }, //收藏条数
   top: { type: Boolean, default: false }, //置顶
   essence: Boolean,
   weight: Number, //权重，可以排序
@@ -26,18 +26,40 @@ let TopicSchema = new Schema({
   blocked: { type: Boolean, default: false } //屏蔽
 }, { timestamps: {} });
 TopicSchema.statics = {
-  incsReadCount: function (id, done) {
-    Topic.update({ _id: id }, { $set: { readCount: { $inc: 1 } } }, (err, result) => {
+  toggleBoolField: function (id, field, done) {
+    var updata = {};
+    var options = { new: true };
+    Topic.findOne({
+      '_id': id
+    }, function (err, topic) {
+      if(err) {
+        console.error(err);
+        return done(err, null);
+      }
+      if(topic) {
+        topic[field] = !topic[field];
+        topic.save((err, topic) => {
+          return done(err, topic);
+        });
+      } else {
+        return done(err, topic);
+      }
+    });
+  },
+  incsCountField: function (id, field, done) {
+    var update = {};
+    update[field] = 1;
+    Topic.update({ _id: id }, { $inc: update }, (err, result) => {
       if(err) console.error(err);
       done(result);
     });
   },
-  topTopic: function (node, done) {
+  topTopics: function (node, done) {
     var q = { top: true };
     if(node) q.node = node;
-    Topic.findOne(q).populate("fans user").exec((err, topic) => {
+    Topic.find(q).sort("-updatedAt").populate("fans user").exec((err, topics) => {
       if(err) console.error(err);
-      done(topic);
+      done(topics);
     });
   },
   topicsWithNode: function (node, offset, limit, done) {
@@ -45,7 +67,7 @@ TopicSchema.statics = {
       $or: [{ top: false }, { top: { $exists: false } }]
     };
     if(node) q.node = node;
-    Topic.find(q).populate("fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
+    Topic.find(q).populate("node fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);
       done(topics);
     });
