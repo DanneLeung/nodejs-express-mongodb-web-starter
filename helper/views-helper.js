@@ -103,7 +103,7 @@ function createPagination(req) {
 
 function formatDate(date) {
   date = new Date(date);
-  return moment(date).format('YYYY-MM-DD');
+  return moment(date).format('YY-M-D');
 }
 
 /**
@@ -119,7 +119,7 @@ function formatDatetime(date) {
     return "";
   }
   date = new Date(date);
-  return moment(date).format('YYYY-MM-DD HH:mm');
+  return moment(date).format('YY-M-D HH:mm');
   //return formatDate(date) + ' ' + hour + ':' + minutes;
 }
 

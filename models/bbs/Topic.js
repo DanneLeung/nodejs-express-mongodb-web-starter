@@ -51,7 +51,7 @@ TopicSchema.statics = {
     update[field] = 1;
     Topic.update({ _id: id }, { $inc: update }, (err, result) => {
       if(err) console.error(err);
-      done(result);
+      done(err, result);
     });
   },
   topTopics: function (node, done) {

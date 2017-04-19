@@ -7,6 +7,7 @@ block header
     .subtitle{
       margin-bottom: 0.5rem;
     }
+    .nickname {margin-right: 0.5rem}
     .list{background-color:#fff;}
     .topic{padding:0 .5rem}
     .imgs a {width: 100%;}
@@ -41,6 +42,24 @@ block contentScripts
         console.log(">>>>>>>> ",id);
         if(id){
           window.location.href=contextFront+"/topic/view/"+id;
+        }
+      });
+      $("body").on("click",".btnLike", function(){
+        var id = $(this).data("id");
+        var that = $(this);
+        if(id){
+          $.get('#{contextFront}/topic/like/' + id, function(data){
+            console.log(">>>>>>>> ", data);
+            if(data && !data.error && data.msg){
+              var count = 1;
+              var c = $(that).find("#likeCount").text();
+              if(c) { count = parseInt(c) + 1}
+              $(that).find("#likeCount").text(count);
+              $.messager.show(data.msg, {type: 'success', placement: 'bottom-center'});
+            }else{
+              $.messager.show(data.msg?data.msg:  '处理错误!', {type: 'error', placement: 'bottom-center'});
+            }
+          });
         }
       });
       $.get('topics/#{node}', function(data){

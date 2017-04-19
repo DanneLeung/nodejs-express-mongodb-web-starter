@@ -5,9 +5,12 @@ each t in topics
         .avatar
           img(src='#{t.fans && t.fans.headimgurl ? t.fans.headimgurl : ""}', alt='#{t.fans?t.fans.nickname:""}')
       .content
-        a.title(href="fans/#{t.fans?t.fans._id}", style="width: 100%") 
-          | #{t.fans?t.fans.nickname:(t.user?t.user.username:'')}
-        .subtitle.muted.no-margin  #{formatDate(t.createdAt)}
+        a.title.block(href="fans/#{t.fans?t.fans._id:''}") 
+          span.nickname #{t.fans?t.fans.nickname:(t.user?t.user.username:'')}
+          span.label.primary.rounded(style='margin-right: 0.25rem') V1
+          span.label.red.rounded(style='margin-right: 0.25rem') 
+            i.icon-sun
+        .subtitle.muted.no-margin  #{formatDate(t.createdAt)} 浏览 #{t.readCount?t.readCount:0}
 
     .topic.space-sm(data-id="#{t._id}")
       if t.node
@@ -21,13 +24,19 @@ each t in topics
                 a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
                   .img(style="background-image:url('#{contextRoot}#{img}');")
     .muted.clearfix.space-sm
-      .pull-left
-        a.btn
-          i.icon-eye-open
-          small.muted  #{t.readCount?t.readCount:0}
+      .nav.justified
+        a.btnDonate.btn(href="javascript:;", data-id="#{t._id}" )
+          i.icon-yen &nbsp;
+          small.muted  赏 
+            span#likeCount #{t.donated?t.donated : 0}
+        a.btnLike.btn(href="javascript:;", data-id="#{t._id}" )
+          i.icon-share-alt &nbsp;
+          small.muted  转 
+            span#likeCount #{t.likeCount?t.likeCount : 0}
+        a.btnLike.btn(href="javascript:;", data-id="#{t._id}" )
+          i.icon-thumbs-up &nbsp;
+          small.muted  赞 
+            span#likeCount #{t.likeCount?t.likeCount : 0}
         a.btn(href="topic/view/#{t._id}")
-          i.icon-chat-dot
-          small.muted  评 #{t.commentCount?t.commentCount:0}
-        a#btnLike.btn(href="#", data-id="#{t._id}" )
-          i.icon-thumbs-o-up
-          small.muted  赞 #{t.likeCount?t.likeCount:0}
+          i.icon-chat-dot &nbsp;
+          small.muted  评 #{t.commentCount?t.commentCount : 0}

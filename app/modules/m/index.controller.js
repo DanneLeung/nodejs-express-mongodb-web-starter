@@ -119,9 +119,12 @@ exports.user = function (req, res) {
   res.render('m/user');
 };
 
-exports.increase = function (req, res) {
+exports.like = function (req, res) {
+  exports.increase(req, res, 'likeCount');
+};
+
+exports.increase = function (req, res, field) {
   var id = req.params.id || req.query.id;
-  var field = req.params.field || req.query.field;
   Topic.incsCountField(id, field, (err, result) => {
     var ok = {};
     if(err) {
@@ -130,7 +133,7 @@ exports.increase = function (req, res) {
       ok.msg = '数据处理时发生错误!';
       return res.status(200).json(ok);
     }
-    ok.msg = (fieldMsg[field] ? fieldMsg[field] : '数据处理') + '成功!';
+    ok.msg = '成功' + (fieldMsg[field] ? fieldMsg[field] : '处理') + '!';
     return res.status(200).json(ok);
   });
 };
