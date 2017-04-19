@@ -32,8 +32,6 @@ block content
             if img
               img.img(src='#{contextRoot}#{img}', alt='')
   include comments
-  block contentScripts
-    script.
-      $(function(){
-        $("body").removeClass("with-heading-top");
-      });
+block contentScripts
+  script.
+    $("body").removeClass("with-heading-top");
