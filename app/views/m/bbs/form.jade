@@ -42,7 +42,7 @@ block contentScripts
     });
     $(document).ready(function(){
       $("#selectImg").on("click", function(e){
-        W.chooseImage(1,function(localIds){
+        W.chooseImage(9,function(localIds){
           syncUpload(localIds);
         });
       });
