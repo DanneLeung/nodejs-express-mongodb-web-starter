@@ -63,6 +63,8 @@ block contentScripts
                     });
                   }
                 });
+              }else{
+                $.messager.show('选中的有张图片上传不成功!', {type: 'error', placement: 'bottom-center'});
               }
             });
            }
