@@ -10,32 +10,28 @@ div
     .list.comments.small
       each comment in comments
         .item.with-avatar.multi-lines
-          a.avatar.circle(data-dark='true', data-skin='') &#x8D75;
+          a.avatar.circle(data-dark='true', data-skin='') 
           .content
             div
-              a.text-link.strong &#x8D75;&#x5927;&#x5B9D;
-              .muted.small.pull-right 33 &#x5206;&#x949F;&#x524D;
-            .btn-reply.state &#x770B;&#x770B;&#x6211;&#x53D4;&#x53D4;&#x4ECE;&#x706B;&#x661F;&#x53D1;&#x6765;&#x7684;&#x7167;&#x7247;~~
+              a.text-link.strong #{comment.fans?comment.fans.nickname:''}
+              .muted.small.pull-right 33 分钟前;
+            .btn-reply.state #{comment.content}
             .row.imgs.gutter-sm
-              .cell-4
-                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img1.jpg' alt='' class='no-margin'>")
-                  img(src='#{contextRoot}/img/img1.jpg', alt='')
-              .cell-4
-                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img2.jpg' alt='' class='no-margin'>")
-                  img(src='#{contextRoot}/img/img2.jpg', alt='')
-              .cell-4
-                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img3.jpg' alt='' class='no-margin'>")
-                  img(src='#{contextRoot}/img/img3.jpg', alt='')
+              if comment.images && comment.images.length
+                each img in comments.images
+                  if img
+                    .cell-4
+                      a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
+                        .img(style="background-image:url('#{contextRoot}#{img}');")
       .divider.no-padding.no-margin
-.divider
-nav.nav.justified.pager
-  a.pager-more
-    span
-      strong 更多评论 ...
-      span.text-link
-        i.icon.icon-double-angle-down
-  //- .text-center.text-gray.small
-    i.icon-lightbulb
+    nav.nav.justified.pager
+      a.pager-more
+        span
+          strong 更多评论 ...
+          span.text-link
+            i.icon.icon-double-angle-down
+      //- .text-center.text-gray.small
+        i.icon-lightbulb
 nav.fab.affix.dock-bottom.shadow-none
   //- a.btn.circle.shadow-2.has-margin-sm.dark(href='https://github.com/easysoft/mzui/blob/master//part/examples/comments.html', target='_blank')
     i.icon-code
