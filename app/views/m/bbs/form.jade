@@ -44,10 +44,9 @@ block contentScripts
       $("#selectImg").on("click", function(e){
         var that = this;
         W.chooseImage(function(localIds){
-          alert(JSON.stringify(localIds));
-          if(localIds && localIds.length){
-
+          if(localIds){
             $.each(localIds, function(index, localId){
+              alert(JSON.stringify(localId));
               if(localId){
                 W.uploadImage(localId, function(serverId){
                   alert(" upload image "+ localId);
