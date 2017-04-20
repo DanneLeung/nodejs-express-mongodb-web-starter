@@ -59,7 +59,7 @@ block contentScripts
                     W.uploadImage(localId, function(serverId){
                       //- alert(" upload image "+ localId);
                       if(serverId){
-                        $("#topicForm").append("<input type='hidden' name="serverids" value='" + serverId + "'>");
+                        $("#topicForm").append("<input type='hidden' name='serverids' value='" + serverId + "'>");
                         serverIds.push(serverId);
                         //- alert(serverIds.join(','));
                         $("#serviceIds").val(serverIds.join(','));
