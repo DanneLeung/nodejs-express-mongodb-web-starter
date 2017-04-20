@@ -84,11 +84,12 @@ exports.newSave = function (req, res) {
     var mutil = new mediaUtil(appid, wechat.appsecret);
     async.map(serviceIds, (serviceId, callback) => {
       mutil.getMedia(serviceId, (err, wm) => {
+        console.log(" >>>>>>>>>>>>> getMedia ", wm);
         return callback(err, wm ? wm.path : '');
       });
     }, (err, result) => {
-      // req.body.images = _.remove(result, (el) => { return !el; });
-      req.body.images = result;
+      req.body.images = _.remove(result, (el) => { return !el; });
+      // req.body.images = result;
       console.log(" ************* topic body will be saved: ", result, req.body);
 
       WechatFans.findOne({ openid: openid }, (err, fans) => {

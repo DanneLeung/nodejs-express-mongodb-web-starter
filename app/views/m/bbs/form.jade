@@ -56,7 +56,7 @@ block contentScripts
                     var html = "<div class='cell-4'><div class='avatar.avatar-xl'>" + img + "</div></div>";
                     $("#images").append(html);
                     W.uploadImage(localId, function(serverId){
-                      //- alert(" upload image "+ localId);
+                      alert(" upload image "+ localId);
                       if(serverId){
                         serverIds.push(serverId);
                       }
