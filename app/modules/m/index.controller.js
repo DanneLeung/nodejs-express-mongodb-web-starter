@@ -59,7 +59,7 @@ exports.newSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var node = req.body.node || null;
   var openid = req.body.openid;
-  var serviceIds = req.body.serviceIds || [];
+  var serverIds = req.body.serverIds || [];
   console.log(" ************* topic body : ", req.body);
 
   if(!node) {
@@ -74,18 +74,18 @@ exports.newSave = function (req, res) {
   if(!appid) {
     return res.status(403).json({ err: '公众号配置信息错误，请确认!' });
   }
-  if(_.isArray(serviceIds)) {} else if(serviceIds && serviceIds.indexOf(',')) {
-    serviceIds = serviceIds.split(",");
+  if(_.isArray(serverIds)) {} else if(serverIds && serverIds.indexOf(',')) {
+    serverIds = serverIds.split(",");
   } else {
-    serviceIds = [serviceIds];
+    serverIds = [serverIds];
   }
-  req.body.serviceIds = serviceIds;
+  req.body.serverIds = serverIds;
 
   //读取微信公众号配置
   Wechat.findByAppid(appid, (err, wechat) => {
     if(err) res.status(200).json({ error: 1, msg: '公众号配置信息错误，图片无法上传' });
     var mutil = new mediaUtil(appid, wechat.appsecret);
-    async.map(serviceIds, (serviceId, callback) => {
+    async.map(serverIds, (serviceId, callback) => {
       mutil.getMedia(serviceId, (err, wm) => {
         console.log(" >>>>>>>>>>>>> getMedia ", wm);
         return callback(err, wm ? wm.path : '');
