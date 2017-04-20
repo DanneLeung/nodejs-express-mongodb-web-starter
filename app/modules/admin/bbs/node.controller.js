@@ -107,7 +107,6 @@ exports.enable = function (req, res) {
           res.redirect('/admin/bbs/node');
         }
       });
-
     }
   });
 };

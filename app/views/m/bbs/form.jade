@@ -24,7 +24,10 @@ block content
           .control.space-sm.pull-right
             a.btn(href='home/#{node}') 取消
             button.btn.primary.outline(type='submit') 发表
-      .divider.space-sm
+      .divider
+      nav.nav
+        each n in nodes
+          a.nodeid(href='javascript:;', class='#{node && node == n._id ? "active":""}', data-id="#{n._id}")=n.title
       //- .heading
         .title 
           strong 图片
@@ -41,6 +44,12 @@ block contentScripts
     wx.ready(function(){
     });
     $(document).ready(function(){
+      $(".nodeid").on('click', function(e){
+        $(this).parent().find('.active').removeClass('active');
+        $(this).addClass('active');
+        $("#node").val($(this).data("id"));
+      });
+
       $("#selectImg").on("click", function(e){
         W.chooseImage(9,function(localIds){
           syncUpload(localIds);
