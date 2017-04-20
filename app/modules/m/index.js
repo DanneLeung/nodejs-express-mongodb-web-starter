@@ -14,7 +14,7 @@ router
   .get(['/topic/view/:id'], ctrl.view)
   .get(['/topic/like/:id'], ctrl.like)
   .get(['/topic/new', '/topic/new/:node'], ctrl.new)
-  .post(['/topic/new'], ctrl.newSave)
+  .post(['/topic/new'], upload.none(), ctrl.newSave)
   .get(['/topics', '/topics/:node'], ctrl.topics)
   .get(['/home', '/home/:node'], ctrl.home)
   .get(['/user'], ctrl.user);
