@@ -46,10 +46,10 @@ block contentScripts
         W.chooseImage(function(localIds){
           if(localIds){
             $.each(localIds, function(index, localId){
-              alert(JSON.stringify(localId));
+              //- alert(JSON.stringify(localId));
               if(localId){
                 W.uploadImage(localId, function(serverId){
-                  alert(" upload image "+ localId);
+                  //- alert(" upload image "+ localId);
                   if(serverId){
                     serverIds.push(serverId);
                     wx.getLocalImgData({
@@ -65,18 +65,12 @@ block contentScripts
                 });
               }
             });
-              //- count++;
-              //- if(count>9){
-              //-   $(that).remove();
-              //-   break;
-              //- }
            }
         });
       });
       
       $("#topicForm").ajaxform({
         onSubmit: function(formData){
-          alert(serverIds.join(','));
           formData["serverIds"] = serverIds;
         },
         onSuccess: function(data){
