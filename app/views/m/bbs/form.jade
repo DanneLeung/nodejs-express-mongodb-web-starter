@@ -40,13 +40,8 @@ block contentScripts
         var that = this;
         W.chooseImage(function(localIds){
           if(localIds && localIds.length>0){
-            for(var i in localIds){
-              count++;
-              if(count>9){
-                $(that).remove();
-                break;
-              }
-              var localId = localIds[i] ;
+            //- for(var i in localIds){
+            $.each(localIds, function(index, localId){
               if(localId){
                 wx.getLocalImgData({
                   localId: localId, // 图片的localID
@@ -66,6 +61,12 @@ block contentScripts
                   }
                 });
               }
+            });
+              //- count++;
+              //- if(count>9){
+              //-   $(that).remove();
+              //-   break;
+              //- }
             }
           }
         });

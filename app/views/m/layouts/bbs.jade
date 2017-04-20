@@ -30,9 +30,10 @@ block main
     header#haedNav.heading.affix.dock-top.dock-auto
       nav#headNav.nav
         a.brand-name(href='home', data-page-name='index')
-          i.icon-home
+          //- i.icon-home
+          | 全部
         each n in nodes
-          a(href='home/#{n._id}', data-page-name='#{n.title}')=n.title
+          a(href='home/#{n._id}', class="#{n._id == node?'active':''}" data-page-name='#{n.title}')=n.title
       .title
       nav.nav
         a(href='user')

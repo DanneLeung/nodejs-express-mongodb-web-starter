@@ -8,41 +8,25 @@ div
         small.muted (#{topic.commentCount})
     .divider.no-padding.no-margin
     .list.comments.small
-      .item.with-avatar.multi-lines
-        a.avatar.circle(data-dark='true', data-skin='') &#x8D75;
-        .content
-          div
-            a.text-link.strong &#x8D75;&#x5927;&#x5B9D;
-            .muted.small.pull-right 33 &#x5206;&#x949F;&#x524D;
-          .btn-reply.state &#x770B;&#x770B;&#x6211;&#x53D4;&#x53D4;&#x4ECE;&#x706B;&#x661F;&#x53D1;&#x6765;&#x7684;&#x7167;&#x7247;~~
-          .row.imgs.gutter-sm
-            .cell-4
-              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img1.jpg' alt='' class='no-margin'>")
-                img(src='#{contextRoot}/img/img1.jpg', alt='')
-            .cell-4
-              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img2.jpg' alt='' class='no-margin'>")
-                img(src='#{contextRoot}/img/img2.jpg', alt='')
-            .cell-4
-              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img3.jpg' alt='' class='no-margin'>")
-                img(src='#{contextRoot}/img/img3.jpg', alt='')
+      each comment in comments
+        .item.with-avatar.multi-lines
+          a.avatar.circle(data-dark='true', data-skin='') &#x8D75;
+          .content
+            div
+              a.text-link.strong &#x8D75;&#x5927;&#x5B9D;
+              .muted.small.pull-right 33 &#x5206;&#x949F;&#x524D;
+            .btn-reply.state &#x770B;&#x770B;&#x6211;&#x53D4;&#x53D4;&#x4ECE;&#x706B;&#x661F;&#x53D1;&#x6765;&#x7684;&#x7167;&#x7247;~~
+            .row.imgs.gutter-sm
+              .cell-4
+                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img1.jpg' alt='' class='no-margin'>")
+                  img(src='#{contextRoot}/img/img1.jpg', alt='')
+              .cell-4
+                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img2.jpg' alt='' class='no-margin'>")
+                  img(src='#{contextRoot}/img/img2.jpg', alt='')
+              .cell-4
+                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img3.jpg' alt='' class='no-margin'>")
+                  img(src='#{contextRoot}/img/img3.jpg', alt='')
       .divider.no-padding.no-margin
-      .item.with-avatar.multi-lines
-        a.avatar.circle(data-dark='true', data-skin='') &#x8D75;
-        .content
-          div
-            a.text-link.strong &#x8D75;&#x5927;&#x5B9D;
-            .muted.small.pull-right 33 &#x5206;&#x949F;&#x524D;
-          .btn-reply.state &#x770B;&#x770B;&#x6211;&#x53D4;&#x53D4;&#x4ECE;&#x706B;&#x661F;&#x53D1;&#x6765;&#x7684;&#x7167;&#x7247;~~
-          .row.imgs.gutter-sm
-            .cell-4
-              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img1.jpg' alt='' class='no-margin'>")
-                img(src='#{contextRoot}/img/img1.jpg', alt='')
-            .cell-4
-              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img2.jpg' alt='' class='no-margin'>")
-                img(src='#{contextRoot}/img/img2.jpg', alt='')
-            .cell-4
-              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/img/img3.jpg' alt='' class='no-margin'>")
-                img(src='#{contextRoot}/img/img3.jpg', alt='')
 .divider
 nav.nav.justified.pager
   a.pager-more
@@ -52,9 +36,10 @@ nav.nav.justified.pager
         i.icon.icon-double-angle-down
   //- .text-center.text-gray.small
     i.icon-lightbulb
-nav.fab.affix.dock-bottom.dock-right.shadow-none
+nav.fab.affix.dock-bottom.shadow-none
   //- a.btn.circle.shadow-2.has-margin-sm.dark(href='https://github.com/easysoft/mzui/blob/master//part/examples/comments.html', target='_blank')
     i.icon-code
-  //- a.btn.circle.shadow-2.has-margin-sm.btn-lg.green(title='评论', data-display='modal', data-remote='#{baseUrl}/topic/comments', data-placement='bottom')
-  a.btn.circle.shadow-2.has-margin-sm.btn-lg.green(href="#", title='评论')
+  a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary-pale(title='返回', onclick='javascript:window.history.go(-1);')
+    i.icon.icon-chevron-left
+  a.btn.circle.shadow-2.has-margin-sm.btn-lg.green.pull-right(href="#", title='评论')
     i.icon.icon-comments

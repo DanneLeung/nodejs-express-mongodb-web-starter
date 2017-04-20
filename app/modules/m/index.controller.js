@@ -45,7 +45,7 @@ exports.view = function (req, res) {
     console.log(result);
     Topic.findById(id).populate("node fans user comments").exec((err, topic) => {
       if(err) console.error(err);
-      res.render('m/bbs/topic', { topic: topic ? topic : null });
+      res.render('m/bbs/topic', { topic: topic ? topic : null, comments: topic.comments ? topic.comments : [] });
     });
   });
 };
