@@ -8,11 +8,11 @@ block content
       .title 
         strong 发表新帖子
     .box
-      form#topicForm.no-margin(method="post" action="#{contextFront}/topic/new", enctype="application/x-www-form-urlencoded")
+      form#topicForm.no-margin(method="post" action="#{contextFront}/topic/new")
         input#appid(type="hidden" name="appid" value="#{appid}")
         input#openid(type="hidden" name="openid")
         input#node(type="hidden" name="node" value="#{node}")
-        input#serviceIds(type="hidden" name="serviceIds")
+        input#serverIds(type="hidden" name="node")
 
         .control
           textarea#content.textarea(name="content", rows=5, placeholder="输入文字发表新帖子~~~")
@@ -59,7 +59,7 @@ block contentScripts
                     W.uploadImage(localId, function(serverId){
                       //- alert(" upload image "+ localId);
                       if(serverId){
-                        $("#topicForm").append("<input type='hidden' name='serverids' value='" + serverId + "'>");
+                        //- $("#topicForm").append("<input type='hidden' name='serverids' value='" + serverId + "'>");
                         serverIds.push(serverId);
                         //- alert(serverIds.join(','));
                         $("#serviceIds").val(serverIds.join(','));
@@ -78,6 +78,10 @@ block contentScripts
         });
       });
 
+      $("#topicForm").on("submit",function(e){
+        $("#serviceIds").val(serverIds.join(','));
+      });
+      
       $("#topicForm").ajaxform({
         onSuccess: function(data){
           console.log(data);
