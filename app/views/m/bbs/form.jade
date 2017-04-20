@@ -55,12 +55,13 @@ block contentScripts
                     var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
                     var img = "<img src='"+ localData + "'>"
                     var html = "<div class='cell-4'><div class='avatar.avatar-xl'>" + img + "</div></div>";
-                    $(that).before(html);
+                    $("#images").append(html);
                     W.uploadImage(localId, function(serverId){
-                      alert(" upload image "+ localId);
+                      //- alert(" upload image "+ localId);
                       if(serverId){
+                        $("#topicForm").append("<input type='hidden' name="serverids" value='" + serverId + "'>");
                         serverIds.push(serverId);
-                        alert(serverIds.join(','));
+                        //- alert(serverIds.join(','));
                         $("#serviceIds").val(serverIds.join(','));
                       }
                     });

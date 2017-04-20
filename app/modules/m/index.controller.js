@@ -60,6 +60,7 @@ exports.newSave = function (req, res) {
   var node = req.body.node || null;
   var openid = req.body.openid;
   var serviceIds = req.body.serviceIds || '';
+  var serverids = req.body.serverids || '';
   console.log(" ************* topic body : ", req.body);
 
   if(!node) {
