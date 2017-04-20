@@ -15,7 +15,7 @@ block content
         input#serverIds(type="hidden" name="node")
 
         .control
-          textarea#content.textarea(name="content", rows=5, placeholder="输入文字发表新帖子~~~")
+          textarea#content.textarea(name="content", rows="8", placeholder="输入文字发表新帖子~~~")
         .clearfix
           .control.space-sm.pull-left
             button#selectImg.btn(type="button")
@@ -77,6 +77,7 @@ block contentScripts
       
       $("#topicForm").ajaxform({
         onSubmit: function(formData){
+          //- alert(serverIds.join(','));
           formData["serverIds"] = serverIds;
         },
         onSuccess: function(data){

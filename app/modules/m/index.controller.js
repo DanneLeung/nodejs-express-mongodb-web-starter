@@ -59,8 +59,7 @@ exports.newSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var node = req.body.node || null;
   var openid = req.body.openid;
-  var serviceIds = req.body.serviceIds || '';
-  var serverids = req.body.serverids || '';
+  var serviceIds = req.body.serviceIds || [];
   console.log(" ************* topic body : ", req.body);
 
   if(!node) {
@@ -75,11 +74,9 @@ exports.newSave = function (req, res) {
   if(!appid) {
     return res.status(403).json({ err: '公众号配置信息错误，请确认!' });
   }
-  if(serviceIds && serviceIds.indexOf(',')) {
+  if(serviceIds && !_.isArray(serviceIds) && serviceIds.indexOf(',')) {
     serviceIds = serviceIds.split(",");
-  } else {
-    serviceIds = [serviceIds];
-  }
+  } 
 
   //读取微信公众号配置
   Wechat.findByAppid(appid, (err, wechat) => {
@@ -106,7 +103,6 @@ exports.newSave = function (req, res) {
       });
     });
   });
-
 };
 
 exports.home = function (req, res) {
