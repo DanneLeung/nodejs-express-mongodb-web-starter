@@ -69,7 +69,7 @@ exports.newSave = function (req, res) {
 
   if(!openid) {
     req.body.openid = openid = "oxVEQuN3xDA1r8aBD_hh-xMQeir4";
-    return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
+    // return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
   }
 
   if(!appid) {
