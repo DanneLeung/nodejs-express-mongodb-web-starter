@@ -24,7 +24,7 @@ block content
 block contentScripts
   script.
     $(document).ready(function(){
-      $("body").on("click",".topic", function(){
+      $("body").on("click",".topic, .item", function(){
         var id = $(this).data("id");
         console.log(">>>>>>>> ",id);
         if(id){
