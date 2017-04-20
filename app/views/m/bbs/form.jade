@@ -12,7 +12,6 @@ block content
         input#appid(type="hidden" name="appid" value="#{appid}")
         input#openid(type="hidden" name="openid")
         input#node(type="hidden" name="node" value="#{node}")
-        input#serverIds(type="hidden" name="node")
 
         .control
           textarea#content.textarea(name="content", rows="8", placeholder="输入文字发表新帖子~~~")
@@ -77,7 +76,7 @@ block contentScripts
       
       $("#topicForm").ajaxform({
         onSubmit: function(formData){
-          //- alert(serverIds.join(','));
+          alert(serverIds.join(','));
           formData["serverIds"] = serverIds;
         },
         onSuccess: function(data){
