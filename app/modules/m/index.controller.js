@@ -74,9 +74,12 @@ exports.newSave = function (req, res) {
   if(!appid) {
     return res.status(403).json({ err: '公众号配置信息错误，请确认!' });
   }
-  if(serviceIds && !_.isArray(serviceIds) && serviceIds.indexOf(',')) {
+  if(_.isArray(serviceIds)) {} else if(serviceIds && serviceIds.indexOf(',')) {
     serviceIds = serviceIds.split(",");
-  } 
+  } else {
+    serviceIds = [serviceIds];
+  }
+  req.body.serviceIds = serviceIds;
 
   //读取微信公众号配置
   Wechat.findByAppid(appid, (err, wechat) => {
