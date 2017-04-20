@@ -59,10 +59,7 @@ block contentScripts
                     W.uploadImage(localId, function(serverId){
                       //- alert(" upload image "+ localId);
                       if(serverId){
-                        //- $("#topicForm").append("<input type='hidden' name='serverids' value='" + serverId + "'>");
                         serverIds.push(serverId);
-                        //- alert(serverIds.join(','));
-                        $("#serviceIds").val(serverIds.join(','));
                       }
                     });
                   }
@@ -77,12 +74,16 @@ block contentScripts
             }
         });
       });
-
-      $("#topicForm").on("submit",function(e){
-        $("#serviceIds").val(serverIds.join(','));
-      });
       
       $("#topicForm").ajaxform({
+        onSubmit: function(formData){
+          var key = "serverIds";
+          if($.isArray(serverIds)) {
+              for(var i = serverIds.length - 1; i >= 0; --i) {
+                  formData.append(key, serverIds[i]);
+              }
+          } else formData.append(key, serverIds);
+        },
         onSuccess: function(data){
           console.log(data);
           window.location.href="#{contextFront}/home/#{node}"
