@@ -48,7 +48,7 @@ exports.view = function (req, res) {
       if(err) console.error(err);
       Comment.commentsByTopicId(id, 0, 5, (err, comments) => {
         if(err) console.error(err);
-        res.render('m/bbs/topic', { topic: topic ? topic : null, comments: comments });
+        res.render('m/bbs/topic', { topic: topic ? topic : null, comments: comments ? comments : [] });
       });
     });
   });

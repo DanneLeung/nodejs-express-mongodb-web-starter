@@ -22,7 +22,7 @@ div
               |#{comment.content}
             .row.imgs.gutter-sm
               if comment.images && comment.images.length
-                each img in comments.images
+                each img in comment.images
                   if img
                     .cell-4
                       a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
