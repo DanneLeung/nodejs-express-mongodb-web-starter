@@ -1,5 +1,5 @@
-#newComment.section
-  .heading
+#newComment.space-sm
+  //- .heading
     .title 
       strong 发表回复
   .box
@@ -9,16 +9,18 @@
       input#topicid(type="hidden" name="topicid" value="#{topic._id}")
 
       .control
-        textarea#content.textarea(name="content", rows="4", placeholder="回复帖子~~~")
-      .clearfix
-        .control.space-sm.pull-left
+        textarea#content.textarea(name="content", rows="4", placeholder="回复帖子:")
+      .clearfix.control
+        div
           button#selectImg.btn(type="button")
             i.icon-picture
+          | &nbsp;
           button.btn(type="button")
             i.icon-smile
-        .control.space-sm.pull-right
-          a.btn(href='javascript:;') 取消
-          button.btn.primary.outline(type='submit') 发表
+          .pull-right
+            button.btn.primary.outline(type='submit') 发表
+            | &nbsp;
+            a.btn(href='javascript:;') 取消
     .row#images
 
   

@@ -16,7 +16,7 @@ div
           .content
             div
               a.text-link.strong #{comment.fans?comment.fans.nickname:''}
-              .muted.small #{formatDate(comment.createdAt)}
+              .muted.small #{formatDatetime(comment.createdAt)}
             .btn-reply.state 
             
               |#{comment.content}
