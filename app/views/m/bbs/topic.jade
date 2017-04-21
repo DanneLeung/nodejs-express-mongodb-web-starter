@@ -60,12 +60,12 @@ block contentScripts
   script.
     var count = 0;
     var serverIds = [];
-    $("body").removeClass("with-heading-top");
+    var offset = 0;
+    var limit = 10;
+    $("body").removeClass("with-heading-top").addClass("with-nav-bottom");
     $(document).ready(function(){
       $("#pagermore").on("click", function(e){
         var that = $(this);
-        var offset = parseInt($(that).data("offset"));
-        var limit = parseInt($(that).data("limit"));
         $.get('#{contextFront}/topic/comments/#{topic._id}',{offset:#{offset?offset:0}, limit:#{limit?limit:10}}, function(html){
           $(that).data("offset",(offset + limit));
           $("#comments").append(html);
@@ -82,8 +82,9 @@ block contentScripts
         onSubmit: function(formData){
           formData["serverIds"] = serverIds;
         },
-        onSuccess: function(data){
-          console.log(data);
+        onResult: function(html){
+          console.log(html);
+          $("#comments").append(html);
           //- window.location.href="#{contextFront}/topic/comment/view/#{topicid}"
         },
         onError: function(status){
