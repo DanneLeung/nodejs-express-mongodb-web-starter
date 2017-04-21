@@ -6,8 +6,8 @@ block pageTitle
     small 添加，删除，更新系统中帖子信息
 block main
   form#topicDelForm(method='post', style='display:none', action='#{baseUrl}/topic/del/')
-          input#ids(type='hidden',name='ids')
-          input#_csrf(type='hidden', name='_csrf', value=_csrf)
+    input#ids(type='hidden',name='ids')
+    input#_csrf(type='hidden', name='_csrf', value=_csrf)
   .box
     //- .box-header
       .box-tools
@@ -20,60 +20,51 @@ block main
           i.fa.fa-fw.fa-plus
           | 发布新帖子
       h4 帖子列表
-      table#topicList.table.table-hover
-        
+      each topic in topics
+        .post
+          .user-block.clearfix
+            img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:''}", alt='user image')
+            span.username
+              a(href='#') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
+            span.description  #{topic.createdAt ? moment(topic.createdAt).format("YYYY-MM-DD HH:mm:ss") : ""}
+          p=topic.content
+          ul.list-inline.clearfix
+            li.pull-right
+              a.link-black(href="#{baseUrl}/topic/edit/#{topic._id}")
+                i.fa.fa-edit.margin-r-5
+                | 编辑
+            li.pull-right
+              a.link-black(href="#{baseUrl}/topic/del/#{topic._id}")
+                i.fa.fa-times.margin-r-5
+                | 删除
+            li.pull-right
+              a.link-black(href="#{baseUrl}/topic/block/#{topic._id}")
+                i.fa.fa-ban.margin-r-5
+                | 屏蔽
+            li.pull-right
+              a.link-black(href="#{baseUrl}/topic/top/#{topic._id}")
+                i.fa.fa-arrow-up.margin-r-5
+                | 置顶
+            li.pull-right
+              a.link-black(href="#{baseUrl}/topic/hot/#{topic._id}")
+                i.fa.fa-fire.margin-r-5
+                | 热帖
+            li.pull-right
+              a.link-black(href='#')
+                i.fa.fa-thumbs-o-up.margin-r-5
+                | 赞 (#{topic.likeCount ? topic.likeCount : 0})
+            li.pull-right
+              a.link-black(href='#')
+                i.fa.fa-comments-o.margin-r-5
+                | 评 (#{topic.commentCount ? topic.commentCount : 0})
+          form.form-horizontal.comment
+            .form-group.margin-bottom-none
+              .col-sm-10
+                input.form-control.input-sm(name="content", placeholder='输入文字快速回复帖子 ～～～')
+              .col-sm-2
+                button.btn.btn-danger.pull-right.btn-sm(type='submit') 回复
 //应用添加的脚本在scripts block中定义
 block scripts
   script.
     $(document).ready(function () {
-      var opts = {
-        "language": {
-          "url": "#{theme}/plugins/datatables/Chinese.json"
-        },
-        sortable: false,
-        autoWidth: false,
-        lengthChange: false,
-        searching: false,
-        processing: false,
-        //scrollX:true,
-        serverSide: true
-      };
-      var t = $('#topicList').DataTable($.extend(opts, {
-        ajax: {url: '#{baseUrl}/topic/datatable'},
-        order: [[2, 'desc']],
-        columns: [
-          //{data: ""},
-          {data: "createdAt", defaultContent: '', sortable: false, render: function ( data, type, row, meta ) {
-            var str ='';
-            str +='      <div class="post">';
-            str +='        <div class="user-block">';
-            str +='          <img class="img-circle img-bordered-sm" src="' + (row.fans && row.fans.headimgurl ? row.fans.headimgurl:"") + '" alt="user image">';
-            str +='          <span class="username">';
-            str +='            <a href="#">' + (row.fans && row.fans.nickname?row.fans.nickname:(row.user?row.user.username:"")) + '</a>';
-            str +='          </span>';
-            str +='          <span class="description">' + (row.createdAt ? moment(row.createdAt).format("YYYY-MM-DD HH:mm:ss") : "") + '</span>';
-            str +='        </div>';
-            str +='        <p>';
-            str +='        ' + row.content;
-            str +='        </p>';
-            str +='        <ul class="list-inline pull-right">';
-            str +='          <li><a href="#{baseUrl}/topic/edit/' + row._id + '" class="link-black text-sm"><i class="fa fa-edit margin-r-5"></i>编辑</a></li>';
-            str +='          <li><a href="#{baseUrl}/topic/del/' + row._id + '" class="link-black text-sm"><i class="fa fa-times margin-r-5"></i>删除</a></li>';
-            str +='          <li><a href="#{baseUrl}/topic/block/' + row._id + '" class="link-black text-sm"><i class="fa fa-ban margin-r-5"></i>屏蔽</a></li>';
-            str +='          <li><a href="'+ '#{baseUrl}/topic/top/' + row._id +'" class="link-black text-sm"><i class="fa fa-arrow-up margin-r-5"></i> 置顶</a> </li>';
-            str +='          <li><a href="'+ '#{baseUrl}/topic/hot/' + row._id +'" class="link-black text-sm"><i class="fa fa-fire margin-r-5"></i> 热帖</a> </li>';
-            str +='          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> 赞 (' + (row.likeCount ? row.likeCount: 0) + ')</a> </li>';
-            str +='          <li><a href="#" class="link-black text-sm"><i class="fa fa-comments-o margin-r-5"></i> 评论 (' + (row.commentCount ? row.commentCount: 0) + ') </a></li>';
-            str +='        </ul>';
-            str +='      </div>';
-            return str;
-          }},
-          {data: "content", sortable: false, visible: false},
-          //- {data: "user", sortable: false, visible: false},
-          {data: "createdAt", sortable: false, visible: false},
-          {data: "commentCount", sortable: false, visible: false},
-          {data: "fans.nickname", sortable: false, visible: false},
-          {data: "fans.headimgurl", sortable: false, visible: false}
-        ]
-      }));
     });

@@ -23,7 +23,18 @@ exports.nodes = function (req, res, next) {
  * list
  */
 exports.list = function (req, res) {
-  res.render('admin/bbs/topic/topicList');
+  var node = req.params.node || req.query.node;
+  var offset = req.params.offset || req.query.offset;
+  var limit = req.params.limit || req.query.limit;
+  if(!offset) offset = 0;
+  if(!limit) limit = 10;
+  Topic.topicsWithNode(node, offset, limit, (topics) => {
+    res.render('admin/bbs/topic/topicList', { topics: topics });
+  });
+};
+
+exports.list2 = function (req, res) {
+  res.render('admin/bbs/topic/topicList2');
 };
 
 /*role list table json datasource*/
