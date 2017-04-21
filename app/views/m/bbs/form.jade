@@ -40,9 +40,7 @@ block contentScripts
     var count = 0;
     var serverIds = [];
     $("body").removeClass("with-heading-top"); 
-    W.config(appid);
-    wx.ready(function(){
-    });
+
     $(document).ready(function(){
       $(".nodeid").on('click', function(e){
         $(this).parent().find('.active').removeClass('active');

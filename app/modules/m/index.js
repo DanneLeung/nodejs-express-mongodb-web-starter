@@ -13,8 +13,10 @@ router
   .get(['/'], ctrl.index)
   .get(['/topic/view/:id'], ctrl.view)
   .get(['/topic/like/:id'], ctrl.like)
-  .get(['/topic/new', '/topic/new/:node'], ctrl.nodes, ctrl.new)
-  .post(['/topic/new'], upload.none(), ctrl.newSave)
+  .get(['/topic/new', '/topic/new/:node'], ctrl.nodes, ctrl.newTopic)
+  .post(['/topic/new'], upload.none(), ctrl.newTopicSave)
+  .get(['/topic/comment/new/:topicid'], ctrl.newComment)
+  .post(['/topic/comment/new/:topicid'], upload.none(), ctrl.newCommentSave)
   .get(['/topics', '/topics/:node'], ctrl.topics)
   .get(['/home', '/home/:node'], ctrl.home)
   .get(['/user'], ctrl.user);

@@ -46,6 +46,7 @@ block main
 block scripts
   script.
     $(document).ready(function(){
+      W.config(appid);
       var user = W.getUser(appid);
       if(user){
         console.log(JSON.stringify(user));
@@ -53,7 +54,7 @@ block scripts
         $('#openid').val(user.openid ? user.openid : '');
         $('#headimgurl').attr('src', user.headimgurl ? user.headimgurl : '#{baseUrl}/imgs/headimg_default.jpg');
       }else{
-        //- window.location.href="index";
+        //- window.location.href="#{contextFront}/";
       }
     });
   block contentScripts

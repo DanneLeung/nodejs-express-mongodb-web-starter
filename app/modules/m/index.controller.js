@@ -11,6 +11,7 @@ var Wechat = mongoose.model('Wechat');
 var WechatFans = mongoose.model('WechatFans');
 var Node = mongoose.model('Node');
 var Topic = mongoose.model('Topic');
+var Comment = mongoose.model('Comment');
 
 const fieldMsg = { likeCount: '点赞', heartCount: '收藏' };
 
@@ -45,17 +46,20 @@ exports.view = function (req, res) {
     console.log(result);
     Topic.findById(id).populate("node fans user comments").exec((err, topic) => {
       if(err) console.error(err);
-      res.render('m/bbs/topic', { topic: topic ? topic : null, comments: topic.comments ? topic.comments : [] });
+      Comment.commentsByTopicId(id, 0, 5, (err, comments) => {
+        if(err) console.error(err);
+        res.render('m/bbs/topic', { topic: topic ? topic : null, comments: comments });
+      });
     });
   });
 };
 
-exports.new = function (req, res) {
+exports.newTopic = function (req, res) {
   var node = req.params.node || req.query.node;
   res.render('m/bbs/form', { node: node ? node : '' });
 };
 
-exports.newSave = function (req, res) {
+exports.newTopicSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var node = req.body.node || null;
   var openid = req.body.openid;
@@ -72,38 +76,66 @@ exports.newSave = function (req, res) {
   }
 
   if(!appid) {
-    return res.status(403).json({ err: '公众号配置信息错误，请确认!' });
+    return res.status(500).json({ err: '公众号配置信息错误，请确认!' });
   }
-  if(_.isArray(serverIds)) {} else if(serverIds && serverIds.indexOf(',')) {
-    serverIds = serverIds.split(",");
-  } else {
-    serverIds = [serverIds];
-  }
-  req.body.serverIds = serverIds;
 
-  //读取微信公众号配置
-  Wechat.findByAppid(appid, (err, wechat) => {
-    if(err) res.status(200).json({ error: 1, msg: '公众号配置信息错误，图片无法上传' });
-    var mutil = new mediaUtil(appid, wechat.appsecret);
-    async.map(serverIds, (serviceId, callback) => {
-      mutil.getMedia(serviceId, (err, wm) => {
-        console.log(" >>>>>>>>>>>>> getMedia ", wm);
-        return callback(err, wm ? wm.path : '');
-      });
-    }, (err, result) => {
-      // req.body.images = _.remove(result, (el) => { return !el; });
-      req.body.images = result;
-      console.log(" ************* topic body will be saved: ", result, req.body);
-
-      WechatFans.findOne({ openid: openid }, (err, fans) => {
+  downloadMedia(appid, serverIds, (err, serverIds, images) => {
+    if(err) return res.status(200).json({ err: err });
+    req.body.serverIds = serverIds;
+    req.body.images = images;
+    console.log(" ************* topic body will be saved: ", images, req.body);
+    WechatFans.findOne({ openid: openid }, (err, fans) => {
+      if(err) console.error(err);
+      var topic = new Topic(req.body);
+      topic.fans = fans;
+      topic.save((err, t) => {
         if(err) console.error(err);
-        var topic = new Topic(req.body);
-        topic.fans = fans;
-        topic.save((err, t) => {
-          if(err) console.error(err);
-          res.status(200).json(t);
-          // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
-        });
+        return res.status(200).json(t);
+        // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
+      });
+    });
+  });
+};
+
+exports.newComment = function (req, res) {
+  var topicid = req.params.topicid || req.query.topicid;
+  Topic.findById(topicid, (err, topic) => {
+    if(err) {
+      console.error(err);
+    }
+    res.render('m/bbs/commentForm', { topic: topic, topicid: topicid ? topicid : '' });
+  });
+};
+
+exports.newCommentSave = function (req, res) {
+  var appid = req.body.appid || req.session.appid;
+  var topicid = req.params.topicid || req.query.topicid;
+  var openid = req.body.openid || req.session.openid;
+  var serverIds = req.body.serverIds || [];
+  console.log(" ************* topic body : ", req.body);
+
+  if(!openid) {
+    req.body.openid = openid = "oxVEQuN3xDA1r8aBD_hh-xMQeir4";
+    // return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
+  }
+
+  if(!appid) {
+    return res.status(500).json({ err: '公众号配置信息错误，请确认!' });
+  }
+  downloadMedia(appid, serverIds, (err, serverIds, images) => {
+    if(err) return res.status(200).json({ err: err });
+    req.body.serverIds = serverIds;
+    req.body.images = images;
+    console.log(" ************* topic body will be saved: ", images, req.body);
+    WechatFans.findOne({ openid: openid }, (err, fans) => {
+      if(err) console.error(err);
+      var comment = new Comment(req.body);
+      comment.fans = fans;
+      comment.topic = topicid;
+      comment.save((err, c) => {
+        if(err) console.error(err);
+        return res.status(200).json(c);
+        // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
       });
     });
   });
@@ -138,3 +170,30 @@ exports.increase = function (req, res, field) {
     return res.status(200).json(ok);
   });
 };
+
+function downloadMedia(appid, serverIds, callback) {
+  if(_.isArray(serverIds)) {} else if(serverIds && serverIds.indexOf(',')) {
+    serverIds = serverIds.split(",");
+  } else {
+    serverIds = [serverIds];
+  }
+
+  //读取微信公众号配置
+  Wechat.findByAppid(appid, (err, wechat) => {
+    if(err) {
+      console.error(err);
+      return callback(err)
+    }
+    // res.status(200).json({ error: 1, msg: '公众号配置信息错误，图片无法上传' });
+    var mutil = new mediaUtil(appid, wechat.appsecret);
+    async.map(serverIds, (serviceId, callback) => {
+      mutil.getMedia(serviceId, (err, wm) => {
+        console.log(" >>>>>>>>>>>>> getMedia ", wm);
+        return callback(null, wm ? wm.path : '');
+      });
+    }, (err, images) => {
+      // req.body.images = _.remove(images, (el) => { return !el; });
+      return callback(err, serverIds, images);
+    });
+  });
+}

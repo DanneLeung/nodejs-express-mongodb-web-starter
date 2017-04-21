@@ -1,0 +1,24 @@
+#newComment.section
+  .heading
+    .title 
+      strong 发表回复
+  .box
+    form#commentForm.no-margin(method="post" action="#{contextFront}/topic/comment/new/#{topic._id}")
+      input#appid(type="hidden" name="appid" value="#{appid}")
+      input#openid(type="hidden" name="openid" value="")
+      input#topicid(type="hidden" name="topicid" value="#{topic._id}")
+
+      .control
+        textarea#content.textarea(name="content", rows="4", placeholder="回复帖子~~~")
+      .clearfix
+        .control.space-sm.pull-left
+          button#selectImg.btn(type="button")
+            i.icon-picture
+          button.btn(type="button")
+            i.icon-smile
+        .control.space-sm.pull-right
+          a.btn(href='javascript:;') 取消
+          button.btn.primary.outline(type='submit') 发表
+    .row#images
+
+  

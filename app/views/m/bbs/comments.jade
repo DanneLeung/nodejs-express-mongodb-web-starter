@@ -1,6 +1,7 @@
 
 div
-  div.section(data-display='modal', data-selector='.btn-reply', data-remote='/part/examples/comments-reply.html', data-placement='bottom')
+  include incs/commentForm
+  .section(data-display='modal', data-selector='.btn-reply', data-remote='/part/examples/comments-reply.html', data-placement='bottom')
     .heading
       .title
         i.icon.icon-comments-alt.muted
@@ -11,11 +12,14 @@ div
       each comment in comments
         .item.with-avatar.multi-lines
           a.avatar.circle(data-dark='true', data-skin='') 
+            img(src='#{comment.fans?comment.fans.headimgurl:""}', alt='')
           .content
             div
               a.text-link.strong #{comment.fans?comment.fans.nickname:''}
-              .muted.small.pull-right 33 分钟前;
-            .btn-reply.state #{comment.content}
+              .muted.small #{formatDate(comment.createdAt)}
+            .btn-reply.state 
+            
+              |#{comment.content}
             .row.imgs.gutter-sm
               if comment.images && comment.images.length
                 each img in comments.images
@@ -23,19 +27,12 @@ div
                     .cell-4
                       a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
                         .img(style="background-image:url('#{contextRoot}#{img}');")
-      .divider.no-padding.no-margin
+        .divider.no-padding.no-margin
     nav.nav.justified.pager
       a.pager-more
         span
           strong 更多评论 ...
           span.text-link
             i.icon.icon-double-angle-down
-      //- .text-center.text-gray.small
-        i.icon-lightbulb
-nav.fab.affix.dock-bottom.shadow-none
-  //- a.btn.circle.shadow-2.has-margin-sm.dark(href='https://github.com/easysoft/mzui/blob/master//part/examples/comments.html', target='_blank')
-    i.icon-code
-  a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary-pale(title='返回', onclick='javascript:window.history.go(-1);')
-    i.icon.icon-chevron-left
-  a.btn.circle.shadow-2.has-margin-sm.btn-lg.green.pull-right(href="#", title='评论')
-    i.icon.icon-comments
+    
+    
