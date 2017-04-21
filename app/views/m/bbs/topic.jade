@@ -6,7 +6,7 @@ block content
   div
     if(!topic)
       .article
-        p 帖子不存在哦，可能已经被删除 ~~~ 
+        p 帖子不存在哦,可能已经被删除 ~~~ 
     #topic.list.space-sm 
       .item.with-avatar
         a(href="fans/#{topic.fans?topic.fans._id}")
@@ -16,7 +16,7 @@ block content
         .content
            a.title(href="fans/#{topic.fans?topic.fans._id:''}") 
             span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
-            span.label.primary.rounded(style='margin-right: 0.25rem') V #{topic.fans?topic.fans.level:1}
+            span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
             if topic.hot
               span.label.red.rounded(style='margin-right: 0.25rem') 
                 i.icon-sun
@@ -31,8 +31,24 @@ block content
           each img in topic.images
             if img
               img.img(src='#{contextRoot}#{img}', alt='')
-      
-  include comments
+  div
+    include commentForm    
+    //- .section(data-display='modal', data-selector='.btn-reply', data-remote='/part/examples/comments-reply.html', data-placement='bottom')
+    .section
+      .heading
+        .title
+          i.icon.icon-comments-alt.muted
+          strong  评论
+          small.muted (#{topic.commentCount})
+      .divider.no-padding.no-margin
+      #comments.list.comments.small
+        include comments
+      nav.nav.justified.pager
+        a#pagermore(href="javascript:;", data-offset="#{offset?offset:0}",data-limit="#{limit?limit:10}")
+          span
+            strong 更多评论 (#{topic.commentCount})
+            span.text-link
+              i.icon.icon-double-angle-down
   nav.fab.affix.dock-bottom.shadow-none
     //- a.btn.circle.shadow-2.has-margin-sm.dark(href='https://github.com/easysoft/mzui/blob/master//part/examples/comments.html', target='_blank')
       i.icon-code
@@ -42,11 +58,20 @@ block content
       i.icon.icon-comments
 block contentScripts
   script.
-    $("body").removeClass("with-heading-top");
-  script.
     var count = 0;
     var serverIds = [];
+    $("body").removeClass("with-heading-top");
     $(document).ready(function(){
+      $("#pagermore").on("click", function(e){
+        var that = $(this);
+        var offset = parseInt($(that).data("offset"));
+        var limit = parseInt($(that).data("limit"));
+        $.get('#{contextFront}/topic/comments/#{topic._id}',{offset:#{offset?offset:0}, limit:#{limit?limit:10}}, function(html){
+          $(that).data("offset",(offset + limit));
+          $("#comments").append(html);
+        },'html');
+      });
+
       $("#selectImg").on("click", function(e){
         W.chooseImage(9,function(localIds){
           syncUpload(localIds);
@@ -75,7 +100,7 @@ block contentScripts
             wx.getLocalImgData({
               localId: localId, // 图片的localID
               success: function (res) {
-                var localData = res.localData; // localData是图片的base64数据，可以用img标签显示
+                var localData = res.localData; // localData是图片的base64数据,可以用img标签显示
                 var img = "<img src='"+ localData + "'>"
                 var html = "<div class='cell-4'><div class='avatar.avatar-xl'>" + img + "</div></div>";
                 $("#images").append(html);

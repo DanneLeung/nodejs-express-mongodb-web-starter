@@ -3,7 +3,7 @@
     .title 
       strong 发表回复
   .box
-    form#commentForm.no-margin(method="post" action="#{contextFront}/topic/comment/new/#{topic._id}")
+    form#commentForm.no-margin(method="post" action="#{contextFront}/topic/comment/new/#{topic._id}",data-type="html")
       input#appid(type="hidden" name="appid" value="#{appid}")
       input#openid(type="hidden" name="openid" value="")
       input#topicid(type="hidden" name="topicid" value="#{topic._id}")

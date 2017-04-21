@@ -1,0 +1,22 @@
+.item.with-avatar.multi-lines
+  a.avatar.circle(data-dark='true', data-skin='') 
+    img(src='#{comment.fans?comment.fans.headimgurl:""}', alt='')
+  .content
+    div
+      a.title(href="fans/#{comment.fans?comment.fans._id:''}") 
+        span.nickname #{comment.fans?comment.fans.nickname:(comment.user?comment.user.username:'')}
+        span.label.primary.rounded(style='margin-right: 0.25rem') V. #{comment.fans?comment.fans.level:1}
+      //- a.text-link.strong #{comment.fans?comment.fans.nickname:''}
+      .subtitle.muted.no-margin  #{formatDatetime(comment.createdAt)}
+      //- .muted.small #{formatDatetime(comment.createdAt)}
+    .btn-reply.state 
+
+      |#{comment.content}
+    .row.imgs.gutter-sm
+      if comment.images && comment.images.length
+        each img in comment.images
+          if img
+            .cell-4
+              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
+                .img(style="background-image:url('#{contextRoot}#{img}');")
+.divider.no-padding.no-margin

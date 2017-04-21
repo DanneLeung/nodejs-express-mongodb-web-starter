@@ -15,6 +15,7 @@ router
   .get(['/topic/like/:id'], ctrl.like)
   .get(['/topic/new', '/topic/new/:node'], ctrl.nodes, ctrl.newTopic)
   .post(['/topic/new'], upload.none(), ctrl.newTopicSave)
+  .get(['/topic/comments/:topicid'], ctrl.comments)
   .get(['/topic/comment/new/:topicid'], ctrl.newComment)
   .post(['/topic/comment/new/:topicid'], upload.none(), ctrl.newCommentSave)
   .get(['/topics', '/topics/:node'], ctrl.topics)

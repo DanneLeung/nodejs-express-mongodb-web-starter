@@ -21,9 +21,12 @@ let CommentSchema = new Schema({
 
 CommentSchema.statics = {
   commentsByTopicId: function (topicid, offset, limit, done) {
-    if(!offset) offset = 0;
-    if(!limit) limit = 5;
-    Comment.find({ topic: topicid }).populate("fans user").sort('-createdAt').skip(offset).limit(limit).exec(done);
+    if(!offset) offset = 0
+    else offset = parseInt(offset);
+
+    if(!limit) limit = 5
+    else limit = parseInt(limit);
+    Comment.find({ topic: topicid }).populate("fans user").sort('createdAt').skip(offset).limit(limit).exec(done);
   }
 }
 

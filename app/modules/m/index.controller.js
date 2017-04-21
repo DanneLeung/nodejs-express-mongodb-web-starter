@@ -46,9 +46,11 @@ exports.view = function (req, res) {
     console.log(result);
     Topic.findById(id).populate("node fans user comments").exec((err, topic) => {
       if(err) console.error(err);
-      Comment.commentsByTopicId(id, 0, 5, (err, comments) => {
+      var offset = 0,
+        limit = 5;
+      Comment.commentsByTopicId(id, offset, limit, (err, comments) => {
         if(err) console.error(err);
-        res.render('m/bbs/topic', { topic: topic ? topic : null, comments: comments ? comments : [] });
+        res.render('m/bbs/topic', { topic: topic ? topic : null, offset: offset + limit, limit: limit, comments: comments ? comments : [] });
       });
     });
   });
@@ -97,6 +99,15 @@ exports.newTopicSave = function (req, res) {
   });
 };
 
+exports.comments = function (req, res) {
+  var topicid = req.params.topicid || req.query.topicid;
+  var offset = req.params.offset || req.query.offset;
+  var limit = req.params.limit || req.query.limit;
+  Comment.commentsByTopicId(topicid, offset, limit, (err, comments) => {
+    if(err) console.error(err);
+    res.render('m/bbs/comments', { offset: offset + limit, limit: limit, comments: comments ? comments : [] });
+  });
+};
 exports.newComment = function (req, res) {
   var topicid = req.params.topicid || req.query.topicid;
   Topic.findById(topicid, (err, topic) => {
@@ -123,7 +134,7 @@ exports.newCommentSave = function (req, res) {
     return res.status(500).json({ err: '公众号配置信息错误，请确认!' });
   }
   downloadMedia(appid, serverIds, (err, serverIds, images) => {
-    if(err) return res.status(200).json({ err: err });
+    if(err) return res.render("m/bbs/commentItem");
     req.body.serverIds = serverIds;
     req.body.images = images;
     console.log(" ************* topic body will be saved: ", images, req.body);
@@ -134,7 +145,9 @@ exports.newCommentSave = function (req, res) {
       comment.topic = topicid;
       comment.save((err, c) => {
         if(err) console.error(err);
-        return res.status(200).json(c);
+        Topic.incsCountField(topicid, 'commentCount', (err, result) => {
+          res.render("m/bbs/commentItem", { comment: c });
+        })
         // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
       });
     });
