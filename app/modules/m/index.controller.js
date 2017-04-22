@@ -27,10 +27,17 @@ exports.index = function (req, res) {
   res.render('m/index');
 };
 
+exports.home = function (req, res) {
+  var node = req.params.node || req.query.node;
+  Topic.topTopics(node, (topTopics) => {
+    res.render('m/bbs/home', { node: node ? node : '', topTopics: topTopics });
+  });
+};
+
 exports.topics = function (req, res) {
   var node = req.params.node || req.query.node;
-  var offset = req.query.offset || 0;
-  var limit = 10;
+  var offset = parseInt(req.params.offset || req.query.offset || 0);
+  var limit = parseInt(req.params.limit || req.query.limit || 10);
   Topic.topicsWithNode(node, offset, limit, (topics) => {
     res.render('m/bbs/topics', { topics: topics });
   });
@@ -152,13 +159,6 @@ exports.newCommentSave = function (req, res) {
         // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
       });
     });
-  });
-};
-
-exports.home = function (req, res) {
-  var node = req.params.node || req.query.node;
-  Topic.topTopics(node, (topTopics) => {
-    res.render('m/bbs/home', { node: node ? node : '', topTopics: topTopics });
   });
 };
 

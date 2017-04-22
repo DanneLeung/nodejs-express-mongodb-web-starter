@@ -14,14 +14,14 @@ block content
             img(src='#{topic.fans?topic.fans.headimgurl:""}', alt='')
 
         .content
-           a.title(href="fans/#{topic.fans?topic.fans._id:''}") 
+          a.title(href="fans/#{topic.fans?topic.fans._id:''}") 
             span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
             span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
             if topic.hot
               span.label.red.rounded(style='margin-right: 0.25rem') 
                 i.icon-sun
-           .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
-              
+          .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+
       .topic.space-sm 
         .space-sm 
           if topic.node
@@ -44,8 +44,7 @@ block content
       #comments.list.comments.small
         include comments
       nav.nav.justified.pager
-        a#pagermore(href="javascript:;", data-offset="#{offset?offset:0}",data-limit="#{limit?limit:10}")
-          span
+        a#pagermore(href="javascript:;")
             strong 更多评论 (#{topic.commentCount})
             span.text-link
               i.icon.icon-double-angle-down
@@ -58,62 +57,7 @@ block content
       i.icon.icon-comments
 block contentScripts
   script.
-    var count = 0;
-    var serverIds = [];
-    var total = #{topic.commentCount?topic.commentCount:0};
-    var offset = #{offset? offset:0};
-    var limit = #{limit? limit:5};
-    $("body").removeClass("with-heading-top").addClass("with-nav-bottom");
-    $(document).ready(function(){
-      $("#pagermore").on("click", function(e){
-        var that = $(this);
-        if(offset > total) return false;
-        $.get('#{contextFront}/topic/comments/#{topic._id}',{offset:offset, limit: limit}, function(html){
-          offset = offset + limit;
-          $("#comments").append(html);
-        },'html');
-      });
-
-      $("#selectImg").on("click", function(e){
-        W.chooseImage(9,function(localIds){
-          syncUpload(localIds);
-        });
-      });
-      
-      $("#commentForm").ajaxform({
-        onSubmit: function(formData){
-          if(!formData.content || formData.content.length <=0) return false;
-          formData["serverIds"] = serverIds;
-        },
-        onResult: function(html){
-          console.log(html);
-          $("#comments").append(html);
-          //- window.location.href="#{contextFront}/topic/comment/view/#{topicid}"
-        },
-        onError: function(status){
-          console.log(status);
-          //- window.location.href="/home/#{topicid}"
-        }
-      });
-      function syncUpload(localIds){
-        var localId = localIds.pop();
-        W.uploadImage(localId, function(serverId){
-          //- alert(" upload image "+ localId);
-          if(serverId){
-            serverIds.push(serverId);
-            wx.getLocalImgData({
-              localId: localId, // 图片的localID
-              success: function (res) {
-                var localData = res.localData; // localData是图片的base64数据,可以用img标签显示
-                var img = "<img src='"+ localData + "'>"
-                var html = "<div class='cell-4'><div class='avatar.avatar-xl'>" + img + "</div></div>";
-                $("#images").append(html);
-                if(localIds.length > 0){
-                  syncUpload(localIds);
-                }
-              }
-            });
-          }
-        });
-      };
-    });
+    var total = #{ topic.commentCount ? topic.commentCount : 0 };
+    var offset = #{ offset ? offset : 0 };
+    var limit = #{ limit ? limit : 5 };
+  script(src="topic.js")
