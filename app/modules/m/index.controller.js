@@ -108,6 +108,7 @@ exports.comments = function (req, res) {
     res.render('m/bbs/comments', { offset: offset + limit, limit: limit, comments: comments ? comments : [] });
   });
 };
+
 exports.newComment = function (req, res) {
   var topicid = req.params.topicid || req.query.topicid;
   Topic.findById(topicid, (err, topic) => {

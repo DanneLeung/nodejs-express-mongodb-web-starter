@@ -60,14 +60,16 @@ block contentScripts
   script.
     var count = 0;
     var serverIds = [];
-    var offset = 0;
-    var limit = 10;
+    var total = #{topic.commentCount?topic.commentCount:0};
+    var offset = #{offset? offset:0};
+    var limit = #{limit? limit:5};
     $("body").removeClass("with-heading-top").addClass("with-nav-bottom");
     $(document).ready(function(){
       $("#pagermore").on("click", function(e){
         var that = $(this);
-        $.get('#{contextFront}/topic/comments/#{topic._id}',{offset:#{offset?offset:0}, limit:#{limit?limit:10}}, function(html){
-          $(that).data("offset",(offset + limit));
+        if(offset > total) return false;
+        $.get('#{contextFront}/topic/comments/#{topic._id}',{offset:offset, limit: limit}, function(html){
+          offset = offset + limit;
           $("#comments").append(html);
         },'html');
       });
@@ -80,6 +82,7 @@ block contentScripts
       
       $("#commentForm").ajaxform({
         onSubmit: function(formData){
+          if(!formData.content || formData.content.length <=0) return false;
           formData["serverIds"] = serverIds;
         },
         onResult: function(html){
