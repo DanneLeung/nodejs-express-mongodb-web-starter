@@ -57,6 +57,7 @@ block content
 block contentScripts
   script.
     $("body").removeClass("with-heading-top").addClass("with-nav-bottom");
+    var topicId = "#{topic._id}";
     var total = #{ topic.commentCount ? topic.commentCount : 0 };
     var offset = #{ offset ? offset : 0 };
     var limit = #{ limit ? limit : 5 };

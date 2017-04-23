@@ -2,13 +2,14 @@ var count = 0;
 var serverIds = [];
 $(document).ready(function () {
   $("#pagermore").on("click", function (e) {
+    e.preventDefault();
     var that = $(this);
     if(offset > total) {
       $(that).html('没有更多了 ...');
       return false;
     }
     $(that).addClass("loading loading-light");
-    $.get('#{contextFront}/topic/comments/#{topic._id}', { offset: offset, limit: limit }, function (html) {
+    $.get(contextFront + '/topic/comments/' + topicId, { offset: offset, limit: limit }, function (html) {
       offset = offset + limit;
       $("#comments").append(html);
       $(that).removeClass("loading loading-light");
