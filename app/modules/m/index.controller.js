@@ -30,7 +30,7 @@ exports.index = function (req, res) {
 exports.requiredSession = function (req, res, next) {
   // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", req.session.user);
   if(!req.user && !req.session.user) {
-    return res.redirect(req.session.contextFront + "/m");
+    return res.redirect(req.session.contextFront);
   }
   res.locals.user = req.user = req.session.user;
   return next();
