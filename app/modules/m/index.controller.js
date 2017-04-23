@@ -27,6 +27,22 @@ exports.index = function (req, res) {
   res.render('m/index');
 };
 
+exports.requiredSession = function (req, res, next) {
+  // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", req.session.user);
+  if(!req.user && !req.session.user) {
+    return res.redirect("/m");
+  }
+  res.locals.user = req.user = req.session.user;
+  return next();
+}
+exports.session = function (req, res) {
+  var openid = req.params.openid || req.query.openid || req.body.openid;
+  WechatFans.findByOpenId(openid, (fans) => {
+    req.user = req.session.user = fans;
+    res.status(200).send("ok");
+  });
+};
+
 exports.home = function (req, res) {
   var node = req.params.node || req.query.node;
   Topic.topTopics(node, (topTopics) => {
@@ -71,7 +87,7 @@ exports.newTopic = function (req, res) {
 exports.newTopicSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var node = req.body.node || null;
-  var openid = req.body.openid;
+  var openid = req.body.openid || req.user.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
   console.log(" ************* topic body : ", req.body);
 
@@ -129,13 +145,12 @@ exports.newComment = function (req, res) {
 exports.newCommentSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var topicid = req.params.topicid || req.query.topicid;
-  var openid = req.body.openid || req.session.openid;
+  var openid = req.body.openid || req.user.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
   console.log(" ************* topic body : ", req.body);
 
   if(!openid) {
-    req.body.openid = openid = "oxVEQuN3xDA1r8aBD_hh-xMQeir4";
-    // return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
+    return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
   }
 
   if(!appid) {
@@ -162,8 +177,18 @@ exports.newCommentSave = function (req, res) {
   });
 };
 
+exports.fans = function (req, res) {
+  var id = req.params.id || req.query.id;
+  // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans id", id);
+  WechatFans.findById(id, (err, fans) => {
+    if(err) console.error(err);
+    // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", fans);
+    res.render('m/user', { user: fans, me: id == req.session.user._id });
+  });
+};
+
 exports.user = function (req, res) {
-  res.render('m/user');
+  res.render('m/user', { me: true });
 };
 
 exports.like = function (req, res) {

@@ -3,13 +3,13 @@ extends ../layouts/bbs
 block headNav
 
 block content
-  div
+  div.clearfix
     if(!topic)
       .article
         p 帖子不存在哦,可能已经被删除 ~~~ 
-    #topic.list.space-sm 
+    #topic.list
       .item.with-avatar
-        a(href="fans/#{topic.fans?topic.fans._id}")
+        a(href="fans/#{topic.fans?topic.fans._id:''}") 
           .avatar
             img(src='#{topic.fans?topic.fans.headimgurl:""}', alt='')
 
@@ -22,11 +22,10 @@ block content
                 i.icon-sun
           .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
-      .topic.space-sm 
-        .space-sm 
-          if topic.node
-            span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
-          | #{topic.content}
+      .topic 
+        if topic.node
+          span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
+        | #{topic.content}
         if(topic.images && topic.images.length>0)
           each img in topic.images
             if img
@@ -53,7 +52,7 @@ block content
       i.icon-code
     a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary-pale(title='返回', onclick='javascript:window.history.go(-1);')
       i.icon.icon-chevron-left
-    a.btn.circle.shadow-2.has-margin-sm.btn-lg.green.pull-right(href="topic/comment/new/#{topic._id}", title='评论')
+    a.addComment.btn.circle.shadow-2.has-margin-sm.btn-lg.green.pull-right(href="javascript:;", title='评论')
       i.icon.icon-comments
 block contentScripts
   script.

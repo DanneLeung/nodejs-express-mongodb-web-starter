@@ -10,7 +10,11 @@ var ctrl = require('./index.controller');
 
 router
   .use(ctrl.nodes)
-  .get(['/'], ctrl.index)
+  .get(['/', 'index'], ctrl.index)
+  .all(['/session'], ctrl.session)
+  .get(['/fans/:id'], ctrl.fans)
+  .use(ctrl.requiredSession)
+  .get(['/home', '/home/:node'], ctrl.home)
   .get(['/topic/view/:id'], ctrl.view)
   .get(['/topic/like/:id'], ctrl.like)
   .get(['/topic/new', '/topic/new/:node'], ctrl.nodes, ctrl.newTopic)
@@ -19,6 +23,5 @@ router
   .get(['/topic/comment/new/:topicid'], ctrl.newComment)
   .post(['/topic/comment/new/:topicid'], upload.none(), ctrl.newCommentSave)
   .get(['/topics', '/topics/:node'], ctrl.topics)
-  .get(['/home', '/home/:node'], ctrl.home)
   .get(['/user'], ctrl.user);
 module.exports = router;

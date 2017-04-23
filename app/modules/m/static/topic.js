@@ -17,6 +17,15 @@ $(document).ready(function () {
     }, 'html');
   });
 
+  $(".addComment").on("click", function(e){
+    $("#newComment").show();
+    $("#newComment").find("textarea").focus();
+  });
+  $(".cancelComment").on("click", function(e){
+    $("#newComment").hide();
+    $("#newComment").find("textarea").val('');
+  });
+
   $("#selectImg").on("click", function (e) {
     W.chooseImage(9, function (localIds) {
       syncUpload(localIds);

@@ -1,4 +1,8 @@
-#newComment.space-sm
+.clearfix
+  button.addComment.btn.pull-right(type="button") 
+    i.icon-pencil
+    |  写评论
+#newComment.space-sm(style="display:none")
   //- .heading
     .title 
       strong 发表回复
@@ -20,7 +24,7 @@
           .pull-right
             button.btn.primary.outline(type='submit') 发表
             | &nbsp;
-            a.btn(href='javascript:;') 取消
+            a.cancelComment.btn(href='javascript:;') 取消
     .row#images
 
   

@@ -38,7 +38,7 @@ block main
       nav.nav
         a(href='user')
           .avatar.circle
-            img#headimgurl(src='/avatar.png', alt='')
+            img#headimgurl(src="#{user.headimgurl ? user.headimgurl : baseUrl + '/imgs/headimg_default.jpg'}", alt='U')
   //- #pageLoading.loading.loading-light
   #partial.container.no-padding
     block content
@@ -47,15 +47,6 @@ block scripts
   script.
     $(document).ready(function(){
       W.config(appid);
-      var user = W.getUser(appid);
-      if(user){
-        console.log(JSON.stringify(user));
-        $('#nickname').html(user.nickname ? user.nickname : '未知用户');
-        $('#openid').val(user.openid ? user.openid : '');
-        $('#headimgurl').attr('src', user.headimgurl ? user.headimgurl : '#{baseUrl}/imgs/headimg_default.jpg');
-      }else{
-        //- window.location.href="#{contextFront}/";
-      }
     });
   block contentScripts
 

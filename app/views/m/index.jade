@@ -8,12 +8,26 @@ block scripts
   script.
     if(is_weixn()){
       W.oauthUser(appid, function (user) {
-        console.log(JSON.stringify(user));
         if(user){
-          window.location.href = contextFront + "/home";
+          $.get(contextFront + "/session",{openid: user.openid}, function(data){
+            if(data == "ok"){
+              window.location.href = contextFront + "/home";
+            } else{
+              $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+            }
+          });
+        }else{
+          $.messager.show('微信公众号页面授权错误，无法获得粉丝信息!', { type: 'error', placement: 'bottom-center' });   
         }
       });
     }else{
-      window.location.href = contextFront + "/home";
+
+      $.get(contextFront + "/session",{openid: "oxVEQuN3xDA1r8aBD_hh-xMQeir4"}, function(data){
+        if(data == "ok"){
+          window.location.href = contextFront + "/home";
+        } else{
+          $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+        }
+      });
     }
 

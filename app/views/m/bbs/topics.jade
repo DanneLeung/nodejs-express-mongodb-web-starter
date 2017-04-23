@@ -1,8 +1,7 @@
 each topic in topics
   .list
     .item.with-avatar.muti-lines(data-id="#{topic._id}")
-      //- a(href="/fans/#{topic.fans?topic.fans._id:''}")
-      a(href="#")
+      a(href="fans/#{topic.fans?topic.fans._id:''}")
         .avatar
           img(src='#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl : ""}', alt='#{topic.fans?topic.fans.nickname:""}')
       .content
