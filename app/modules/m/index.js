@@ -10,7 +10,7 @@ var ctrl = require('./index.controller');
 
 router
   .use(ctrl.nodes)
-  .get(['/', 'index'], ctrl.index)
+  .get(['/', ''], ctrl.index)
   .all(['/session'], ctrl.session)
   .use(ctrl.requiredSession)
   .get(['/home', '/home/:node'], ctrl.home)
