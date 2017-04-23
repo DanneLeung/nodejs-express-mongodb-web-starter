@@ -3,19 +3,22 @@ var limit = 5;
 var end = false; // end of all topics
 $(document).ready(function () {
   $("#pagermore").on("click", function (e) {
+    e.preventDefault();
+    var url = $(this).attr("href");
     var that = this;
     //- if(offset > total) return false;
     if(!end) {
       $(that).addClass("loading loading-light");
-      $.get('topics/#{node}', { offset: offset, limit: limit }, function (data) {
-        if(!data) end = true;
+      $.get(url, { offset: offset, limit: limit }, function (data) {
+        $(that).removeClass("loading loading-light");
+        if(!data) {
+          $(that).html('没有更多了 ...');
+          end = true;
+        }
         offset += limit;
         $('#topics').append(data);
-        $(that).removeClass("loading loading-light");
       }, 'html');
-    } else {
-      $(that).html('没有更多了 ...');
-    }
+    } else {}
   });
   $("#pagermore").trigger('click');
 

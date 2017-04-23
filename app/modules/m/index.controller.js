@@ -178,12 +178,26 @@ exports.newCommentSave = function (req, res) {
 };
 
 exports.fans = function (req, res) {
-  var id = req.params.id || req.query.id;
-  // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans id", id);
-  WechatFans.findById(id, (err, fans) => {
+  var fansId = req.params.fansId || req.query.fansId;
+  // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans fansId", fansId);
+  WechatFans.findById(fansId, (err, fans) => {
     if(err) console.error(err);
     // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", fans);
-    res.render('m/user', { user: fans, me: id == req.session.user._id });
+    res.render('m/user', { user: fans, me: fansId == req.session.user._id });
+  });
+};
+
+exports.fansHome = function (req, res) {
+  var fansId = req.params.fansId || req.query.fansId;
+  res.render('m/bbs/fans/fansHome', { fansId: fansId ? fansId : ''});
+};
+
+exports.fansTopics = function (req, res) {
+  var fansId = req.params.fansId || req.query.fansId;
+  var offset = parseInt(req.params.offset || req.query.offset || 0);
+  var limit = parseInt(req.params.limit || req.query.limit || 10);
+  Topic.topicsWithFans(fansId, offset, limit, (topics) => {
+    res.render('m/bbs/fans/fansTopics', { topics: topics });
   });
 };
 

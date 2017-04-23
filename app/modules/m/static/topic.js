@@ -1,7 +1,5 @@
 var count = 0;
 var serverIds = [];
-
-$("body").removeClass("with-heading-top").addClass("with-nav-bottom");
 $(document).ready(function () {
   $("#pagermore").on("click", function (e) {
     var that = $(this);

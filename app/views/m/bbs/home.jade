@@ -1,4 +1,18 @@
 extends ../layouts/bbs
+block headNav
+  header#haedNav.heading.affix.dock-top.dock-auto
+    nav#headNav.nav
+      a.brand-name(href='home', class="#{!node?'active':''}", data-page-name='index')
+        //- i.icon-home
+        | 全部
+      each n in nodes
+        a(href='home/#{n._id}', class="#{n._id == node?'active':''}" data-page-name='#{n.title}')=n.title
+    .title
+    nav.nav
+      a(href='user')
+        .avatar.circle
+          img#headimgurl(src="#{user.headimgurl ? user.headimgurl : baseUrl + '/imgs/headimg_default.jpg'}", alt='U')
+
 block content
   //- .heading
     .title 
@@ -13,7 +27,7 @@ block content
   #topics
 
   nav.nav.justified.pager
-    a#pagermore.loading.loading-light
+    a#pagermore.loading.loading-light(href='topics/#{node}')
       strong 加载更多 ...
       span.text-link
         i.icon.icon-double-angle-down
@@ -22,5 +36,5 @@ block content
       i.icon.icon-plus
 block contentScripts
   script(src="home.js")
-    
+
 

@@ -12,7 +12,6 @@ router
   .use(ctrl.nodes)
   .get(['/', 'index'], ctrl.index)
   .all(['/session'], ctrl.session)
-  .get(['/fans/:id'], ctrl.fans)
   .use(ctrl.requiredSession)
   .get(['/home', '/home/:node'], ctrl.home)
   .get(['/topic/view/:id'], ctrl.view)
@@ -24,4 +23,9 @@ router
   .post(['/topic/comment/new/:topicid'], upload.none(), ctrl.newCommentSave)
   .get(['/topics', '/topics/:node'], ctrl.topics)
   .get(['/user'], ctrl.user);
+
+router
+  .get(['/fans/home/:fansId'], ctrl.fansHome)
+  .get(['/fans/topics/:fansId'], ctrl.fansTopics)
+  .get(['/fans/:fansId'], ctrl.fans);
 module.exports = router;
