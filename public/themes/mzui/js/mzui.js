@@ -3258,6 +3258,7 @@ window.CoreLib = window['jQuery'] || window['Zepto'];
                         if(typeof response === 'string') response = $.parseJSON(response);
                         callEvent('onSuccess', response);
                         if(response.result === 'success') {
+                            console.log("ajaxform result success ", response);
                             if(response.message) {
                                 $.messager.success(response.message);
                                 if(response.locate) {
@@ -3267,6 +3268,7 @@ window.CoreLib = window['jQuery'] || window['Zepto'];
                                 if(response.locate) location.href = response.locate;
                             }
                         } else {
+                            console.log("ajaxform result fail ", response, respone.result);
                             var message = response.message || response.reason || response.error;
                             if(message) {
                                 if($.isPlainObject(message)) {
@@ -3293,6 +3295,7 @@ window.CoreLib = window['jQuery'] || window['Zepto'];
                             }
                         }
                     } catch(e) {
+                        console.log("ajaxform result error ", e);
                         showMessage(response || 'No response.');
                     }
                     callEvent('onResult', response);

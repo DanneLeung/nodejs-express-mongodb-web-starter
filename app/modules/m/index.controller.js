@@ -157,7 +157,7 @@ exports.newCommentSave = function (req, res) {
     return res.status(500).json({ err: '公众号配置信息错误，请确认!' });
   }
   downloadMedia(appid, serverIds, (err, serverIds, images) => {
-    if(err) return res.render("m/bbs/commentItem");
+    if(err) res.status(200).send({ result: 'fail', message: '保存图片时发生错误!' });
     req.body.serverIds = serverIds;
     req.body.images = images;
     console.log(" ************* topic body will be saved: ", images, req.body);
@@ -169,8 +169,8 @@ exports.newCommentSave = function (req, res) {
       comment.save((err, c) => {
         if(err) console.error(err);
         Topic.incsCountField(topicid, 'commentCount', (err, result) => {
-          res.render("m/bbs/commentItem", { comment: c });
-        })
+          res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
+        });
         // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
       });
     });
@@ -189,7 +189,7 @@ exports.fans = function (req, res) {
 
 exports.fansHome = function (req, res) {
   var fansId = req.params.fansId || req.query.fansId;
-  res.render('m/bbs/fans/fansHome', { fansId: fansId ? fansId : ''});
+  res.render('m/bbs/fans/fansHome', { fansId: fansId ? fansId : '' });
 };
 
 exports.fansTopics = function (req, res) {

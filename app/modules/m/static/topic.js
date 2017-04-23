@@ -35,10 +35,10 @@ $(document).ready(function () {
       if(!formData.content || formData.content.length <= 0) return false;
       formData["serverIds"] = serverIds;
     },
-    onResult: function (html) {
-      console.log(html);
-      $("#comments").append(html);
-      //- window.location.href="#{contextFront}/topic/comment/view/#{topicid}"
+    onSuccess: function (html) {
+      // $("#comments").append(html);
+      $("#newComment").hide();
+      $("#newComment").find("textarea").val('');
     },
     onError: function (status) {
       console.log(status);
