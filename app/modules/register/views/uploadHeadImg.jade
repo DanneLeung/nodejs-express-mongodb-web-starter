@@ -26,7 +26,7 @@ block script
       var prefix = "";
 
       //微信认证
-      function is_weixn() {
+      function is_weixin() {
         var ua = navigator.userAgent.toLowerCase();
         //S.alert(ua);
         if (ua.match(/micromessenger/i) == "micromessenger") {
@@ -161,7 +161,7 @@ block script
         });
       }
 
-      if (is_weixn()) {
+      if (is_weixin()) {
         prefix = "/q";
         oauthUser();
         config();

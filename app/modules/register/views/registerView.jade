@@ -165,7 +165,7 @@ block script
         });
       }
 
-      function is_weixn() {
+      function is_weixin() {
         var ua = navigator.userAgent.toLowerCase();
         //S.alert(ua);
         if (ua.match(/micromessenger/i) == "micromessenger") {
@@ -176,7 +176,7 @@ block script
       }
 
       var prefix = "";
-      if (is_weixn()) {
+      if (is_weixin()) {
         prefix = "";
         config();
       }

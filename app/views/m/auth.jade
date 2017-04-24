@@ -10,7 +10,7 @@ block main
 block scripts
   script(type='text/javascript', src='#{themeRoot}/dist/js/browser.js?v=#{version}')
   script.
-    if(is_weixn()){
+    if(is_weixin()){
       W.oauthUser(appid, function (user) {
         if(user){
           $.get(contextFront + "/session",{openid: user.openid}, function(data){

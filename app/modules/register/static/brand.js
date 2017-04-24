@@ -2,7 +2,7 @@
  * Created by danne on 2016-05-06.
  */
 $(function () {
-  if (is_weixn()) {
+  if (is_weixin()) {
     W.oauthUser(authAppid, function (user) {
       W.configWx(authAppid);
       var openid = user.openid;
