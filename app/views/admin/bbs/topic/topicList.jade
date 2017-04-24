@@ -9,17 +9,18 @@ block main
     input#ids(type='hidden',name='ids')
     input#_csrf(type='hidden', name='_csrf', value=_csrf)
   .box
-    //- .box-header
-      .box-tools
+    .box-header.with-border
+      h4.box-title 帖子列表
+      .box-tools.pull-right
+        a.btn.btn-success.btn-sm(href="#{baseUrl}/topic/add", title="发布新帖子")
+          i.fa.fa-fw.fa-plus
+          | 发布新帖子
+      //- h4 帖子列表
+      //- .box-tools
         a.btn.btn-sm.btn-success(href="#{baseUrl}/topic/add" title="发布新帖子")
           i.fa.fa-fw.fa-plus
           | 发布新帖子
     .box-body
-      .pull-right
-        a.btn.btn-success(href="#{baseUrl}/topic/add", title="发布新帖子")
-          i.fa.fa-fw.fa-plus
-          | 发布新帖子
-      h4 帖子列表
       each topic in topics
         .post
           .user-block.clearfix
@@ -62,7 +63,9 @@ block main
               .col-sm-10
                 input.form-control.input-sm(name="content", placeholder='输入文字快速回复帖子 ～～～')
               .col-sm-2
-                button.btn.btn-danger.pull-right.btn-sm(type='submit') 回复
+                button.btn.btn-danger.pull-right.btn-sm(type='submit') 
+                  i.fa.fa-fw.fa-reply
+                  | 回复
 //应用添加的脚本在scripts block中定义
 block scripts
   script.

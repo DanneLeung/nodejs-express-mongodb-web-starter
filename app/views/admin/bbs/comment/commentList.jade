@@ -1,0 +1,154 @@
+//
+   Created by danne on 2015/10/24.
+extends ../layout
+block header
+  link(href="#{theme}/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+//应用的page title
+block pageTitle
+  h1 评论管理
+    small 管理论坛帖子的评论信息，包括可以删除，屏蔽等操作
+block main
+  .box
+    .box-header.with-border
+      h3.box-title 评论信息
+      .box-tools
+          a.btn.btn-sm.btn-default(href="#{baseUrl}/comment/del" title="删除帖子")
+            i.fa.fa-fw.fa-trash
+            | 删除评论
+          a.btn.btn-sm.btn-default(href="#{baseUrl}/comment/block" title="屏蔽帖子")
+            i.fa.fa-fw.fa-ban
+            | 屏蔽评论
+    .box-body
+      #tableWrapper(style="display:none;")
+        table#commentList.table.table-bordered.table-hover.table-striped
+          thead
+            th
+              input#selectAll(type="checkbox" title="全选")
+            th 帖子
+            th 评论者
+            th 评论
+            th 时间
+            th 热门
+            th 屏蔽
+            th.text-center() 操作
+          tbody
+
+      form#delForm(method='post', style='display:none', action='#{baseUrl}/comment/del')
+        input#ids(type='hidden',name='ids')
+        input#_csrf1(type='hidden', name='_csrf', value=_csrf)
+
+
+//应用添加的脚本在scripts block中定义
+block scripts
+  script.
+    $(function () {
+      var opts = {
+        "language": {
+          "url": "#{theme}/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        serverSide: true,
+        select: false,
+        deferRender: true
+      };
+      var t = $('#commentList').DataTable($.extend(opts, {
+          ajax: {url: '#{baseUrl}/comment/datatable'},
+          order: [[2, 'asc']],
+          columns: [
+            {
+              data: "_id", 'class': 'text-center', sortable: false, render: function (data, type, row) {
+              return '<input type="checkbox" class="" name="Ids" value="' + data + '">';
+            }
+            },
+            {data: "topic.content", defaultContent: '',
+              render: function(data, type, row, meta){
+                return data && data.length > 50 ? data.substring(0, 50) : data;
+              }
+            },
+            {data: "fans.nickname", defaultContent: ''},
+            {data: "content", defaultContent: '',
+              render: function(data, type, row, meta){
+                return data && data.length > 50 ? data.substring(0, 50) : data;
+              }
+            },
+            {data: "createdAt", defaultContent: '',
+              render: function(data, type, row, meta){
+                return moment(data).format('YYYY-MM-DD HH:mm');
+              }
+            },
+            {
+              data: "hot", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+                var result = "";
+                if (data) {
+                  result = "<a class='btn btn-default btn-sm' title='取消热帖' href='#{baseUrl}/comment/hot/" + full._id + "'><i class='fa fa-square'/></a>"
+                } else {
+                  result = "<a class='btn btn-default btn-sm' title='设置热贴' href='#{baseUrl}/comment/hot/" + full._id + "'><i class='fa fa-square-o'/></a>"
+                }
+                return result;
+              }
+            },
+            {
+              data: "blocked", defaultContent: '', 'class': 'text-center', render: function (data, type, full, meta) {
+                var result = "";
+                if (data) {
+                  result = "<a class='btn btn-default btn-sm' title='屏蔽/取消' href='#{baseUrl}/comment/block/" + full._id + "'><i class='fa fa-square'/></a>"
+                } else {
+                  result = "<a class='btn btn-default btn-sm' title='屏蔽/取消' href='#{baseUrl}/comment/block/" + full._id + "'><i class='fa fa-square-o'/></a>"
+                }
+                return result;
+              }
+            },
+            {data: "",
+              render: function(data, type, row, meta){
+                var id = row._id;
+                var html = "<div class='btn-group'>";
+                html += " <button class='btn btn-default btn-sm del' title='移除' type='button'><i class='fa fa-trash-o'></i></button>";
+                html += "</div>";
+                return html;
+              }
+            }
+          ]
+      }));
+
+
+      t.on('click', 'button.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#delForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#delForm").submit();
+            }
+          });
+        }
+      });
+      //删除多行数据
+      $(".btn.delAll", ".box-tools").on(
+        "click",
+        function (e) {
+          var ids = [];
+          $('#commentList').find(":checkbox[name='Ids']:checked").each(function (e) {
+            ids.push($(this).val())
+          });
+          $("#delForm #ids").val(ids.join(","));
+          if (ids.length > 0) {
+            bootbox.confirm("确定要删除选中的数据吗?", function (result) {
+              if (result) {
+                $("#delForm").submit();
+              }
+            });
+          } else {
+            bootbox.alert("请选择要删除的数据.");
+          }
+        });
+
+      $('#search').on("click", function (e) {
+        var data = $('#searchForm').serialize();
+        var TT = $('#commentList').DataTable();
+        TT.ajax.url('#{baseUrl}/comment/datatable?' + data + '').load();
+      });
+
+    });

@@ -11,6 +11,7 @@ var Auth = require(config.root + '/middleware/authorization');
 
 var nodeCtrl = require('./node.controller');
 var topicCtrl = require('./topic.controller');
+var commentCtrl = require('./comment.controller');
 
 var multer = require('multer');
 var upload = multer({
@@ -42,6 +43,15 @@ router
   .get("/topic/edit/:id", topicCtrl.nodes, topicCtrl.edit)
   .get("/topic/add", topicCtrl.nodes, topicCtrl.add)
   .get("/topic/top/:id", topicCtrl.top)
+  .get("/topic/block/:id", topicCtrl.block)
+  .get("/topic/hot/:id", topicCtrl.hot)
   .get("/topic/enable/:id", topicCtrl.enable);
+
+router.get("/comment", commentCtrl.list)
+  .all("/comment/datatable", commentCtrl.datatable)
+  .post("/comment/del", commentCtrl.del)
+  .get("/comment/view/:id", commentCtrl.view)
+  .get("/comment/block/:id", commentCtrl.block)
+  .get("/comment/hot/:id", commentCtrl.hot);
 
 module.exports = router;

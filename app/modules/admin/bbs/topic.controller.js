@@ -182,3 +182,37 @@ exports.top = function (req, res) {
     res.redirect('/admin/bbs/topic');
   });
 };
+/**
+ * 帖子屏蔽
+ * @param req
+ * @param res
+ */
+exports.block = function (req, res) {
+  var id = req.params.id;
+  Topic.toggleBoolField(id, 'blocked', (err, topic) => {
+    if(err) console.error(err);
+    if(err || !topic) {
+      req.flash('error', '数据更新时发生错误，请确认后重试!');
+    } else {
+      req.flash('success', (topic.blocked ? '屏蔽' : '取消屏蔽') + '操作成功!');
+    }
+    res.redirect('/admin/bbs/topic');
+  });
+};
+/**
+ * 设置为热门帖子
+ * @param req
+ * @param res
+ */
+exports.hot = function (req, res) {
+  var id = req.params.id;
+  Topic.toggleBoolField(id, 'hot', (err, topic) => {
+    if(err) console.error(err);
+    if(err || !topic) {
+      req.flash('error', '数据更新时发生错误，请确认后重试!');
+    } else {
+      req.flash('success', topic.hot ? '设置热帖' : '取消热帖' + '操作成功!');
+    }
+    res.redirect('/admin/bbs/topic');
+  });
+};
