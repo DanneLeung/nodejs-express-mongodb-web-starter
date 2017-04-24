@@ -24,7 +24,7 @@ exports.nodes = function (req, res, next) {
 };
 
 exports.auth = function (req, res) {
-  res.render('m/index');
+  res.render('m/auth');
 };
 
 exports.requiredSession = function (req, res, next) {

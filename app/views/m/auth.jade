@@ -1,0 +1,35 @@
+extends layouts/default
+block header
+  style.
+
+block main
+  .box 
+    p.text-info.text-center 
+      span.loading.loading-light
+      | 微信页面授权用户认证，需要从微信中访问
+block scripts
+  script.
+    if(is_weixn()){
+      W.oauthUser(appid, function (user) {
+        if(user){
+          $.get(contextFront + "/session",{openid: user.openid}, function(data){
+            if(data == "ok"){
+              window.location.href = contextFront;
+            } else{
+              $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+            }
+          });
+        }else{
+          $.messager.show('微信公众号页面授权错误，无法获得粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+        }
+      });
+    }else{
+      $.get(contextFront + "/session",{openid: "oxVEQuN3xDA1r8aBD_hh-xMQeir4"}, function(data){
+        if(data == "ok"){
+          window.location.href = contextFront;
+        } else{
+          $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+        }
+      });
+    }
+
