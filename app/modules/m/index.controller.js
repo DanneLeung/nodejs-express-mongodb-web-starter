@@ -23,14 +23,15 @@ exports.nodes = function (req, res, next) {
 
 };
 
-exports.index = function (req, res) {
+exports.auth = function (req, res) {
   res.render('m/index');
 };
 
 exports.requiredSession = function (req, res, next) {
   // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", req.session.user);
   if(!req.user && !req.session.user) {
-    return res.redirect(req.session.contextFront);
+    //需要去认证授权
+    return res.redirect(req.session.contextFront + '/auth');
   }
   res.locals.user = req.user = req.session.user;
   return next();
@@ -116,7 +117,6 @@ exports.newTopicSave = function (req, res) {
       topic.save((err, t) => {
         if(err) console.error(err);
         return res.status(200).json(t);
-        // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
       });
     });
   });
@@ -171,7 +171,6 @@ exports.newCommentSave = function (req, res) {
         Topic.incsCountField(topicid, 'commentCount', (err, result) => {
           res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
         });
-        // res.redirect(req.absBaseUrl + '/home', { node: node ? node : '' });
       });
     });
   });

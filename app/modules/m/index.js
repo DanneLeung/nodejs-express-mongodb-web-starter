@@ -9,13 +9,13 @@ var upload = multer({ 'dest': config.file.local + '/upload/tmp/' });
 var ctrl = require('./index.controller');
 
 router
+  .get(['/auth'], ctrl.auth)
   .use(ctrl.nodes)
-  .get(['/', ''], ctrl.index)
   .all(['/session'], ctrl.session)
-  .use(ctrl.requiredSession)
-  .get(['/home', '/home/:node'], ctrl.home)
-  .get(['/topic/view/:id'], ctrl.view)
   .get(['/topic/like/:id'], ctrl.like)
+  .use(ctrl.requiredSession)
+  .get(['/', '','/home', '/home/:node'], ctrl.home)
+  .get(['/topic/view/:id'], ctrl.view)
   .get(['/topic/new', '/topic/new/:node'], ctrl.nodes, ctrl.newTopic)
   .post(['/topic/new'], upload.none(), ctrl.newTopicSave)
   .get(['/topic/comments/:topicid'], ctrl.comments)

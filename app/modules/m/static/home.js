@@ -29,12 +29,13 @@ $(document).ready(function () {
       window.location.href = contextFront + "/topic/view/" + id;
     }
   });
-  $("body").on("click", ".btnLike", function () {
+  $("body").on("click", ".btnLike", function (e) {
+    e.preventDefault();
     var id = $(this).data("id");
     var that = $(this);
+    console.log(" >>>>>>>>>>>>>>>>>>>> btn like id ", id);
     if(id) {
-      $.get('#{contextFront}/topic/like/' + id, function (data) {
-        console.log(">>>>>>>> ", data);
+      $.get(contextFront + '/topic/like/' + id, function (data) {
         if(data && !data.error && data.msg) {
           var count = 1;
           var c = $(that).find("#likeCount").text();

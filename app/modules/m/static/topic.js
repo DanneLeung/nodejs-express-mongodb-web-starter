@@ -43,7 +43,6 @@ $(document).ready(function () {
     },
     onError: function (status) {
       console.log(status);
-      //- window.location.href="/home/#{topicid}"
     }
   });
 
