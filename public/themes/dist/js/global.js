@@ -126,16 +126,6 @@ function _getCityId() {
   }
 }
 
-function is_weixn() {
-  var ua = navigator.userAgent.toLowerCase();
-  //S.alert(ua);
-  if(ua.match(/micromessenger/i) == "micromessenger") {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 var getStrSize = function (str) {
   var realLength = 0,
     len = str.length,

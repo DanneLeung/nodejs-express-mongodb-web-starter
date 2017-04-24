@@ -11,7 +11,7 @@ block headNav
     nav.nav
       a(href='user')
         .avatar.circle
-          img#headimgurl(src="#{user.headimgurl ? user.headimgurl : baseUrl + '/imgs/headimg_default.jpg'}", alt='U')
+          img#headimgurl(src="#{user && user.headimgurl ? user.headimgurl : baseUrl + '/imgs/headimg_default.jpg'}", alt='U')
 
 block content
   //- .heading
