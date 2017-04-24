@@ -8,6 +8,7 @@ block main
       span.loading.loading-light
       | 微信页面授权用户认证，需要从微信中访问
 block scripts
+  script(type='text/javascript', src='#{themeRoot}/dist/js/browser.js?v=#{version}')
   script.
     if(is_weixn()){
       W.oauthUser(appid, function (user) {
