@@ -14,10 +14,10 @@ each topic in topics
         .subtitle.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
     .topic(data-id="#{topic._id}")
-      .no-margin 
-        if topic.node && !node
-          span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
-        | !{topic.content.replace(/\r\n/gm,'<br>')}
+      //- .no-margin 
+      if topic.node && !node
+        span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
+      | !{topic.content.replace(/\r\n/gm,'<br>')}
       if(topic.images && topic.images.length)
         .row.imgs.gutter-smser
           each img in topic.images
