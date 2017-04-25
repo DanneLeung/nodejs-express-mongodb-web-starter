@@ -212,7 +212,10 @@ exports.validatePwd = function (req, res) {
 };
 
 exports.index = function (req, res) {
-  if(req.isMobile) res.redirect('/m');
+  if(req.isMobile)
+    res.redirect('/m');
   else
-    res.render('index')
+    res.redirect('/admin');
+
+  // res.render('index')
 };
