@@ -53,7 +53,6 @@ block scripts
     $(document).ready(function(){
       var user = W.getUser(appid);
       if(user){
-        console.log(JSON.stringify(user));
         $('h4#nickname').html(user.nickname ? user.nickname : '未知用户');
         $('#headimgurl').attr('src', user.headimgurl ? user.headimgurl : '#{baseUrl}/imgs/headimg_default.jpg');
       }
