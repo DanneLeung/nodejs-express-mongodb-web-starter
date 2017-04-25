@@ -23,7 +23,7 @@ var _ = require('lodash');
 module.exports = function (app, express, passport) {
   // settings
   app.set('env', env);
-  app.set('port', app.config.server.port || 3000);
+  app.set('port', app.config.server.port);
   app.set('views', path.join(__dirname, '/../' + '/views'));
   app.set('view engine', 'jade');
   app.enable('trust proxy');
