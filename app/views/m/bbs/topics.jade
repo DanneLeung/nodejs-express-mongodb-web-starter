@@ -11,13 +11,13 @@ each topic in topics
           if topic.hot
             span.label.red.rounded(style='margin-right: 0.25rem') 
               i.icon-sun
-        .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+        .subtitle.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
     .topic(data-id="#{topic._id}")
       .space-sm 
-        if topic.node
+        if topic.node && !node
           span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
-        | #{topic.content}
+        | !{topic.content.replace(/\r\n/gm,'<br>')}
       if(topic.images && topic.images.length)
         .row.imgs.gutter-smser
           each img in topic.images
@@ -27,11 +27,11 @@ each topic in topics
                   .img(style="background-image:url('#{contextRoot}#{img}');")
     .muted.clearfix.space-sm
       .nav.justified
-        a.btnDonate.btn(href="javascript:;", data-id="#{topic._id}" )
+        //- a.btnDonate.btn(href="javascript:;", data-id="#{topic._id}" )
           i.icon-yen &nbsp;
           small.muted  赏 
             span#likeCount #{topic.donated?topic.donated : 0}
-        a.btnShare.btn(href="javascript:;", data-id="#{topic._id}" )
+        //- a.btnShare.btn(href="javascript:;", data-id="#{topic._id}" )
           i.icon-share-alt &nbsp;
           small.muted  转 
             span#likeCount #{topic.likeCount?topic.likeCount : 0}

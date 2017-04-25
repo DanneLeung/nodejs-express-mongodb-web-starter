@@ -50,7 +50,7 @@ gulp.task('nodemon-app', function () {
       "/**/views/**"
     ],
     env: {
-      "NODE_ENV": "production",
+      "NODE_ENV": "development",
     }
   });
 });

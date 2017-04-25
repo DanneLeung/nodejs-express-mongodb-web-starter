@@ -11,7 +11,7 @@
       //- .muted.small #{formatDatetime(comment.createdAt)}
     .btn-reply.state 
 
-      |#{comment.content}
+      |!{comment.content.replace(/\r\n/gm,'<br>')}
     .row.imgs.gutter-sm
       if comment.images && comment.images.length
         each img in comment.images

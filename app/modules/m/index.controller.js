@@ -56,7 +56,7 @@ exports.topics = function (req, res) {
   var offset = parseInt(req.params.offset || req.query.offset || 0);
   var limit = parseInt(req.params.limit || req.query.limit || 10);
   Topic.topicsWithNode(node, offset, limit, (topics) => {
-    res.render('m/bbs/topics', { topics: topics });
+    res.render('m/bbs/topics', { topics: topics, node: node });
   });
 };
 
@@ -82,6 +82,8 @@ exports.view = function (req, res) {
 
 exports.newTopic = function (req, res) {
   var node = req.params.node || req.query.node;
+  var nodes = res.locals.nodes;
+  if(!node && nodes && nodes.length) { node = nodes[0]._id }
   res.render('m/bbs/form', { node: node ? node : '' });
 };
 

@@ -25,7 +25,7 @@ block content
             a.btn(href='home/#{node}') 取消
             button.btn.primary.outline(type='submit') 发表
       .divider
-      nav.nav
+      nav#nodes.nav
         each n in nodes
           a.nodeid(href='javascript:;', class='#{node && node == n._id ? "active":""}', data-id="#{n._id}")=n.title
       //- .heading

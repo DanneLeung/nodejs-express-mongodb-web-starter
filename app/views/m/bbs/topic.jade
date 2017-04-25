@@ -16,16 +16,17 @@ block content
         .content
           a.title(href="fans/#{topic.fans?topic.fans._id:''}") 
             span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
-            span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
+            //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
             if topic.hot
               span.label.red.rounded(style='margin-right: 0.25rem') 
                 i.icon-sun
-          .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+          .subtitle.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
       .topic 
         if topic.node
           span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
-        | #{topic.content}
+        br
+        | !{topic.content.replace(/\r\n/gm,'<br>')}
         if(topic.images && topic.images.length>0)
           each img in topic.images
             if img

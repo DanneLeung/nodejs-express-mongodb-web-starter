@@ -11,7 +11,7 @@ each topic in topics
           if topic.hot
             span.label.red.rounded(style='margin-right: 0.25rem') 
               i.icon-sun
-        .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+        .subtitle.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
     .topic(data-id="#{topic._id}")
       .space-sm 
