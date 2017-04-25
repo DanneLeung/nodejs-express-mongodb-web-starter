@@ -17,6 +17,7 @@ each topic in topics
       //- .no-margin 
       if topic.node && !node
         span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
+        br
       | !{topic.content.replace(/\r\n/gm,'<br>')}
       if(topic.images && topic.images.length)
         .row.imgs.gutter-smser

@@ -7,17 +7,18 @@ each topic in topics
       .content
         a.title.block(href="fans/#{topic.fans?topic.fans._id:''}") 
           span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
-          span.label.primary.rounded(style='margin-right: 0.25rem') V #{topic.fans?topic.fans.level:1}
+          //- span.label.primary.rounded(style='margin-right: 0.25rem') V #{topic.fans?topic.fans.level:1}
           if topic.hot
             span.label.red.rounded(style='margin-right: 0.25rem') 
               i.icon-sun
         .subtitle.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
     .topic(data-id="#{topic._id}")
-      .space-sm 
-        if topic.node
-          span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
-        | #{topic.content}
+      //- .space-sm 
+      if topic.node
+        span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
+        br
+      | !{topic.content.replace(/\r\n/gm,'<br>')}
       if(topic.images && topic.images.length)
         .row.imgs.gutter-smser
           each img in topic.images
@@ -25,7 +26,7 @@ each topic in topics
               .cell-4
                 a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
                   .img(style="background-image:url('#{contextRoot}#{img}');")
-    .muted.clearfix.space-sm
+    //- .muted.clearfix.space-sm
       .nav.justified
         a.btnDonate.btn(href="javascript:;", data-id="#{topic._id}" )
           i.icon-yen &nbsp;

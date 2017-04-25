@@ -76,7 +76,7 @@ TopicSchema.statics = {
     });
   },
   topicsWithFans: function (fansId, offset, limit, done) {
-    Topic.find({ fans: fansId, blocked: false }).populate("fansId fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
+    Topic.find({ fans: fansId, blocked: false }).populate("node fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);
       done(topics);
     });

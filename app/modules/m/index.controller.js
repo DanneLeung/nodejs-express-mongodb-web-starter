@@ -11,6 +11,7 @@ var Wechat = mongoose.model('Wechat');
 var WechatFans = mongoose.model('WechatFans');
 var Node = mongoose.model('Node');
 var Topic = mongoose.model('Topic');
+var TopicLike = mongoose.model('TopicLike');
 var Comment = mongoose.model('Comment');
 
 const fieldMsg = { likeCount: '点赞', heartCount: '收藏' };
@@ -29,13 +30,15 @@ exports.auth = function (req, res) {
 
 exports.requiredSession = function (req, res, next) {
   // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", req.session.user);
-  if(!req.user && !req.session.user) {
+  if(!req.session.user) {
     //需要去认证授权
     return res.redirect(req.session.contextFront + '/auth');
   }
   res.locals.user = req.user = req.session.user;
+  // console.log("************** current user ", req.session.user);
   return next();
 }
+
 exports.session = function (req, res) {
   var openid = req.params.openid || req.query.openid || req.body.openid;
   WechatFans.findByOpenId(openid, (fans) => {
@@ -207,7 +210,18 @@ exports.user = function (req, res) {
 };
 
 exports.like = function (req, res) {
-  exports.increase(req, res, 'likeCount');
+  var id = req.params.id || req.query.id;
+  var fansId = req.session.user._id;
+  TopicLike.likeTopic(id, fansId, (err, msg) => {
+    var ok = { error: err, msg: msg };
+    // if(!success) {
+    //   ok.error = 1;
+    //   // ok.msg = '点赞处理不成功!';
+    //   return res.status(200).json(ok);
+    // }
+    // ok.msg = '点赞成功!';
+    return res.status(200).json(ok);
+  });
 };
 
 exports.increase = function (req, res, field) {
