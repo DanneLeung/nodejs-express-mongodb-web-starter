@@ -5,7 +5,7 @@
     div
       a.title(href="fans/#{comment.fans?comment.fans._id:''}") 
         span.nickname #{comment.fans?comment.fans.nickname:(comment.user?comment.user.username:'')}
-        span.label.primary.rounded(style='margin-right: 0.25rem') V. #{comment.fans?comment.fans.level:1}
+        //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{comment.fans?comment.fans.level:1}
       //- a.text-link.strong #{comment.fans?comment.fans.nickname:''}
       .subtitle.muted.no-margin  #{formatDatetime(comment.createdAt)}
       //- .muted.small #{formatDatetime(comment.createdAt)}
