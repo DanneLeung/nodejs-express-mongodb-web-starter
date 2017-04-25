@@ -8,53 +8,6 @@ var async = require('async');
 
 var User = mongoose.model('User');
 
-// login to system.
-/**
- * login session
- * @type {login}
- */
-exports.session = function (req, res) {
-  var redirectTo = req.session.returnTo ? req.session.returnTo : '/';
-  delete req.session.returnTo;
-  req.flash('success', '欢迎登录系统！');
-  res.redirect(redirectTo);
-};
-
-/**
- * login page
- * @param req
- * @param res
- */
-exports.login = function (req, res) {
-  res.render('login');
-};
-
-/**
- * Logout
- */
-
-exports.logout = function (req, res) {
-  req.session.channelId = null;
-  delete req.session.channel;
-  delete req.session.user;
-  req.logout();
-  res.redirect('/')
-};
-
-/**
- * @param req
- * @param res
- */
-exports.register = function (req, res) {
-  res.render('register', {
-    user: new Channel({
-      username: '',
-      email: '',
-      mobile: ''
-    })
-  });
-};
-
 exports.profile = function (req, res) {
   var username = req.params.username;
   User.findOne({
@@ -65,7 +18,6 @@ exports.profile = function (req, res) {
       req.flash('error', err);
     }
     res.render('admin/users/profile', {
-      title: user.name,
       user: user
     });
   });
@@ -86,12 +38,12 @@ exports.updateProfile = function (req, res) {
     }, req.body, function (err, result) {
       if(err) {
         res.send({
-          success: false,
+          err: true,
           msg: err
         });
       } else {
         res.send({
-          success: true,
+          err: false,
           msg: '保存个人资料成功'
         });
       }
@@ -104,7 +56,7 @@ exports.updateProfile = function (req, res) {
  * @param req
  * @param res
  */
-exports.editPassword = function (req, res) {
+exports.changePwd = function (req, res) {
   var id = req.body.id || req.user.id;
   var oldPwd = req.body.oldPwd;
   var newPwd = req.body.newPwd;
@@ -140,25 +92,6 @@ exports.editPassword = function (req, res) {
   }
 };
 
-exports.updatepref = function (req, res) {
-  var id = req.body.id || req.user.id;
-  var key = req.body.key || req.query.key;
-  var value = req.body.value || req.query.value;
-  User.setPreference(id, key, value, (user) => {
-    if(user) {
-      if(req.user) {
-        req.user.preferences[key] = value;
-      }
-      res.status(200).send({
-        err: ''
-      });
-    } else {
-      res.status(200).send({
-        err: ''
-      });
-    }
-  });
-};
 /**
  * 重置用户密码
  * @param req
@@ -209,13 +142,4 @@ exports.validatePwd = function (req, res) {
       res.send('true');
     }
   });
-};
-
-exports.index = function (req, res) {
-  if(req.isMobile)
-    res.redirect('/m');
-  else
-    res.redirect('/admin');
-
-  // res.render('index')
 };
