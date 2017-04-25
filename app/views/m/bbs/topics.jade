@@ -27,11 +27,11 @@ each topic in topics
                   .img(style="background-image:url('#{contextRoot}#{img}');")
     .muted.clearfix.space-sm
       .nav.justified
-        a.btnDonate.btn(href="javascript:;", data-id="#{topic._id}" )
+        //- a.btnDonate.btn(href="javascript:;", data-id="#{topic._id}" )
           i.icon-yen &nbsp;
           small.muted  赏 
             span#likeCount #{topic.donated?topic.donated : 0}
-        a.btnShare.btn(href="javascript:;", data-id="#{topic._id}" )
+        //- a.btnShare.btn(href="javascript:;", data-id="#{topic._id}" )
           i.icon-share-alt &nbsp;
           small.muted  转 
             span#likeCount #{topic.likeCount?topic.likeCount : 0}
