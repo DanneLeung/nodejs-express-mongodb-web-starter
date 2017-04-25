@@ -73,11 +73,11 @@ module.exports = function (app, express, passport) {
 
   //session store
   var opts = {
-    name: [pkg.name, 'portal', '.sid'].join(),
+    name: [pkg.name, app.config.app.name, '.sid'].join(),
     proxy: true,
     resave: true,
     saveUninitialized: true,
-    secret: pkg.name + 'portal',
+    secret: pkg.name + app.config.app.name,
     unset: 'destroy',
     cookie: {
       maxAge: 3600 * 1000
