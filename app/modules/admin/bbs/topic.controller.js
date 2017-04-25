@@ -6,10 +6,12 @@
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
 var config = require('../../../../config/config');
-var Node = mongoose.model('Node');
-var Topic = mongoose.model('Topic');
 var moment = require('moment');
 var async = require('async');
+
+var Node = mongoose.model('Node');
+var Topic = mongoose.model('Topic');
+var Comment = mongoose.model('Comment');
 
 exports.nodes = function (req, res, next) {
   Node.enabledNodes((nodes) => {
@@ -24,12 +26,12 @@ exports.nodes = function (req, res, next) {
  */
 exports.list = function (req, res) {
   var node = req.params.node || req.query.node;
-  var offset = req.params.offset || req.query.offset;
-  var limit = req.params.limit || req.query.limit;
+  var offset = parseInt(req.params.offset || req.query.offset);
+  var limit = parseInt(req.params.limit || req.query.limit);
   if(!offset) offset = 0;
   if(!limit) limit = 10;
   Topic.topicsWithNode(node, offset, limit, (topics) => {
-    res.render('admin/bbs/topic/topicList', { topics: topics });
+    res.render('admin/bbs/topic/topicList', { topics: topics, offset: offset, limit: limit });
   });
 };
 
@@ -214,5 +216,15 @@ exports.hot = function (req, res) {
       req.flash('success', topic.hot ? '设置热帖' : '取消热帖' + '操作成功!');
     }
     res.redirect('/admin/bbs/topic');
+  });
+};
+
+exports.comments = function (req, res) {
+  var topicid = req.params.topicid || req.query.topicid;
+  var offset = req.params.offset || req.query.offset;
+  var limit = req.params.limit || req.query.limit;
+  Comment.commentsByTopicId(topicid, offset, limit, (err, comments) => {
+    if(err) console.error(err);
+    res.render('admin/bbs/topic/comments', { offset: offset + limit, limit: limit, comments: comments ? comments : [] });
   });
 };

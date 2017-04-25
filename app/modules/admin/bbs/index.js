@@ -45,7 +45,9 @@ router
   .get("/topic/top/:id", topicCtrl.top)
   .get("/topic/block/:id", topicCtrl.block)
   .get("/topic/hot/:id", topicCtrl.hot)
-  .get("/topic/enable/:id", topicCtrl.enable);
+  .get("/topic/enable/:id", topicCtrl.enable)
+  .get(['/topic/comments/:topicid'], topicCtrl.comments)
+  ;
 
 router.get("/comment", commentCtrl.list)
   .all("/comment/datatable", commentCtrl.datatable)

@@ -1,0 +1,10 @@
+each comment in comments
+  .item
+    img(src='#{comment.fans?comment.fans.headimgurl:""}', alt='')
+    p.message
+      a.name(href='javascript:;')
+        small.text-muted.pull-right
+          i.fa.fa-clock-o
+          |  #{formatDatetime(comment.createdAt)}
+        | #{comment.fans?comment.fans.nickname:(comment.user?comment.user.username:'')}
+      | !{comment.content.replace(/\r\n/gm,'<br>')}
