@@ -1,0 +1,12 @@
+nav
+  ul.pager.no-margin
+    if(offset>0)
+      li.previous
+        a(href='#{baseUrl + "/topic?offset=" + (offset-limit)}')
+          span(aria-hidden='true') &larr; 上#{limit}条 
+    li
+      span 帖子数: #{total}
+    if(offset+limit<total)
+      li.next 
+        a(href='#{baseUrl}/topic?offset=#{offset+limit}')
+          span(aria-hidden='true') 下#{limit}条 &rarr;

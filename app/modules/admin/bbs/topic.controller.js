@@ -28,10 +28,24 @@ exports.list = function (req, res) {
   var node = req.params.node || req.query.node;
   var offset = parseInt(req.params.offset || req.query.offset);
   var limit = parseInt(req.params.limit || req.query.limit);
+  var date = req.query.date || req.body.date;
+  // date = date ? date : moment().format("YYYY-MM-DD");
+  var query = {
+    blocked: false,
+  };
+
+  if(node) query.node = node;
+
+  if(date) {
+    var d = moment(date, 'YYYY-MM-DD');
+    var start = d.startOf('day').toDate();
+    var end = d.endOf('day').toDate();
+    query.createdAt = { $gte: start, $lt: end };
+  }
   if(!offset) offset = 0;
   if(!limit) limit = 10;
-  Topic.topicsWithNodeWithTop(node, offset, limit, (topics) => {
-    res.render('admin/bbs/topic/topicList', { topics: topics, offset: offset, limit: limit });
+  Topic.topicsWithNodeWithTop(query, offset, limit, (total, topics) => {
+    res.render('admin/bbs/topic/topicList', { topics: topics, node: node, date: date, total: total, offset: offset, limit: limit });
   });
 };
 
