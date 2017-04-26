@@ -41,7 +41,7 @@ $(document).ready(function () {
           $(that).find("#likeCount").text(count);
           $.messager.show(data.msg, { type: 'success', placement: 'bottom-center' });
         } else {
-          $.messager.show(data.msg ? data.msg : '处理错误!', { type: 'error', placement: 'bottom-center' });
+          $.messager.show(data.msg ? data.msg : '处理错误!', { type: 'warning', placement: 'bottom-center' });
         }
       });
     }

@@ -214,6 +214,7 @@ exports.like = function (req, res) {
   var fansId = req.session.user._id;
   TopicLike.likeTopic(id, fansId, (err, msg) => {
     var ok = { error: err, msg: msg };
+    console.log("************** ", ok);
     // if(!success) {
     //   ok.error = 1;
     //   // ok.msg = '点赞处理不成功!';

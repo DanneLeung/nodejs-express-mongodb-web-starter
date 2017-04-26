@@ -26,9 +26,12 @@ TopicLikeSchema.statics = {
           if(err) console.error(err);
           if(like) {
             mongoose.model("Topic").incsCountField(topicId, "likeCount", (err, result) => {
+              console.log(" >>>>>>>>>>>>>> ", result);
               if(err) console.error(err);
-              if(result.nModified) return done(true);
-              return done(false, "点赞成功!");
+              if(result.nModified)
+                return done(false, "点赞成功!");
+              else
+                return done(true, "抱歉,好像发生了错误!");
             });
           } else {
             return done(true, "抱歉,好像发生了错误!");
