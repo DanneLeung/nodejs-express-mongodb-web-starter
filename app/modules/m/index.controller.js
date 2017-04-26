@@ -197,7 +197,7 @@ exports.fans = function (req, res) {
   // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans fansId", fansId);
   WechatFans.findById(fansId, (err, fans) => {
     if(err) console.error(err);
-    // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", fans);
+    console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", fans);
     res.locals.user = fans;
     res.render('m/user', { user: fans, me: fansId == req.session.user._id });
   });
