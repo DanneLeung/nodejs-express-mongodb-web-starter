@@ -3,8 +3,8 @@
     {
       "name": "bbs",
       "script": "app/app.js",
-      // "instances": 0,
-      "exec_mode": "fork",
+      "instances": 0,
+      "exec_mode": "cluster",
       "env": {
         "COMMON_VARIABLE": "true"
       },
