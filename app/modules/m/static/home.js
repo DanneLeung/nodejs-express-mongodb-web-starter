@@ -18,7 +18,6 @@ $(document).ready(function () {
       domNoData: '<div class="dropload-noData">没有更多了</div>'
     },
     loadUpFn: function (me) {
-      console.log(" >>>>>>>>>>>>>.. loadUpFn", offset);
       offset = 0;
       $.ajax({
         type: 'GET',
@@ -41,7 +40,6 @@ $(document).ready(function () {
       });
     },
     loadDownFn: function (me) {
-      console.log(" >>>>>>>>>>>>>.. loadDownFn", offset);
       $.ajax({
         type: 'GET',
         url: url,
@@ -52,7 +50,6 @@ $(document).ready(function () {
             // 无数据
             me.noData(true);
             end = true;
-            console.log(" $$$$$$$$$$$ no data");
             me.resetload();
             // 锁定
             me.lock("down");
@@ -67,7 +64,7 @@ $(document).ready(function () {
         }
       });
     },
-    threshold: 10
+    threshold: 0
   });
 
   $("body").on("click", ".topic, .item", function () {
