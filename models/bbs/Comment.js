@@ -24,9 +24,9 @@ CommentSchema.statics = {
     if(!offset) offset = 0
     else offset = parseInt(offset);
 
-    if(!limit) limit = 5
+    if(!limit) limit = 20
     else limit = parseInt(limit);
-    Comment.find({ topic: topicid }).populate("fans user").sort('createdAt').skip(offset).limit(limit).exec(done);
+    Comment.find({ topic: topicid }).populate("fans user").sort('-createdAt').skip(offset).limit(limit).exec(done);
   },
   toggleBoolField: function (id, field, done) {
     var updata = {};
@@ -48,7 +48,15 @@ CommentSchema.statics = {
       }
     });
   },
+  newComment(topicid, user, fans, content, done) {
+    var comment = new Comment({ topic: topicid, user: user, fans: fans, content: content });
+    comment.save((err, cm) => {
+      mongoose.model("Topic").incsCountField(topicid, "commentCount", (err, result) => {
+        return done(err, cm);
+      });
+    });
+  }
 }
 
-var Comment = mongoose.model('Comment', CommentSchema, 'comments')
+var Comment = mongoose.model('Comment', CommentSchema, 'comments');
 module.exports = Comment;

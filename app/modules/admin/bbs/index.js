@@ -47,7 +47,7 @@ router
   .get("/topic/hot/:id", topicCtrl.hot)
   .get("/topic/enable/:id", topicCtrl.enable)
   .get(['/topic/comments/:topicid'], topicCtrl.comments)
-  ;
+  .post(['/topic/comments/new', '/topic/comments/new/:topicid'], topicCtrl.newComment);
 
 router.get("/comment", commentCtrl.list)
   .all("/comment/datatable", commentCtrl.datatable)

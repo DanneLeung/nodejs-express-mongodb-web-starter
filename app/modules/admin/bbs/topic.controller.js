@@ -82,6 +82,22 @@ exports.add = function (req, res) {
 };
 
 /**
+ * 回复帖子
+ */
+exports.newComment = function (req, res) {
+  var topicid = req.body.topicid || req.params.topicid;
+  var user = req.user || req.session.user;
+  Comment.newComment(topicid, user, user ? user.fans : null, req.body.content, (err, comment) => {
+    if(err) {
+      console.error(err);
+      res.status(200).json({ err: 1, msg: "评论回复帖子不成功，发生错误!" });
+    } else {
+      res.status(200).json({ err: 0, msg: "评论回复帖子成功!", comment: comment });
+    }
+  });
+};
+
+/**
  * 是否激活帖子
  * @param req
  * @param res

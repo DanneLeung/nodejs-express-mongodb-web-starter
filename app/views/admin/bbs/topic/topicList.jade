@@ -67,12 +67,13 @@ block main
             .box
               .comment-box.box-body.chat
 
-            form.form-horizontal.commentForm
+            .form-horizontal.commentForm(action="#{baseUrl}/topic/comments/new/#{topic._id}")
+              input(type="hidden", name="topicid", vaule="#{topic._id}")
               .form-group.margin-bottom-none
                 .col-sm-10
                   input.form-control.input-sm(name="content", placeholder='输入文字快速回复帖子 ～～～')
                 .col-sm-2
-                  button.btn.btn-success.pull-right.btn-sm(type='submit') 
+                  button.btnComment.btn.btn-success.pull-right.btn-sm(type='button') 
                     i.fa.fa-fw.fa-reply
                     | 回复
       nav
@@ -87,12 +88,36 @@ block main
 block scripts
   script.
     $(document).ready(function () {
+      $('body').on("click",".btnComment", function(e){
+        var that = this;
+        var form = $(this).closest(".commentForm");
+        var url = $(form).attr("action");
+        var topicid = $(form).find("input[name='topicid']").val();
+        var content = $(form).find("input[name='content']").val();
+        var data = {topicid:topicid, content:content};
+        console.log(" >>>>>>>>>>>> data", data);
+        $.post(url,data, function(result){
+          console.log(" >>>>>>>>>>>> result", result);
+          if(result.err){
+            bootbox.alert(result.msg);
+          }else{
+            $(form).find("input[name='content']").val("").focus();
+            $(that).closest('.post').find("a.comment").trigger("click");
+            //- $(that).closest('.post').find(".comment-box").append(commentHtml(result.comment));
+            toastr.success(result.msg);
+          }
+        });
+      });
+      function commentHtml(comment){
+        var html = "";
+        return html;
+      }
       $('body').on("click","a.comment", function(e){
         var that = this;
         var topicid =$(this).data("id");
         if(topicid){
           $.get("#{baseUrl}/topic/comments/" + topicid, function(html){
-            $(that).closest('.post').find(".comment-box").append(html);
+            $(that).closest('.post').find(".comment-box").html(html);
           });
         }
       });
