@@ -1,5 +1,5 @@
 .item.with-avatar.multi-lines
-  a.avatar.circle(data-dark='true', data-skin='') 
+  a.avatar(href="#{comment.fans?'fans/' + comment.fans._id:'javascript:;'}") 
     img(src='#{comment.fans?comment.fans.headimgurl:"/img/avatar.png"}', alt='')
   .content
     div
