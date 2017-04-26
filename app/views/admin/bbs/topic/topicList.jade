@@ -31,7 +31,8 @@ block main
               span.username
                 a(href='#') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
               span.description  #{topic.createdAt ? moment(topic.createdAt).format("YYYY-MM-DD HH:mm:ss") : ""}
-            p !{topic.content.replace(/\r\n/gm,'<br>').substring(0,200)} #{topic.content.length>200?'... ...':''}
+            //- p !{topic.content.replace(/\r\n/gm,'<br>').substring(0,200)} #{topic.content.length>200?'... ...':''}
+            p !{topic.content.replace(/\r\n/gm,'<br>')}
             ul.list-inline.clearfix
               li.pull-right
                 a.link-black(href="#{baseUrl}/topic/edit/#{topic._id}")
