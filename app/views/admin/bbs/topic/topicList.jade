@@ -21,53 +21,78 @@ block main
           i.fa.fa-fw.fa-plus
           | 发布新帖子
     .box-body
-      each topic in topics
-        .post
-          .user-block.clearfix
-            img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:''}", alt='user image')
-            span.username
-              a(href='#') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
-            span.description  #{topic.createdAt ? moment(topic.createdAt).format("YYYY-MM-DD HH:mm:ss") : ""}
-          p=topic.content
-          ul.list-inline.clearfix
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/edit/#{topic._id}")
-                i.fa.fa-edit.margin-r-5
-                | 编辑
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/del/#{topic._id}")
-                i.fa.fa-times.margin-r-5
-                | 删除
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/block/#{topic._id}")
-                i.fa.fa-ban.margin-r-5
-                | 屏蔽
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/top/#{topic._id}")
-                i.fa.fa-arrow-up.margin-r-5
-                | 置顶
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/hot/#{topic._id}")
-                i.fa.fa-fire.margin-r-5
-                | 热帖
-            li.pull-right
-              a.link-black(href='#')
-                i.fa.fa-thumbs-o-up.margin-r-5
-                | 赞 (#{topic.likeCount ? topic.likeCount : 0})
-            li.pull-right
-              a.link-black(href='#')
-                i.fa.fa-comments-o.margin-r-5
-                | 评 (#{topic.commentCount ? topic.commentCount : 0})
-          form.form-horizontal.comment
-            .form-group.margin-bottom-none
-              .col-sm-10
-                input.form-control.input-sm(name="content", placeholder='输入文字快速回复帖子 ～～～')
-              .col-sm-2
-                button.btn.btn-danger.pull-right.btn-sm(type='submit') 
-                  i.fa.fa-fw.fa-reply
-                  | 回复
+      if(!topics || !topics.length)
+
+      else
+        each topic in topics
+          .post
+            .user-block.clearfix
+              img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:''}", alt='user image')
+              span.username
+                a(href='#') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
+              span.description  #{topic.createdAt ? moment(topic.createdAt).format("YYYY-MM-DD HH:mm:ss") : ""}
+            p !{topic.content.replace(/\r\n/gm,'<br>').substring(0,200)} #{topic.content.length>200?'... ...':''}
+            ul.list-inline.clearfix
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/edit/#{topic._id}")
+                  i.fa.fa-edit.margin-r-5
+                  | 编辑
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/del/#{topic._id}")
+                  i.fa.fa-times.margin-r-5
+                  | 删除
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/block/#{topic._id}")
+                  i.fa.fa-ban.margin-r-5
+                  | 屏蔽
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/top/#{topic._id}")
+                  i.fa.fa-arrow-up.margin-r-5
+                  | 置顶
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/hot/#{topic._id}")
+                  i.fa.fa-fire.margin-r-5
+                  | 热帖
+              li.pull-right
+                a.link-black(href='#')
+                  i.fa.fa-thumbs-o-up.margin-r-5
+                  | 赞 (#{topic.likeCount ? topic.likeCount : 0})
+              li.pull-right
+                a.comment(href='javascript:;',data-id="#{topic._id}")
+                  i.fa.fa-comments-o.margin-r-5
+                  | 评 (#{topic.commentCount ? topic.commentCount : 0})
+            
+            
+            .box
+              .comment-box.box-body.chat
+
+            form.form-horizontal.commentForm
+              .form-group.margin-bottom-none
+                .col-sm-10
+                  input.form-control.input-sm(name="content", placeholder='输入文字快速回复帖子 ～～～')
+                .col-sm-2
+                  button.btn.btn-success.pull-right.btn-sm(type='submit') 
+                    i.fa.fa-fw.fa-reply
+                    | 回复
+      nav
+        ul.pager
+          li.previous(class="#{offset<=0?'disabled':''}")
+            a(href='#{offset? baseUrl + "/topic?offset=" + (offset-limit) : "javascript:;"}')
+              span(aria-hidden='true') &larr; 上#{limit}条 
+          li.next(class="#{offset<=0?'disabled':''}")
+            a(href='#{baseUrl}/topic?offset=#{offset+limit}')
+              span(aria-hidden='true') 下#{limit}条 &rarr;
 //应用添加的脚本在scripts block中定义
 block scripts
   script.
     $(document).ready(function () {
+      $('body').on("click","a.comment", function(e){
+        var that = this;
+        var topicid =$(this).data("id");
+        if(topicid){
+          $.get("#{baseUrl}/topic/comments/" + topicid, function(html){
+            $(that).closest('.post').find(".comment-box").append(html);
+          });
+        }
+      });
     });

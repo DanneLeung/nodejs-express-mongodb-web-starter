@@ -24,7 +24,6 @@ $(document).ready(function () {
 
   $("body").on("click", ".topic, .item", function () {
     var id = $(this).data("id");
-    console.log(">>>>>>>> ", id);
     if(id) {
       window.location.href = contextFront + "/topic/view/" + id;
     }
@@ -33,7 +32,6 @@ $(document).ready(function () {
     e.preventDefault();
     var id = $(this).data("id");
     var that = $(this);
-    console.log(" >>>>>>>>>>>>>>>>>>>> btn like id ", id);
     if(id) {
       $.get(contextFront + '/topic/like/' + id, function (data) {
         if(data && !data.error && data.msg) {
