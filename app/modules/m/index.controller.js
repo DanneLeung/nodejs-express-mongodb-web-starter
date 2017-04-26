@@ -96,6 +96,9 @@ exports.newTopicSave = function (req, res) {
   var openid = req.body.openid || req.user.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
   console.log(" ************* topic body : ", req.body);
+  if(!req.body.title){
+    req.body.title = req.body.content?req.body.content.substring(0,20) + " ... ..." : "";
+  }
 
   if(!node) {
     delete req.body.node;
