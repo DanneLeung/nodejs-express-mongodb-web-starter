@@ -75,6 +75,16 @@ TopicSchema.statics = {
       done(topics);
     });
   },
+  topicsWithNodeWithTop: function (node, offset, limit, done) {
+    var q = {
+      blocked: false,
+    };
+    if(node) q.node = node;
+    Topic.find(q).populate("node fans user").sort("-top -createdAt").skip(offset).limit(limit).exec((err, topics) => {
+      if(err) console.error(err);
+      done(topics);
+    });
+  },
   topicsWithFans: function (fansId, offset, limit, done) {
     Topic.find({ fans: fansId, blocked: false }).populate("node fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);

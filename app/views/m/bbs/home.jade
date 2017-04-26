@@ -27,7 +27,7 @@ block content
         .item.with-avatar(data-id="#{topTopic._id}")
           .avatar.avatar-sm.circle.yellow 顶
           .content
-            | #{topTopic.content}
+            | !{topTopic.content.replace(/\r\n/gm,'<br>')}
   #wrapper  
     #topics
 

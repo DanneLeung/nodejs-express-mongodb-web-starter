@@ -15,6 +15,7 @@ let NodeSchema = new Schema({
   icon: { type: String, default: '' }, //图标URL
   topics: { type: Number, default: 0 },
   sort: { type: Number, default: 1 },
+  template: { type: String, default: '' }, //消息模板
   enabled: { type: Boolean, default: true } //可用
 }, { timestamps: {} });
 // NodeSchema.plugin(tree);

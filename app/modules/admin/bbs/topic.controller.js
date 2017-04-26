@@ -30,7 +30,7 @@ exports.list = function (req, res) {
   var limit = parseInt(req.params.limit || req.query.limit);
   if(!offset) offset = 0;
   if(!limit) limit = 10;
-  Topic.topicsWithNode(node, offset, limit, (topics) => {
+  Topic.topicsWithNodeWithTop(node, offset, limit, (topics) => {
     res.render('admin/bbs/topic/topicList', { topics: topics, offset: offset, limit: limit });
   });
 };
