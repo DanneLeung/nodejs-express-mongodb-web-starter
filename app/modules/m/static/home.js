@@ -1,26 +1,73 @@
 var offset = 0;
-var limit = 5;
+var limit = 10;
 var end = false; // end of all topics
 $(document).ready(function () {
-  $("#pagermore").on("click", function (e) {
-    e.preventDefault();
-    var url = $(this).attr("href");
-    var that = this;
-    //- if(offset > total) return false;
-    if(!end) {
-      $(that).addClass("loading loading-light");
-      $.get(url, { offset: offset, limit: limit }, function (data) {
-        $(that).removeClass("loading loading-light");
-        if(!data) {
-          $(that).html('没有更多了 ...');
-          end = true;
+  // dropload
+  $('#wrapper').dropload({
+    scrollArea: window,
+    domUp: {
+      domClass: 'dropload-up',
+      domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+      domUpdate: '<div class="dropload-update">↑释放更新</div>',
+      domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+    },
+    domDown: {
+      domClass: 'dropload-down',
+      domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+      domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+      domNoData: '<div class="dropload-noData">暂无数据</div>'
+    },
+    loadUpFn: function (me) {
+      console.log(" >>>>>>>>>>>>>.. loadUpFn", offset);
+      offset = 0;
+      $.ajax({
+        type: 'GET',
+        url: url,
+        data: { offset: offset, limit: limit },
+        dataType: 'html',
+        success: function (data) {
+          $('#topics').html(data);
+          // 每次数据加载完，必须重置
+          me.resetload();
+          // 重置页数，重新获取loadDownFn的数据
+          offset = 0;
+          // 解锁loadDownFn里锁定的情况
+          me.unlock();
+          me.noData(false);
+        },
+        error: function (xhr, type) {
+          me.resetload();
         }
-        offset += limit;
-        $('#topics').append(data);
-      }, 'html');
-    } else {}
+      });
+    },
+    loadDownFn: function (me) {
+      console.log(" >>>>>>>>>>>>>.. loadDownFn", offset);
+      $.ajax({
+        type: 'GET',
+        url: url,
+        data: { offset: offset, limit: limit },
+        dataType: 'html',
+        success: function (data) {
+          offset += limit;
+          if(!data) {
+            me.resetload();
+            // 锁定
+            me.lock();
+            // 无数据
+            me.noData();
+            end = true;
+          } else {
+            me.resetload();
+            $('#topics').append(data);
+          }
+        },
+        error: function (xhr, type) {
+          me.resetload();
+        }
+      });
+    },
+    threshold: 0
   });
-  $("#pagermore").trigger('click');
 
   $("body").on("click", ".topic, .item", function () {
     var id = $(this).data("id");
