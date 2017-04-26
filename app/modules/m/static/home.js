@@ -15,7 +15,7 @@ $(document).ready(function () {
       domClass: 'dropload-down',
       domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
       domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
-      domNoData: '<div class="dropload-noData">暂无数据</div>'
+      domNoData: '<div class="dropload-noData">没有更多了</div>'
     },
     loadUpFn: function (me) {
       console.log(" >>>>>>>>>>>>>.. loadUpFn", offset);
@@ -26,7 +26,6 @@ $(document).ready(function () {
         data: { offset: offset, limit: limit },
         dataType: 'html',
         success: function (data) {
-          $('#topics').html(data);
           // 每次数据加载完，必须重置
           me.resetload();
           // 重置页数，重新获取loadDownFn的数据
@@ -34,6 +33,7 @@ $(document).ready(function () {
           // 解锁loadDownFn里锁定的情况
           me.unlock();
           me.noData(false);
+          $('#topics').html(data);
         },
         error: function (xhr, type) {
           me.resetload();
@@ -48,15 +48,16 @@ $(document).ready(function () {
         data: { offset: offset, limit: limit },
         dataType: 'html',
         success: function (data) {
-          offset += limit;
           if(!data) {
+            // 无数据
+            me.noData(true);
+            end = true;
+            console.log(" $$$$$$$$$$$ no data");
             me.resetload();
             // 锁定
-            me.lock();
-            // 无数据
-            me.noData();
-            end = true;
+            me.lock("down");
           } else {
+            offset += limit;
             me.resetload();
             $('#topics').append(data);
           }
@@ -66,7 +67,7 @@ $(document).ready(function () {
         }
       });
     },
-    threshold: 0
+    threshold: 10
   });
 
   $("body").on("click", ".topic, .item", function () {
