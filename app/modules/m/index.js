@@ -12,6 +12,7 @@ router
   .get(['/auth'], ctrl.auth)
   .use(ctrl.nodes)
   .all(['/session'], ctrl.session)
+  .get(['/fans/:fansId'], ctrl.fans)
   .use(ctrl.requiredSession)
   .get(['/topic/like/:id'], ctrl.like)
   .get(['/', '', '/home', '/home/:node'], ctrl.home)
@@ -27,5 +28,5 @@ router
 router
   .get(['/fans/home/:fansId'], ctrl.fansHome)
   .get(['/fans/topics/:fansId'], ctrl.fansTopics)
-  .get(['/fans/:fansId'], ctrl.fans);
+  ;
 module.exports = router;
