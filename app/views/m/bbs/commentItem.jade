@@ -3,12 +3,11 @@
     img(src='#{comment.fans?comment.fans.headimgurl:"/img/avatar.png"}', alt='')
   .content
     div
-      //- a.title(href="fans/#{comment.fans?comment.fans._id:''}") 
-      a.title
-        span.nickname #{comment.fans?comment.fans.nickname:(comment.user?comment.user.username:'')}
+      a.title(href="#{comment.fans?'fans/' + comment.fans._id:'javascript:;'}") 
+        .nickname #{comment.fans?comment.fans.nickname:(comment.user?comment.user.username:'')}
         //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{comment.fans?comment.fans.level:1}
-      //- a.text-link.strong #{comment.fans?comment.fans.nickname:''}
-      .subtitle.muted.small.no-margin  #{formatDatetime(comment.createdAt)}
+        //- a.text-link.strong #{comment.fans?comment.fans.nickname:''}
+        .muted.small.no-margin  #{formatDatetime(comment.createdAt)}
       //- .muted.small #{formatDatetime(comment.createdAt)}
     .btn-reply 
       |!{comment.content.replace(/\r\n/gm,'<br>')}

@@ -6,12 +6,12 @@ each topic in topics
           img(src='#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl : ""}', alt='#{topic.fans?topic.fans.nickname:""}')
       .content
         a.title.block(href="fans/#{topic.fans?topic.fans._id:''}") 
-          span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
+          .nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
           //- span.label.primary.rounded(style='margin-right: 0.25rem') V #{topic.fans?topic.fans.level:1}
           if topic.hot
             span.label.red.rounded(style='margin-right: 0.25rem') 
               i.icon-sun
-        .subtitle.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+          .subtitle.muted.small.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
     .topic(data-id="#{topic._id}")
       //- .no-margin 
       if topic.node && !node
