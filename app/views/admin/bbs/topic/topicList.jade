@@ -33,10 +33,11 @@ block main
                 option(value="#{n._id}") #{n.title}
         .form-group
           label.control-label 日期：
-          .input-group.date
-            input#date.form-control(name='date', value="#{date?date:''}")
+          .input-group
+            input#dateStart.date.form-control(name='dateStart', value="#{dateStart?dateStart:''}")
             .input-group-addon
-              span.fa.fa-calendar
+              span - 
+            input#dateEnd.date.form-control(name='dateEnd', value="#{dateEnd?dateEnd:''}")
         .form-group
           button.btn.btn-default(type="submit") 
             i.fa.fa-fw.fa-search
@@ -50,7 +51,7 @@ block main
         each topic in topics
           .post
             .user-block.clearfix
-              img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:''}", alt='user image')
+              img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:'/img/avatar.png'}", alt='user image')
               span.username
                 a(href='#') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
                 .pull-right
@@ -121,11 +122,11 @@ block scripts
   script(src='//cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js')
   script.
     $(document).ready(function () {
-      $('#date').datepicker({
+      $('.date').datepicker({
         format: "yyyy-mm-dd",
         //- language: 'cn',
         weekStart: 1,
-        autoclose: false,
+        autoclose: true,
         todayBtn: 'linked'
       });
       $('body').on("click",".btnComment", function(e){
