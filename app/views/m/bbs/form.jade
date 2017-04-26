@@ -17,10 +17,10 @@ block content
         //- .control
           input#title.input(name="title", style="width:100%", maxlength="50", type="text" placeholder="请输入文字给帖子一个醒目标题~~~")
         .control
-          textarea#content.textarea(name="content", rows="8", placeholder="请输入帖子详细内容~~~")
+          textarea#content.textarea(name="content", rows="10", placeholder="请输入帖子详细内容~~~")
         .clearfix
           .control.space-sm.pull-left
-            button#selectImg.btn(type="button")
+            button#selectImg.btn.outline(type="button")
               i.icon-picture
             //- button.btn(type="button")
               i.icon-smile
@@ -29,6 +29,7 @@ block content
             a.btn(href='home/#{node}') 取消
       .divider
       nav#nodes.nav
+        span.has-padding.text-tint 选择版块：
         each n in nodes
           a.nodeid(href='javascript:;', class='#{node && node == n._id ? "active":""}', data-id="#{n._id}")=n.title
       //- .heading
