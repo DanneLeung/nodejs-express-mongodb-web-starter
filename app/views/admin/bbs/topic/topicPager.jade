@@ -1,9 +1,10 @@
 nav.clearfix
   - var url = baseUrl + "/topic?node="+ (node?node:"") + "&dateStart=" + (dateStart?dateStart:"") +"&dateEnd=" + (dateEnd?dateEnd:"")
   - var pages = Math.ceil(total /limit);
-  - var page = 0
+  - var currentPage = offset/limit;
+  - var step = 5
   span.pad.pull-left
-    | 总共 #{total} 个帖子，分 #{pages} 页，当前显示第 #{offset/limit+1} 页，#{offset+1} - #{offset+limit} 条数据
+    | 总共 #{total} 个帖子，分 #{pages} 页，当前显示第 #{currentPage+1} 页，#{offset+1} - #{offset+limit} 条数据
   //- ul.pager.no-margin
   //-   if(offset>0)
   //-     li.previous
@@ -19,7 +20,8 @@ nav.clearfix
     li.previous(class="#{offset<=0?'disabled':''}")
       a(href='#{(offset>0)? (url+"&offset=" + (offset-limit)) :"javascript:;"}' )
         span(aria-hidden='true') 上一页
-    while page < pages
+    - var page = 0
+    while page < pages && page > currentPage - step && page <currentPage + step
       li(class="#{offset == page*limit?'active':''}")
         a(href='#{url+"&offset=" + ((page)*limit)}')
           span=++page
