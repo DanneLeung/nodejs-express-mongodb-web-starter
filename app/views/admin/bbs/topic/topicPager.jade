@@ -1,12 +1,13 @@
 nav.clearfix
+  - var url = baseUrl + "/topic?node="+ (node?node:"") + "&dateStart=" + (dateStart?dateStart:"") +"&dateEnd=" + (dateEnd?dateEnd:"")
   - var pages = Math.ceil(total /limit);
   - var page = 0
   span.pad.pull-left
-    | 总#{total}个帖子共#{pages}页，当前显示第#{offset/limit+1}页
+    | 总共 #{total} 个帖子，分 #{pages} 页，当前显示第 #{offset/limit+1} 页，#{offset+1} - #{offset+limit} 条数据
   //- ul.pager.no-margin
   //-   if(offset>0)
   //-     li.previous
-  //-       a(href='#{baseUrl + "/topic?offset=" + (offset-limit)}')
+  //-       a(href='#{url+"&offset=" + (offset-limit)}')
   //-         span(aria-hidden='true') &larr; 上#{limit}条 
   //-   li
   //-     span 帖子数: #{total}
@@ -16,12 +17,12 @@ nav.clearfix
   //-         span(aria-hidden='true') 下#{limit}条 &rarr;
   ul.pagination.no-margin.pull-right
     li.previous(class="#{offset<=0?'disabled':''}")
-      a(href='#{(offset>0)? (baseUrl + "/topic?offset=" + (offset-limit)) :"javascript:;"}' )
+      a(href='#{(offset>0)? (url+"&offset=" + (offset-limit)) :"javascript:;"}' )
         span(aria-hidden='true') 上一页
     while page < pages
       li(class="#{offset == page*limit?'active':''}")
-        a(href='#{baseUrl + "/topic?offset=" + ((page)*limit)}')
+        a(href='#{url+"&offset=" + ((page)*limit)}')
           span=++page
     li.next(class="#{offset+limit>= total?'disabled':''}")
-      a(href='#{(offset+limit< total)? (baseUrl + "/topic?offset=" + (offset+limit)) :"javascript:;"}')
+      a(href='#{(offset+limit< total)? (url+"&offset=" + (offset+limit)) :"javascript:;"}')
         span(aria-hidden='true') 下一页
