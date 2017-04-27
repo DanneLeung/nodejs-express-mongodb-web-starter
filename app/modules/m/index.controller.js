@@ -103,7 +103,6 @@ exports.newTopicSave = function (req, res) {
   var node = req.body.node || null;
   var openid = req.body.openid || req.user.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
-  // console.log(" ************* topic body : ", req.body);
   // if(!req.body.title){
   //   req.body.title = req.body.content?req.body.content.substring(0,20) + " ... ..." : "";
   // }
@@ -125,7 +124,7 @@ exports.newTopicSave = function (req, res) {
     if(err) return res.status(200).json({ err: err });
     req.body.serverIds = serverIds;
     req.body.images = images;
-    console.log(" ************* topic body will be saved: ", images, req.body);
+    // console.log(" ************* topic body will be saved: ", images, req.body);
     WechatFans.findOne({ openid: openid }, (err, fans) => {
       if(err) console.error(err);
       var topic = new Topic(req.body);
@@ -163,7 +162,7 @@ exports.newCommentSave = function (req, res) {
   var topicid = req.params.topicid || req.query.topicid;
   var openid = req.body.openid || req.user.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
-  console.log(" ************* topic body : ", req.body);
+  // console.log(" ************* topic body : ", req.body);
 
   if(!openid) {
     return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
@@ -176,7 +175,7 @@ exports.newCommentSave = function (req, res) {
     if(err) res.status(200).send({ result: 'fail', message: '保存图片时发生错误!' });
     req.body.serverIds = serverIds;
     req.body.images = images;
-    console.log(" ************* topic body will be saved: ", images, req.body);
+    // console.log(" ************* topic body will be saved: ", images, req.body);
     WechatFans.findOne({ openid: openid }, (err, fans) => {
       if(err) console.error(err);
       var comment = new Comment(req.body);

@@ -167,18 +167,18 @@ block scripts
                   {data: "country", sortable: false, defaultContent: '', width: "60px"},
                   {data: "province", sortable: false, defaultContent: '', width: "90px"},
                   {data: "city", sortable: false, defaultContent: '', width: "80px"},
-                  {data: "subscribe", sortable: true, defaultContent: '', width: "40px", render: function (data, type, full, meta) {
+                  {data: "subscribe", sortable: true, defaultContent: '', width: "40px", class: 'text-center', render: function (data, type, full, meta) {
                     return data?"<i class='fa fa-fw fa-check'></i>":"";
                   }},
                   {
                     data: "subscribe_time", defaultContent: '', class: 'text-center', width: "120px",
                     render: function (data, type, full, meta) {
-                      var b = moment(new Date(parseInt(data)) * 1000);
-                      var date = "";
-                      if (data != null) {
-                        date = b.format("YYYY-MM-DD HH:mm:ss");
+                      var ret = "";
+                      if (data) {
+                        var b = moment(new Date(parseInt(data)) * 1000);
+                        ret = b.format("YYYY-MM-DD HH:mm:ss");
                       }
-                      return date;
+                      return ret;
                     }
                   },
                   {data: "remark", sortable: true, defaultContent: ''},
