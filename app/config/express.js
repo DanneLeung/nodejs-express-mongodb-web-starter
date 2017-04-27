@@ -145,7 +145,9 @@ module.exports = function (app, express, passport) {
   // will print stacktrace
   if(app.get('env') === 'development') {
     app.use(responseTime());
-  } else {}
+  } else {
+    
+  }
 
   // static content
   app.use(express.static(path.normalize(app.config.root + '/public'), { maxAge: 10 * 24 * 3600 * 1000, lastModified: true }));

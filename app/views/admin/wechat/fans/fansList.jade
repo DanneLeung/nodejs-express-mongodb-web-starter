@@ -190,9 +190,9 @@ block scripts
                   {data: "blocked", visible: true, sortable: false, className: 'text-center',
                     render: function (data, type, row) {
                       if(data)
-                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-default btn-sm' type='button' title='点击屏蔽发言'><i class='fa fa-check'></i> 可发言</a>";
+                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-default btn-sm' type='button' title='点击激活发言'><i class='fa fa-check'></i> 被屏蔽</a>";
                       else
-                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-warning btn-sm' type='button' title='点击激活发言'><i class='fa fa-ban'></i> 被屏蔽</a>";
+                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-warning btn-sm' type='button' title='点击屏蔽发言'><i class='fa fa-ban'></i> 可发言</a>";
                     }
                   }
                 ]

@@ -30,7 +30,7 @@ var WechatFansSchema = new Schema({
   // createdAt: { type: Date, default: Date.now },
   scanCount: { type: Number }, //推广二维码被扫描次数
   clear: { type: Number }, //清缓存数据
-  blocked: { type: Boolean, default: false },//屏蔽拉黑
+  blocked: { type: Boolean, default: false }, //屏蔽拉黑
   note: String
 }, { timestamps: {} });
 
@@ -164,7 +164,8 @@ WechatFansSchema.statics.findAndSaveByUnionId = function (unionid, obj, cb) {
     unionid: unionid
   }, data, {
     new: true,
-    upsert: true
+    upsert: true,
+    setDefaultsOnInsert: true
   }, function (err, fan) {
     if(err) console.error("****************** WechatFans findAndSaveByUnionId ERROR: \n" + err);
     if(fan) return cb(fan);
@@ -188,7 +189,8 @@ WechatFansSchema.statics.findAndSave = function (obj, cb) {
 
   WechatFans.findOneAndUpdate(q, obj, {
     new: true,
-    upsert: true
+    upsert: true,
+    setDefaultsOnInsert: true
   }, function (err, fan) {
     if(err) console.error(err);
     console.log("****************** WechatFans findAndSave", fan);
