@@ -42,9 +42,10 @@ block content
           strong  评论
           small.muted (#{topic.commentCount})
       .divider.no-padding.no-margin
-      #comments.list.comments
-        include comments
-      nav.nav.justified.pager
+      #wrapper
+        #comments.list.comments
+          //- include comments
+      //- nav.nav.justified.pager
         a#pagermore(href="javascript:;")
             strong 更多评论 (#{topic.commentCount})
             span.text-link
@@ -63,4 +64,5 @@ block contentScripts
     var total = #{ topic.commentCount ? topic.commentCount : 0 };
     var offset = #{ offset ? offset : 0 };
     var limit = #{ limit ? limit : 5 };
+    var url = contextFront + "/topic/comments/#{topic._id}";
   script(src="topic.js?v=#{vjs}")

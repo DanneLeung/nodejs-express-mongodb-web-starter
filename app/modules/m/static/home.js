@@ -28,7 +28,7 @@ $(document).ready(function () {
           // 每次数据加载完，必须重置
           me.resetload();
           // 重置页数，重新获取loadDownFn的数据
-          offset = 0;
+          offset = 0 + limit;
           // 解锁loadDownFn里锁定的情况
           me.unlock();
           me.noData(false);
