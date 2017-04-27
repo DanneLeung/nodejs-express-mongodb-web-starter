@@ -4,7 +4,7 @@ nav.clearfix
   - var currentPage = offset/limit;
   - var step = 5
   span.pad.pull-left
-    | 总共 #{total} 个帖子，分 #{pages} 页，当前显示第 #{currentPage+1} 页，#{offset+1} - #{offset+limit} 条数据
+    | 总共 #{total} 个帖子，分 #{pages} 页，当前显示第 #{currentPage+1} 页，#{offset+1} - #{offset+limit>total?total:offset+limit} 条数据
 
   //-         span(aria-hidden='true') 下#{limit}条 &rarr;
   ul.pagination.no-margin.pull-right

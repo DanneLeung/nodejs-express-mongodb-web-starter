@@ -1,12 +1,8 @@
-/**
- * Created by danne on 2016/3/11.
- */
-/**
- * Created by ZhangXiao on 2015/6/11.
- */
+var moment = require('moment');
 var mongoose = require('mongoose');
 var config = require('../../../../config/config');
 
+var WechatFans = mongoose.model('WechatFans');
 var Comment = mongoose.model('Comment');
 
 exports.list = function (req, res) {
@@ -14,9 +10,36 @@ exports.list = function (req, res) {
 };
 
 exports.datatable = function (req, res) {
-  Comment.dataTable(req.query, function (err, data) {
-    res.send(data);
-  });
+  var fansId = req.body.fansId || req.query.fansId;
+  var query = {};
+  var dateStart = req.query.dateStart || req.body.dateStart;
+  var dateEnd = req.query.dateEnd || req.body.dateEnd;
+
+  if(dateStart) {
+    if(!query.createdAt) query.createdAt = {};
+    var d = moment(dateStart, 'YYYY-MM-DD');
+    var start = d.startOf('day').toDate();
+    query.createdAt.$gte = start;
+  }
+  if(dateEnd) {
+    if(!query.createdAt) query.createdAt = {};
+    var d = moment(dateEnd, 'YYYY-MM-DD');
+    var end = d.endOf('day').toDate();
+    query.createdAt.$lte = end;
+  }
+  // console.log(" >>>>>>>>>>>>>>>>> ", query);
+  if(fansId) {
+    WechatFans.findOne({ nickname: fansId }).exec((err, fans) => {
+      if(fans) query.fans = fans;
+      Comment.dataTable(req.query, { conditions: query }, function (err, data) {
+        res.send(data);
+      });
+    });
+  } else {
+    Comment.dataTable(req.query, { conditions: query }, function (err, data) {
+      res.send(data);
+    });
+  }
 };
 
 exports.view = function (req, res) {

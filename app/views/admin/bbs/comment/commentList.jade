@@ -1,8 +1,6 @@
-//
-   Created by danne on 2015/10/24.
 extends ../layout
 block header
-  link(href="#{theme}/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+  link(rel="stylesheet",href="//cdn.bootcss.com/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css")
 //应用的page title
 block pageTitle
   h1 评论管理
@@ -19,6 +17,22 @@ block main
             i.fa.fa-fw.fa-ban
             | 屏蔽评论
     .box-body
+      form#searchForm.form-inline
+          .form-group
+            label.control-label 粉丝：
+            input#fansId.form-control(name='fansId', value="")
+          .form-group
+            label.control-label 日期：
+            .input-group
+              input#dateStart.date.form-control(name='dateStart', value="")
+              .input-group-addon
+                span - 
+              input#dateEnd.date.form-control(name='dateEnd', value="")
+          .form-group
+            button#search.btn.btn-default(type="button") 
+              i.fa.fa-fw.fa-search
+              | 查询
+      hr
       #tableWrapper(style="display:none;")
         table#commentList.table.table-bordered.table-hover.table-striped
           thead
@@ -40,8 +54,16 @@ block main
 
 //应用添加的脚本在scripts block中定义
 block scripts
+  script(src='//cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js')
   script.
     $(function () {
+      $('.date').datepicker({
+        format: "yyyy-mm-dd",
+        //- language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      });
       var opts = {
         "language": {
           "url": "#{theme}/plugins/datatables/Chinese.json"
