@@ -21,12 +21,11 @@ nav.clearfix
       a(href='#{(offset>0)? (url+"&offset=" + (offset-limit)) :"javascript:;"}' )
         span(aria-hidden='true') 上一页
     - var page = 0
-    while page < pages 
+    while page++ < pages 
       if page >= (currentPage - step) && page <= (currentPage + step)
         li(class="#{offset == page*limit?'active':''}")
           a(href='#{url+"&offset=" + ((page)*limit)}')
             span=page+1
-        - page++
     li.next(class="#{offset+limit>= total?'disabled':''}")
       a(href='#{(offset+limit< total)? (url+"&offset=" + (offset+limit)) :"javascript:;"}')
         span(aria-hidden='true') 下一页
