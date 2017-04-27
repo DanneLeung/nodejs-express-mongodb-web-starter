@@ -20,7 +20,7 @@ nav.clearfix
         li(class="#{offset == page*limit?'active':''}")
           a(href='#{url+"&offset=" + ((page)*limit)}')
             span=page+1
-          -page++
+      -page++
     li.next(class="#{offset+limit>= total?'disabled':''}")
       a(href='#{(offset+limit< total)? (url+"&offset=" + (offset+limit)) :"javascript:;"}')
         span(aria-hidden='true') 下一页
