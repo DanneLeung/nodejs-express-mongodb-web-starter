@@ -1,12 +1,27 @@
-nav
-  ul.pager.no-margin
-    if(offset>0)
-      li.previous
-        a(href='#{baseUrl + "/topic?offset=" + (offset-limit)}')
-          span(aria-hidden='true') &larr; 上#{limit}条 
-    li
-      span 帖子数: #{total}
-    if(offset+limit<total)
-      li.next 
-        a(href='#{baseUrl}/topic?offset=#{offset+limit}')
-          span(aria-hidden='true') 下#{limit}条 &rarr;
+nav.clearfix
+  - var pages = Math.ceil(total /limit);
+  - var page = 0
+  span.pad.pull-left
+    | 总#{totle}个帖子共#{pages}页，当前显示第#{offset/limit+1}页
+  //- ul.pager.no-margin
+  //-   if(offset>0)
+  //-     li.previous
+  //-       a(href='#{baseUrl + "/topic?offset=" + (offset-limit)}')
+  //-         span(aria-hidden='true') &larr; 上#{limit}条 
+  //-   li
+  //-     span 帖子数: #{total}
+  //-   if(offset+limit<total)
+  //-     li.next 
+  //-       a(href='#{baseUrl}/topic?offset=#{offset+limit}')
+  //-         span(aria-hidden='true') 下#{limit}条 &rarr;
+  ul.pagination.no-margin.pull-right
+    li.previous(class="#{offset<=0?'disabled':''}")
+      a(href='#{(offset>0)? (baseUrl + "/topic?offset=" + (offset-limit)) :"javascript:;"}' )
+        span(aria-hidden='true') 上一页
+    while page < pages
+      li(class="#{offset == page*limit?'active':''}")
+        a(href='#{baseUrl + "/topic?offset=" + ((page)*limit)}')
+          span=++page
+    li.next(class="#{offset+limit>= total?'disabled':''}")
+      a(href='#{(offset+limit< total)? (baseUrl + "/topic?offset=" + (offset+limit)) :"javascript:;"}')
+        span(aria-hidden='true') 下一页

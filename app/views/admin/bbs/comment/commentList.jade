@@ -12,10 +12,10 @@ block main
     .box-header.with-border
       h3.box-title 评论信息
       .box-tools
-          a.btn.btn-sm.btn-default(href="#{baseUrl}/comment/del" title="删除帖子")
+          button.delAll.btn.btn-sm.btn-default(title="删除帖子")
             i.fa.fa-fw.fa-trash
             | 删除评论
-          a.btn.btn-sm.btn-default(href="#{baseUrl}/comment/block" title="屏蔽帖子")
+          button.btn.btn-sm.btn-default(href="#{baseUrl}/comment/block" title="屏蔽帖子")
             i.fa.fa-fw.fa-ban
             | 屏蔽评论
     .box-body
@@ -27,10 +27,10 @@ block main
             th 帖子
             th 评论者
             th 评论
-            th 时间
-            th 热门
-            th 屏蔽
-            th.text-center() 操作
+            th.text-center 时间
+            th.text-center 热门
+            th.text-center 屏蔽
+            th.text-center 操作
           tbody
 
       form#delForm(method='post', style='display:none', action='#{baseUrl}/comment/del')
@@ -101,7 +101,7 @@ block scripts
                 return result;
               }
             },
-            {data: "",
+            {data: "", 'class': 'text-center', 
               render: function(data, type, row, meta){
                 var id = row._id;
                 var html = "<div class='btn-group'>";

@@ -80,13 +80,19 @@ exports.save = function (req, res) {
 };
 exports.del = function (req, res) {
   var ids = req.body.ids || req.params.ids;
-  Comment.remove({ '_id': ids }, function (err, result) {
-    if(err) {
-      console.log(err);
-      req.flash('error', err);
-    } else {
-      req.flash('success', '数据删除成功!');
-      res.redirect('/admin/bbs/comment');
-    }
-  });
+  if(ids) {
+    ids = ids.split(',');
+    Comment.remove({ '_id': { $in: ids } }, function (err, result) {
+      if(err) {
+        console.log(err);
+        req.flash('error', err);
+      } else {
+        req.flash('success', '数据删除成功!');
+        res.redirect('/admin/bbs/comment');
+      }
+    });
+  } else {
+    req.flash('warning', '没有选中要删除的数据!');
+    res.redirect('/admin/bbs/comment');
+  }
 };

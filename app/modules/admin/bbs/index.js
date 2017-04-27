@@ -51,7 +51,7 @@ router
 
 router.get("/comment", commentCtrl.list)
   .all("/comment/datatable", commentCtrl.datatable)
-  .post("/comment/del", commentCtrl.del)
+  .all("/comment/del", commentCtrl.del)
   .get("/comment/view/:id", commentCtrl.view)
   .get("/comment/block/:id", commentCtrl.block)
   .get("/comment/hot/:id", commentCtrl.hot);
