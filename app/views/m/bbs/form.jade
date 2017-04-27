@@ -12,12 +12,13 @@ block content
       form#topicForm.no-margin(method="post" action="#{contextFront}/topic/new")
         input#appid(type="hidden" name="appid" value="#{appid}")
         input#openid(type="hidden" name="openid")
-        input#node(type="hidden" name="node" value="#{node}")
+        input#node(type="hidden" name="node" value="#{node._id}")
 
         //- .control
           input#title.input(name="title", style="width:100%", maxlength="50", type="text" placeholder="请输入文字给帖子一个醒目标题~~~")
         .control
-          textarea#content.textarea(name="content", rows="10", placeholder="请输入帖子详细内容~~~")
+          textarea#content.textarea.required(name="content", rows="10", required="required", placeholder="请输入帖子详细内容~~~")
+            | #{node && node.template?node.template:''}
         .clearfix
           .control.space-sm.pull-left
             button#selectImg.btn.outline(type="button")
@@ -26,12 +27,13 @@ block content
               i.icon-smile
           .control.space-sm.pull-right
             button.btn.primary.outline(type='submit') 发表
-            a.btn(href='home/#{node}') 取消
+            a.btn(href='home/#{node._id}') 取消
       .divider
       nav#nodes.nav
         span.has-padding.text-tint 选择版块：
         each n in nodes
-          a.nodeid(href='javascript:;', class='#{node && node == n._id ? "active":""}', data-id="#{n._id}")=n.title
+          a.nodeid(href='javascript:;', class='#{node && node._id == n._id ? "active":""}', data-id="#{n._id}")=n.title
+            input(type="hidden", value="#{n.template?n.template:''}")
       //- .heading
         .title 
           strong 图片
@@ -50,6 +52,7 @@ block contentScripts
         $(this).parent().find('.active').removeClass('active');
         $(this).addClass('active');
         $("#node").val($(this).data("id"));
+        $("#content").val($(this).find('input').val());
       });
 
       $("#selectImg").on("click", function(e){
@@ -64,11 +67,11 @@ block contentScripts
         },
         onSuccess: function(data){
           console.log(data);
-          window.location.href="#{contextFront}/home/#{node}"
+          window.location.href="#{contextFront}/home/#{node._id}"
         },
         onError: function(status){
           console.log(status);
-          //- window.location.href="/home/#{node}"
+          //- window.location.href="/home/#{node._id}"
         }
       });
     });

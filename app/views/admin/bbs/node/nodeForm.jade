@@ -45,6 +45,11 @@ block main
               textarea#description.form-control(name='description',rows="3", placeholder='版块的描述')
                 | #{node ? node.description : ''}
           .form-group
+            label.control-label.col-sm-2 帖子模板：
+            .col-sm-8
+              textarea#template.form-control(name='template',rows="8", placeholder='帖子模板内容，默认出现在本版块用户发新帖的输入微博框中')
+                | #{node ? node.template : ''}
+          .form-group
               label.control-label.col-sm-2 激活：
               .col-sm-8
                 label.checkbox

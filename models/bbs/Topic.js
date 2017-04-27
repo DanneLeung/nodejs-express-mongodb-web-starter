@@ -75,6 +75,17 @@ TopicSchema.statics = {
       done(topics);
     });
   },
+  topicsWithNodeWithTop: function (query, offset, limit, done) {
+    if(!offset) offset = 0;
+    if(!limit) limit = 10;
+    Topic.count(query).exec((err, total) => {
+      if(err) console.error(err);
+      Topic.find(query).populate("node fans user").sort("-top -createdAt").skip(offset).limit(limit).exec((err, topics) => {
+        if(err) console.error(err);
+        done(total, topics);
+      });
+    });
+  },
   topicsWithFans: function (fansId, offset, limit, done) {
     Topic.find({ fans: fansId, blocked: false }).populate("node fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);

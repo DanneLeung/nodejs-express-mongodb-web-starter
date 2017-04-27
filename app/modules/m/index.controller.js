@@ -86,7 +86,15 @@ exports.view = function (req, res) {
 exports.newTopic = function (req, res) {
   var node = req.params.node || req.query.node;
   var nodes = res.locals.nodes;
-  if(!node && nodes && nodes.length) { node = nodes[0]._id }
+  if(!node && nodes && nodes.length) { node = nodes[0]; } else {
+    for(var i in nodes) {
+      if(node == nodes[i]._id) {
+        node = nodes[i];
+        break;
+      }
+    }
+
+  }
   res.render('m/bbs/form', { node: node ? node : '' });
 };
 
@@ -190,6 +198,7 @@ exports.fans = function (req, res) {
   WechatFans.findById(fansId, (err, fans) => {
     if(err) console.error(err);
     // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", fans);
+    res.locals.user = fans;
     res.render('m/user', { user: fans, me: fansId == req.session.user._id });
   });
 };

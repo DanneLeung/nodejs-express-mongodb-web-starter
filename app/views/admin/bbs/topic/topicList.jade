@@ -1,6 +1,6 @@
-//
-  Created by danne on 2015/10/24.
 extends ../layout
+block header
+  link(rel="stylesheet",href="//cdn.bootcss.com/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css")
 block pageTitle
   h1  论坛帖子管理
     small 添加，删除，更新系统中帖子信息
@@ -21,19 +21,58 @@ block main
           i.fa.fa-fw.fa-plus
           | 发布新帖子
     .box-body
+      form.form-inline(action="") 
+        .form-group
+          label.control-label 版块：
+          select#node.form-control(name='node')
+            option(value="") 请选择
+            each n in nodes
+              if(n._id == node)
+                option(value="#{n._id}", selected="selected") #{n.title}
+              else
+                option(value="#{n._id}") #{n.title}
+        .form-group
+          label.control-label 日期：
+          .input-group
+            input#dateStart.date.form-control(name='dateStart', value="#{dateStart?dateStart:''}")
+            .input-group-addon
+              span - 
+            input#dateEnd.date.form-control(name='dateEnd', value="#{dateEnd?dateEnd:''}")
+        .form-group
+          button.btn.btn-default(type="submit") 
+            i.fa.fa-fw.fa-search
+            | 查询
+      hr
+      include topicPager
+      hr
       if(!topics || !topics.length)
 
       else
         each topic in topics
           .post
             .user-block.clearfix
-              img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:''}", alt='user image')
+              img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:'/img/avatar.png'}", alt='user image')
               span.username
                 a(href='#') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
+                .pull-right
+                  if topic.top
+                    span.label.label-info 
+                      i.fa.fa-arrow-up.margin-r-5
+                      | 顶 
+                    | &nbsp;
+                  if topic.hot
+                    span.label.label-danger 
+                      i.fa.fa-fire.margin-r-5
+                      | 热 
+                    | &nbsp;
               span.description  #{topic.createdAt ? moment(topic.createdAt).format("YYYY-MM-DD HH:mm:ss") : ""}
             //- p !{topic.content.replace(/\r\n/gm,'<br>').substring(0,200)} #{topic.content.length>200?'... ...':''}
+            
             p !{topic.content.replace(/\r\n/gm,'<br>')}
             ul.list-inline.clearfix
+              if topic.node
+                li
+                  span.label.label-info()=topic.node.title
               li.pull-right
                 a.link-black(href="#{baseUrl}/topic/edit/#{topic._id}")
                   i.fa.fa-edit.margin-r-5
@@ -49,11 +88,11 @@ block main
               li.pull-right
                 a.link-black(href="#{baseUrl}/topic/top/#{topic._id}")
                   i.fa.fa-arrow-up.margin-r-5
-                  | 置顶
+                  | #{topic.top?'取消':''}置顶
               li.pull-right
                 a.link-black(href="#{baseUrl}/topic/hot/#{topic._id}")
                   i.fa.fa-fire.margin-r-5
-                  | 热帖
+                  | #{topic.hot?'取消':''}热帖
               li.pull-right
                 a.link-black(href='#')
                   i.fa.fa-thumbs-o-up.margin-r-5
@@ -62,8 +101,8 @@ block main
                 a.comment(href='javascript:;',data-id="#{topic._id}")
                   i.fa.fa-comments-o.margin-r-5
                   | 评 (#{topic.commentCount ? topic.commentCount : 0})
-            
-            
+
+
             .box
               .comment-box.box-body.chat
 
@@ -76,18 +115,20 @@ block main
                   button.btnComment.btn.btn-success.pull-right.btn-sm(type='button') 
                     i.fa.fa-fw.fa-reply
                     | 回复
-      nav
-        ul.pager
-          li.previous(class="#{offset<=0?'disabled':''}")
-            a(href='#{offset? baseUrl + "/topic?offset=" + (offset-limit) : "javascript:;"}')
-              span(aria-hidden='true') &larr; 上#{limit}条 
-          li.next(class="#{offset<=0?'disabled':''}")
-            a(href='#{baseUrl}/topic?offset=#{offset+limit}')
-              span(aria-hidden='true') 下#{limit}条 &rarr;
+      hr
+      include topicPager
 //应用添加的脚本在scripts block中定义
 block scripts
+  script(src='//cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js')
   script.
     $(document).ready(function () {
+      $('.date').datepicker({
+        format: "yyyy-mm-dd",
+        //- language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      });
       $('body').on("click",".btnComment", function(e){
         var that = this;
         var form = $(this).closest(".commentForm");

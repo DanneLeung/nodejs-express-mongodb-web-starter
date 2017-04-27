@@ -19,9 +19,9 @@ block content
             span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
             //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
             if topic.hot
-              span.label.red.rounded(style='margin-right: 0.25rem') 
+              .label.red.rounded(style='margin-right: 0.25rem') 
                 i.icon-sun
-          .subtitle.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+            .small.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
       .topic 
         if topic.node
@@ -63,4 +63,4 @@ block contentScripts
     var total = #{ topic.commentCount ? topic.commentCount : 0 };
     var offset = #{ offset ? offset : 0 };
     var limit = #{ limit ? limit : 5 };
-  script(src="topic.js?v=#{v_js}")
+  script(src="topic.js?v=#{vjs}")

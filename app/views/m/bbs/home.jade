@@ -6,11 +6,11 @@ block css
 block headNav
   header#haedNav.heading.affix.dock-top.dock-auto
     nav#headNav.nav
-      a.brand-name(href='home', class="#{!node?'active':''}", data-page-name='index')
+      a(href='home', class="#{!node?'active primary-pale rounded':''}", data-page-name='index')
         //- i.icon-home
         | 全部
       each n in nodes
-        a(href='home/#{n._id}', class="#{n._id == node?'active':''}" data-page-name='#{n.title}')=n.title
+        a(href='home/#{n._id}', class="#{n._id == node?'active primary-pale rounded':''}" data-page-name='#{n.title}')=n.title
     .title
     nav.nav
       a(href='user')
@@ -27,7 +27,7 @@ block content
         .item.with-avatar(data-id="#{topTopic._id}")
           .avatar.avatar-sm.circle.yellow 顶
           .content
-            | #{topTopic.content}
+            | !{topTopic.content.replace(/\r\n/gm,'<br>')}
   #wrapper  
     #topics
 
@@ -42,6 +42,6 @@ block content
 block contentScripts
   script.
     var url = contextFront + "/topics/#{node}";
-  script(src="home.js?v=#{v_js}")
+  script(src="home.js?v=#{vjs}")
 
 

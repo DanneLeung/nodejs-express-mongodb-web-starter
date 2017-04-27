@@ -28,10 +28,32 @@ exports.list = function (req, res) {
   var node = req.params.node || req.query.node;
   var offset = parseInt(req.params.offset || req.query.offset);
   var limit = parseInt(req.params.limit || req.query.limit);
+  var dateStart = req.query.dateStart || req.body.dateStart;
+  var dateEnd = req.query.dateEnd || req.body.dateEnd;
+  // date = date ? date : moment().format("YYYY-MM-DD");
+  var query = {
+    blocked: false,
+  };
+
+  if(node) query.node = node;
+
+  if(dateStart) {
+    if(!query.createdAt) query.createdAt = {};
+    var d = moment(dateStart, 'YYYY-MM-DD');
+    var start = d.startOf('day').toDate();
+    query.createdAt.$gte = start;
+  }
+  if(dateEnd) {
+    if(!query.createdAt) query.createdAt = {};
+    var d = moment(dateEnd, 'YYYY-MM-DD');
+    var end = d.endOf('day').toDate();
+    query.createdAt.$lte = end;
+  }
   if(!offset) offset = 0;
   if(!limit) limit = 10;
-  Topic.topicsWithNode(node, offset, limit, (topics) => {
-    res.render('admin/bbs/topic/topicList', { topics: topics, offset: offset, limit: limit });
+  console.log(" >>>>>>>>>>>>>>>>>>>> query ", query);
+  Topic.topicsWithNodeWithTop(query, offset, limit, (total, topics) => {
+    res.render('admin/bbs/topic/topicList', { topics: topics, node: node, dateStart: dateStart, dateEnd: dateEnd, total: total, offset: offset, limit: limit });
   });
 };
 
