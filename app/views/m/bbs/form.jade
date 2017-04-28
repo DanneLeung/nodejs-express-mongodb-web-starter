@@ -43,6 +43,7 @@ block content
             i.icon.icon-plus
 block contentScripts
   script.
+    var changed = false;
     var count = 0;
     var serverIds = [];
     $("body").removeClass("with-heading-top"); 
@@ -54,6 +55,7 @@ block contentScripts
         if(c && c != undefined){$("#content").val(c);}
         $("#content").on("change", function(e){
           localStorage.setItem("topic.conent",$(this).val());
+          changed = true;
         });
       }
 
@@ -61,7 +63,10 @@ block contentScripts
         $(this).parent().find('.active').removeClass('active');
         $(this).addClass('active');
         $("#node").val($(this).data("id"));
-        if(!$("#content").val()) $("#content").val($(this).find('input').val());
+        if(!$("#content").val() || !changed){
+          $("#content").val($(this).find('input').val());
+          changed = false;
+        } 
       });
 
       $("#selectImg").on("click", function(e){
