@@ -42,8 +42,10 @@ block content
       strong 加载更多 ...
       span.text-link
         i.icon.icon-double-angle-down
-  nav.fab.affix.dock-bottom.dock-right.shadow-none
-    a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary(title='发布新帖',href="topic/new/#{node}")
+  nav.fab.affix.dock-bottom.shadow-none
+    a#toTop.btn.circle.shadow-2.has-margin-sm.btn-lg.info(title='返回顶部')
+      i.icon.icon-arrow-up
+    a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary.pull-right(title='发布新帖',href="topic/new/#{node}")
       i.icon.icon-plus
 block contentScripts
   script.

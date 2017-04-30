@@ -67,6 +67,7 @@ $(document).ready(function () {
     threshold: 0
   });
 
+  $("#toTop").on("click", function(e){$("body").scrollTop(0);});
   $("body").on("click", ".topic, .item", function () {
     var id = $(this).data("id");
     if(id) {

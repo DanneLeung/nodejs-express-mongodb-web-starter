@@ -25,6 +25,7 @@ let TopicSchema = new Schema({
   essence: Boolean,
   weight: Number, //权重，可以排序
   status: Number,
+  lastCommentTime: { type: Date },
   blocked: { type: Boolean, default: false } //屏蔽
 }, { timestamps: {} });
 TopicSchema.statics = {
@@ -70,7 +71,7 @@ TopicSchema.statics = {
       $or: [{ top: false }, { top: { $exists: false } }]
     };
     if(node) q.node = node;
-    Topic.find(q).populate("node fans user").populate({ path: "comments", select: "content fans user updatedAt createdAt", sort: "-createdAt", populate: { path: "fans user" } }).sort("-updatedAt").skip(offset).limit(limit).exec((err, topics) => {
+    Topic.find(q).populate("node fans user").populate({ path: "comments", select: "content fans user updatedAt createdAt", sort: "-createdAt", populate: { path: "fans user" } }).sort("-lastCommentTime").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);
       done(topics);
     });
