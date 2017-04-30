@@ -70,7 +70,7 @@ TopicSchema.statics = {
       $or: [{ top: false }, { top: { $exists: false } }]
     };
     if(node) q.node = node;
-    Topic.find(q).populate("node fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
+    Topic.find(q).populate("node fans user").populate({ path: "comments", select: "content fans updatedAt createdAt", sort: "-createdAt", populate: { path: "fans" } }).sort("-updatedAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);
       done(topics);
     });
@@ -80,7 +80,7 @@ TopicSchema.statics = {
     if(!limit) limit = 10;
     Topic.count(query).exec((err, total) => {
       if(err) console.error(err);
-      Topic.find(query).populate("node fans user").sort("-top -createdAt").skip(offset).limit(limit).exec((err, topics) => {
+      Topic.find(query).populate("node fans user").sort("-top -updatedAt").skip(offset).limit(limit).exec((err, topics) => {
         if(err) console.error(err);
         done(total, topics);
       });

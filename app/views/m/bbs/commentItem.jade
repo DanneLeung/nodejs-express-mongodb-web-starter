@@ -1,3 +1,4 @@
+.divider.no-padding.no-margin
 .item.with-avatar.multi-lines
   a.avatar(href="#{comment.fans?'fans/' + comment.fans._id:'javascript:;'}") 
     img(src='#{comment.fans?comment.fans.headimgurl:"/img/avatar.png"}', alt='')
@@ -5,12 +6,13 @@
     div
       a.title(href="#{comment.fans?'fans/' + comment.fans._id:'javascript:;'}") 
         .nickname #{comment.fans?comment.fans.nickname:(comment.user?comment.user.username:'')}
-        //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{comment.fans?comment.fans.level:1}
-        //- a.text-link.strong #{comment.fans?comment.fans.nickname:''}
-        .muted.small.no-margin  #{formatDatetime(comment.createdAt)}
+          //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{comment.fans?comment.fans.level:1}
+          //- a.text-link.strong #{comment.fans?comment.fans.nickname:''}
+          .muted.small.no-margin.pull-right  #{formatDatetime(comment.createdAt)}
       //- .muted.small #{formatDatetime(comment.createdAt)}
     .btn-reply 
-      |!{comment.content.replace(/\r\n/gm,'<br>')}
+      if comment.content
+        | !{comment.content.replace(/\r\n/gm,'<br>')}
     .row.imgs.gutter-sm
       if comment.images && comment.images.length
         each img in comment.images
@@ -18,4 +20,3 @@
             .cell-4
               a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
                 .img(style="background-image:url('#{contextRoot}#{img}');")
-.divider.no-padding.no-margin

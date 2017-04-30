@@ -48,10 +48,11 @@ CommentSchema.statics = {
       }
     });
   },
-  newComment(topicid, user, fans, content, done) {
-    var comment = new Comment({ topic: topicid, user: user, fans: fans, content: content });
+  newComment(topicid, user, fans, content, images, done) {
+    var comment = new Comment({ topic: topicid, user: user, fans: fans, content: content, images: images });
     comment.save((err, cm) => {
-      mongoose.model("Topic").incsCountField(topicid, "commentCount", (err, result) => {
+      mongoose.model("Topic").update({ _id: topicid }, { $inc: { commentCount: 1 }, $push: { comments: { $each: [cm], $position: 0, $slice: 5 } } }, (err, t) => {
+        if(err) console.error(err);
         return done(err, cm);
       });
     });

@@ -2,6 +2,11 @@ extends ../layouts/bbs
 block css
   style.
     .topic {padding: 0  0.5rem;max-height:10rem;overflow:hidden;text-overflow:ellipsis;}
+    .list>.list {margin-left: 1rem;}
+    .list>.list .item{padding:0.25rem}
+    .list>.list .divider:first-child {border:none;}
+    .nav>a {height:1.5rem;}
+    hr {margin:0}
   
 block headNav
   header#haedNav.heading.affix.dock-top.dock-auto

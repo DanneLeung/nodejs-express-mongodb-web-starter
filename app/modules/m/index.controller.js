@@ -178,15 +178,18 @@ exports.newCommentSave = function (req, res) {
     // console.log(" ************* topic body will be saved: ", images, req.body);
     WechatFans.findOne({ openid: openid }, (err, fans) => {
       if(err) console.error(err);
-      var comment = new Comment(req.body);
-      comment.fans = fans;
-      comment.topic = topicid;
-      comment.save((err, c) => {
-        if(err) console.error(err);
-        Topic.incsCountField(topicid, 'commentCount', (err, result) => {
-          res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
-        });
+      Comment.newComment(topicid, null, fans, req.body.content, images, (err, comment) => {
+        res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
       });
+      // var comment = new Comment(req.body);
+      // comment.fans = fans;
+      // comment.topic = topicid;
+      // comment.save((err, c) => {
+      //   if(err) console.error(err);
+      //   Topic.incsCountField(topicid, 'commentCount', (err, result) => {
+      //     res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
+      //   });
+      // });
     });
   });
 };
