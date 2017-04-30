@@ -1,11 +1,11 @@
 each topic in topics
   .list
     .item.with-avatar.muti-lines(data-id="#{topic._id}")
-      a(href="fans/#{topic.fans?topic.fans._id:''}")
+      a(href="#{topic.fans?'fans/' + topic.fans._id:'javascript:;'}")
         .avatar
           img(src='#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl : ""}', alt='#{topic.fans?topic.fans.nickname:""}')
       .content
-        a.title.block(href="fans/#{topic.fans?topic.fans._id:''}") 
+        a.title.block(href="#{topic.fans?'fans/' + topic.fans._id:'javascript:;'}") 
           .nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
           //- span.label.primary.rounded(style='margin-right: 0.25rem') V #{topic.fans?topic.fans.level:1}
           if topic.hot

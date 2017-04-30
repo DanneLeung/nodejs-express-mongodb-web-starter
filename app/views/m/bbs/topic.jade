@@ -10,12 +10,12 @@ block content
         p 帖子不存在哦,可能已经被删除 ~~~ 
     #topic.list
       .item.with-avatar
-        a(href="fans/#{topic.fans?topic.fans._id:''}") 
+        a(href="#{topic.fans?'fans/' + topic.fans._id:'javascript:;'}") 
           .avatar
             img(src='#{topic.fans?topic.fans.headimgurl:""}', alt='')
 
         .content
-          a.title(href="fans/#{topic.fans?topic.fans._id:''}") 
+          a.title(href="#{topic.fans? 'fans/' + topic.fans._id:''}") 
             span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
             //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
             if topic.hot
