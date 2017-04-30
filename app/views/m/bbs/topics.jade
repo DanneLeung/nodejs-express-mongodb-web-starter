@@ -20,7 +20,8 @@ each topic in topics
       //- if topic.title
         b=topic.title
 
-      | !{topic.content.replace(/\r\n/gm,'<br>')}
+      .text
+        | !{topic.content.replace(/\r\n/gm,'<br>')}
       if(topic.images && topic.images.length)
         .row.imgs.gutter-smser
           each img in topic.images
