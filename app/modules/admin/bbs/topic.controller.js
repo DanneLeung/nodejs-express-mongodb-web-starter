@@ -48,14 +48,14 @@ exports.list = function (req, res) {
   if(dateStart) {
     if(!query.createdAt) query.createdAt = {};
     var d = moment(dateStart, 'YYYY-MM-DD HH:mm');
-    var start = d.startOf('day').toDate();
+    var start = d.toDate();
     query.createdAt.$gte = start;
   }
   if(dateEnd) {
     if(!query.createdAt) query.createdAt = {};
     var d = moment(dateEnd, 'YYYY-MM-DD HH:mm');
-    var end = d.endOf('day').toDate();
-    query.createdAt.$lte = end;
+    var end = d.toDate();
+    query.createdAt.$lt = end;
   }
   if(!offset) offset = 0;
   if(!limit) limit = 10;

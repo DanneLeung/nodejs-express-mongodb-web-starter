@@ -81,7 +81,7 @@ TopicSchema.statics = {
     if(!limit) limit = 10;
     Topic.count(query).exec((err, total) => {
       if(err) console.error(err);
-      Topic.find(query).populate("node fans user").sort("-top -updatedAt").skip(offset).limit(limit).exec((err, topics) => {
+      Topic.find(query).populate("node fans user").sort("-top -createdAt").skip(offset).limit(limit).exec((err, topics) => {
         if(err) console.error(err);
         done(total, topics);
       });
