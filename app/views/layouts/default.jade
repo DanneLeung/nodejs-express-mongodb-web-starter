@@ -1,3 +1,4 @@
+-var version = "0.0.1"
 -var baseUrl = (req.baseUrl)
 -if (baseUrl.indexOf('http')<0)
 -baseUrl = baseUrl.replace('//','/');
@@ -49,8 +50,8 @@ html.app(lang='en')
     script(src='//cdn.bootcss.com/moment.js/2.11.2/moment.min.js')
     script(src='//cdn.bootcss.com/moment.js/2.11.2/locale/zh-cn.js')
     // AdminLTE App
-    script(src='#{theme}/dist/js/app.js')
-    script(src='#{themeRoot}/dist/js/custom.js')
+    script(src='#{theme}/dist/js/app.js?v=#{version}')
+    script(src='#{themeRoot}/dist/js/custom.js?v=#{version}')
     // highlight error input
     if messages.error
       script.

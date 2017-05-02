@@ -24,6 +24,8 @@ router.get('/', (req, res) => {
   res.render('admin/bbs/index');
 });
 
+router.get("/fans", topicCtrl.fans); //for select2
+
 //版块
 router.get("/node", nodeCtrl.list)
   .all("/node/datatable", nodeCtrl.datatable)

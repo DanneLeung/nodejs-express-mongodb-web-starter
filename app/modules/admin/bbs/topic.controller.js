@@ -12,6 +12,7 @@ var async = require('async');
 var Node = mongoose.model('Node');
 var Topic = mongoose.model('Topic');
 var Comment = mongoose.model('Comment');
+var WechatFans = mongoose.model('WechatFans');
 
 exports.nodes = function (req, res, next) {
   Node.enabledNodes((nodes) => {
@@ -21,6 +22,12 @@ exports.nodes = function (req, res, next) {
   });
 }
 
+exports.fans = function (req, res) {
+  var q = req.body.q || req.query.q || req.params.q;
+  WechatFans.forSelect2(q, (datas) => {
+    res.status(200).send(datas);
+  });
+};
 /*
  * list
  */
@@ -30,12 +37,14 @@ exports.list = function (req, res) {
   var limit = parseInt(req.params.limit || req.query.limit);
   var dateStart = req.query.dateStart || req.body.dateStart;
   var dateEnd = req.query.dateEnd || req.body.dateEnd;
+  var fans = req.query.fans || req.body.fans;
   // date = date ? date : moment().format("YYYY-MM-DD");
   var query = {
     blocked: false,
   };
 
   if(node) query.node = node;
+  if(fans) query.fans = fans;
 
   if(dateStart) {
     if(!query.createdAt) query.createdAt = {};

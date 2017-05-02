@@ -1,5 +1,6 @@
 extends ../layout
 block header
+  link(rel="stylesheet", href="#{theme}/plugins/select2/select2.min.css")
   link(rel="stylesheet",href="//cdn.bootcss.com/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css")
 block pageTitle
   h1  论坛帖子管理
@@ -38,6 +39,9 @@ block main
             .input-group-addon
               span - 
             input#dateEnd.date.form-control(name='dateEnd', value="#{dateEnd?dateEnd:''}")
+        .form-group
+          label.control-label 发帖者：
+          select#fans.form-control.select2(name='fans',style="width:150px" ,placeholder="输入发帖者昵称查找")
         .form-group
           button.btn.btn-default(type="submit") 
             i.fa.fa-fw.fa-search
@@ -119,9 +123,11 @@ block main
       include topicPager
 //应用添加的脚本在scripts block中定义
 block scripts
+  script(src='#{theme}/plugins/select2/select2.min.js')
   script(src='//cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js')
   script.
     $(document).ready(function () {
+      initSelect2("#fans","#{baseUrl}/fans");
       $('.date').datepicker({
         format: "yyyy-mm-dd",
         //- language: 'cn',

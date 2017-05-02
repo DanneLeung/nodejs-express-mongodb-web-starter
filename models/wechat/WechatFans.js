@@ -34,6 +34,25 @@ var WechatFansSchema = new Schema({
   note: String
 }, { timestamps: {} });
 
+WechatFansSchema.statics.forSelect2 = function (q, done) {
+  var query = {};
+  if(q) {
+    query.nickname = { $regex: q };
+  }
+  WechatFans.find(query).exec((err, fans) => {
+    var datas = [];
+    if(fans) {
+      fans.forEach(function (p) {
+        var data = {};
+        data.id = p._id;
+        data.text = p.nickname;
+        datas.push(data);
+      });
+    }
+    return done(datas);
+  });
+}
+
 /**
  * 是否为粉丝
  */
