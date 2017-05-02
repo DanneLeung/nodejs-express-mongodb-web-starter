@@ -30,7 +30,7 @@ block content
             a.btn(href='home/#{node._id}', onclick='localStorage.setItem("topic.conent","");') 取消
       .divider
       nav#nodes.nav
-        span.has-padding.text-tint 选择版块：
+        span.has-padding.text-tint 选择类别：
         each n in nodes
           a.nodeid(href='javascript:;', class='#{node && node._id == n._id ? "active":""}', data-id="#{n._id}")=n.title
             input(type="hidden", value="#{n.template?n.template:''}")
