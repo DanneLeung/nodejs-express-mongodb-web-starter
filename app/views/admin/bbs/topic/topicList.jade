@@ -1,7 +1,8 @@
 extends ../layout
 block header
   link(rel="stylesheet", href="#{theme}/plugins/select2/select2.min.css")
-  link(rel="stylesheet",href="//cdn.bootcss.com/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css")
+  link(rel="stylesheet", href="#{theme}/plugins/datepicker/datetimepicker.min.css")
+  //- link(rel="stylesheet",href="//cdn.bootcss.com/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css")
 block pageTitle
   h1  论坛帖子管理
     small 添加，删除，更新系统中帖子信息
@@ -34,7 +35,7 @@ block main
                 option(value="#{n._id}") #{n.title}
         .form-group
           label.control-label 日期：
-          .input-group
+          .input-group#datetime
             input#dateStart.date.form-control(name='dateStart', value="#{dateStart?dateStart:''}")
             .input-group-addon
               span - 
@@ -124,16 +125,17 @@ block main
 //应用添加的脚本在scripts block中定义
 block scripts
   script(src='#{theme}/plugins/select2/select2.min.js')
-  script(src='//cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js')
+  script(src='#{theme}/plugins/datepicker/bootstrap-datetimepicker.min.js')
+  //- script(src='//cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js')
   script.
     $(document).ready(function () {
       initSelect2("#fans","#{baseUrl}/fans");
-      $('.date').datepicker({
-        format: "yyyy-mm-dd",
-        //- language: 'cn',
+      $('.date').datetimepicker({
+        format: "yyyy-mm-dd hh:ii",
+        language: 'zh-CN',
         weekStart: 1,
         autoclose: true,
-        todayBtn: 'linked'
+        clearBtn: true
       });
       $('body').on("click",".btnComment", function(e){
         var that = this;
@@ -142,9 +144,8 @@ block scripts
         var topicid = $(form).find("input[name='topicid']").val();
         var content = $(form).find("input[name='content']").val();
         var data = {topicid:topicid, content:content};
-        console.log(" >>>>>>>>>>>> data", data);
+        //- console.log(" >>>>>>>>>>>> data", data);
         $.post(url,data, function(result){
-          console.log(" >>>>>>>>>>>> result", result);
           if(result.err){
             bootbox.alert(result.msg);
           }else{

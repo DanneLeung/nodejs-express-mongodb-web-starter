@@ -38,7 +38,6 @@ exports.list = function (req, res) {
   var dateStart = req.query.dateStart || req.body.dateStart;
   var dateEnd = req.query.dateEnd || req.body.dateEnd;
   var fans = req.query.fans || req.body.fans;
-  // date = date ? date : moment().format("YYYY-MM-DD");
   var query = {
     blocked: false,
   };
@@ -48,13 +47,13 @@ exports.list = function (req, res) {
 
   if(dateStart) {
     if(!query.createdAt) query.createdAt = {};
-    var d = moment(dateStart, 'YYYY-MM-DD');
+    var d = moment(dateStart, 'YYYY-MM-DD HH:mm');
     var start = d.startOf('day').toDate();
     query.createdAt.$gte = start;
   }
   if(dateEnd) {
     if(!query.createdAt) query.createdAt = {};
-    var d = moment(dateEnd, 'YYYY-MM-DD');
+    var d = moment(dateEnd, 'YYYY-MM-DD HH:mm');
     var end = d.endOf('day').toDate();
     query.createdAt.$lte = end;
   }
