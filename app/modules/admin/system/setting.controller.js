@@ -53,7 +53,7 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '添加成功!');
       }
-      res.redirect('/admin/system/setting');
+      res.redirect('admin/system/setting');
     });
   } else {
     // update
