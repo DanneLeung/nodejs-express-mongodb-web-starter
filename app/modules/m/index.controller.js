@@ -37,20 +37,22 @@ exports.auth = function (req, res) {
 
 exports.requiredSession = function (req, res, next) {
   // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", req.session.user);
-  // if(!req.session.user) {
-  //   //需要去认证授权
-  //   return res.redirect(req.session.contextFront + '/auth?fromUrl=' + req.originalUrl);
-  // }
-  res.locals.user = req.user = req.session.user;
-  // console.log("************** current user ", req.session.user);
+  if(!req.session.user) {
+    //需要去认证授权
+    // return res.redirect(req.session.contextFront + '?fromUrl=' + req.originalUrl);
+  }
+  res.locals.user = req.session.user;
+  console.log("************** current user ", req.session.user, req.originalUrl);
   return next();
 }
 
 exports.session = function (req, res) {
   var openid = req.params.openid || req.query.openid || req.body.openid;
+  var originalUrl = req.query.originalUrl || req.body.originalUrl;
   WechatFans.findByOpenId(openid, (fans) => {
-    req.user = req.session.user = fans;
-    res.status(200).send(fans);
+    req.session.user = fans;
+    console.log(" >>>>>>>>>>>>>>> session result fans ", req.session.user);
+    res.redirect(originalUrl);
   });
 };
 
@@ -233,7 +235,7 @@ exports.fansTopics = function (req, res) {
 };
 
 exports.user = function (req, res) {
-  res.render('m/user', { me: true });
+  res.render('m/user', { me: true, user: req.session.user });
 };
 
 exports.like = function (req, res) {

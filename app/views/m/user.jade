@@ -14,46 +14,45 @@ block main
     //- nav.nav
       a(href='user')
         i.icon-user
-  if req.user
-    .profile-haeder.shadow
-      .dock.blur-lg.back.blue(style='')
-      .front.dock.text-white
-        .avatar.avatar-xl.circle.space-sm
-          img#headimgurl(src='#{user?user.headimgurl:""}', alt='')
-        h4#nickname.lead.text-shadow-black #{user?user.nickname:"未知用户"}
+  .profile-haeder.shadow
+    .dock.blur-lg.back.blue(style='')
+    .front.dock.text-white
+      .avatar.avatar-xl.circle.space-sm
+        img#headimgurl(src='#{user?user.headimgurl:""}', alt='')
+      h4#nickname.lead.text-shadow-black #{user?user.nickname:"未知用户"}
 
-    .section
-      .list.with-divider
-        a.item.with-avatar(href="#{contextFront}/fans/home/#{user._id}")
-          .avatar.text-gray
-            i.icon-list-ul
-          .title #{me ? "我":"TA"}的帖子
-          i.icon.icon-chevron-right.muted
-        a#clearCache.item.with-avatar(href="javascript:;")
-          .avatar.text-gray
-            i.icon-refresh
-          .title 清除緩存
-          i.icon.icon-chevron-right.muted
-        //- a.item.with-avatar
-          .avatar.text-gray
-            i.icon.icon-comments
-          .title #{me ? "我":"TA"}的评论
-          i.icon.icon-chevron-right.muted
-        //- a.item.with-avatar
-          .avatar.text-gray
-            i.icon.icon-lock
-          .title 安全中心
-          i.icon.icon-chevron-right.muted
-        //- a.item.with-avatar
-          .avatar.text-gray
-            i.icon-cog
-          .title 个人设置
-          i.icon.icon-chevron-right.muted
-        //- a.item.with-avatar
-          .avatar.text-gray
-            i.icon-qrcode
-          .title 我的二维码
-          i.icon.icon-chevron-right.muted
+  .section
+    .list.with-divider
+      a.item.with-avatar(href="#{contextFront}/fans/home/#{user?user._id:''}")
+        .avatar.text-gray
+          i.icon-list-ul
+        .title #{me ? "我":"TA"}的帖子
+        i.icon.icon-chevron-right.muted
+      a#clearCache.item.with-avatar(href="javascript:;")
+        .avatar.text-gray
+          i.icon-refresh
+        .title 清除緩存
+        i.icon.icon-chevron-right.muted
+      //- a.item.with-avatar
+        .avatar.text-gray
+          i.icon.icon-comments
+        .title #{me ? "我":"TA"}的评论
+        i.icon.icon-chevron-right.muted
+      //- a.item.with-avatar
+        .avatar.text-gray
+          i.icon.icon-lock
+        .title 安全中心
+        i.icon.icon-chevron-right.muted
+      //- a.item.with-avatar
+        .avatar.text-gray
+          i.icon-cog
+        .title 个人设置
+        i.icon.icon-chevron-right.muted
+      //- a.item.with-avatar
+        .avatar.text-gray
+          i.icon-qrcode
+        .title 我的二维码
+        i.icon.icon-chevron-right.muted
 block scripts
   script.
     $(document).ready(function(){
@@ -62,7 +61,7 @@ block scripts
           if(localStorage){
             localStorage.clear();
             $.messager.show('已清除本地缓存!', { type: 'success', placement: 'bottom-center' });
-            window.location.href = contextFront + "/user";
+            window.location.href = contextFront + "";
           }
         });
       });
