@@ -25,7 +25,7 @@ let TopicSchema = new Schema({
   essence: Boolean,
   weight: Number, //权重，可以排序
   status: Number,
-  lastCommentTime: { type: Date },
+  lastCommentTime: { type: Date, default: Date.now },
   blocked: { type: Boolean, default: false } //屏蔽
 }, { timestamps: {} });
 TopicSchema.statics = {
