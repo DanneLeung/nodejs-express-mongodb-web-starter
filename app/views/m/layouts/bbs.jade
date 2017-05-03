@@ -42,7 +42,7 @@ block scripts
           $.get(contextFront + "/session",{openid: user.openid}, function(data){
             if(data){
               //- window.location.href = fromUrl;
-              $("#headimgurl").attr("src", contextRoot + data.headimgurl);
+              $("#headimgurl").attr("src", data.headimgurl);
             } else{
               $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
             }
@@ -54,7 +54,7 @@ block scripts
     }else{
       $.get(contextFront + "/session",{openid: "oxVEQuN3xDA1r8aBD_hh-xMQeir4"}, function(data){
         if(data){
-          $("#headimgurl").attr("src", contextRoot + data.headimgurl);
+          $("#headimgurl").attr("src", data.headimgurl);
           //- window.location.href = fromUrl;
         } else{
           $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
