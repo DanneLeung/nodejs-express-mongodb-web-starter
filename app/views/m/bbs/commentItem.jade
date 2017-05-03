@@ -18,5 +18,5 @@
         each img in comment.images
           if img
             .cell-4
-              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
+              a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}#{img}' alt='' class='no-margin'>")
                 .img(style="background-image:url('#{contextRoot}#{img}');")
