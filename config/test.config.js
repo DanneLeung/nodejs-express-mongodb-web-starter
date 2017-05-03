@@ -1,41 +1,61 @@
+"use strict";
+
 module.exports = function (ROOT_PATH) {
   var config = {
     server: {
-      port: 3001,
-      hostname: process.env.HOSTNAME || '127.0.0.1',
+      port: process.env.PORT || 3000,
+      hostname: process.env.HOSTNAME || '127.0.0.1'
     },
     database: {
-      url: process.env.MONGOHQ_URL || 'mongodb://localhost/9c'
+      user: 'starter',
+      password: 'starter',
+      host: 'xcesys.com',
+      port: '27017',
+      db: 'starter',
+      url: ''
+    },
+    redis: {
+      mode: "single",
+      single: {
+        port: 6379, // Redis port
+        host: '127.0.0.1',
+        password: 'dan7844'
+      },
+      cluster: [],
+      options: {
+        maxRedirections: 16,
+        retryDelayOnFailover: 1000
+      }
     },
     root: ROOT_PATH,
     app: {
-      name: '九宫格管理控制台'
+      name: 'ExtrasAdmin'
     },
-    twitterAuth: true,
-    twitter: {
-      // https://apps.twitter.com/app/6070534/keys
-      consumerKey: process.env.TWITTER_KEY || 'zNDE0qEnZt6FdXQv60roe2p72',
-      consumerSecret: process.env.TWITTER_SECRET || 'T6T3DzAkvz3282BCvjPRJ96WYvLPXcBY7J6MrnBng9fQq57joq',
-      callbackURL: '/auth/twitter/callback',
-      passReqToCallback: true
+    template: {
+      path: '/public/themes/'
     },
-    facebookAuth: true,
-    facebook: {
-      clientID: process.env.FACEBOOK_ID || '1405367119739358',
-      clientSecret: process.env.FACEBOOK_SECRET || '844371cba2b8192162db08b80f2b9702',
-      callbackURL: '/auth/facebook/callback',
-      passReqToCallback: true
+    file: {
+      local: 'public',
+      url: '',
+      qiniu: {}
     },
-    mailgun: {
-      user: process.env.MAILGUN_USER || 'postmaster@tukangslicing.net',
-      password: process.env.MAILGUN_PASSWORD || '7f4v46je15w1'
+    imgZip: true,
+    mail: {
+      host: 'smtp.163.com',
+      port: '995',
+      secure: true,
+      user: process.env.MAIL_USER || 'lshefan@163.com',
+      password: process.env.MAIL_PASSWORD || 'notset',
+      from: 'DanneLeung<lshefan@163.com>'
     },
     phamtom: {
-      retries: 3,
+      retries: 2,
       width: 1280,
       height: 800,
       maxRenders: 50
     }
-  }
+  };
+  config.database.url = process.env.MONGOHQ_URL ||
+    'mongodb://' + (config.database.user ? config.database.user + ':' + config.database.password + '@' : '') + config.database.host + '/' + config.database.db;
   return config;
-}
+};
