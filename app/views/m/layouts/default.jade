@@ -21,8 +21,35 @@ html
     script(type='text/javascript', src='#{themeRoot}/dist/js/browser.js?v=#{version}')
     script(type='text/javascript', src='#{themeRoot}/dist/js/global.js?v=#{version}')
     script(type='text/javascript', src='#{themeRoot}/dist/js/weixin.js?v=#{version}')
-    //- if (req.session.channel && req.session.channel.analystScript)
-    //-  插入统计代码
-      !{req.session.channel.analystScript}
-      if !req.user
+    script.
+      var fromUrl = contextFront;
+      if(is_weixin()){
+        W.oauthUser(appid, function (user) {
+          if(user){
+            if(#{!req.user}){
+              $.get(contextFront + "/session",{openid: user.openid}, function(data){
+                if(data){
+                  //- window.location.href = fromUrl;
+                  $("#headimgurl").attr("src", data.headimgurl);
+                } else{
+                  $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+                }
+              });
+            }
+          }else{
+            $.messager.show('微信公众号页面授权错误，无法获得粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+          }
+        });
+      }else{
+        if(#{!req.user}){
+          $.get(contextFront + "/session",{openid: "oxVEQuN3xDA1r8aBD_hh-xMQeir4"}, function(data){
+            if(data){
+              $("#headimgurl").attr("src", data.headimgurl);
+              //- window.location.href = fromUrl;
+            } else{
+              $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+            }
+          });
+        }
+      }
     block scripts

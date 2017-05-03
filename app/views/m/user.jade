@@ -62,6 +62,7 @@ block scripts
           if(localStorage){
             localStorage.clear();
             $.messager.show('已清除本地缓存!', { type: 'success', placement: 'bottom-center' });
+            window.location.href = contextFront + "/user";
           }
         });
       });
