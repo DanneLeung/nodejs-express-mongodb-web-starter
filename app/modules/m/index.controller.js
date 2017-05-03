@@ -110,7 +110,7 @@ exports.newTopic = function (req, res) {
 exports.newTopicSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var node = req.body.node || null;
-  var openid = req.body.openid || req.user.openid || req.session.user.openid;
+  var openid = req.body.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
   // if(!req.body.title){
   //   req.body.title = req.body.content?req.body.content.substring(0,20) + " ... ..." : "";
@@ -169,7 +169,7 @@ exports.newComment = function (req, res) {
 exports.newCommentSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var topicid = req.params.topicid || req.query.topicid;
-  var openid = req.body.openid || req.user.openid || req.session.user.openid;
+  var openid = req.body.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
   // console.log(" ************* topic body : ", req.body);
   // 回复TO粉丝openid
