@@ -36,7 +36,7 @@ block main
         .tab-content
           // /.tab-pane
           #settings.tab-pane.active
-            form#profileForm.form-horizontal(method="post",action="/admin/profile/update/#{user.username}")
+            form#profileForm.form-horizontal(method="post",action="admin/profile/update/#{user.username}")
               input#userId(type="hidden",name="id",value="#{user._id}")
               input(type='hidden', name='_csrf', value=_csrf)
               .form-group
@@ -64,7 +64,7 @@ block main
     #editPassword.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
         .modal-content
-          form#changePwdForm.form-horizontal(action='/admin/profile/pwd/change',method='post')
+          form#changePwdForm.form-horizontal(action='admin/profile/pwd/change',method='post')
             .modal-header
               h4.modal-title 修改密码
             .modal-body
@@ -88,7 +88,7 @@ block main
     #resetPassword.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-dialog
         .modal-content
-          form#resetPasswordForm.form-horizontal(action='/admin/profile/resetPassword',method='post')
+          form#resetPasswordForm.form-horizontal(action='admin/profile/resetPassword',method='post')
             .modal-header
               h4.modal-title 重置密码
             .modal-body
@@ -159,7 +159,7 @@ block scripts
         rules: {
           oldPwd: {
             required: true,
-            remote:"/admin/profile/pwd/validate"
+            remote:"admin/profile/pwd/validate"
           }
         },
         messages: {
@@ -170,7 +170,7 @@ block scripts
         rules: {
           oldPwd: {
             required: true,
-            remote:"/admin/profile/pwd/validate"
+            remote:"admin/profile/pwd/validate"
           },newPwd: {
             required: true
           },affirmPwd: {
