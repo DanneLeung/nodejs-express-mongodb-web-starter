@@ -57,13 +57,11 @@ block scripts
   script.
     $(document).ready(function(){
       $("#clearCache").on("click", function(e){
-        $.get(contextFront + "/logout", {}, function(data){
           if(localStorage){
             localStorage.clear();
             $.messager.show('已清除本地缓存!', { type: 'success', placement: 'bottom-center' });
-            window.location.href = contextFront + "";
           }
-        });
+          window.location.href = contextFront + "/logout";
       });
     });
 
