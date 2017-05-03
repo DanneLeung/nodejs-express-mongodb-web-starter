@@ -132,6 +132,7 @@ exports.newComment = function (req, res) {
       res.status(200).json({ err: 1, msg: "评论回复帖子不成功，发生错误!" });
     } else {
       Notify.notifyComment(appid, toopenid, nickname, node, topicid, (err, result) => {
+        console.log(" >>>>>>>>>>>> notify commented ", result);
         // res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
         res.status(200).json({ err: 0, msg: "评论回复帖子成功!", comment: comment });
       });

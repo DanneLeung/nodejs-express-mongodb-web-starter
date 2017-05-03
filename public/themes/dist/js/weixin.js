@@ -19,6 +19,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * *********************************************
    */
   var W = {
+    clear: clear,
     config: config,
     getUser: getUser,
     oauthUser: oauthUser,
@@ -384,6 +385,12 @@ var shortUrl = contextRoot + '/api/getShortUrl';
     $.post(shortUrl, { longUrl: longUrl }, function (data) {
       callback(data);
     });
+  }
+
+  function clear(){
+    if(localStorage){
+      localStorage.clear();
+    }
   }
 
 })();

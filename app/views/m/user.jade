@@ -28,6 +28,11 @@ block main
           i.icon-list-ul
         .title #{me ? "我":"TA"}的帖子
         i.icon.icon-chevron-right.muted
+      a#clearCache.item.with-avatar(href="javascript:;")
+        .avatar.text-gray
+          i.icon-refresh
+        .title 清除緩存
+        i.icon.icon-chevron-right.muted
       //- a.item.with-avatar
         .avatar.text-gray
           i.icon.icon-comments
@@ -51,5 +56,8 @@ block main
 block scripts
   script.
     $(document).ready(function(){
+      $("#clearCache").on("click", function(e){
+
+      });
     });
 
