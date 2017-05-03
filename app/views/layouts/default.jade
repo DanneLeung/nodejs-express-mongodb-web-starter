@@ -1,7 +1,7 @@
 -var version = "0.0.1"
 -var baseUrl = (req.baseUrl)
 -if (baseUrl.indexOf('http')<0)
--baseUrl = baseUrl.replace('//','/');
+-baseUrl = baseUrl.replace('//','/').replace("/","");
 doctype html
 html.app(lang='en')
   head
