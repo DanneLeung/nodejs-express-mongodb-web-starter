@@ -64,7 +64,7 @@ module.exports = function (app, express) {
         res.locals.contextRoot = req.session.contextRoot = '/s';
         res.locals.contextFront = req.session.contextFront = '/s/m';
         res.locals.staticRoot = req.session.staticRoot = '';
-        res.locals.themeRoot = req.session.themeRoot = "/themes";
+        res.locals.themeRoot = req.session.themeRoot = req.session.contextRoot + "/themes";
         res.locals.theme = req.session.themeRoot + "/lte";
         res.locals.themeFront = req.session.themeRoot + "/mzui";
         return cb(null, null);
