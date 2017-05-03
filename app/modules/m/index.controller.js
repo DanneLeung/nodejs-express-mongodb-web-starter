@@ -41,7 +41,7 @@ exports.requiredSession = function (req, res, next) {
     //需要去认证授权
     // return res.redirect(req.session.contextFront + '?fromUrl=' + req.originalUrl);
   }
-  res.locals.user = req.session.user;
+  res.locals.user = req.user = req.session.user;
   console.log("************** current user ", req.session.user, req.originalUrl);
   return next();
 }
