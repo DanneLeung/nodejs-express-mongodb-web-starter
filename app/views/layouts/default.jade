@@ -1,5 +1,5 @@
 -var version = "0.0.1"
--var baseUrl = (req.baseUrl)
+-var baseUrl = (req.session.contextRoot + req.baseUrl)
 -if (baseUrl.indexOf('http')<0)
 -baseUrl = baseUrl.replace('//','/');
 doctype html
