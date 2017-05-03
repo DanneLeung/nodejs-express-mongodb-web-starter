@@ -5,7 +5,7 @@
 doctype html
 html.app(lang='en')
   head
-    base(href="#{contextRoot}/")
+    base(href="#{req.session.contextRoot}/")
     include incs/header
   
   body.fixed.hold-transition.skin-blue.sidebar-mini
