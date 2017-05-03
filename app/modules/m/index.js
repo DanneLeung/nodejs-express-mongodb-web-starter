@@ -9,6 +9,7 @@ var upload = multer({ 'dest': config.file.local + '/upload/tmp/' });
 var ctrl = require('./index.controller');
 
 router
+  .get(['/logout'], ctrl.logout)
   .get(['/auth'], ctrl.auth)
   .use(ctrl.nodes)
   .all(['/session'], ctrl.session)

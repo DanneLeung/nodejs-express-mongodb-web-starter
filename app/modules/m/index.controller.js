@@ -25,6 +25,12 @@ exports.nodes = function (req, res, next) {
 
 };
 
+exports.logout = function (req, res) {
+  delete req.session.user;
+  delete req.session;
+  return res.json("ok");
+};
+
 exports.auth = function (req, res) {
   res.render('m/auth', { fromUrl: req.query.fromUrl });
 };
@@ -44,7 +50,7 @@ exports.session = function (req, res) {
   var openid = req.params.openid || req.query.openid || req.body.openid;
   WechatFans.findByOpenId(openid, (fans) => {
     req.user = req.session.user = fans;
-    res.status(200).send("ok");
+    res.status(200).send(fans);
   });
 };
 
