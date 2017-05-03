@@ -11,7 +11,7 @@ let WechatApi = require('./wechatApi');
 let mongoose = require('mongoose');
 let WechatSendMessage = mongoose.model('WechatSendMessage');
 
-const basePath = config.root + '/' + config.file.local + '/wecaht/meterial';
+const basePath = config.root + '/' + config.file.local + '/wechat/meterial';
 /**
  * 发送消息
  * @param appid

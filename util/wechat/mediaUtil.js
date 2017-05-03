@@ -12,7 +12,7 @@ let WechatApi = require('./wechatApi');
 let mongoose = require('mongoose');
 let WechatMedia = mongoose.model('WechatMedia');
 
-const baseDir = '/wecaht/material';
+const baseDir = '/wechat/material';
 const basePath = path.join(config.root, config.file.local, baseDir);
 /**
  * 素材管理
