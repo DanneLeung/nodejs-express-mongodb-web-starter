@@ -113,6 +113,10 @@ block main
 
             .form-horizontal.commentForm(action="#{baseUrl}/topic/comments/new/#{topic._id}")
               input(type="hidden", name="topicid", vaule="#{topic._id}")
+              input#toopenid(type="hidden" name="toopenid" value="#{topic.fans?topic.fans.openid:''}")
+              input#topicid(type="hidden" name="topicid" value="#{topic._id}")
+              input#node(type="hidden" name="node" value="#{topic.node?topic.node.title:''}")
+              
               .form-group.margin-bottom-none
                 .col-sm-10
                   input.form-control.input-sm(name="content", placeholder='输入文字快速回复帖子 ～～～')

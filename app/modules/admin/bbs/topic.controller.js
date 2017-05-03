@@ -3,11 +3,12 @@
  * 帖子的Controller
  */
 
+var async = require('async');
+var moment = require('moment');
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
 var config = require('../../../../config/config');
-var moment = require('moment');
-var async = require('async');
+var Notify = require(config.root + '/app/components/notify');
 
 var Node = mongoose.model('Node');
 var Topic = mongoose.model('Topic');
@@ -117,12 +118,24 @@ exports.add = function (req, res) {
 exports.newComment = function (req, res) {
   var topicid = req.body.topicid || req.params.topicid;
   var user = req.user || req.session.user;
+  // 回复TO粉丝openid
+  var toopenid = req.body.toopenid || req.query.toopenid;
+  // 当前板块
+  var node = req.body.node || req.query.node;
+  var nickname = req.body.nickname || req.query.nickname;
+
+  var appid = req.session.appid;
+
   Comment.newComment(topicid, user, user ? user.fans : null, req.body.content, [], (err, comment) => {
     if(err) {
       console.error(err);
       res.status(200).json({ err: 1, msg: "评论回复帖子不成功，发生错误!" });
     } else {
-      res.status(200).json({ err: 0, msg: "评论回复帖子成功!", comment: comment });
+      Notify.notifyComment(appid, toopenid, nickname, node, topicid, (err, result) => {
+        // res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
+        res.status(200).json({ err: 0, msg: "评论回复帖子成功!", comment: comment });
+      });
+
     }
   });
 };

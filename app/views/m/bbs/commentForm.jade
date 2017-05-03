@@ -10,6 +10,7 @@
     form#commentForm.no-margin(method="post" action="#{contextFront}/topic/comment/new/#{topic._id}",data-type="html")
       input#appid(type="hidden" name="appid" value="#{appid}")
       input#openid(type="hidden" name="openid" value="")
+      input#toopenid(type="hidden" name="nickname" value="#{topic.fans?topic.fans.nickname:''}")
       input#toopenid(type="hidden" name="toopenid" value="#{topic.fans?topic.fans.openid:''}")
       input#topicid(type="hidden" name="topicid" value="#{topic._id}")
       input#node(type="hidden" name="node" value="#{topic.node?topic.node.title:''}")

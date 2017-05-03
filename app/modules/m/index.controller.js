@@ -165,9 +165,10 @@ exports.newCommentSave = function (req, res) {
   var serverIds = req.body.serverIds || [];
   // console.log(" ************* topic body : ", req.body);
   // 回复TO粉丝openid
-  var toopenid = req.body.toopenid || req.user.toopenid;
+  var toopenid = req.body.toopenid || req.query.toopenid;
   // 当前板块
-  var node = req.body.node || req.session.node;
+  var node = req.body.node || req.query.node;
+  var nickname = req.body.nickname || req.query.nickname;
 
   if(!openid) {
     return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });

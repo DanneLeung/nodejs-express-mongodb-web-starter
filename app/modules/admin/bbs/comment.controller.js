@@ -10,7 +10,7 @@ exports.list = function (req, res) {
 };
 
 exports.datatable = function (req, res) {
-  var fansId = req.body.fansId || req.query.fansId;
+  var fans = req.body.fans || req.query.fans;
   var query = {};
   var dateStart = req.query.dateStart || req.body.dateStart;
   var dateEnd = req.query.dateEnd || req.body.dateEnd;
@@ -28,12 +28,10 @@ exports.datatable = function (req, res) {
     query.createdAt.$lte = end;
   }
   // console.log(" >>>>>>>>>>>>>>>>> ", query);
-  if(fansId) {
-    WechatFans.findOne({ nickname: fansId }).exec((err, fans) => {
-      if(fans) query.fans = fans;
-      Comment.dataTable(req.query, { conditions: query }, function (err, data) {
-        res.send(data);
-      });
+  if(fans) {
+    query.fans = fans;
+    Comment.dataTable(req.query, { conditions: query }, function (err, data) {
+      res.send(data);
     });
   } else {
     Comment.dataTable(req.query, { conditions: query }, function (err, data) {
