@@ -4,8 +4,9 @@
 -baseUrl = baseUrl.replace('//','/');
 doctype html
 html.app(lang='en')
-
-  include incs/header
+  head
+    base(href="#{contextRoot}")
+    include incs/header
   
   body.fixed.hold-transition.skin-blue.sidebar-mini
     .wrapper
