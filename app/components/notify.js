@@ -31,7 +31,7 @@ exports.notifyComment = function (appid, openid, nickname, node, topicid, callba
  */
 function sendTemplate(appid, openid, templateId, url, data, callback) {
   Wechat.findByAppid(appid, (err, wechat) => {
-    if(err) {
+    if(err || !wechat) {
       console.error(err);
       return callback("Appid对应的公众号信息不存在，无法发送模板消息!", null);
     }

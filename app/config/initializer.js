@@ -47,9 +47,9 @@ module.exports = function (app, express) {
             req.session.authAppid = res.locals.authAppid = wechat.appid; //认证授权使用的appid
             req.session.authWid = res.locals.authAppid = wechat.id; //认证授权使用的wid
           }
-          //console.log('****************** 应用运行在公众号', req.originalUrl, JSON.stringify(wechat));
+          console.log('****************** 应用运行在公众号', req.originalUrl, JSON.stringify(wechat));
         } else {
-          //console.warn('***************** 应用运行没有运行在公众号上，可能未配置公众号', req.session.channelId, wechatId);
+          console.warn('***************** 应用运行没有运行在公众号上，可能未配置公众号', req.session.channelId, wechatId);
           delete req.session.wechat;
           delete req.session.appid;
 

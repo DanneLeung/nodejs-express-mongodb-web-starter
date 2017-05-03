@@ -58,7 +58,7 @@ block main
             .user-block.clearfix
               img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:'/img/avatar.png'}", alt='user image')
               span.username
-                a(href='#') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
+                a(href='#{topic.fans?topic.fans.openid:""}') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
                 .pull-right
                   if topic.top
                     span.label.label-info 
