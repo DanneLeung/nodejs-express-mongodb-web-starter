@@ -179,16 +179,25 @@ exports.enable = function (req, res) {
  */
 exports.del = function (req, res) {
   var id = req.body.id || req.params.id || req.query.id;
-  Topic.remove({
-    '_id': id
-  }, function (err, result) {
+  Comment.remove({ topic: id }, (err, result) => {
     if(err) {
-      console.log(err);
-      req.flash('error', err);
-    } else {
-      req.flash('success', '数据删除成功!');
-      res.redirect('/admin/bbs/topic');
+      console.error(err);
+      req.flash('error', '数据删除时发生错误!');
+      return res.redirect('/admin/bbs/topic');
     }
+    Topic.remove({
+      '_id': id
+    }, function (err, result) {
+      // console.log(" >>>>>>>>>>>>>>>> delete result ", result);
+      if(err) {
+        console.log(err);
+        req.flash('error', "数据删除时发生错误!");
+        res.redirect('/admin/bbs/topic');
+      } else {
+        req.flash('success', '数据删除成功!');
+        res.redirect('/admin/bbs/topic');
+      }
+    });
   });
 };
 /**
