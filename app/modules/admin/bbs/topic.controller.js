@@ -122,7 +122,7 @@ exports.newComment = function (req, res) {
   var toopenid = req.body.toopenid || req.query.toopenid;
   // 当前板块
   var node = req.body.node || req.query.node;
-  var nickname = user.username;
+  var nickname = user.fullname || user.username;
 
   var appid = req.session.appid;
 

@@ -16,7 +16,7 @@ block content
 
         .content
           a.title(href="#{topic.fans? 'fans/' + topic.fans._id:''}") 
-            span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
+            span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.fullname || topic.user.username:'')}
             //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
             if topic.hot
               .label.red.rounded(style='margin-right: 0.25rem') 
