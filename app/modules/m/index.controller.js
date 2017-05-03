@@ -28,7 +28,7 @@ exports.nodes = function (req, res, next) {
 exports.logout = function (req, res) {
   delete req.session.user;
   delete req.session;
-  return res.json("ok");
+  res.redirect(req.session.contextFront + "/user");
 };
 
 exports.auth = function (req, res) {
