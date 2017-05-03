@@ -1,11 +1,11 @@
 .divider.no-padding.no-margin
 .item.with-avatar.multi-lines
   a.avatar(href="#{comment.fans?'fans/' + comment.fans._id:'javascript:;'}") 
-    img(src='#{comment.fans?comment.fans.headimgurl:"/img/avatar.png"}', alt='')
+    img(src='#{comment.fans?comment.fans.headimgurl: contextRoot+"/img/avatar.png"}', alt='')
   .content
     div
       a.title(href="#{comment.fans?'fans/' + comment.fans._id:'javascript:;'}") 
-        .nickname #{comment.fans?comment.fans.nickname:(comment.user?comment.user.username:'')}
+        .nickname #{comment.fans?comment.fans.nickname:(comment.user?comment.user.fullname||comment.user.username:'')}
           //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{comment.fans?comment.fans.level:1}
           //- a.text-link.strong #{comment.fans?comment.fans.nickname:''}
           .muted.small.no-margin.pull-right  #{formatDatetime(comment.createdAt)}

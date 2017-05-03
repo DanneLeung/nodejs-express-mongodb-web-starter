@@ -6,5 +6,5 @@ each comment in comments
         small.text-muted.pull-right
           i.fa.fa-clock-o
           |  #{formatDatetime(comment.createdAt)}
-        | #{comment.fans?comment.fans.nickname:(comment.user?comment.user.username:'')}
+        | #{comment.fans?comment.fans.nickname:(comment.user?comment.user.fullname||comment.user.username:'')}
       | !{comment.content.replace(/\r\n/gm,'<br>')}
