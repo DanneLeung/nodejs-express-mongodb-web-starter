@@ -12,10 +12,11 @@ var Auth = require(config.root + '/middleware/authorization');
 router.use((req, res, next) => {
   var baseUrl = req.baseUrl;
   // res.locals.baseUrl = baseUrl;
-  var url = req.contextRoot + baseUrl;
+  var url = req.session.contextRoot + baseUrl;
   if(url.indexOf('http') < 0) {
     url = url.replace('//', '/');
   }
+  console.log(" >>>>>>>>>>>>> absBaseUrl ", url);
   req.absBaseUrl = url;
   return next();
 });
