@@ -76,8 +76,8 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * @param redirectUri
    */
   function oauth(appid, scope, redirectUri, state) {
-    // var redirectURL = encodeURIComponent('http://9cubic.cn/wxroute/' + redirectUri.replace('https://', '').replace('http://', ''));
-    var redirectURL = encodeURIComponent(redirectUri);
+    var redirectURL = encodeURIComponent('http://9cubic.cn/wxroute/' + redirectUri.replace('https://', '').replace('http://', ''));
+    // var redirectURL = encodeURIComponent(redirectUri);
     //var redirectURL = encodeURIComponent(redirectUri);
     var oauthURL = weixinOauthURL;
     oauthURL += '?appid=' + appid;

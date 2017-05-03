@@ -31,12 +31,12 @@ exports.auth = function (req, res) {
 
 exports.requiredSession = function (req, res, next) {
   // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", req.session.user);
-  if(!req.session.user) {
-    //需要去认证授权
-    return res.redirect(req.session.contextFront + '/auth?fromUrl=' + req.originalUrl);
-  }
+  // if(!req.session.user) {
+  //   //需要去认证授权
+  //   return res.redirect(req.session.contextFront + '/auth?fromUrl=' + req.originalUrl);
+  // }
   res.locals.user = req.user = req.session.user;
-  // console.log("************** current user ", req.session.user);
+  console.log("************** current user ", req.session.user);
   return next();
 }
 
