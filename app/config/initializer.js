@@ -61,8 +61,8 @@ module.exports = function (app, express) {
     }, function (cb) {
       if(env == 'development') {
         //开发模式时访问本地localhost
-        res.locals.contextRoot = req.session.contextRoot = '';
-        res.locals.contextFront = req.session.contextFront = '/m';
+        res.locals.contextRoot = req.session.contextRoot = '/s';
+        res.locals.contextFront = req.session.contextFront = '/s/m';
         res.locals.staticRoot = req.session.staticRoot = '';
         res.locals.themeRoot = req.session.themeRoot = "/themes";
         res.locals.theme = req.session.themeRoot + "/lte";
