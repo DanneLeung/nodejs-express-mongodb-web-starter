@@ -34,10 +34,8 @@ block header
 
 if NODE_ENV == 'development'
   link( rel="stylesheet" href="#{theme}/dist/css/AdminLTE.css" type="text/css")
-  //link( rel="stylesheet" href="#{theme}/dist/css/skins/skin-blue.css" type="text/css")
   link( rel="stylesheet" href="#{theme}/dist/css/skins/_all-skins.css" type="text/css")
-
-if NODE_ENV == 'production'
+else
   link( rel="stylesheet" href="#{theme}/dist/css/AdminLTE.min.css" type="text/css")
   link( rel="stylesheet" href="#{theme}/dist/css/skins/_all-skins.min.css" type="text/css")
 
