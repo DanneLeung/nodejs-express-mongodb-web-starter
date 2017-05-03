@@ -26,9 +26,9 @@ exports.nodes = function (req, res, next) {
 };
 
 exports.logout = function (req, res) {
+  var url = req.session.contextFront + "/user";
   delete req.session.user;
-  delete req.session;
-  res.redirect(req.session.contextFront + "/user");
+  res.redirect(url);
 };
 
 exports.auth = function (req, res) {
