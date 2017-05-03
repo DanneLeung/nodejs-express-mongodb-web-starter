@@ -36,7 +36,7 @@ exports.requiredSession = function (req, res, next) {
   //   return res.redirect(req.session.contextFront + '/auth?fromUrl=' + req.originalUrl);
   // }
   res.locals.user = req.user = req.session.user;
-  console.log("************** current user ", req.session.user);
+  // console.log("************** current user ", req.session.user);
   return next();
 }
 
@@ -168,7 +168,7 @@ exports.newCommentSave = function (req, res) {
   var toopenid = req.body.toopenid || req.query.toopenid;
   // 当前板块
   var node = req.body.node || req.query.node;
-  var nickname = req.body.nickname || req.query.nickname;
+  var nickname = req.session.user.nickname || req.body.nickname || req.query.nickname;
 
   if(!openid) {
     return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
