@@ -52,7 +52,7 @@ exports.session = function (req, res) {
   WechatFans.findByOpenId(openid, (fans) => {
     req.session.user = fans;
     console.log(" >>>>>>>>>>>>>>> session result fans ", req.session.user);
-    res.redirect(originalUrl);
+    res.redirect(req.session.contextFront + originalUrl);
   });
 };
 
