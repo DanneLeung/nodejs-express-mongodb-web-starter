@@ -8,14 +8,14 @@ block main
       span.loading.loading-light
       | 微信页面授权用户认证，需要从微信中访问
 block scripts
-  script(type='text/javascript', src='#{themeRoot}/dist/js/browser.js?v=#{version}')
   script.
+    var fromUrl = "#{fromUrl}" || contextFront;
     if(is_weixin()){
       W.oauthUser(appid, function (user) {
         if(user){
           $.get(contextFront + "/session",{openid: user.openid}, function(data){
             if(data == "ok"){
-              window.location.href = contextFront;
+              window.location.href = fromUrl;
             } else{
               $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
             }
@@ -27,7 +27,7 @@ block scripts
     }else{
       $.get(contextFront + "/session",{openid: "oxVEQuN3xDA1r8aBD_hh-xMQeir4"}, function(data){
         if(data == "ok"){
-          window.location.href = contextFront;
+          window.location.href = fromUrl;
         } else{
           $.messager.show('无法识别当前粉丝信息!', { type: 'error', placement: 'bottom-center' });   
         }
