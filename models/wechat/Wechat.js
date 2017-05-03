@@ -46,9 +46,9 @@ WechatSchema.statics.getDefault = function (done) {
  * @param done
  */
 WechatSchema.statics.findByAppid = function (appid, done) {
-  Wechat.findOne({ appid: appid }).exec(function (err, o) {
+  Wechat.findOne({ appid: appid }).exec(function (err, wechat) {
     if(err) console.error(err);
-    return done(err, o);
+    return done(err, wechat);
   });
 };
 

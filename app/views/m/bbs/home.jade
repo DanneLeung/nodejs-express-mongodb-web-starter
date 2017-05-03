@@ -11,14 +11,14 @@ block css
   
 block headNav
   header#haedNav.heading.affix.dock-top.dock-auto
-    nav#headNav.nav()
+    nav#headNav.nav.pull-left
       //- a(href='home', class="#{!node?'active primary-pale rounded':''}", data-page-name='index')
         //- i.icon-home
         | 全部
       each n in nodes
         a(href='home/#{n._id}', class="#{n._id == node?'active primary-pale rounded':''}" data-page-name='#{n.title}') #{n.title.substring(0,4)}
-    .title &nbsp;
-    nav.nav
+    //- .title &nbsp;
+    nav.nav.dock-right
       a(href='user')
         .avatar.circle
           img#headimgurl(src="#{user && user.headimgurl ? user.headimgurl : baseUrl + '/imgs/headimg_default.jpg'}", alt='U')

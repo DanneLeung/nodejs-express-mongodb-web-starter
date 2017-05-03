@@ -53,7 +53,8 @@ CommentSchema.statics = {
     comment.save((err, cm) => {
       mongoose.model("Topic").update({ _id: topicid }, { $set: { lastCommentTime: Date.now() }, $inc: { commentCount: 1 }, $push: { comments: { $each: [cm], $position: 0, $slice: 5 } } }, (err, t) => {
         if(err) console.error(err);
-        return done(err, cm);
+        console.log(" >>>>>>>>>>>>>>>>>>> topic comment ", t);
+        return done(err, cm, t);
       });
     });
   }

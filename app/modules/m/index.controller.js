@@ -5,6 +5,7 @@ var async = require('async');
 var mongoose = require('mongoose');
 var config = require('../../../config/config');
 var mediaUtil = require(config.root + '/util/wechat/mediaUtil');
+var Notify = require(config.root + '/app/components/notify');
 
 var User = mongoose.model('User');
 var Wechat = mongoose.model('Wechat');
@@ -163,6 +164,10 @@ exports.newCommentSave = function (req, res) {
   var openid = req.body.openid || req.user.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
   // console.log(" ************* topic body : ", req.body);
+  // 回复TO粉丝openid
+  var toopenid = req.body.toopenid || req.user.toopenid;
+  // 当前板块
+  var node = req.body.node || req.session.node;
 
   if(!openid) {
     return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
@@ -179,17 +184,18 @@ exports.newCommentSave = function (req, res) {
     WechatFans.findOne({ openid: openid }, (err, fans) => {
       if(err) console.error(err);
       Comment.newComment(topicid, null, fans, req.body.content, images, (err, comment) => {
-        res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
+        if(err) {
+          console.error(err);
+          return res.status(200).send({ result: 'error', message: '评论发表失败!' });
+        }
+        if(toopenid && toopenid != openid) {
+          Notify.notifyComment(appid, toopenid, nickname, node, topicid, (err, result) => {
+            res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
+          });
+        } else {
+          res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
+        }
       });
-      // var comment = new Comment(req.body);
-      // comment.fans = fans;
-      // comment.topic = topicid;
-      // comment.save((err, c) => {
-      //   if(err) console.error(err);
-      //   Topic.incsCountField(topicid, 'commentCount', (err, result) => {
-      //     res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
-      //   });
-      // });
     });
   });
 };
