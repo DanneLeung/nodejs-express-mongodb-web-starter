@@ -100,7 +100,7 @@ exports.getUserByUnionId = function (req, res) {
     if(!user) {
       console.warn("***************** fans with unionid %s and appid %s not found.", unionid, appid);
     }
-
+    req.session.user = user;
     return res.status(200).json(user);
   });
 }
@@ -114,6 +114,7 @@ exports.getUser = function (req, res) {
   var openid = req.query.openid || req.body.openid || req.params.openid;
   WechatFans.findByOpenId(openid, function (user) {
     //if (!user.hasOwnProperty('unionid')) user.unionid = '';
+    req.session.user = user;
     return res.status(200).json(user);
   });
 }

@@ -161,9 +161,9 @@ var shortUrl = contextRoot + '/api/getShortUrl';
           window.location.href = removeQueryString(redirectUri, ['code', 'state']);
         });
       }
-    } else if(user && openid && openid != '' && openid != 'null') { //console.log('获取到本地用户信息');
-      console.log('获取到本地用户信息'); //console.log('获取到本地用户信息');
-      return callback(user ? JSON.parse(user) : {});
+    // } else if(user && openid && openid != '' && openid != 'null') { //console.log('获取到本地用户信息');
+    //   console.log('获取到本地用户信息'); //console.log('获取到本地用户信息');
+    //   return callback(user ? JSON.parse(user) : {});
     } else if(openid && openid != '' && openid != 'null') {
       return getUserAndSave(appid, openid, callback);
     } else if(unionid) {
