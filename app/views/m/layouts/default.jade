@@ -33,9 +33,9 @@ html
             $.messager.show('微信公众号页面授权错误，无法获得粉丝信息!', { type: 'error', placement: 'bottom-center' });   
           }
         });
-      }else{
-        if(#{!req.session.user}){
-          window.location.href = contextFront + "/session?openid=oxVEQuN3xDA1r8aBD_hh-xMQeir4&originalUrl=#{req.originalUrl}";
-        }
+      //- }else{
+      //-   if(#{!req.session.user}){
+      //-     window.location.href = contextFront + "/session?openid=oxVEQuN3xDA1r8aBD_hh-xMQeir4&originalUrl=#{req.originalUrl}";
+      //-   }
       }
     block scripts
