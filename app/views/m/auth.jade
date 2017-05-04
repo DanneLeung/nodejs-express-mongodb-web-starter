@@ -1,4 +1,4 @@
--var version = "0.0.8"
+-var version = "0.0.9"
 html
   head
     title 九型人格学员交流社区
@@ -24,6 +24,8 @@ html
           }
         });
       }else{
-         
+        if(#{!req.session.user}){
+          window.location.href = contextFront + "/session?openid=oxVEQuN3xDA1r8aBD_hh-xMQeir4&fromUrl=#{fromUrl}";
+        }
       }
 

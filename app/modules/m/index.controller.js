@@ -50,12 +50,12 @@ exports.requiredSession = function (req, res, next) {
 
 exports.session = function (req, res) {
   var openid = req.params.openid || req.query.openid || req.body.openid;
-  var originalUrl = req.query.originalUrl || req.body.originalUrl;
+  var fromUrl = req.query.fromUrl || req.body.fromUrl;
   WechatFans.findByOpenId(openid, (fans) => {
     req.session.user = fans;
-    console.log(" >>>>>>>>>>>>>>> session result fans ", req.session.user, openid, originalUrl);
-    if(!fans) res.redirect(req.session.contextFront + "/auth?fromUrl=" + originalUrl);
-    res.redirect(req.session.contextRoot + originalUrl);
+    console.log(" >>>>>>>>>>>>>>> session result fans ", req.session.user, openid, fromUrl);
+    if(!fans) res.redirect(req.session.contextFront + "/auth?fromUrl=" + fromUrl);
+    res.redirect(req.session.contextRoot + fromUrl);
   });
 };
 
