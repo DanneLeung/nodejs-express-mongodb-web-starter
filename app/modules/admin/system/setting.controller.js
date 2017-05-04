@@ -53,7 +53,7 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '添加成功!');
       }
-      res.redirect(req.session.contextRoot + '/admin/system/setting');
+      res.redirect('/admin/system/setting');
     });
   } else {
     // update
@@ -63,7 +63,7 @@ exports.save = function (req, res) {
       } else {
         req.flash('success', '保存成功!');
       }
-      res.redirect(req.session.contextRoot + '/admin/system/setting');
+      res.redirect('/admin/system/setting');
     });
   }
 };
@@ -72,7 +72,7 @@ exports.edit = function (req, res) {
   var id = req.params.id;
   Setting.findOne({ '_id': id }, function (err, setting) {
     if(err) {
-      res.redirect(req.session.contextRoot + '/admin/system/setting');
+      res.redirect('/admin/system/setting');
     } else {
       res.render('admin/system/setting/settingForm', {
         viewType: "edit",
@@ -90,7 +90,7 @@ exports.del = function (req, res) {
       req.flash('error', err);
     } else {
       req.flash('success', '数据删除成功!');
-      res.redirect(req.session.contextRoot + '/admin/system/setting');
+      res.redirect('/admin/system/setting');
     }
   });
 };

@@ -8,6 +8,7 @@ var config = require('../../../config/config');
 var Auth = require(config.root + '/middleware/authorization');
 
 router.use(Auth.requiresLogin);
+
 // Routers
 var modulePath = __dirname;
 fs.readdirSync(modulePath).forEach(function (file) {

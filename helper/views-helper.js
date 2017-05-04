@@ -3,7 +3,8 @@
  */
 "use strict";
 
-var url = require('url'),
+var _ = require('lodash'),
+  url = require('url'),
   qs = require('querystring'),
   moment = require('moment');
 
@@ -63,8 +64,15 @@ function helpers(name) {
         res._render(template, locals, cb);
       }
     };
+
+    res._redirect = res.redirect;
+    res.redirect = function (uri) {
+      var url = _.startsWith(uri, 'http') ? uri : req.session.contextRoot || "" + uri;
+      console.log(" >>>>>>>>>>>>>>>>>.. redirect to ", url);
+      res._redirect(url);
+    };
     next();
-  }
+  };
 }
 
 module.exports = helpers;
@@ -90,7 +98,7 @@ function createPagination(req) {
       str += '<li class="' + clas + '"><a href="' + href + '">' + p + '</a></li>';
     }
     return str;
-  }
+  };
 }
 
 /**
@@ -148,5 +156,5 @@ function paddingLeft(str, char, len) {
  */
 
 function stripScript(str) {
-  return str.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+  return str.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 }
