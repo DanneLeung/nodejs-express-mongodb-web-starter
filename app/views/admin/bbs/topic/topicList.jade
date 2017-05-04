@@ -111,8 +111,7 @@ block main
             .box
               .comment-box.box-body.chat
 
-            .form-horizontal.commentForm(action="#{baseUrl}/topic/comments/new/#{topic._id}")
-              input(type="hidden", name="topicid", vaule="#{topic._id}")
+            form.form-horizontal.commentForm(action="#{baseUrl}/topic/comments/new/#{topic._id}")
               input#toopenid(type="hidden" name="toopenid" value="#{topic.fans?topic.fans.openid:''}")
               input#topicid(type="hidden" name="topicid" value="#{topic._id}")
               input#node(type="hidden" name="node" value="#{topic.node?topic.node.title:''}")
@@ -121,7 +120,7 @@ block main
                 .col-sm-10
                   textarea.form-control.input-sm.required(name="content", rows="4", minlength="5", maxlength="#{setting['topic.maxlength'] || 5000}", placeholder='输入文字快速回复帖子 ～～～')
                 .col-sm-2
-                  button.btnComment.btn.btn-success.pull-right.btn-sm(type='button') 
+                  button.btnComment.btn.btn-success.pull-right.btn-sm(type='submit') 
                     i.fa.fa-fw.fa-reply
                     | 回复
       hr
@@ -141,28 +140,24 @@ block scripts
         autoclose: true,
         clearBtn: true
       });
-      $('body').on("click",".btnComment", function(e){
-        var that = this;
-        var frm = $(this).closest(".commentForm");
-        $(frm).validate({
-          submitHandler: function(form){
-            var url = $(form).attr("action");
-            var topicid = $(form).find("input[name='topicid']").val();
-            var content = $(form).find("input[name='content']").val();
-            var data = {topicid:topicid, content:content};
-            $.post(url,data, function(result){
-              if(result.err){
-                bootbox.alert(result.msg);
-              }else{
-                $(form).find("input[name='content']").val("").focus();
-                $(that).closest('.post').find("a.comment").trigger("click");
-                //- $(that).closest('.post').find(".comment-box").append(commentHtml(result.comment));
-                toastr.success(result.msg);
-              }
-            });
-          }
-        });
+      $(".commentForm").validate({
+        submitHandler: function(form){
+          var url = $(form).attr("action");
+          var data = $(form).serialize();
+          console.log(" >>>>>>>>>>>>> form data", data);
+          $.post(url,data, function(result){
+            if(result.err){
+              bootbox.alert(result.msg);
+            }else{
+              $(form).find("textarea[name='content']").val("").focus();
+              $(form).closest('.post').find("a.comment").trigger("click");
+              //- $(that).closest('.post').find(".comment-box").append(commentHtml(result.comment));
+              toastr.success(result.msg);
+            }
+          });
+        }
       });
+
       function commentHtml(comment){
         var html = "";
         return html;
