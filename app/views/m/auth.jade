@@ -8,4 +8,10 @@ block main
       span.loading.loading-light
       | 微信页面授权用户认证，需要从微信中访问
 block scripts
+  $(function(){
+    if(localStorage){
+      localStorage.clear();
+    }
+    window.location.href= "#{originalUrl}" || "home";
+  });
 
