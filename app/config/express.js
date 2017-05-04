@@ -60,8 +60,6 @@ module.exports = function (app, express, passport) {
   app.use(methodOverride());
   app.use(cookieParser(pkg.name + 'app'));
 
-  app.use('/api', require('../api'));
-
   //微信事件推送监听
   //TODO: 使用express 中间件机制拦截处理维系推送消息，而不是全部写死处理，拦截器无法处理是自动传递给最后的默认处理器
   // router.use('/wx', function (req, res, nect) {
@@ -99,6 +97,9 @@ module.exports = function (app, express, passport) {
 
   // connect flash
   app.use(flash());
+
+  app.use('/api', require('../api'));
+
   // use passport session
   app.use(passport.initialize());
   app.use(passport.session({
@@ -146,7 +147,7 @@ module.exports = function (app, express, passport) {
   if(app.get('env') === 'development') {
     app.use(responseTime());
   } else {
-    
+
   }
 
   // static content
