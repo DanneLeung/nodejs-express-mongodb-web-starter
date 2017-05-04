@@ -210,8 +210,10 @@ var shortUrl = contextRoot + '/api/getShortUrl';
   }
 
   function userInfoLocalStorage(appid, user) {
-    if(!user)
+    if(!user){
+      localStorage.clear();
       return user;
+    }
     //localStorage.setItem(appid + '.user.openid', (user.hasOwnProperty('openid') ? user.openid : null));
     //localStorage.setItem(appid + '.user.unionid', (user.hasOwnProperty('unionid') ? user.unionid : null));
     localStorage.setItem(appid + '.user.openid', user.openid);
