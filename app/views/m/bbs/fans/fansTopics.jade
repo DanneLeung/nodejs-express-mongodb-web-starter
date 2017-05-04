@@ -26,20 +26,12 @@ each topic in topics
               .cell-4
                 a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}#{img}' alt='' class='no-margin'>")
                   .img(style="background-image:url('#{contextRoot}#{img}');")
-    //- .muted.clearfix.space-sm
+    .muted.clearfix.space-sm
       .nav.justified
-        a.btnDonate.btn(href="javascript:;", data-id="#{topic._id}" )
-          i.icon-yen &nbsp;
-          small.muted  赏 
-            span#likeCount #{topic.donated?topic.donated : 0}
-        a.btnShare.btn(href="javascript:;", data-id="#{topic._id}" )
-          i.icon-share-alt &nbsp;
-          small.muted  转 
-            span#likeCount #{topic.likeCount?topic.likeCount : 0}
-        a.btnLike.btn(href="javascript:;", data-id="#{topic._id}" )
+        a.btnLike(href="javascript:;", data-id="#{topic._id}" )
           i.icon-thumbs-up &nbsp;
           small.muted  赞 
             span#likeCount #{topic.likeCount?topic.likeCount : 0}
-        a.btnComment.btn(href="topic/view/#{topic._id}")
-          i.icon-chat-dot &nbsp;
+        a.btnComment(href="topic/view/#{topic._id}")
+          i.icon-comments.-alt &nbsp;
           small.muted  评 #{topic.commentCount?topic.commentCount : 0}
