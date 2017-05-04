@@ -9,7 +9,7 @@ block main
       | 微信页面授权用户认证，需要从微信中访问
 block scripts
     script.
-      var fromUrl = contextFront + (#{fromUrl?fromUrl:''});
+      var fromUrl = "#{fromUrl?contextRoot + fromUrl : contextFront}";
       if(is_weixin()){
         W.oauthUser(appid, function (user) {
           if(user){
