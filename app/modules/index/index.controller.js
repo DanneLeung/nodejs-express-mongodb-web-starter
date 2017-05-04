@@ -215,7 +215,7 @@ exports.index = function (req, res) {
   if(req.isMobile)
     res.redirect('/m');
   else
-    res.redirect('/admin');
+    // res.redirect('/admin');
+    res.render('index')
 
-  // res.render('index')
 };

@@ -9,7 +9,7 @@ exports.requiresLogin = function (req, res, next) {
   if(req.isAuthenticated()) return next();
   if(req.method == 'GET' && req.originalUrl != '/login')
     req.session.returnTo = req.originalUrl;
-  res.redirect(req.session.contextRoot || '' + '/login');
+  res.redirect((req.session.contextRoot || '') + '/login');
 };
 
 exports.hasLogin = function (req, res, next) {
