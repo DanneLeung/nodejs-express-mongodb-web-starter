@@ -7,10 +7,11 @@ let WechatApi = require("../../util/wechat/wechatApi");
 let Setting = mongoose.model('Setting');
 
 exports.notifyComment = function (appid, openid, nickname, node, topicid, callback) {
-  // let templateId = "mxObob98KCwHO4N4eGvfYavv1_sqIVv9_aofjQNhRKg";
-  let templateId = "rKwHgJ0kyjlWkL5UCeh4_LY1KyruV-mo3cPdB_x4lLs";
+  let templateId = "mxObob98KCwHO4N4eGvfYavv1_sqIVv9_aofjQNhRKg";
+  // let templateId = "rKwHgJ0kyjlWkL5UCeh4_LY1KyruV-mo3cPdB_x4lLs";
   let title = "12节课情商提升";
-  let data = { first: { value: nickname + "点评了你的功课啦" }, keyword1: { value: title }, keyword2: { value: node }, keyword3: { value: Date.now() }, remark: {} };
+  let data = { first: { value: nickname + "点评了你的功课啦" }, keyword1: { value: title }, keyword2: { value: node }, remark: { value: "点击查看点评详情" } };
+
   Setting.getByKey('context.front', function (setting) {
     let contextFront = "";
     if(setting) {
