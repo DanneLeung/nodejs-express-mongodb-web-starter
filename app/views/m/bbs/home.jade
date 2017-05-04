@@ -48,5 +48,5 @@ block content
       i.icon.icon-plus
 block contentScripts
   script.
-    var url = contextFront + "/topics/#{node}";
+    var url = contextFront + "/topics/#{node?node:''}";
   script(src="home.js?v=#{vjs}")
