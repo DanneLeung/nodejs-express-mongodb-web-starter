@@ -1,13 +1,18 @@
-extends layouts/default
-block header
-  style.
+-var version = "0.0.8"
+html
+  head
+    title 九型人格学员交流社区
+    include incs/header
+    script(type='text/javascript', src='#{themeFront}/js/mzui.min.js')
+    script(type='text/javascript', src='//res.wx.qq.com/open/js/jweixin-1.2.0.js')
+    script(type='text/javascript', src='#{themeRoot}/dist/js/global.js?v=#{version}')
+    script(type='text/javascript', src='#{themeRoot}/dist/js/weixin.js?v=#{version}')
 
-block main
-  .box 
-    p.text-info.text-center 
-      span.loading.loading-light
-      | 微信页面授权用户认证，需要从微信中访问
-block scripts
+  body.with-heading-top.has-index-content
+    .box 
+      p.text-info.text-center 
+        span.loading.loading-light
+        | 微信页面授权用户认证，需要从微信中访问
     script.
       var fromUrl = "#{fromUrl?contextRoot + fromUrl : contextFront}";
       if(is_weixin()){
@@ -18,9 +23,7 @@ block scripts
             $.messager.show('微信公众号页面授权错误，无法获得粉丝信息!', { type: 'error', placement: 'bottom-center' });   
           }
         });
-      //- }else{
-      //-   if(#{!req.session.user}){
-      //-     window.location.href = contextFront + "/session?openid=oxVEQuN3xDA1r8aBD_hh-xMQeir4&originalUrl=#{req.originalUrl}";
-      //-   }
+      }else{
+         
       }
 

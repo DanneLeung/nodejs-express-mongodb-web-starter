@@ -1,3 +1,9 @@
+// 是否为微信
+function is_weixin() {
+  var ua = navigator.userAgent.toLowerCase();
+  return ua.match(/MicroMessenger/i) == "micromessenger";
+}
+
 function getQueryString(name) {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
   var r = decodeURI(window.location.search).substr(1).match(reg);
