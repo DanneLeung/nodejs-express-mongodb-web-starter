@@ -58,7 +58,7 @@ exports.session = function (req, res) {
 };
 
 exports.home = function (req, res) {
-  var node = req.params.node || req.query.node;
+  var node = req.params.node || req.query.node || '';
   Topic.topTopics(node, (topTopics) => {
     res.render('m/bbs/home', { node: node ? node : '', topTopics: topTopics });
   });

@@ -61,7 +61,7 @@ TopicSchema.statics = {
     var q = { top: true };
     if(node) q.node = node;
     Topic.find(q).sort("-updatedAt").populate("fans user").exec((err, topics) => {
-      if(err) console.error(err);
+      if(err) console.error(">>>>>>>>>>>>>>>>>>> topTopics ", err);
       done(topics);
     });
   },
