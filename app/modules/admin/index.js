@@ -9,6 +9,16 @@ var Auth = require(config.root + '/middleware/authorization');
 
 router.use(Auth.requiresLogin);
 
+router.use((req, res, next) => {
+  res._redirect = res.redirect;
+  res.redirect = function (uri) {
+    var url = _.startsWith(uri, 'http') ? uri : req.session.contextRoot || "" + uri;
+    console.log(" >>>>>>>>>>>>>>>>>.. redirect to ", url);
+    res._redirect(url);
+  };
+  next();
+});
+
 // Routers
 var modulePath = __dirname;
 fs.readdirSync(modulePath).forEach(function (file) {
