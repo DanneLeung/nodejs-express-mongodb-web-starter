@@ -32,6 +32,7 @@ exports.logout = function (req, res) {
 };
 
 exports.auth = function (req, res) {
+  console.log(" >>>>>>>>>>>>>>>>>>>>> auth ", req.session.user);
   res.render('m/auth', { fromUrl: req.query.fromUrl });
 };
 
@@ -52,7 +53,7 @@ exports.session = function (req, res) {
   WechatFans.findByOpenId(openid, (fans) => {
     req.session.user = fans;
     console.log(" >>>>>>>>>>>>>>> session result fans ", req.session.user, openid, originalUrl);
-    if(!fans) return res.render("m/auth", { originalUrl: originalUrl });
+    if(!fans) res.redirect(req.session.contextFront + "/auth?fromUrl=" + originalUrl);
     res.redirect(req.session.contextRoot + originalUrl);
   });
 };
