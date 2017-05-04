@@ -25,14 +25,14 @@ block headNav
 block content
   //- .heading
     .title 
-
-  #topTopics.list.space-sm
-    each topTopic in topTopics
-      if(topTopic)
-        .item.with-avatar(data-id="#{topTopic._id}")
-          .avatar.avatar-sm.circle.yellow 顶
-          .content
-            | !{topTopic.content.replace(/\r\n/gm,'<br>')}
+  if topTopics
+    #topTopics.list.space-sm
+      each topTopic in topTopics
+        if(topTopic)
+          .item.with-avatar(data-id="#{topTopic._id}")
+            .avatar.avatar-sm.circle.yellow 顶
+            .content
+              | !{topTopic.content.replace(/\r\n/gm,'<br>')}
   #wrapper  
     #topics
 
