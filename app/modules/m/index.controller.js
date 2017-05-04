@@ -44,7 +44,7 @@ exports.requiredSession = function (req, res, next) {
     return res.redirect(req.session.contextFront + '/auth?fromUrl=' + req.originalUrl);
   }
   res.locals.user = req.session.user;
-  console.log("************** current user ", req.session.user, req.originalUrl);
+  // console.log("************** current user ", req.session.user, req.originalUrl);
   return next();
 }
 
@@ -172,7 +172,7 @@ exports.newComment = function (req, res) {
 exports.newCommentSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var topicid = req.params.topicid || req.query.topicid;
-  var openid = req.body.openid || req.session.user.openid;
+  var openid = req.session.user.openid || req.body.openid;
   var serverIds = req.body.serverIds || [];
   // console.log(" ************* topic body : ", req.body);
   // 回复TO粉丝openid
@@ -200,7 +200,7 @@ exports.newCommentSave = function (req, res) {
           console.error(err);
           return res.status(200).send({ result: 'error', message: '评论发表失败!' });
         }
-        if(toopenid && toopenid != openid) {
+        if(toopenid) {// && toopenid != openid
           Notify.notifyComment(appid, toopenid, nickname, node, topicid, (err, result) => {
             res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
           });

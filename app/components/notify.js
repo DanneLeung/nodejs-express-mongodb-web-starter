@@ -40,7 +40,7 @@ function sendTemplate(appid, openid, templateId, url, data, callback) {
       if(err) {
         console.error(err);
       }
-      console.log(" >>>>>>>>>>>>>>> 模板消息发送结果 ", result);
+      console.log(" >>>>>>>>>>>>>>> 模板消息发送结果 ", openid, data, result);
       return callback(err, result);
     });
   });
