@@ -107,9 +107,10 @@ block main
                   i.fa.fa-comments-o.margin-r-5
                   | 评 (#{topic.commentCount ? topic.commentCount : 0})
 
-
-            .box
-              .comment-box.box-body.chat
+            .panel
+              .panel-heading
+                  b.title 最新评论 ...
+              .comment-box.panel-body.chat
 
             form.form-horizontal.commentForm(action="#{baseUrl}/topic/comments/new/#{topic._id}")
               input#toopenid(type="hidden" name="toopenid" value="#{topic.fans?topic.fans.openid:''}")
@@ -120,9 +121,9 @@ block main
                 .col-sm-10
                   textarea.form-control.input-sm.required(name="content", rows="4", minlength="5", maxlength="#{setting['topic.maxlength'] || 5000}", placeholder='输入文字快速回复帖子 ～～～')
                 .col-sm-2
-                  button.btnComment.btn.btn-success.pull-right.btn-sm(type='submit') 
+                  button.btnComment.btn.btn-success.pull-right.btn-block(type='submit') 
                     i.fa.fa-fw.fa-reply
-                    | 回复
+                    |  回复
       hr
       include topicPager
 //应用添加的脚本在scripts block中定义
@@ -140,22 +141,24 @@ block scripts
         autoclose: true,
         clearBtn: true
       });
-      $(".commentForm").validate({
-        submitHandler: function(form){
-          var url = $(form).attr("action");
-          var data = $(form).serialize();
-          console.log(" >>>>>>>>>>>>> form data", data);
-          $.post(url,data, function(result){
-            if(result.err){
-              bootbox.alert(result.msg);
-            }else{
-              $(form).find("textarea[name='content']").val("").focus();
-              $(form).closest('.post').find("a.comment").trigger("click");
-              //- $(that).closest('.post').find(".comment-box").append(commentHtml(result.comment));
-              toastr.success(result.msg);
-            }
-          });
-        }
+      $(".commentForm").each(function(index, frm){
+        $(frm).validate({
+          submitHandler: function(form){
+            var url = $(form).attr("action");
+            var data = $(form).serialize();
+            console.log(" >>>>>>>>>>>>> form data", data);
+            $.post(url,data, function(result){
+              if(result.err){
+                bootbox.alert(result.msg);
+              }else{
+                $(form).find("textarea[name='content']").val("").focus();
+                $(form).closest('.post').find("a.comment").trigger("click");
+                //- $(that).closest('.post').find(".comment-box").append(commentHtml(result.comment));
+                toastr.success(result.msg);
+              }
+            });
+          }
+        });
       });
 
       function commentHtml(comment){

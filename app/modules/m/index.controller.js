@@ -32,7 +32,6 @@ exports.logout = function (req, res) {
 };
 
 exports.auth = function (req, res) {
-  console.log(" >>>>>>>>>>>>>>>>>>>>> auth ", req.session.user);
   res.render('m/auth', { fromUrl: req.query.fromUrl });
 };
 
