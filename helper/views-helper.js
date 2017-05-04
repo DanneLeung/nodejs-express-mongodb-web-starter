@@ -30,10 +30,10 @@ function helpers(name) {
     res.locals.createPagination = createPagination(req);
 
     if(typeof req.flash !== 'undefined') {
-      res.locals.info = req.flash('info');
-      res.locals.errors = req.flash('error');
-      res.locals.success = req.flash('success');
-      res.locals.warning = req.flash('warning');
+      // res.locals.info = req.flash('info');
+      // res.locals.errors = req.flash('error');
+      // res.locals.success = req.flash('success');
+      // res.locals.warning = req.flash('warning');
       // console.log("********************* req flash success ", JSON.stringify(res.locals.success), res.get('Content-Type'));
     }
 
