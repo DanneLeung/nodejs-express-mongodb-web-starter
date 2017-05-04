@@ -8,11 +8,19 @@ block main
       span.loading.loading-light
       | 微信页面授权用户认证，需要从微信中访问
 block scripts
-  script.
-    $(function(){
-      if(localStorage){
-        localStorage.clear();
+    script.
+      var fromUrl = contextFront + (#{fromUrl?fromUrl:''});
+      if(is_weixin()){
+        W.oauthUser(appid, function (user) {
+          if(user){
+            window.location.href = fromUrl;
+          }else{
+            $.messager.show('微信公众号页面授权错误，无法获得粉丝信息!', { type: 'error', placement: 'bottom-center' });   
+          }
+        });
+      //- }else{
+      //-   if(#{!req.session.user}){
+      //-     window.location.href = contextFront + "/session?openid=oxVEQuN3xDA1r8aBD_hh-xMQeir4&originalUrl=#{req.originalUrl}";
+      //-   }
       }
-      window.location.href= "#{originalUrl}" || "home";
-    });
 

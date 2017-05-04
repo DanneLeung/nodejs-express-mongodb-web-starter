@@ -21,21 +21,5 @@ html
     script(type='text/javascript', src='#{themeRoot}/dist/js/browser.js?v=#{version}')
     script(type='text/javascript', src='#{themeRoot}/dist/js/global.js?v=#{version}')
     script(type='text/javascript', src='#{themeRoot}/dist/js/weixin.js?v=#{version}')
-    script.
-      var fromUrl = contextFront;
-      if(is_weixin()){
-        W.oauthUser(appid, function (user) {
-          if(user){
-            if(#{!req.session.user}){
-              window.location.href = contextFront + "/session?openid=" + user.openid + "&originalUrl=#{req.originalUrl}";
-            }
-          }else{
-            $.messager.show('微信公众号页面授权错误，无法获得粉丝信息!', { type: 'error', placement: 'bottom-center' });   
-          }
-        });
-      //- }else{
-      //-   if(#{!req.session.user}){
-      //-     window.location.href = contextFront + "/session?openid=oxVEQuN3xDA1r8aBD_hh-xMQeir4&originalUrl=#{req.originalUrl}";
-      //-   }
-      }
+
     block scripts

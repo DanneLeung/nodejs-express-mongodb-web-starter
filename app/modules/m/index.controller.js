@@ -40,9 +40,10 @@ exports.requiredSession = function (req, res, next) {
   // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", req.session.user);
   if(!req.session.user) {
     //需要去认证授权
-    // return res.redirect(req.session.contextFront + '?fromUrl=' + req.originalUrl);
+    console.log(" >>>>>>>>>>>>>>>>>>>>> redirect to auth ");
+    return res.redirect(req.session.contextFront + '/auth?fromUrl=' + req.originalUrl);
   }
-  res.locals.user = req.user = req.session.user;
+  res.locals.user = req.session.user;
   console.log("************** current user ", req.session.user, req.originalUrl);
   return next();
 }
