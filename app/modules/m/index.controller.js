@@ -200,7 +200,7 @@ exports.newCommentSave = function (req, res) {
           console.error(err);
           return res.status(200).send({ result: 'error', message: '评论发表失败!' });
         }
-        if(toopenid) {// && toopenid != openid
+        if(toopenid && toopenid != openid) {// && toopenid != openid
           Notify.notifyComment(appid, toopenid, nickname, node, topicid, (err, result) => {
             res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
           });

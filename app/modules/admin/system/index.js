@@ -49,7 +49,7 @@ router
   .get('/base', systemCtrl.base)
   .post('/base/save', upload.any(), systemCtrl.baseSave);
 
-router.get("/group", groupCtrl.list)
+router.get(["/group", "/group/list"], groupCtrl.list)
   .all("/group/datatable", groupCtrl.datatable)
   .post("/group/save", groupCtrl.save)
   .get("/group/checkName", groupCtrl.checkName)

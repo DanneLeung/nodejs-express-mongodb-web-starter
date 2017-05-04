@@ -119,7 +119,7 @@ block main
               
               .form-group.margin-bottom-none
                 .col-sm-10
-                  textarea.form-control.input-sm(name="content", rows="4", minlength="5", maxlength="#{setting['topic.maxlength'] || 5000}", placeholder='输入文字快速回复帖子 ～～～')
+                  textarea.form-control.input-sm.required(name="content", rows="4", minlength="5", maxlength="#{setting['topic.maxlength'] || 5000}", placeholder='输入文字快速回复帖子 ～～～')
                 .col-sm-2
                   button.btnComment.btn.btn-success.pull-right.btn-sm(type='button') 
                     i.fa.fa-fw.fa-reply
@@ -143,20 +143,23 @@ block scripts
       });
       $('body').on("click",".btnComment", function(e){
         var that = this;
-        var form = $(this).closest(".commentForm");
-        var url = $(form).attr("action");
-        var topicid = $(form).find("input[name='topicid']").val();
-        var content = $(form).find("input[name='content']").val();
-        var data = {topicid:topicid, content:content};
-        //- console.log(" >>>>>>>>>>>> data", data);
-        $.post(url,data, function(result){
-          if(result.err){
-            bootbox.alert(result.msg);
-          }else{
-            $(form).find("input[name='content']").val("").focus();
-            $(that).closest('.post').find("a.comment").trigger("click");
-            //- $(that).closest('.post').find(".comment-box").append(commentHtml(result.comment));
-            toastr.success(result.msg);
+        var frm = $(this).closest(".commentForm");
+        $(frm).validate({
+          submitHandler: function(form){
+            var url = $(form).attr("action");
+            var topicid = $(form).find("input[name='topicid']").val();
+            var content = $(form).find("input[name='content']").val();
+            var data = {topicid:topicid, content:content};
+            $.post(url,data, function(result){
+              if(result.err){
+                bootbox.alert(result.msg);
+              }else{
+                $(form).find("input[name='content']").val("").focus();
+                $(that).closest('.post').find("a.comment").trigger("click");
+                //- $(that).closest('.post').find(".comment-box").append(commentHtml(result.comment));
+                toastr.success(result.msg);
+              }
+            });
           }
         });
       });
