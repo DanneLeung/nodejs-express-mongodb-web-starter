@@ -3,11 +3,15 @@
  * 帖子的Controller
  */
 
+var fs = require('fs');
 var async = require('async');
 var moment = require('moment');
 var mongoose = require('mongoose');
 var ObjectId = mongoose.Types.ObjectId;
 var config = require('../../../../config/config');
+var fileUtil = require(config.root + '/util/file');
+var excalUtil = require(config.root + '/util/excelUtil');
+
 var Notify = require(config.root + '/app/components/notify');
 
 var Node = mongoose.model('Node');
@@ -33,9 +37,67 @@ exports.fans = function (req, res) {
  * list
  */
 exports.list = function (req, res) {
-  var node = req.params.node || req.query.node;
+  var query = getQuery(req);
+  req.session.query_topics = query;
   var offset = parseInt(req.params.offset || req.query.offset);
   var limit = parseInt(req.params.limit || req.query.limit);
+  if(!offset) offset = 0;
+  if(!limit) limit = 10;
+  console.log(" >>>>>>>>>>>>>>>>>>>> query ", query);
+  Topic.topicsWithNodeWithTop(query, offset, limit, (total, topics) => {
+    res.render('admin/bbs/topic/topicList', { topics: topics, node: query.node, dateStart: query.dateStart, dateEnd: query.dateEnd, total: total, offset: offset, limit: limit });
+  });
+};
+exports.export = function (req, res) {
+  var sep = ",";
+  var query = req.session.query_topics || getQuery(req);
+  var path = "public/upload/tmp/bbs/" + moment().format("YYYYMMDD") + "/";
+  fileUtil.mkdirsSync(path);
+  var filename = "topic" + moment().format("YYYYMMDDhhmmss") + ".csv"; //生成文件名
+  var filenPath = path + filename;
+  var label = "时间,粉丝,帖子,评论1,评论2,评论3,评论4,评论5\n";
+  label = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(label)]); //处理乱码的格式
+  fs.appendFileSync(filenPath, label);
+  var fn = function (query, page) {
+    var limit = 100;
+    var offset = page * limit;
+    Topic.find(query).populate("node fans user").populate({ path: "comments", select: "content fans user updatedAt createdAt", sort: "-createdAt", populate: { path: "fans user" } }).sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
+      if(!topics || topics.length <= 0) {
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+        res.setHeader("Content-Disposition", "attachment; filename=" + filename);
+        return res.download(filenPath);
+      } else {
+        var bufs = "";
+        for(var i in topics) {
+          var arr = [];
+          var topic = topics[i];
+          arr.push(moment(topic.createdAt).format("YYYY-MM-DD hh:mm"));
+          arr.push(topic.fans ? topic.fans.nickname : "");
+          arr.push(topic.content ? topic.content.replace(/\r\n/gm, '<br>') : "");
+          var comments = topic.comments;
+          if(comments && comments.length) {
+            for(var j = 0; j < 5; j++) {
+              if(j < comments.length) {
+                var c = comments[j];
+                arr.push((c.fans ? c.fans.nickname : (c.user ? c.user.fullname : "")) + moment(c.createdAt).format("YYYY-MM-DD hh:mm") + "<br/>" + "<br/>" + (c.content ? c.content.replace(/\r\n/gm, '<br>') : ""));
+              } else {
+                arr.push("");
+              }
+            }
+          }
+          bufs += arr.join(sep) + "\n";
+        }
+        var labels = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(bufs)]); //处理乱码的格式
+        fs.appendFileSync(filenPath, labels);
+        fn(query, ++page);
+      }
+    });
+  };
+  fn(query, 0);
+};
+
+function getQuery(req) {
+  var node = req.params.node || req.query.node;
   var dateStart = req.query.dateStart || req.body.dateStart;
   var dateEnd = req.query.dateEnd || req.body.dateEnd;
   var fans = req.query.fans || req.body.fans;
@@ -58,13 +120,8 @@ exports.list = function (req, res) {
     var end = d.toDate();
     query.createdAt.$lt = end;
   }
-  if(!offset) offset = 0;
-  if(!limit) limit = 10;
-  console.log(" >>>>>>>>>>>>>>>>>>>> query ", query);
-  Topic.topicsWithNodeWithTop(query, offset, limit, (total, topics) => {
-    res.render('admin/bbs/topic/topicList', { topics: topics, node: node, dateStart: dateStart, dateEnd: dateEnd, total: total, offset: offset, limit: limit });
-  });
-};
+  return query;
+}
 
 exports.list2 = function (req, res) {
   res.render('admin/bbs/topic/topicList2');
