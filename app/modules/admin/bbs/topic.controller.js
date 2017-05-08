@@ -53,7 +53,7 @@ exports.export = function (req, res) {
   var query = req.session.query_topics || getQuery(req);
   var path = "public/upload/tmp/bbs/" + moment().format("YYYYMMDD") + "/";
   fileUtil.mkdirsSync(path);
-  var filename = "topic" + moment().format("YYYYMMDDhhmmss") + ".csv"; //生成文件名
+  var filename = "topic" + moment().format("YYYYMMDDHHmmss") + ".csv"; //生成文件名
   var filenPath = path + filename;
   var label = "时间,粉丝,帖子,评论1,评论2,评论3,评论4,评论5\n";
   label = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(label)]); //处理乱码的格式
@@ -71,7 +71,7 @@ exports.export = function (req, res) {
         for(var i in topics) {
           var arr = [];
           var topic = topics[i];
-          arr.push(moment(topic.createdAt).format("YYYY-MM-DD hh:mm"));
+          arr.push(moment(topic.createdAt).format("YYYY-MM-DD HH:mm"));
           arr.push(topic.fans ? topic.fans.nickname : "");
           arr.push(topic.content ? topic.content.replace(/\r\n/gm, '<br>') : "");
           var comments = topic.comments;
@@ -79,7 +79,7 @@ exports.export = function (req, res) {
             for(var j = 0; j < 5; j++) {
               if(j < comments.length) {
                 var c = comments[j];
-                arr.push((c.fans ? c.fans.nickname : (c.user ? c.user.fullname : "")) + moment(c.createdAt).format("YYYY-MM-DD hh:mm") + "<br/>" + "<br/>" + (c.content ? c.content.replace(/\r\n/gm, '<br>') : ""));
+                arr.push((c.fans ? c.fans.nickname : (c.user ? c.user.fullname : "")) + moment(c.createdAt).format("YYYY-MM-DD HH:mm") + "<br/>" + "<br/>" + (c.content ? c.content.replace(/\r\n/gm, '<br>') : ""));
               } else {
                 arr.push("");
               }
