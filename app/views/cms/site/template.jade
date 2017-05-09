@@ -1,0 +1,327 @@
+//
+  Created by pc on 2015/10/27.
+
+extends ../layout
+block right
+  style.
+    .title{}
+    .dcontent {
+      height: auto;
+    }
+    .dcontent input,.dcontent select{width:90%;padding:5px 3%;}
+    .dcontent .list {
+      width:100%;
+      overflow: hidden;padding:5px 0;
+    }
+    /*.edui-editor{height:200px !important;overflow: scroll !important;}*/
+  .box.box-default
+    nav.navbar.navbar-default.navbar-static-top(role='navigation', style='margin-bottom:0;')
+      .container-fluid
+        .navbar-header
+          a.navbar-brand(href='javascript:;')
+            | 编辑模版
+            span.text-info #{site ? site.name : ''}
+        ul.nav.navbar-nav.nav-btns
+          li(class='#{isActive("/cms/site/edit/" + site.id)}')
+            a(href='/cms/site/edit/#{site.id}') 基本
+          li(class='active')
+            a(href='/cms/site/template/#{site.id}') 模板
+          li(class='#{isActive("/cms/site/navigate" + site.id)}')
+            a(href='/cms/site/navigate/#{site.id}') 导航
+
+    .box-body
+      form.form-horizontal(method="post",action="/cms/site/template/save/#{site ? site._id : ''}")
+        if templates && templates.length > 0
+          .form-group
+            label.control-label.col-sm-2 模版：
+            .col-sm-10
+              select.form-control(name="template")
+                each s in templates
+                  if site.template && site.template == s._id.toString()
+                    option(value="#{s._id}",selected) #{s.name}
+                  else
+                    option(value="#{s._id}") #{s.name}
+
+
+        .form-group
+          label.control-label.col-sm-2
+            p
+              a.add.btn.btn-default(data-role="slides") 添加轮播图
+            p
+              a.add.btn.btn-default(data-role="categories") 添加文章分类
+            p
+              a.add.btn.btn-default(data-role="images") 添加图片
+            p
+              a.add.btn.btn-default(data-role="html") 添加图文
+          .col-md-10
+            .title.text-center
+              .col-sm-4 模块名称
+              .col-sm-4 模块值
+              .col-sm-2 首页加载数
+              .col-sm-1 更多页加载数
+              .col-sm-1 删除
+            .text-center.dcontent
+              if site && site.params.length > 0
+                each p,idx in site.params
+                  if p.label && p.label == 'images'
+                    .list
+                      .col-sm-4
+                        input(name="name",value="#{p.name}")
+                      .col-sm-4
+                        button.img_uploader.btn.btn-default(id="#{'img'+idx}",type="button",title="上传图片")
+                          i.fa.fa-plus-square
+                        input(type="hidden",name="label",value="images")
+                        input(type="hidden",name="img",value="#{p.img && p.img.length > 0 ? p.img : ''}")
+                        .img_show.text-center
+                          img(src="#{p.img && p.img.length > 0 ? p.img : '/themes/mtui/www/images/default2.jpg'}",style="max-width:100%;height:150px;")
+                      .col-sm-4
+                        i.fa.fa-fw.fa-close.close
+                      .col-sm-12
+                        .col-sm-2 文字
+                        .col-sm-9
+                          textarea.textHtml(id="#{'text'+idx}",name="value", rows="10",style="width:100%;")
+                            | #{p.value ? p.value : ''}
+                  else
+                    .list
+                      .col-sm-4
+                        input(name="name",value="#{p.name}")
+                        input(type="hidden",name="img")
+                      .col-sm-4
+                        select(name="value",value="#{p.value}")
+                          if p.label && p.label == 'slides'
+                            each s in slide
+                              if s._id.toString() == p.value
+                                option(value="#{s._id}",selected) #{s.type}-#{s.name}
+                              else
+                                option(value="#{s._id}") #{s.type}-#{s.name}
+                          if p.label && p.label == 'categories'
+                            each s in category
+                              if s._id.toString() == p.value
+                                option(value="#{s._id}",selected) #{s.name}
+                              else
+                                option(value="#{s._id}") #{s.type}-#{s.name}
+                        input(type="hidden",name="label",value="#{p.label}")
+                      .col-sm-4
+                        .col-sm-5(style="padding: 0;")
+                          input(name="number",value="#{p.number ? p.number : 0}")
+                        .col-sm-5(style="padding: 0;")
+                          input(name="moreNum",value="#{p.moreNum ? p.moreNum : 0}")
+                        .col-sm-2
+                          i.fa.fa-fw.fa-close.close
+
+            .form-group(style="margin:30px auto;")
+              .col-sm-10.col-sm-offset-2
+                button.btn.btn-primary(type="submit") 保存
+                a.btn.btn-link(href="/cms/site/list") 返回
+
+block scripts
+  script(src="//cdn.bootcss.com/webuploader/0.1.0/webuploader.html5only.min.js")
+  script(src='#{theme}/js/fileupload.js')
+  script(src="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.25/daterangepicker.min.js")
+  script(src="#{theme}/plugins/ueditor/ueditor.config.js")
+  script(src="#{theme}/plugins/ueditor/ueditor.all.js")
+  script.
+    $(function() {
+      var slides = '#{slides ? slides : ""}';
+      slides = JSON.parse(slides.replace(/&quot;/g, '"'));
+      var categories = '#{categories ? categories : ""}'
+      categories = JSON.parse(categories.replace(/&quot;/g, '"'));
+      var dataValue = {
+        'slides': slides,
+        'categories': categories
+      }
+
+      //图文
+      var ueOpts = {
+        initialFrameHeight: 500,
+        serverUrl: '/api/ueditor',
+        autoHeightEnabled: true,
+        autoFloatEnabled: true,
+        toolbars: [
+          [
+            'anchor', //锚点
+            'undo', //撤销
+            'redo', //重做
+            'bold', //加粗
+            'indent', //首行缩进
+            //- 'snapscreen', //截图
+            'italic', //斜体
+            'underline', //下划线
+            'strikethrough', //删除线
+            'subscript', //下标
+            'fontborder', //字符边框
+            'superscript', //上标
+            'formatmatch', //格式刷
+            'source', //源代码
+            'blockquote', //引用
+            'pasteplain', //纯文本粘贴模式
+            'selectall', //全选
+            //- 'print', //打印
+            'preview', //预览
+            'horizontal', //分隔线
+            'removeformat', //清除格式
+            'time', //时间
+            'date', //日期
+            'unlink', //取消链接
+            'insertrow', //前插入行
+            'insertcol', //前插入列
+            'mergeright', //右合并单元格
+            'mergedown', //下合并单元格
+            'deleterow', //删除行
+            'deletecol', //删除列
+            'splittorows', //拆分成行
+            'splittocols', //拆分成列
+            'splittocells', //完全拆分单元格
+            'deletecaption', //删除表格标题
+            'inserttitle', //插入标题
+            'mergecells', //合并多个单元格
+            'deletetable', //删除表格
+            'cleardoc', //清空文档
+            'insertparagraphbeforetable', //"表格前插入行"
+            'insertcode', //代码语言
+            'fontfamily', //字体
+            'fontsize', //字号
+            'paragraph', //段落格式
+            'simpleupload', //单图上传
+            'insertimage', //多图上传
+            'edittable', //表格属性
+            'edittd', //单元格属性
+            'link', //超链接
+            'emotion', //表情
+            'spechars', //特殊字符
+            'searchreplace', //查询替换
+            //- 'map', //Baidu地图
+            //- 'gmap', //Google地图
+            //- 'insertvideo', //视频
+            //- 'help', //帮助
+            'justifyleft', //居左对齐
+            'justifyright', //居右对齐
+            'justifycenter', //居中对齐
+            'justifyjustify', //两端对齐
+            'forecolor', //字体颜色
+            'backcolor', //背景色
+            'insertorderedlist', //有序列表
+            'insertunorderedlist', //无序列表
+            'fullscreen', //全屏
+            'directionalityltr', //从左向右输入
+            'directionalityrtl', //从右向左输入
+            'rowspacingtop', //段前距
+            'rowspacingbottom', //段后距
+            'pagebreak', //分页
+            //- 'insertframe', //插入Iframe
+            'imagenone', //默认
+            'imageleft', //左浮动
+            'imageright', //右浮动
+            'attachment', //附件
+            'imagecenter', //居中
+            'wordimage', //图片转存
+            'lineheight', //行间距
+            'edittip ', //编辑提示
+            'customstyle', //自定义标题
+            'autotypeset', //自动排版
+            'webapp', //百度应用
+            'touppercase', //字母大写
+            'tolowercase', //字母小写
+            'background', //背景
+            'template', //模板
+            //- 'scrawl', //涂鸦
+            //- 'music', //音乐
+            'inserttable', //插入表格
+            //- 'drafts', // 从草稿箱加载
+            //- 'charts', // 图表
+          ]
+        ]
+      };
+
+      $('.add').click(function() {
+        var imgId = 'img'+Date.now();
+        var textId = 'text'+Date.now();
+        var role = $(this).data('role');
+        var currType = dataValue[role];
+        var select = '';
+        if(role == 'images') {
+          var html =
+            '<div class="list">' +
+            '<div class="col-sm-4">' +
+            '<input type="text" name="name">' +
+            '</div>' +
+            '<div class="col-sm-4">' +
+              '<button id="' + imgId + '" type="button" title="上传图片" class="btn btn-default"><i class="fa fa-plus-square"></i></button>' +
+              '<input type="hidden" name="label" value="images"><input type="hidden" name="img">' +
+              '<div class="img_show text-center">' +
+                '<img src="/themes/mtui/www/images/default2.jpg" style="max-width:100%;height:150px;">' +
+              '</div>' +
+            '</div>' +
+            '<div class="col-sm-4"><i class="close fa fa-fw fa-close"></i></div>' +
+            '<div class="col-sm-12">' +
+              '<div class="col-sm-2">添加文字</div>' +
+              '<div class="col-sm-9"><textarea id="'+ textId +'" name="value" rows="2" style="width:100%;"></textarea></div>' +
+            '</div>' +
+            '</div>';
+        } else if(currType){
+          select += '<select name="value">'
+          currType.forEach(function (s) {
+            select += '<option value="' + s._id + '">' + (s.type ? s.type + '-' : '') + s.name + '</option>'
+          });
+          select += '</select><input type="hidden" name="label" value="' + role + '">';
+          var html =
+            '<div class="list">' +
+            '<div class="col-sm-4">' +
+            '<input type="text" name="name">' +
+            '<input type="hidden" name="img">' +
+            '</div>' +
+            '<div class="col-sm-4">' + select + '</div>' +
+            '<div class="col-sm-4">' +
+            '<div class="col-sm-5" style="padding: 0;"><input name="number" placeholder="0:默认加载15条"></div>' +
+            '<div class="col-sm-5" style="padding: 0;"><input name="moreNum" placeholder="0:默认加载15条"></div>' +
+            '<div class="col-sm-2"><i class="close fa fa-fw fa-close"></i></div>' +
+            '</div>' +
+
+            '</div>';
+        }
+
+        var $h = $(html);
+        $('.dcontent').append(html);
+        var $this = $('#'+imgId).closest('.list');
+        $h.find('#'+imgId).fileupload({
+          type: 'images', key: '640X480', callback: function (data) {
+            if (data) {
+              console.log(data[0].url);
+              console.log($h.find('.img_show').html());
+              $this.find('input[name="img"]').val(data[0].url);
+              $this.find('.img_show img').attr('src', data[0].url);
+            } else {
+              alert("图片上传失败!");
+            }
+          }
+        });
+
+        //图文
+        UE.getEditor(textId, ueOpts);
+      });
+      $('body').on('click','.close', function() {
+        $(this).closest('.list').remove();
+      })
+
+      $('.textHtml').each(function() {
+        var id = $(this).attr('id')
+        UE.getEditor(id, ueOpts);
+      });
+
+      $('.img_uploader').each(function() {
+        var f = $(this).closest('.col-sm-4');
+        $(this).fileupload({
+          type: 'images', key: '640X480', callback: function (data) {
+            if (data) {
+              f.find('input[name="img"]').val(data[0].url);
+              f.find('.img_show img').attr('src', data[0].url);
+              console.log(data[0].url);
+            } else {
+              alert("图片上传失败!");
+            }
+          }
+        });
+      });
+
+      //var ue = UE.getEditor('text1', ueOpts);
+    });

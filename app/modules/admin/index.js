@@ -1,5 +1,6 @@
 "use strict";
 
+var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 var express = require('express');
@@ -8,6 +9,12 @@ var config = require('../../../config/config');
 var Auth = require(config.root + '/middleware/authorization');
 
 router.use(Auth.requiresLogin);
+
+router.use((req, res, next) => {
+
+  next();
+});
+
 // Routers
 var modulePath = __dirname;
 fs.readdirSync(modulePath).forEach(function (file) {

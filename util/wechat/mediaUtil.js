@@ -8,11 +8,11 @@ let path = require('path');
 
 let config = require('../../config/config');
 let fileUtil = require(config.root + '/util/file');
-let WechatApi = require('./wechatApiUtil');
+let WechatApi = require('./wechatApi');
 let mongoose = require('mongoose');
 let WechatMedia = mongoose.model('WechatMedia');
 
-const baseDir = '/wecaht/material';
+const baseDir = '/wechat/material';
 const basePath = path.join(config.root, config.file.local, baseDir);
 /**
  * 素材管理
@@ -20,7 +20,7 @@ const basePath = path.join(config.root, config.file.local, baseDir);
  * @param appsecret
  */
 module.exports = function (appid, appsecret) {
-  var api = new WechatApi(appid, appsecret).getWechatApi();
+  var api = WechatApi(appid, appsecret);
   /**
    * 素材存放根目录;
    * @returns {string}

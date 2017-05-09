@@ -8,7 +8,7 @@ let WechatFans = mongoose.model('WechatFans');
 let Wechat = mongoose.model('Wechat');
 let ObjectId = mongoose.Types.ObjectId;
 let config = require(__dirname + '/../../config/config');
-let WechatAPI = require(config.root + '/util/wechat/wechatApiUtil');
+let WechatAPI = require(config.root + '/util/wechat/wechatApi');
 
 /**
  * 刷新粉丝列表

@@ -5,12 +5,14 @@ var async = require('async');
 var mongoose = require('mongoose');
 var config = require('../../../config/config');
 var mediaUtil = require(config.root + '/util/wechat/mediaUtil');
+var Notify = require(config.root + '/app/components/notify');
 
 var User = mongoose.model('User');
 var Wechat = mongoose.model('Wechat');
 var WechatFans = mongoose.model('WechatFans');
 var Node = mongoose.model('Node');
 var Topic = mongoose.model('Topic');
+var TopicLike = mongoose.model('TopicLike');
 var Comment = mongoose.model('Comment');
 
 const fieldMsg = { likeCount: '点赞', heartCount: '收藏' };
@@ -23,29 +25,41 @@ exports.nodes = function (req, res, next) {
 
 };
 
+exports.logout = function (req, res) {
+  var url = req.session.contextFront + "/user";
+  delete req.session.user;
+  res.redirect(url);
+};
+
 exports.auth = function (req, res) {
-  res.render('m/auth');
+  res.render('m/auth', { fromUrl: req.query.fromUrl });
 };
 
 exports.requiredSession = function (req, res, next) {
   // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", req.session.user);
-  if(!req.user && !req.session.user) {
+  if(!req.session.user) {
     //需要去认证授权
-    return res.redirect(req.session.contextFront + '/auth');
+    console.log(" >>>>>>>>>>>>>>>>>>>>> redirect to auth ");
+    return res.redirect(req.session.contextFront + '/auth?fromUrl=' + req.originalUrl);
   }
-  res.locals.user = req.user = req.session.user;
+  res.locals.user = req.session.user;
+  // console.log("************** current user ", req.session.user, req.originalUrl);
   return next();
 }
+
 exports.session = function (req, res) {
   var openid = req.params.openid || req.query.openid || req.body.openid;
+  var fromUrl = req.query.fromUrl || req.body.fromUrl;
   WechatFans.findByOpenId(openid, (fans) => {
-    req.user = req.session.user = fans;
-    res.status(200).send("ok");
+    req.session.user = fans;
+    console.log(" >>>>>>>>>>>>>>> session result fans ", req.session.user, openid, fromUrl);
+    if(!fans) res.redirect(req.session.contextFront + "/auth?fromUrl=" + fromUrl);
+    res.redirect(req.session.contextRoot + fromUrl);
   });
 };
 
 exports.home = function (req, res) {
-  var node = req.params.node || req.query.node;
+  var node = req.params.node || req.query.node || '';
   Topic.topTopics(node, (topTopics) => {
     res.render('m/bbs/home', { node: node ? node : '', topTopics: topTopics });
   });
@@ -56,7 +70,7 @@ exports.topics = function (req, res) {
   var offset = parseInt(req.params.offset || req.query.offset || 0);
   var limit = parseInt(req.params.limit || req.query.limit || 10);
   Topic.topicsWithNode(node, offset, limit, (topics) => {
-    res.render('m/bbs/topics', { topics: topics });
+    res.render('m/bbs/topics', { topics: topics, node: node });
   });
 };
 
@@ -82,15 +96,27 @@ exports.view = function (req, res) {
 
 exports.newTopic = function (req, res) {
   var node = req.params.node || req.query.node;
+  var nodes = res.locals.nodes;
+  if(!node && nodes && nodes.length) { node = nodes[0]; } else {
+    for(var i in nodes) {
+      if(node == nodes[i]._id) {
+        node = nodes[i];
+        break;
+      }
+    }
+
+  }
   res.render('m/bbs/form', { node: node ? node : '' });
 };
 
 exports.newTopicSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var node = req.body.node || null;
-  var openid = req.body.openid || req.user.openid || req.session.user.openid;
+  var openid = req.body.openid || req.session.user.openid;
   var serverIds = req.body.serverIds || [];
-  console.log(" ************* topic body : ", req.body);
+  // if(!req.body.title){
+  //   req.body.title = req.body.content?req.body.content.substring(0,20) + " ... ..." : "";
+  // }
 
   if(!node) {
     delete req.body.node;
@@ -109,7 +135,7 @@ exports.newTopicSave = function (req, res) {
     if(err) return res.status(200).json({ err: err });
     req.body.serverIds = serverIds;
     req.body.images = images;
-    console.log(" ************* topic body will be saved: ", images, req.body);
+    // console.log(" ************* topic body will be saved: ", images, req.body);
     WechatFans.findOne({ openid: openid }, (err, fans) => {
       if(err) console.error(err);
       var topic = new Topic(req.body);
@@ -145,9 +171,14 @@ exports.newComment = function (req, res) {
 exports.newCommentSave = function (req, res) {
   var appid = req.body.appid || req.session.appid;
   var topicid = req.params.topicid || req.query.topicid;
-  var openid = req.body.openid || req.user.openid || req.session.user.openid;
+  var openid = req.session.user.openid || req.body.openid;
   var serverIds = req.body.serverIds || [];
-  console.log(" ************* topic body : ", req.body);
+  // console.log(" ************* topic body : ", req.body);
+  // 回复TO粉丝openid
+  var toopenid = req.body.toopenid || req.query.toopenid;
+  // 当前板块
+  var node = req.body.node || req.query.node;
+  var nickname = req.session.user.nickname || req.body.nickname || req.query.nickname;
 
   if(!openid) {
     return res.status(403).json({ err: '粉丝信息没有传输，请确认!' });
@@ -160,17 +191,21 @@ exports.newCommentSave = function (req, res) {
     if(err) res.status(200).send({ result: 'fail', message: '保存图片时发生错误!' });
     req.body.serverIds = serverIds;
     req.body.images = images;
-    console.log(" ************* topic body will be saved: ", images, req.body);
+    // console.log(" ************* topic body will be saved: ", images, req.body);
     WechatFans.findOne({ openid: openid }, (err, fans) => {
       if(err) console.error(err);
-      var comment = new Comment(req.body);
-      comment.fans = fans;
-      comment.topic = topicid;
-      comment.save((err, c) => {
-        if(err) console.error(err);
-        Topic.incsCountField(topicid, 'commentCount', (err, result) => {
+      Comment.newComment(topicid, null, fans, req.body.content, images, (err, comment) => {
+        if(err) {
+          console.error(err);
+          return res.status(200).send({ result: 'error', message: '评论发表失败!' });
+        }
+        if(toopenid && toopenid != openid) {// && toopenid != openid
+          Notify.notifyComment(appid, toopenid, nickname, node, topicid, (err, result) => {
+            res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
+          });
+        } else {
           res.status(200).send({ result: 'success', message: '评论已发表!', locate: req.session.contextFront + '/topic/view/' + topicid });
-        });
+        }
       });
     });
   });
@@ -182,6 +217,7 @@ exports.fans = function (req, res) {
   WechatFans.findById(fansId, (err, fans) => {
     if(err) console.error(err);
     // console.log(" >>>>>>>>>>>>>>>>>>>>> current fans", fans);
+    res.locals.user = fans;
     res.render('m/user', { user: fans, me: fansId == req.session.user._id });
   });
 };
@@ -201,11 +237,23 @@ exports.fansTopics = function (req, res) {
 };
 
 exports.user = function (req, res) {
-  res.render('m/user', { me: true });
+  res.render('m/user', { me: true, user: req.session.user });
 };
 
 exports.like = function (req, res) {
-  exports.increase(req, res, 'likeCount');
+  var id = req.params.id || req.query.id;
+  var fansId = req.session.user._id;
+  TopicLike.likeTopic(id, fansId, (err, msg) => {
+    var ok = { error: err, msg: msg };
+    console.log("************** ", ok);
+    // if(!success) {
+    //   ok.error = 1;
+    //   // ok.msg = '点赞处理不成功!';
+    //   return res.status(200).json(ok);
+    // }
+    // ok.msg = '点赞成功!';
+    return res.status(200).json(ok);
+  });
 };
 
 exports.increase = function (req, res, field) {

@@ -24,12 +24,3 @@ var browser = {
 // if(browser.versions.android) { //安卓
 //   window.location.href = "http://active.bjxxw.com/Appdown/active.apk";
 // }
-// 是否为微信
-function is_weixin() {
-  var ua = navigator.userAgent.toLowerCase();
-  if(ua.match(/MicroMessenger/i) == "micromessenger") {
-    return true;
-  } else {
-    return false;
-  }
-}

@@ -1,0 +1,72 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ../layout
+block header
+
+block right
+  if !page.isNew
+    form#userDelForm(method='post', style='display:none', action='#{baseUrl}/del')
+      input#ids(type='hidden',name='ids',value="#{page._id}")
+      input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      input(type='hidden', name='site', value="#{site}")
+  form#pageForm.form-horizontal(method="post",action="#{baseUrl}/save")
+    input#_csrf(type='hidden', name='_csrf', value=_csrf)
+    input(type='hidden', name='site', value="#{site}")
+    if(!page.isNew)
+      input#id(type='hidden', name='id', value="#{page._id}")
+
+    .box(style="position:relative;")
+      .box-header.with-border
+        h3.box-title
+          span.text-info #{page.name} #{page.isNew ? '创建页面' : '页面修改'}
+        .box-tools
+          a.btn.btn-default.btn-sm(href='#{baseUrl}/#{site}')
+            i.fa.fa-reply
+          button#save.btn.btn-sm.btn-default(type="submit", title="保存")
+            i.fa.fa-save
+      .box-body
+        .form-group
+          label.control-label.col-sm-2.required 标题：
+          .col-sm-9
+            input#title.form-control.required(type="text",name="title",value="#{page.title}")
+
+        .form-group
+          label.control-label.col-sm-2 名称：
+          .col-sm-9
+            input#name.form-control(type="text",name="name",value="#{page.name}")
+        .form-group
+          label.control-label.col-sm-2 简要：
+          .col-sm-9
+            textarea#description(name='description' ,rows="3")
+              | #{page.description ? page.description : ''}
+            p.help-block 页面简要信息，让用户快速了解文字简要内容
+
+block scripts
+  script(src="#{theme}/plugins/ueditor/ueditor.config.js")
+  script(src="#{theme}/plugins/ueditor/ueditor.all.js")
+  script(src="#{theme}/plugins/ueditor/lang/zh-cn/zh-cn.js")
+  script.
+    $(document).ready(function () {
+      var ueOpts = {
+        initialFrameHeight: 500,
+        serverUrl: contextRoot + 'api/ueditor',
+        autoHeightEnabled: true,
+        autoFloatEnabled: true,
+        allowDivTransToP: false
+      };
+      var ue = UE.getEditor('description', ueOpts);
+      //validator
+      $('#pageForm').validate({
+        rules: {
+          name: {
+            required: true
+          }
+        },
+        messages: {
+          name: {
+          }
+        }
+      });
+
+    });

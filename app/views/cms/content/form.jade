@@ -1,0 +1,142 @@
+//
+   Created by Renee on 2016/5/10.
+
+extends ../layout
+block header
+  link( rel="stylesheet",href="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.25/daterangepicker.min.css")
+
+block right
+  if content
+    if !content.isNew
+      form#userDelForm(method='post', style='display:none', action='#{baseUrl}/del')
+        input#ids(type='hidden',name='ids',value="#{content._id}")
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+    form#contentForm.form-horizontal(method="post",action="#{baseUrl}/save" ,enctype='multipart/form-data')
+      input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      if(!content.isNew)
+        input#id(type='hidden', name='id', value="#{content._id}")
+
+      .box(style="position:relative;")
+        .box-header.with-border
+          h3.box-title
+            span.text-info #{content.name} #{content.isNew ? '创建文章' : '文章修改'}
+          .box-tools
+              a.btn.btn-default.btn-sm(href='#{baseUrl}')
+                i.fa.fa-reply
+              button#save.btn.btn-sm.btn-default(type="submit", title="保存")
+                i.fa.fa-save
+        .box-body
+            .form-group
+              label.control-label.col-sm-2 分类：
+              .col-sm-10
+                select#category.form-control(name='category')
+                  option(value="") 请选择
+                  each m in categories
+                    if(m.id == content.category)
+                      option(value="#{m.id}", selected="selected") #{paddingLeft(m.name, ' - ', m.depth - 1)}
+                    else
+                      option(value="#{m.id}") #{paddingLeft(m.name, ' - ', m.depth - 1)}
+            .form-group
+              label.control-label.col-sm-2.required 标题：
+              .col-sm-10
+                input#name.form-control.required(type="text",name="title",value="#{content.title}")
+            .form-group
+              label.control-label.col-sm-2 缩略图：
+              .col-sm-10
+                input#logo.form-control(type="file",name="logo",value="content.logo")
+                if content.logo && content.logo.length > 0
+                  .text-center
+                    img(src="#{content.logo}" height="150")
+
+            .form-group
+              label.control-label.col-sm-2 阅读得积分：
+              .col-sm-10
+                input#point.form-control(type="number",name="point",value="#{content.point}")
+
+            .form-group
+              label.control-label.col-sm-2 关键字：
+              .col-sm-10
+                input#keywords.form-control(type="text",name="keywords",value="#{content.keywords}")
+
+            .form-group
+              label.control-label.col-sm-2 摘要：
+              .col-sm-10
+                textarea#description.form-control(name='description' ,rows="3")
+                  | #{content.description ? content.description : ''}
+                p.help-block 文章简要信息，让用户快速了解文字简要内容
+            .form-group
+              label.control-label.col-sm-2 活动时间范围：
+              .col-sm-10
+                .input-group
+                  input#reservationtime.form-control.pull-right(type='text',name="time",value="#{content.startTime && content.endTime ? (formatDatetime(content.startTime) + '-' + formatDatetime(content.endTime)) : ''}")
+                  .input-group-addon
+                    i.fa.fa-clock-o
+            .form-group
+              label.control-label.col-sm-2 作者：
+              .col-sm-10
+                input#author.form-control(type="text",name="author",value="#{content.author}")
+            .form-group
+              label.control-label.col-sm-2 立刻发表：
+              .col-sm-10
+                label.checkbox
+                  if (content && content.published)
+                    input#published.mini(type='checkbox' name='published' checked)
+                  else
+                    input#published.mini(type='checkbox' name='published')
+            .form-group
+              label.control-label.col-sm-2 外部链接：
+              .col-sm-10
+                input#link.form-control(type="text",name="link",value="#{content.link}")
+                p.help-block 文章外部链接，输入时，则忽略图文内容
+
+            .form-group
+              label.control-label.col-sm-2 文章图文：
+              .col-sm-10
+                textarea#content(name="content", rows="10",style="width:100%")
+                  | #{content.content ? content.content : ''}
+block scripts
+  script(src="#{theme}/plugins/ueditor/ueditor.config.js")
+  script(src="#{theme}/plugins/ueditor/ueditor.all.js")
+  script(src="#{theme}/plugins/ueditor/lang/zh-cn/zh-cn.js")
+  script(src="//cdn.bootcss.com/bootstrap-filestyle/1.2.1/bootstrap-filestyle.min.js")
+  script(src="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.25/daterangepicker.min.js")
+  script.
+    $(document).ready(function () {
+
+      //图片上传
+      $(".form-group").find(':file').filestyle({buttonText: '上传图片'});
+
+      //活动日期格式
+      $('#reservationtime').daterangepicker({
+        startDate: '#{content.startTime ? formatDatetime(content.startTime) : ''}',
+        endDate: '#{content.endTime ? formatDatetime(content.endTime) : ''}',
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 10,
+        locale: {format: 'YYYY-MM-DD HH:mm:ss'}
+      });
+
+      var ueOpts = {
+        initialFrameHeight:500,
+        serverUrl: '/api/ueditor',
+        autoHeightEnabled: true,
+        autoFloatEnabled: true,
+        allowDivTransToP: false
+      };
+      var ue = UE.getEditor('content',ueOpts);
+      //validator
+      $('#contentForm').validate({
+        rules: {
+          name: {
+            required: true,
+            remote: '#{baseUrl}/checkName?oldName=#{content ? content.name : ''}'
+          }
+        },
+        messages: {
+          name: {
+            remote: '文章名称已存在'
+          }
+        }
+      });
+
+    });

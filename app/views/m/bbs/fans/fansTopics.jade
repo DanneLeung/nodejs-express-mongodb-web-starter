@@ -1,44 +1,37 @@
 each topic in topics
-  .list
+  .list.space-sm
     .item.with-avatar.muti-lines(data-id="#{topic._id}")
       a(href="fans/#{topic.fans?topic.fans._id:''}")
         .avatar
           img(src='#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl : ""}', alt='#{topic.fans?topic.fans.nickname:""}')
       .content
         a.title.block(href="fans/#{topic.fans?topic.fans._id:''}") 
-          span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
-          span.label.primary.rounded(style='margin-right: 0.25rem') V #{topic.fans?topic.fans.level:1}
+          .nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.fullname || topic.user.username:'')}
+          //- span.label.primary.rounded(style='margin-right: 0.25rem') V #{topic.fans?topic.fans.level:1}
           if topic.hot
             span.label.red.rounded(style='margin-right: 0.25rem') 
               i.icon-sun
-        .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+          .small.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
     .topic(data-id="#{topic._id}")
-      .space-sm 
-        if topic.node
-          span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
-        | #{topic.content}
+      //- .space-sm 
+      if topic.node
+        span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
+        br
+      | !{topic.content.replace(/\r\n/gm,'<br>')}
       if(topic.images && topic.images.length)
         .row.imgs.gutter-smser
           each img in topic.images
             if img
               .cell-4
-                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}/#{img}' alt='' class='no-margin'>")
+                a(data-display='modal', data-target-dismiss='true', data-placement='center', data-content="<img src='#{contextRoot}#{img}' alt='' class='no-margin'>")
                   .img(style="background-image:url('#{contextRoot}#{img}');")
     .muted.clearfix.space-sm
       .nav.justified
-        a.btnDonate.btn(href="javascript:;", data-id="#{topic._id}" )
-          i.icon-yen &nbsp;
-          small.muted  赏 
-            span#likeCount #{topic.donated?topic.donated : 0}
-        a.btnShare.btn(href="javascript:;", data-id="#{topic._id}" )
-          i.icon-share-alt &nbsp;
-          small.muted  转 
-            span#likeCount #{topic.likeCount?topic.likeCount : 0}
-        a.btnLike.btn(href="javascript:;", data-id="#{topic._id}" )
+        a.btnLike(href="javascript:;", data-id="#{topic._id}" )
           i.icon-thumbs-up &nbsp;
           small.muted  赞 
             span#likeCount #{topic.likeCount?topic.likeCount : 0}
-        a.btnComment.btn(href="topic/view/#{topic._id}")
-          i.icon-chat-dot &nbsp;
+        a.btnComment(href="topic/view/#{topic._id}")
+          i.icon-comments.-alt &nbsp;
           small.muted  评 #{topic.commentCount?topic.commentCount : 0}

@@ -18,9 +18,6 @@ router
     }), ctrl.session) //登录form提交
   .get('/logout', ctrl.logout)
   .get(['/captcha', '/captcha/:type'], captcha.getCaptcha)
-  .get('/profile/:username', Auth.requiresLogin, ctrl.profile) //用户资料
-  .post('/profile/update/:username', ctrl.updateProfile) //保持更新用户资料
-  .post('/changePwd', Auth.requiresLogin, ctrl.editPassword) //修改用户密码
-  .get('/validatePwd', Auth.requiresLogin, ctrl.validatePwd) //验证密码是否正确
+  
   .get(['/', '/index'], ctrl.index);
 module.exports = router;

@@ -64,7 +64,7 @@ exports.profile = function (req, res) {
       console.error(err);
       req.flash('error', err);
     }
-    res.render('users/profile', {
+    res.render('admin/users/profile', {
       title: user.name,
       user: user
     });
@@ -212,7 +212,10 @@ exports.validatePwd = function (req, res) {
 };
 
 exports.index = function (req, res) {
-  if(req.isMobile) res.redirect('/m');
+  if(req.isMobile)
+    res.redirect('/m');
   else
+    // res.redirect('/admin');
     res.render('index')
+
 };

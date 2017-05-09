@@ -23,7 +23,7 @@ var _ = require('lodash');
 module.exports = function (app, express, passport) {
   // settings
   app.set('env', env);
-  app.set('port', app.config.server.port || 3000);
+  app.set('port', app.config.server.port);
   app.set('views', path.join(__dirname, '/../' + '/views'));
   app.set('view engine', 'jade');
   app.enable('trust proxy');
@@ -59,8 +59,6 @@ module.exports = function (app, express, passport) {
   app.use(expressValidator());
   app.use(methodOverride());
   app.use(cookieParser(pkg.name + 'app'));
-
-  app.use('/api', require('../api'));
 
   //微信事件推送监听
   //TODO: 使用express 中间件机制拦截处理维系推送消息，而不是全部写死处理，拦截器无法处理是自动传递给最后的默认处理器
@@ -99,6 +97,9 @@ module.exports = function (app, express, passport) {
 
   // connect flash
   app.use(flash());
+
+  app.use('/api', require('../api'));
+
   // use passport session
   app.use(passport.initialize());
   app.use(passport.session({
@@ -145,11 +146,11 @@ module.exports = function (app, express, passport) {
   // will print stacktrace
   if(app.get('env') === 'development') {
     app.use(responseTime());
-  } else {}
+  } else {
+
+  }
 
   // static content
-  app.use(express.static(path.normalize(app.config.root + '/public', {
-    maxAge: 3600
-  })));
+  app.use(express.static(path.normalize(app.config.root + '/public'), { maxAge: 10 * 24 * 3600 * 1000, lastModified: true }));
 
 };

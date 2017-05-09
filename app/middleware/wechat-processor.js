@@ -20,9 +20,8 @@ var mongoose = require('mongoose'),
   config = require('../../config/config');
 var menuUtil = require('../../util/wechat/menuUtil');
 var wechatFansUtil = require('../../util/wechat/wechatFansUtil');
-var wechatApiUtil = require('../../util/wechat/wechatApiUtil');
+var wechatApi = require('../../util/wechat/wechatApi');
 var xml2js = require("xml2js");
-var WechatAPI = require('wechat-api');
 var async = require("async");
 var moment = require('moment');
 
@@ -575,7 +574,7 @@ function updateUserInfo(openid, originalId, ticket, cb) {
       console.log("公众号不存在");
       return;
     } else {
-      var api = new wechatApiUtil(cw.appid, cw.appsecret).getWechatApi();
+      var api = new wechatApi(cw.appid, cw.appsecret);
       //微信api获取用户信息
       api.getUser(openid, function (err, userInfo) {
         if(!err) {

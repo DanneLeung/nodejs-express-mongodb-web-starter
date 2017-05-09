@@ -1,5 +1,6 @@
 extends ../layouts/bbs
 block header
+
 block headNav
 
 block content
@@ -11,23 +12,29 @@ block content
       form#topicForm.no-margin(method="post" action="#{contextFront}/topic/new")
         input#appid(type="hidden" name="appid" value="#{appid}")
         input#openid(type="hidden" name="openid")
-        input#node(type="hidden" name="node" value="#{node}")
+        input#node(type="hidden" name="node" value="#{node._id}")
 
+        //- .control
+          input#title.input(name="title", style="width:100%", maxlength="50", type="text" placeholder="请输入文字给帖子一个醒目标题~~~")
         .control
-          textarea#content.textarea(name="content", rows="8", placeholder="输入文字发表新帖子~~~")
+          textarea#content.textarea.required(name="content", rows="10", required="required", minlength="5", maxlength="#{setting['topic.maxlength'] || 5000}" placeholder="请输入帖子详细内容~~~")
+            | #{node && node.template?node.template:''}
+
         .clearfix
           .control.space-sm.pull-left
-            button#selectImg.btn(type="button")
+            button#selectImg.btn.outline(type="button")
               i.icon-picture
-            button.btn(type="button")
+            //- button.btn(type="button")
               i.icon-smile
           .control.space-sm.pull-right
-            a.btn(href='home/#{node}') 取消
             button.btn.primary.outline(type='submit') 发表
+            a.btn(href='home/#{node._id}', onclick='localStorage.setItem("topic.conent","");') 取消
       .divider
-      nav.nav
+      nav#nodes.nav
+        span.has-padding.text-tint 选择类别：
         each n in nodes
-          a.nodeid(href='javascript:;', class='#{node && node == n._id ? "active":""}', data-id="#{n._id}")=n.title
+          a.nodeid(href='javascript:;', class='#{node && node._id == n._id ? "active":""}', data-id="#{n._id}")=n.title
+            input(type="hidden", value="#{n.template?n.template:''}")
       //- .heading
         .title 
           strong 图片
@@ -37,15 +44,29 @@ block content
             i.icon.icon-plus
 block contentScripts
   script.
+    var changed = false;
     var count = 0;
     var serverIds = [];
     $("body").removeClass("with-heading-top"); 
 
     $(document).ready(function(){
+      if(localStorage ){
+        var c = localStorage.getItem("topic.conent");
+        if(c && c != undefined){$("#content").val(c);}
+        $("#content").on("change", function(e){
+          localStorage.setItem("topic.conent",$(this).val());
+          changed = true;
+        });
+      }
+
       $(".nodeid").on('click', function(e){
         $(this).parent().find('.active').removeClass('active');
         $(this).addClass('active');
         $("#node").val($(this).data("id"));
+        if(!$("#content").val() || !changed){
+          $("#content").val($(this).find('input').val());
+          changed = false;
+        } 
       });
 
       $("#selectImg").on("click", function(e){
@@ -60,11 +81,12 @@ block contentScripts
         },
         onSuccess: function(data){
           console.log(data);
-          window.location.href="#{contextFront}/home/#{node}"
+          localStorage.setItem("topic.conent",'');
+          window.location.href="#{contextFront}/home/#{node._id}"
         },
         onError: function(status){
           console.log(status);
-          //- window.location.href="/home/#{node}"
+          //- window.location.href="/home/#{node._id}"
         }
       });
     });

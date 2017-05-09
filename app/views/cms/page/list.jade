@@ -1,0 +1,95 @@
+//
+   Created by danne on 2016-04-28.
+extends ../layout
+block header
+
+block right
+  .box
+    .box-header.with-border
+      h3.box-title 页面列表
+      .box-tools
+        a.btn.btn-default.btn-sm(href='/cms/site')
+          i.fa.fa-reply
+        a.btn.btn-primary.btn-sm(href="#{baseUrl}/add/#{site}")
+          i.fa.fa-plus.fa-fw
+          | 添加页面
+    .box-body
+      form#pageDelForm(method='post', style='display:none', action='#{baseUrl}/del/#{site}')
+        input#ids(type='hidden',name='ids',value="")
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      #tableWrapper(style="display:none")
+        table#pageList.table.table-hover.table-striped.table-bordered
+          thead
+            //th 类型
+            th 站点
+            th 名称
+            th.text-center 标题
+            th.text-center URL
+            th.text-center 说明
+            th.text-center 操作
+          tbody
+block scripts
+  script(src='#{theme}/js/jquery.qrcode.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "#{theme}/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#pageList').DataTable($.extend(opts, {
+        ajax: {url: '#{baseUrl}/datatable/#{site}'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              var url = contextFront + '/page/' + row._id + '?cid=#{req.session.channel.identity}';
+              return "<div class='btn-group'> " +
+                '<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-qrcode"></i><span class="caret"></span></button>' +
+                '<div class="qrcode dropdown-menu dropdown-menu-right" style="width:210px;height: 210px;padding:4px;border:1px solid #f4f4f4" data-url="' + url + '"></div>' +
+                "<a class='btn btn-default btn-sm' title='编辑' href='#{baseUrl}/edit/" + row._id + "/#{site}'><i class='fa fa-pencil'></i></a>" +
+                "<a class='btn btn-default btn-sm del' title='删除'><i class='fa fa-trash'></i></a>" +
+                "</div>";
+            }
+          }
+        ],
+        columns: [
+          {data: "site", defaultContent: ''},
+          {data: "name", defaultContent: ''},
+          {data: "title", defaultContent: ''},
+          {data: "description", defaultContent: ''},
+          {
+            data: "url", class: "text-center", render: function (data, type, row, meta) {
+            var url = contextFront + '/page/' + row._id + '?cid=#{req.session.channel.identity}';
+            return '<a href="' + url + '">' + url + '</a>';
+          }
+          },
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $(".qrcode").each(function () {
+          $(this).qrcode({'width': 200, 'height': 200, 'text': $(this).data('url')});
+        });
+      });
+      $('#pageList').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#pageDelForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除该页面吗?", function (result) {
+            if (result) {
+              $("#pageDelForm").submit();
+            }
+          });
+        }
+      });
+    });

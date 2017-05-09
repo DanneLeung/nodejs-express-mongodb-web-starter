@@ -1,0 +1,84 @@
+//
+   Created by pc on 2015/10/27.
+extends ../layout
+block pageTitle
+  h1 站点列表
+    small
+block right
+  .box
+    .box-header.with-border
+      h3.box-title 站点列表
+      .box-tools
+          a.btn.btn-primary.btn-sm(href="/cms/site/add")
+            i.fa.fa-plus.fa-fw
+            | 创建新站点
+    .box-body
+      #tableWrapper
+        table#siteList.table.table-hover.table-striped.table-bordered
+          thead
+            th 名称
+            th 标题
+            th URL
+            th.text-center 上线
+            th.text-center 上线时间
+            th.text-center 管理
+          tbody
+            each s in sites
+              - var url = contextFront + '/cms/site/'+s._id+'?cid='+req.session.channel.identity
+              - if(s.wechat)
+                - url += '&wid=' + s.wechat
+              tr
+                td=s.name
+                td=s.title
+                td=s.url
+                  a(href="#{url}") #{url}
+                td.text-center
+                  a.btn.btn-default.btn-sm(href="/cms/site/enable/#{s.id}")
+                    if(s.enabled)
+                      i.fa.fa-check-square
+                    else
+                      i.fa.fa-square-o
+                td.text-center
+                  |#{formatDatetime(s.publishedAt)}
+                td.text-center
+                  .btn-group
+                    .btn-group(role='group')
+                      a.btn.btn-default.btn-sm.dropdown-toggle(data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                        i.fa.fa-qrcode
+                        span.caret
+                      .dropdown-menu.qrcode.dropdown-menu-right(style="width:210px;height: 210px;padding:4px;border:1px solid #f4f4f4" data-url="#{url}")
+                    a.btn.btn-default.btn-sm(href="/cms/site/navigate/#{s.id}",title="管理页面")
+                      i.fa.fa-sticky-note-o
+                  | &nbsp;&nbsp;
+                  .btn-group
+                    a.btn.btn-default.btn-sm(href="/cms/site/copy/#{s.id}",title="复制站点")
+                      i.fa.fa-copy
+                    a.btn.btn-default.btn-sm(href="#{url}",target="_blank", title="预览站点")
+                      i.fa.fa-eye
+                  | &nbsp;&nbsp;
+                  .btn-group
+                    a.btn.btn-default.btn-sm(href="/cms/site/edit/#{s.id}",title="编辑站点")
+                      i.fa.fa-pencil
+                    a.btn.btn-default.btn-sm(href="javascript:bootbox.confirm('确定要删除该站点吗？',function(b){if(b)window.location.href='/cms/site/del/#{s.id}';})",title="删除站点")
+                      i.fa.fa-trash
+//应用添加的脚本在scripts block中定义
+block scripts
+  script(src='#{theme}/js/jquery.qrcode.min.js')
+  script.
+    $(document).ready(function () {
+      $(".qrcode").each(function () {
+            $(this).qrcode({'width': 200, 'height': 200, 'text': $(this).data('url')});
+          });
+
+      $('#list').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#deleteForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#deleteForm").submit();
+            }
+          });
+        }
+      });
+    });

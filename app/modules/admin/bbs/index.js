@@ -24,6 +24,8 @@ router.get('/', (req, res) => {
   res.render('admin/bbs/index');
 });
 
+router.get("/fans", topicCtrl.fans); //for select2
+
 //版块
 router.get("/node", nodeCtrl.list)
   .all("/node/datatable", nodeCtrl.datatable)
@@ -35,7 +37,8 @@ router.get("/node", nodeCtrl.list)
   .get("/node/enable/:id", nodeCtrl.enable);
 
 router
-  .get(["/topic"], topicCtrl.nodes, topicCtrl.list)
+  .all(["/topic"], topicCtrl.nodes, topicCtrl.list)
+  .all(["/topic/export"], topicCtrl.export)
   .get(["/topic2"], topicCtrl.nodes, topicCtrl.list2)
   .all(["/topic/datatable", "/topic/datatable/:node"], topicCtrl.datatable)
   .post("/topic/save", topicCtrl.save)
@@ -45,11 +48,13 @@ router
   .get("/topic/top/:id", topicCtrl.top)
   .get("/topic/block/:id", topicCtrl.block)
   .get("/topic/hot/:id", topicCtrl.hot)
-  .get("/topic/enable/:id", topicCtrl.enable);
+  .get("/topic/enable/:id", topicCtrl.enable)
+  .get(['/topic/comments/:topicid'], topicCtrl.comments)
+  .post(['/topic/comments/new', '/topic/comments/new/:topicid'], topicCtrl.newComment);
 
 router.get("/comment", commentCtrl.list)
   .all("/comment/datatable", commentCtrl.datatable)
-  .post("/comment/del", commentCtrl.del)
+  .all("/comment/del", commentCtrl.del)
   .get("/comment/view/:id", commentCtrl.view)
   .get("/comment/block/:id", commentCtrl.block)
   .get("/comment/hot/:id", commentCtrl.hot);

@@ -1,30 +1,75 @@
 var offset = 0;
-var limit = 5;
+var limit = 10;
 var end = false; // end of all topics
 $(document).ready(function () {
-  $("#pagermore").on("click", function (e) {
-    e.preventDefault();
-    var url = $(this).attr("href");
-    var that = this;
-    //- if(offset > total) return false;
-    if(!end) {
-      $(that).addClass("loading loading-light");
-      $.get(url, { offset: offset, limit: limit }, function (data) {
-        $(that).removeClass("loading loading-light");
-        if(!data) {
-          $(that).html('没有更多了 ...');
-          end = true;
+  // dropload
+  $('#wrapper').dropload({
+    scrollArea: window,
+    domUp: {
+      domClass: 'dropload-up',
+      domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+      domUpdate: '<div class="dropload-update">↑释放更新</div>',
+      domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+    },
+    domDown: {
+      domClass: 'dropload-down',
+      domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+      domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+      domNoData: '<div class="dropload-noData">没有更多了</div>'
+    },
+    loadUpFn: function (me) {
+      offset = 0;
+      $.ajax({
+        type: 'GET',
+        url: url,
+        data: { offset: offset, limit: limit },
+        dataType: 'html',
+        success: function (data) {
+          // 每次数据加载完，必须重置
+          me.resetload();
+          // 重置页数，重新获取loadDownFn的数据
+          offset = 0 + limit;
+          // 解锁loadDownFn里锁定的情况
+          me.unlock();
+          me.noData(false);
+          $('#topics').html(data);
+        },
+        error: function (xhr, type) {
+          me.resetload();
         }
-        offset += limit;
-        $('#topics').append(data);
-      }, 'html');
-    } else {}
+      });
+    },
+    loadDownFn: function (me) {
+      $.ajax({
+        type: 'GET',
+        url: url,
+        data: { offset: offset, limit: limit },
+        dataType: 'html',
+        success: function (data) {
+          if(!data) {
+            // 无数据
+            me.noData(true);
+            end = true;
+            me.resetload();
+            // 锁定
+            me.lock("down");
+          } else {
+            offset += limit;
+            me.resetload();
+            $('#topics').append(data);
+          }
+        },
+        error: function (xhr, type) {
+          me.resetload();
+        }
+      });
+    },
+    threshold: 0
   });
-  $("#pagermore").trigger('click');
 
+  $("#toTop").on("click", function(e){$("body").scrollTop(0);});
   $("body").on("click", ".topic, .item", function () {
     var id = $(this).data("id");
-    console.log(">>>>>>>> ", id);
     if(id) {
       window.location.href = contextFront + "/topic/view/" + id;
     }
@@ -33,7 +78,6 @@ $(document).ready(function () {
     e.preventDefault();
     var id = $(this).data("id");
     var that = $(this);
-    console.log(" >>>>>>>>>>>>>>>>>>>> btn like id ", id);
     if(id) {
       $.get(contextFront + '/topic/like/' + id, function (data) {
         if(data && !data.error && data.msg) {
@@ -43,7 +87,7 @@ $(document).ready(function () {
           $(that).find("#likeCount").text(count);
           $.messager.show(data.msg, { type: 'success', placement: 'bottom-center' });
         } else {
-          $.messager.show(data.msg ? data.msg : '处理错误!', { type: 'error', placement: 'bottom-center' });
+          $.messager.show(data.msg ? data.msg : '处理错误!', { type: 'warning', placement: 'bottom-center' });
         }
       });
     }

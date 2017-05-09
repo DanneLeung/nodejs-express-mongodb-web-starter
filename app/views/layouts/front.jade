@@ -1,10 +1,10 @@
 doctype html
 html.app(lang='en')
   head
+    base(href="#{req.session.contextRoot}/")
     include incs/header
     // iCheck
     link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
-    block header
 
   body.register-page.hold-transition
     include incs/flash

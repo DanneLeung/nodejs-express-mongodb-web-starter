@@ -9,11 +9,11 @@ block main
   .login-box
     .login-logo
       a(href='/')
-        b #{appName}
+        b 九型人格学员交流社区
     // /.login-logo
     .login-box-body
       p.login-box-msg 使用用户密码登录系统
-      form#loginForm(action='/login?_#{Date.now()}', method='post')
+      form#loginForm(action='#{contextRoot}/login?_#{Date.now()}', method='post')
         input(type='hidden', name='_csrf', value=_csrf)
         //input(type='hidden', name='channelId', value='#{channel._id}')
         .form-group.has-feedback
@@ -53,8 +53,8 @@ block scripts
         radioClass: 'iradio_square-grey',
         increaseArea: '20%' // optional
       });
-      $('#captchaImg').attr('src', '/captcha?' + Date.now()).on('click', function () {
-        $(this).attr('src', '/captcha?' + Date.now());
+      $('#captchaImg').attr('src', '#{contextRoot}/captcha?' + Date.now()).on('click', function () {
+        $(this).attr('src', '#{contextRoot}/captcha?' + Date.now());
       });
       var form = $("#loginForm");
 

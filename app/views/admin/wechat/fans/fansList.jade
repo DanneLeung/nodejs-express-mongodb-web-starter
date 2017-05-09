@@ -167,18 +167,18 @@ block scripts
                   {data: "country", sortable: false, defaultContent: '', width: "60px"},
                   {data: "province", sortable: false, defaultContent: '', width: "90px"},
                   {data: "city", sortable: false, defaultContent: '', width: "80px"},
-                  {data: "subscribe", sortable: true, defaultContent: '', width: "40px", render: function (data, type, full, meta) {
+                  {data: "subscribe", sortable: true, defaultContent: '', width: "40px", class: 'text-center', render: function (data, type, full, meta) {
                     return data?"<i class='fa fa-fw fa-check'></i>":"";
                   }},
                   {
                     data: "subscribe_time", defaultContent: '', class: 'text-center', width: "120px",
                     render: function (data, type, full, meta) {
-                      var b = moment(new Date(parseInt(data)) * 1000);
-                      var date = "";
-                      if (data != null) {
-                        date = b.format("YYYY-MM-DD HH:mm:ss");
+                      var ret = "";
+                      if (data) {
+                        var b = moment(new Date(parseInt(data)) * 1000);
+                        ret = b.format("YYYY-MM-DD HH:mm:ss");
                       }
-                      return date;
+                      return ret;
                     }
                   },
                   {data: "remark", sortable: true, defaultContent: ''},
@@ -190,9 +190,9 @@ block scripts
                   {data: "blocked", visible: true, sortable: false, className: 'text-center',
                     render: function (data, type, row) {
                       if(data)
-                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-default btn-sm' type='button' title='点击屏蔽发言'><i class='fa fa-check'></i> 可发言</a>";
+                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-warning btn-sm' type='button' title='点击激活发言'><i class='fa fa-check'></i> 被屏蔽</a>";
                       else
-                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-warning btn-sm' type='button' title='点击激活发言'><i class='fa fa-ban'></i> 被屏蔽</a>";
+                        return "<a href='#{baseUrl}/fans/block/" + row._id + "?blocked=" + !data + "' class='btn btn-default btn-sm' type='button' title='点击屏蔽发言'><i class='fa fa-ban'></i> 可发言</a>";
                     }
                   }
                 ]

@@ -6,7 +6,6 @@ var passport = require('passport');
 var config = require(__dirname + '/../config/config');
 
 var app = express();
-
 if(process.env.NODE_ENV === 'production') {
   app.enable('trust proxy');
   //app.use(require('express-enforces-ssl')());

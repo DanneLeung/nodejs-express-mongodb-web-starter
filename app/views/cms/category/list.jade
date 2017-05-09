@@ -1,0 +1,102 @@
+//
+   Created by danne on 2016-04-28.
+extends ../layout
+block header
+block pageTitle
+  h1 内容分类设置
+block right
+  .box
+    .box-header.with-border
+      h3.box-title 分类列表
+      .box-tools
+          a.btn.btn-primary.btn-sm(href="#{baseUrl}/add")
+            i.fa.fa-plus.fa-fw
+            | 添加分类
+    .box-body
+      form#deleteForm(method='post', style='display:none', action='#{baseUrl}/del')
+        input#ids(type='hidden',name='ids')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      #tableWrapper(style="display:none")
+        table#list.table.table-hover.table-striped.table-bordered
+          thead
+            th 名称
+            th 说明
+            th.text-center 可用
+            th.text-center 操作
+          tbody
+block scripts
+  script(src='#{theme}/js/jquery.qrcode.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "#{theme}/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#list').DataTable($.extend(opts, {
+        ajax: {url: '#{req.baseUrl}/datatable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: -2, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              var url = contextFront + '/category/' + row._id + '?cid=#{req.session.channel.identity}';
+              return "<div class='btn-group'> " +
+                      "<a class='btn btn-default btn-sm' title='添加子分类' href='#{baseUrl}/add/" + row._id + "'><i class='fa fa-plus'></i></a>" +
+                      "<a class='btn btn-default btn-sm' title='编辑分类' href='#{baseUrl}/edit/" + row._id + "'><i class='fa fa-pencil'></i></a>" +
+                      "<a class='btn btn-default btn-sm del' title='删除分类'><i class='fa fa-trash'></i></a>" +
+                      "</div>";
+            }
+          }
+        ],
+        columns: [
+          {data: "name", defaultContent: '', 
+            render: function (data, type, row, meta) {
+              var result = "";
+              for(var i=0;i<row.depth;i++){
+                result += " - ";
+              }
+              result += data;
+              return result;
+            }
+          },
+          {data: "description", defaultContent: '' },
+          {
+            data: "enabled",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, row, meta) {
+              var result = "";
+              if (data) {
+                result = "<a class='btn btn-sm btn-default key' title='激活/禁用' href='#{baseUrl}/enable/" + row._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn btn-sm btn-default key' title='激活/禁用' href='#{baseUrl}/enable/" + row._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+          },
+          {data:''},
+          {data: "depth", defaultContent: '', visible: false}
+        ]
+      }));
+      $('#list').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#deleteForm #ids").val(id);
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#deleteForm").submit();
+            }
+          });
+        }
+      });
+    });

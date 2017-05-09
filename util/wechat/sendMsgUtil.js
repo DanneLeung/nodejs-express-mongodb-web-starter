@@ -7,18 +7,18 @@ let fs = require('fs');
 
 let config = require('../../config/config');
 let fileUtil = require(config.root + '/util/file');
-let WechatApi = require('./wechatApiUtil');
+let WechatApi = require('./wechatApi');
 let mongoose = require('mongoose');
 let WechatSendMessage = mongoose.model('WechatSendMessage');
 
-const basePath = config.root + '/' + config.file.local + '/wecaht/meterial';
+const basePath = config.root + '/' + config.file.local + '/wechat/meterial';
 /**
  * 发送消息
  * @param appid
  * @param appsecret
  */
 module.exports = function (appid, appsecret) {
-  var api = new WechatApi(appid, appsecret).getWechatApi();
+  var api = WechatApi(appid, appsecret);
 
   /**
    * 发送单个文本消息

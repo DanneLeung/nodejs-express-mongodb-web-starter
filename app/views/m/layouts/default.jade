@@ -1,11 +1,13 @@
 -var baseUrl = (contextFront + req.baseUrl)
 -if (baseUrl.indexOf('http')<0)
 -baseUrl = baseUrl.replace('//','/');
--var version = "0.0.4"
+-var version = "0.0.9"
+-var vjs = "0.0.7"
 html
   head
     base(href="#{contextFront}/")
     block title
+      title 九型人格学员交流社区
     include incs/header
     style.
     block header
@@ -13,12 +15,11 @@ html
 
     block main
 
-    script(type='text/javascript', src='#{themeFront}/js/mzui.js')
+    script(type='text/javascript', src='#{themeFront}/js/mzui.min.js')
+    script(type='text/javascript', src='#{themeFront}/js/dropload.min.js')
     script(type='text/javascript', src='//res.wx.qq.com/open/js/jweixin-1.2.0.js')
     script(type='text/javascript', src='#{themeRoot}/dist/js/browser.js?v=#{version}')
     script(type='text/javascript', src='#{themeRoot}/dist/js/global.js?v=#{version}')
     script(type='text/javascript', src='#{themeRoot}/dist/js/weixin.js?v=#{version}')
-    //- if (req.session.channel && req.session.channel.analystScript)
-    //-  插入统计代码
-      !{req.session.channel.analystScript}
+
     block scripts

@@ -24,9 +24,9 @@ CommentSchema.statics = {
     if(!offset) offset = 0
     else offset = parseInt(offset);
 
-    if(!limit) limit = 5
+    if(!limit) limit = 20
     else limit = parseInt(limit);
-    Comment.find({ topic: topicid }).populate("fans user").sort('createdAt').skip(offset).limit(limit).exec(done);
+    Comment.find({ topic: topicid }).populate("fans user").sort('-createdAt').skip(offset).limit(limit).exec(done);
   },
   toggleBoolField: function (id, field, done) {
     var updata = {};
@@ -48,7 +48,17 @@ CommentSchema.statics = {
       }
     });
   },
+  newComment(topicid, user, fans, content, images, done) {
+    var comment = new Comment({ topic: topicid, user: user, fans: fans, content: content, images: images });
+    comment.save((err, cm) => {
+      mongoose.model("Topic").update({ _id: topicid }, { $set: { lastCommentTime: Date.now() }, $inc: { commentCount: 1 }, $push: { comments: { $each: [cm], $position: 0, $slice: 5 } } }, (err, t) => {
+        if(err) console.error(err);
+        console.log(" >>>>>>>>>>>>>>>>>>> topic comment ", t);
+        return done(err, cm, t);
+      });
+    });
+  }
 }
 
-var Comment = mongoose.model('Comment', CommentSchema, 'comments')
+var Comment = mongoose.model('Comment', CommentSchema, 'comments');
 module.exports = Comment;

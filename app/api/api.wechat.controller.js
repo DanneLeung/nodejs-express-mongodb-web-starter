@@ -100,7 +100,7 @@ exports.getUserByUnionId = function (req, res) {
     if(!user) {
       console.warn("***************** fans with unionid %s and appid %s not found.", unionid, appid);
     }
-
+    req.session.user = user;
     return res.status(200).json(user);
   });
 }
@@ -114,6 +114,7 @@ exports.getUser = function (req, res) {
   var openid = req.query.openid || req.body.openid || req.params.openid;
   WechatFans.findByOpenId(openid, function (user) {
     //if (!user.hasOwnProperty('unionid')) user.unionid = '';
+    req.session.user = user;
     return res.status(200).json(user);
   });
 }
@@ -171,11 +172,13 @@ exports.getUserinfo = function (req, res) {
                         if(!f || !f.openid)
                           console.warn('********** 未找到wid: %s, unionid: %s 对应的微信粉丝，用户未关注微信, 先创建粉丝记录.', wid, unionid);
                         // f.wechat = null;
+                        req.session.user = f;
                         res.send({ "error": "0", "msg": "", result: f });
                       });
                     } else {
                       // 没有unionid，直接返回用户信息
                       // userInfo.wechat = null;
+                      req.session.user = fan;
                       res.send({ "error": "0", "msg": "", result: fan });
                     }
                   });
@@ -208,12 +211,14 @@ exports.getUserinfo = function (req, res) {
                             if(!f || !f.openid)
                               console.log(' !!!!!!!!!!!! 未找到wid: %s, unionid: %s 对应的微信粉丝，用户未关注微信, 直接创建粉丝了记录.', wid, f.unionid);
                             // f.wechat = null;
+                            req.session.user = f;
                             res.send({ "error": "0", "msg": "", result: f });
                           });
                         } else {
                           // 没有unionid，直接返回用户信息
                           // userInfo.wechat = null;
                           console.error(' !!!!!!!!!!!! wid: %s, 借用: %s，但获得粉丝没有unionid，可能未绑定开放平台.', wid, wh._id);
+                          req.session.user = userInfo;
                           res.send({ "error": "0", "msg": "", result: userInfo });
                         }
                       });
@@ -226,12 +231,14 @@ exports.getUserinfo = function (req, res) {
                     if(!ff || !ff.openid)
                       console.log(' @@@@@@@@@@@@ 未找到wid: %s, unionid: %s 对应的微信粉丝，用户未关注微信, 直接创建粉丝了记录.', wid, fan.unionid);
                     console.log(' @@@@@@@@@@@@ 程序使用wid：%s, 借用wid: %s, 返回粉丝：', wid, fan.wechat._id, ff);
+                    req.session.user = ff;
                     res.send({ "error": "0", "msg": "", result: ff });
                   });
                 }
               } else {
                 //返回数据库中的记录
                 console.log(' ########## 程序使用wid：%s, 相同wid: %s, 返回粉丝：', wid, fan.wechat._id, fan);
+                req.session.user = fan;
                 res.send({ "error": "0", "msg": "", result: fan });
               }
             }

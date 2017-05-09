@@ -1,0 +1,143 @@
+//
+   Created by danne on 2016-04-28.
+extends ../layout
+block header
+block pageTitle
+  h1 内容文章管理
+block right
+  .box
+    .box-header.with-border
+      h3.box-title 文章列表
+      .box-tools
+          a.btn.btn-primary.btn-sm(href="#{baseUrl}/add")
+            i.fa.fa-plus.fa-fw
+            | 添加文章
+          a.btn.btn-default.btn-sm(href="#{baseUrl}/trash/list")
+            i.fa.fa-trash.fa-fw
+            | 查看回收站
+    .box-body
+      form#deleteForm(method='post', style='display:none', action='#{baseUrl}/del')
+        input#ids(type='hidden',name='ids')
+        input#type(type='hidden',name='type')
+        input#_csrf(type='hidden', name='_csrf', value=_csrf)
+      #tableWrapper(style="display:none")
+        table#list.table.table-hover.table-striped.table-bordered
+          thead
+            //th 类型
+            th 分类
+            th 标题
+            th.text-center 作者
+            th.text-right 阅读积分
+            th.text-right 阅读数
+            th.text-center URL
+            th.text-center 发布
+            th.text-center 发布时间 
+            th.text-center 操作
+          tbody
+block scripts
+  
+  
+  script(src='#{theme}/js/jquery.qrcode.min.js')
+  script.
+    $(document).ready(function () {
+      var opts = {
+        "language": {
+          "url": "#{theme}/plugins/datatables/Chinese.json"
+        },
+        autoWidth: false,
+        lengthChange: true,
+        searching: true,
+        processing: false,
+        //scrollX:true,
+        stateSave: true,
+        serverSide: true,
+        deferRender: true
+      };
+
+      var t = $('#list').DataTable($.extend(opts, {
+        ajax: {url: '#{req.baseUrl}/datatable'},
+        order: [[1, 'asc']],
+        columnDefs: [
+          {
+            targets: -1, visible: true, sortable: false, className: 'text-center',
+            render: function (data, type, row) {
+              var url = contextFront + '/content/' + row._id + '?cid=#{req.session.channel.identity}';
+              return "<div class='btn-group'> " +
+                      '<a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-fw fa-qrcode"></i><span class="caret"></span></a>' +
+                      "<a class='btn btn-default btn-sm' title='编辑文章' href='#{baseUrl}/edit/" + row._id + "'><i class='fa fa-pencil'></i></a>" +
+                      "<a class='btn btn-default btn-sm trash' title='扔到回收站'><i class='fa fa-trash'></i></a>" +
+                      "<a class='btn btn-default btn-sm del' title='彻底删除文章'><i class='fa fa-close'></i></a>" +
+                      '<div class="qrcode dropdown-menu dropdown-menu-right" style="width:210px;height: 210px;padding:4px;border:1px solid #f4f4f4" data-url="' + url + '"></div>' +
+                      "</div>"
+                      ;
+            }
+          }
+        ],
+        columns: [
+          {data: "category.name", defaultContent: ''},
+          {data: "title", defaultContent: ''},
+          {data: "author", defaultContent: ''},
+          {data: "point", defaultContent: '', class: "text-right"},
+          {data: "readTimes", defaultContent: '', class: "text-right"},
+          {
+            data: "url", class: "text-center", render: function (data, type, row, meta) {
+            var url = contextFront + '/cms/content/' + row._id + '?cid=#{req.session.channel.identity}';
+            return '<a href="' + url + '">' + url + '</a>';
+          }
+          },
+          {
+            data: "published",
+            defaultContent: '',
+            'class': 'text-center',
+            render: function (data, type, row, meta) {
+              var result = "";
+              if (data == '1') {
+                result = "<a class='btn btn-sm btn-default key' title='发布/撤回' href='#{baseUrl}/publish/" + row._id + "'><i class='fa fa-check-square'/></a>"
+              } else {
+                result = "<a class='btn btn-sm btn-default key' title='发布/撤回' href='#{baseUrl}/publish/" + row._id + "'><i class='fa fa-square-o'/></a>"
+              }
+              return result;
+            }
+          },
+          {
+            data: "publishedAt", defaultContent: '', class: 'text-center', render: function (data, type, row, meta) {
+            var b = moment(new Date(data));
+            var date = "";
+            if (data != null) {
+              date = b.format("YYYY-MM-DD HH:mm");
+            }
+            return date;
+          }
+          },
+          {data: ""}
+        ]
+      })).on('draw.dt', function () {
+        $(".qrcode").each(function () {
+          $(this).qrcode({'width': 200, 'height': 200, 'text': $(this).data('url')});
+        });
+      });
+      $('#list').on('click', 'a.del', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#deleteForm #ids").val(id);
+        $("#deleteForm #type").val('del');
+        if (id) {
+          bootbox.confirm("确定要删除数据吗?", function (result) {
+            if (result) {
+              $("#deleteForm").submit();
+            }
+          });
+        }
+      });
+      $('#list').on('click', 'a.trash', function () {
+        var id = t.row($(this).parents('tr')).data()._id;
+        $("#deleteForm #ids").val(id);
+        $("#deleteForm #type").val('trash');
+        if (id) {
+          bootbox.confirm("确定要扔进回收站吗?", function (result) {
+            if (result) {
+              $("#deleteForm").submit();
+            }
+          });
+        }
+      });
+    });

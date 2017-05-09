@@ -1,8 +1,7 @@
-//
-   Created by danne on 2015/10/24.
 extends ../layout
 block header
-  link(href="#{theme}/plugins/uploadify/uploadify.css" rel="stylesheet" type="text/css")
+  link(rel="stylesheet", href="#{theme}/plugins/select2/select2.min.css")
+  link(rel="stylesheet",href="//cdn.bootcss.com/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css")
 //应用的page title
 block pageTitle
   h1 评论管理
@@ -12,13 +11,29 @@ block main
     .box-header.with-border
       h3.box-title 评论信息
       .box-tools
-          a.btn.btn-sm.btn-default(href="#{baseUrl}/comment/del" title="删除帖子")
+          button.delAll.btn.btn-sm.btn-default(title="删除帖子")
             i.fa.fa-fw.fa-trash
             | 删除评论
-          a.btn.btn-sm.btn-default(href="#{baseUrl}/comment/block" title="屏蔽帖子")
+          button.btn.btn-sm.btn-default(href="#{baseUrl}/comment/block" title="屏蔽帖子")
             i.fa.fa-fw.fa-ban
             | 屏蔽评论
     .box-body
+      form#searchForm.form-inline
+          .form-group
+            label.control-label 粉丝：
+            select#fans.form-control.select2(name='fans',style="width:150px" ,placeholder="输入评论者昵称查找")
+          .form-group
+            label.control-label 日期：
+            .input-group
+              input#dateStart.date.form-control(name='dateStart', value="")
+              .input-group-addon
+                span - 
+              input#dateEnd.date.form-control(name='dateEnd', value="")
+          .form-group
+            button#search.btn.btn-default(type="button") 
+              i.fa.fa-fw.fa-search
+              | 查询
+      hr
       #tableWrapper(style="display:none;")
         table#commentList.table.table-bordered.table-hover.table-striped
           thead
@@ -27,10 +42,10 @@ block main
             th 帖子
             th 评论者
             th 评论
-            th 时间
-            th 热门
-            th 屏蔽
-            th.text-center() 操作
+            th.text-center 时间
+            th.text-center 热门
+            th.text-center 屏蔽
+            th.text-center 操作
           tbody
 
       form#delForm(method='post', style='display:none', action='#{baseUrl}/comment/del')
@@ -40,8 +55,18 @@ block main
 
 //应用添加的脚本在scripts block中定义
 block scripts
+  script(src='#{theme}/plugins/select2/select2.min.js')
+  script(src='//cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js')
   script.
     $(function () {
+      initSelect2("#fans","#{baseUrl}/fans");
+      $('.date').datepicker({
+        format: "yyyy-mm-dd",
+        //- language: 'cn',
+        weekStart: 1,
+        autoclose: true,
+        todayBtn: 'linked'
+      });
       var opts = {
         "language": {
           "url": "#{theme}/plugins/datatables/Chinese.json"
@@ -65,13 +90,15 @@ block scripts
             },
             {data: "topic.content", defaultContent: '',
               render: function(data, type, row, meta){
-                return data && data.length > 50 ? data.substring(0, 50) : data;
+                //- return data && data.length > 50 ? data.substring(0, 50) : data;
+                return data?data.replace(/\r\n/gm,'<br>'):'';
               }
             },
             {data: "fans.nickname", defaultContent: ''},
             {data: "content", defaultContent: '',
               render: function(data, type, row, meta){
-                return data && data.length > 50 ? data.substring(0, 50) : data;
+                //- return data && data.length > 50 ? data.substring(0, 50) : data;
+                return data?data.replace(/\r\n/gm,'<br>'):'';
               }
             },
             {data: "createdAt", defaultContent: '',
@@ -101,7 +128,7 @@ block scripts
                 return result;
               }
             },
-            {data: "",
+            {data: "", 'class': 'text-center', 
               render: function(data, type, row, meta){
                 var id = row._id;
                 var html = "<div class='btn-group'>";

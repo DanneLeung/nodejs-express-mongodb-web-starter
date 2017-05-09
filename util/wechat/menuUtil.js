@@ -1,14 +1,14 @@
 /**
  * Created by ZhangXiao on 2016/4/15.
  */
-var WechatApi = require('./wechatApiUtil');
+var WechatApi = require('./wechatApi');
 /**
  * 自定义菜单工具类
  * @param appid
  * @param appsecret
  */
 module.exports = function (appid, appsecret) {
-  var api = new WechatApi(appid, appsecret).getWechatApi();
+  var api = WechatApi(appid, appsecret);
 
   /**
    * 获取当前菜单数据

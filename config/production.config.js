@@ -3,15 +3,15 @@
 module.exports = function (ROOT_PATH) {
   var config = {
     server: {
-      port: process.env.PORT,
+      port: process.env.PORT || 4000,
       hostname: process.env.HOSTNAME || '127.0.0.1'
     },
     database: {
-      user: 'starter',
-      password: 'starter',
+      user: 'bbs',
+      password: 'bbs',
       host: 'localhost',
       port: '27017',
-      db: 'starter',
+      db: 'bbs',
       url: ''
     },
     redis: {

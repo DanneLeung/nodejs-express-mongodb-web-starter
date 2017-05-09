@@ -1,0 +1,335 @@
+//
+  Created by pc on 2015/10/27.
+
+extends ../layout
+
+block right
+  style.
+    .form-group{overflow: hidden;}
+    .image,.icon{height: 50px;}
+    .list{border-top: 1px solid #ddd;padding-top:10px;}
+    .down_up{float: right; font-weight: 700;color: #000;text-shadow: 0 1px 0 #fff;filter: alpha(opacity=20); opacity: .2;margin-right: 15px;}
+    .down_up i{font-size: 21px;line-height: 21px;}
+    .down_up:hover, down_up:active, down_up:focus{color: #000 !important; opacity: .5;outline: none; text-decoration: none; }
+  if !site.isNew
+    .box(style="position:relative;")
+      .box-header.with-border
+        h3.box-title
+          span.text-info #{site.name}
+        .box-tools
+            a.btn.btn-default.btn-sm(href='#{baseUrl}')
+              i.fa.fa-reply
+            button#save.btn.btn-sm.btn-default(type="submit", title="保存")
+              i.fa.fa-save
+
+      .box-body
+        .form-group
+          label.control-label.col-sm-2.required 添加导航：
+          .col-sm-2
+            a.btn.btn-primary.form-control.addContent
+              i.fa.fa-plus
+              span 文章导航
+          .col-sm-2
+            a.btn.btn-primary.form-control.addSlide
+              i.fa.fa-plus
+              span 轮播导航
+          .col-sm-2
+            a.btn.btn-primary.form-control.addOutLink
+              i.fa.fa-plus
+              span 外链导航
+          .col-sm-2
+            a.btn.btn-primary.form-control.addInLink
+              i.fa.fa-plus
+              span 内链导航
+
+        div
+          .col-sm-4
+            img(src="#{site.template && site.template.thumb ? site.template.thumb : '/themes/mtui/www/images/default.jpg'}", style="width: 100%;")
+          form.params.col-sm-8(action="#{baseUrl}/navigate/save/#{site._id}", method="post")
+            if site && site.navigation && site.navigation.length
+              each nav,i in site.navigation
+                .list.col-md-12
+                  .col-md-10
+                    .form-group
+                      label.control-label.col-md-2.required 标题：
+                      .col-md-10
+                        input.required.form-control(name="title",value="#{nav.title ? nav.title : ''}")
+                    .list_content(style="display: none;")
+                      .form-group
+                        label.control-label.col-md-2.required 链接：
+                        .col-md-10
+                          input.required.form-control(name="link",value="#{nav.link ? nav.link : ''}")
+                      .form-group
+                        label.control-label.col-md-2 图片：
+                        .col-md-10
+                          .col-md-5
+                            button.btn.btn-default.img_uploader(id="img#{i}", type="button",title="上传图片")
+                              i.fa.fa-plus-square
+                          .col-md-5
+                            img.image(src="#{nav.image && nav.image.length ? nav.image : ''}")
+                            input(type="hidden",name="image",value="#{nav.image ? nav.image : ''}")
+                      .form-group
+                        label.control-label.col-md-2 图标Class：
+                        .col-md-10
+                          input.form-control(name="iconClass",value="#{nav.iconClass ? nav.iconClass : ''}")
+                      .form-group
+                        label.control-label.col-md-2 排序：
+                        .col-md-10
+                          input.form-control(name="sort",type="Number",value="#{nav.sort ? nav.sort : 0}")
+                    //.form-group
+                      label.control-label.col-md-2.required 父级：
+                      .col-md-10
+                        input.required.form-control(name="title")
+                  .col-md-2
+                    a.close(href="javascript:;")
+                      i.fa.fa-close
+                    a.down_up(href="javascript:;")
+                      i.fa.fa-chevron-up
+
+            if site && site.params && site.params.length
+              each p in site.params
+                .list.col-md-12
+                  input(type="hidden", name="label", value="#{p.label}")
+                  .col-md-10
+                    .form-group
+                      label.control-label.col-md-2.required 标题：
+                      .col-md-10
+                        input.required.form-control(name="paramsName", value="#{p.name}")
+                    .list_content(style="display: none;")
+                      .form-group
+                        label.control-label.col-md-2.required #{p.label == 'slides' ? '轮播图' : '文章分类'}
+                        .col-md-10
+                          select.form-control(name="paramsValue")
+                            if p.label == 'slides' && slides && slides.jsonData && slides.jsonData.length
+                              each v in slides.jsonData
+                                if p.value == v._id.toString()
+                                  option(value="#{v._id}", selected) #{v.type}-#{v.name}
+                                else
+                                  option(value="#{v._id}") #{v.type}-#{v.name}
+                            if p.label == 'categories' && categories && categories.jsonData && categories.jsonData.length
+                              each v in categories.jsonData
+                                if p.value == v._id.toString()
+                                  option(value="#{v._id}", selected) #{v.name}
+                                else
+                                  option(value="#{v._id}") #{v.name}
+                      .form-group
+                        label.control-label.col-md-2.required 首页加载数：
+                        .col-md-10
+                          input.required.form-control(name="paramsNumber", value="#{p.number}") 
+                          p.help-block 0代表全部加载，小于0则不加载
+                      .form-group
+                        label.control-label.col-md-2.required 更多页加载数：
+                        .col-md-10
+                          input.required.form-control(name="paramsMoreNum", value="#{p.moreNum}")
+                          p.help-block 0代表全部加载
+                  .col-md-2
+                    a.close(href="javascript:;")
+                      i.fa.fa-close
+                    a.down_up
+                      i.fa.fa-chevron-up
+
+block scripts
+  script(src="//cdn.bootcss.com/webuploader/0.1.0/webuploader.html5only.min.js")
+  script(src='#{theme}/js/fileupload.js')
+  script.
+    
+    $(function() {    
+      var templates = '#{site.templates ? site.templates : ""}';     
+      templates = templates.length ? JSON.parse(templates.replace(/&quot;/g, '"')) : null;
+      var slides = '#{slides && slides.strData ? slides.strData : ""}';
+      slides = JSON.parse(slides.replace(/&quot;/g, '"'));
+      var categories = '#{categories && categories.strData ? categories.strData : ""}'
+      categories = JSON.parse(categories.replace(/&quot;/g, '"'));
+      var cate_select = '<select name="paramsValue" class="form-control">', slide_select = '<select name="paramsValue" class="form-control">';
+      categories.forEach(function(s) {
+        cate_select += '<option value="' + s._id + '">' + (s.type ? s.type + '-' : '') + s.name + '</option>'
+      });
+      slides.forEach(function(s) {
+        slide_select += '<option value="' + s._id + '">' + (s.type ? s.type + '-' : '') + s.name + '</option>'
+      });
+      cate_select += '</select>';
+      slide_select += '</select>';
+
+      $('body').on('click', '.addContent', function() {
+        //文章链接
+        //front + cms/more/{{siteid}}/{{分类id}}
+        var $list = paramsHtml('文章分类', cate_select, 'categories');
+        $('.params').prepend($list);
+      }).on('click', '.addSlide', function() {
+        //文章链接
+        //front + cms/more/{{siteid}}/{{分类id}}
+        var $list = paramsHtml('轮播图', slide_select, 'slides');
+        $('.params').prepend($list);
+      }).on('click', '.addInLink', function() {
+        var link = '<select name="link" class="form-control">';
+        if(!templates) {
+          alert('暂无内链');
+          return;
+        } else {
+          templates.forEach(function(t) {
+            link += '<option value="'+ t.url +'">'+ t.label +'</option>'
+          });
+          link += '</select>';
+          var id1 = 'img' + Date.now();
+          navHtml(id1, link, 'in');
+        }
+      }).on('click', '.addOutLink', function() {
+        var link = '<input name="link" class="required form-control">';
+        var id1 = 'img' + Date.now();
+        navHtml(id1, link, 'out');
+      }).on('click', 'a.close', function() {
+        var $list = $(this).closest('.list');
+        $list.remove();
+      }).on('click', 'a.down_up', function() {
+        var $class = $(this).find('i').attr('class');
+        var $list = $(this).closest('.list');
+        if($class.indexOf('down') >= 0) {
+          $(this).find('i.fa-chevron-down').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+          $list.find('.list_content').slideUp();
+        } else {
+          if($list.find('.img_uploader') && $list.find('.img_uploader').length) {
+            $list.find('.img_uploader').fileupload({
+              type: 'images', key: '640X480', callback: function (data) {
+                if (data) {
+                  $list.find('input[name="image"]').val(data[0].url);
+                  $list.find('img.image').attr('src', data[0].url);
+                } else {
+                  alert("图片上传失败!");
+                }
+              }
+            });
+          }
+     
+          $(this).find('i.fa-chevron-up').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+          $list.find('.list_content').slideDown();
+        }        
+      });
+
+      function paramsHtml(paramsValue, select, label) {
+        var $list = 
+          '<div class="list col-md-12">' +
+            '<input type="hidden" name="label" value="'+ label +'">' +
+            '<div class="col-md-10">' +             
+              '<div class="form-group">' +
+                '<label class="control-label col-md-2 required">标题：</label>' +
+                '<div class="col-md-10">' +
+                  '<input name="paramsName" class="required form-control">' +
+                '</div>' +
+              '</div>' +
+              '<div class="list_content">' +
+                '<div class="form-group">' +
+                  '<label class="control-label col-md-2 required">'+ paramsValue +'</label>' +
+                  '<div class="col-md-10">' +
+                    select +
+                  '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                  '<label class="control-label col-md-2 required">首页加载数：</label>' +
+                  '<div class="col-md-10">' +
+                    '<input name="paramsNumber" class="required form-control" value=-1>' +
+                    '<p class="help-block">0代表全部加载，小于0则不加载</p>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                  '<label class="control-label col-md-2 required">更多页加载数：</label>' +
+                  '<div class="col-md-10">' +
+                    '<input name="paramsMoreNum" class="required form-control" value=15>' +
+                    '<p class="help-block">0代表全部加载</p>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="col-md-2">' +
+              '<a href="javascript:;" class="close">' +
+                '<i class="fa fa-close"></i>' +
+              '</a>' +
+              '<a href="javascript:;" class="down_up">' +
+                '<i class="fa fa-chevron-down"></i>' +
+              '</a>' +
+            '</div>' +
+          '</div>';
+          return $list;
+      }
+      function navHtml(id1, link, linkType) {
+        var $list = 
+          $('<div class="list col-md-12">' +
+            '<div class="col-md-10">' +
+              '<input type="hidden" name="linkType" value="' + linkType + '">' +
+              '<div class="form-group">' +
+                '<label class="control-label col-md-2 required">标题：</label>' +
+                '<div class="col-md-10">' +
+                  '<input name="title" class="required form-control">' +
+                '</div>' +
+              '</div>' +
+              '<div class="list_content">' +
+                  '<div class="form-group">' +
+                    '<label class="control-label col-md-2 required">链接：</label>' +
+              '<div class="col-md-10">' +
+              link + 
+              '</div>' +
+              '</div>' +
+              '<div class="form-group">' +
+              '<label class="control-label col-md-2">图片：</label>' +
+              '<div class="col-md-10">' +
+              '<div class="col-md-5">' +
+              '<button id="' + id1 + '" type="button" title="上传图片" class="btn btn-default img_uploader">' +
+              '<i class="fa fa-plus-square"></i>' +
+              '</button>' +
+              '</div>' +
+              '<div class="col-md-5">' +
+              '<img src="" class="image">' +
+              '<input type="hidden" name="image">' +
+              '</div>' +
+              '</div>' +
+              '</div>' +
+              '<div class="form-group">' +
+              '<label class="control-label col-md-2 required">图标Class：</label>' +
+              '<div class="col-md-10">' +
+              '<input name="iconClass" class="form-control">' +
+              '</div>' +
+              '</div>' +
+              '<div class="form-group">' +
+              '<label class="control-label col-md-2">排序：</label>' +
+              '<div class="col-md-10">' +
+              '<input name="sort" type="Number" class="form-control" value=0>' +
+              '<p class="help-block">仅排序外链和内链导航</p>' +
+              '</div>' +
+              '</div>' +
+              '</div>' +
+            //'<div class="form-group">' +
+            //  '<label class="control-label col-md-2">父级：</label>' +
+            //  '<div class="col-md-10">' +
+            //    '<input name="title" class="required form-control">' +
+            //  '</div>' +
+            //'</div>' +
+          '</div>' +
+          '<div class="col-md-2">' +
+            '<a href="javascript:;" class="close"><i class="fa fa-close"></i></a>' +
+              '<a href="javascript:;" class="down_up">' +
+                '<i class="fa fa-chevron-down"></i>' +
+              '</a>' +
+          '</div>' +
+          '</div>');
+          $('.params').prepend($list);
+          $list.find('#' + id1).fileupload({
+            type: 'images', key: '640X480', callback: function (data) {
+              if (data) {
+                $list.find('img.image').attr('src', data[0].url);
+                $list.find('input[name="image"]').val(data[0].url);
+              } else {
+                alert("图片上传失败!");
+              }
+            }
+          });
+          return $list;
+      }
+
+      $('form.params').validate({});
+
+      $('#save').click(function () {
+        $('form.params').submit();
+        return;
+      });
+
+    });
+

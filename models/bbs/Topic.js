@@ -25,6 +25,7 @@ let TopicSchema = new Schema({
   essence: Boolean,
   weight: Number, //权重，可以排序
   status: Number,
+  lastCommentTime: { type: Date, default: Date.now },
   blocked: { type: Boolean, default: false } //屏蔽
 }, { timestamps: {} });
 TopicSchema.statics = {
@@ -60,7 +61,7 @@ TopicSchema.statics = {
     var q = { top: true };
     if(node) q.node = node;
     Topic.find(q).sort("-updatedAt").populate("fans user").exec((err, topics) => {
-      if(err) console.error(err);
+      if(err) console.error(">>>>>>>>>>>>>>>>>>> topTopics ", q, err);
       done(topics);
     });
   },
@@ -70,13 +71,24 @@ TopicSchema.statics = {
       $or: [{ top: false }, { top: { $exists: false } }]
     };
     if(node) q.node = node;
-    Topic.find(q).populate("node fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
+    Topic.find(q).populate("node fans user").populate({ path: "comments", select: "content fans user updatedAt createdAt", sort: "-createdAt", populate: { path: "fans user" } }).sort("-lastCommentTime -updatedAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);
       done(topics);
     });
   },
+  topicsWithNodeWithTop: function (query, offset, limit, done) {
+    if(!offset) offset = 0;
+    if(!limit) limit = 10;
+    Topic.count(query).exec((err, total) => {
+      if(err) console.error(err);
+      Topic.find(query).populate("node fans user").sort("-top -createdAt").skip(offset).limit(limit).exec((err, topics) => {
+        if(err) console.error(err);
+        done(total, topics);
+      });
+    });
+  },
   topicsWithFans: function (fansId, offset, limit, done) {
-    Topic.find({ fans: fansId, blocked: false }).populate("fansId fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
+    Topic.find({ fans: fansId, blocked: false }).populate("node fans user").sort("-createdAt").skip(offset).limit(limit).exec((err, topics) => {
       if(err) console.error(err);
       done(topics);
     });

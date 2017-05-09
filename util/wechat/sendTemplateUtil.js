@@ -4,10 +4,10 @@
  */
 "use strict";
 let mongoose = require('mongoose');
-let WechatApi = require('./wechatApiUtil');
+let WechatApi = require('./wechatApi');
 
 module.exports = function (appid, appsecret) {
-  var api = new WechatApi(appid, appsecret).getWechatApi();
+  var api = WechatApi(appid, appsecret);
 
   /**
    * 获取模板列表
@@ -44,14 +44,13 @@ module.exports = function (appid, appsecret) {
 
   /**
    * 发送模板消息
-   * @param openid
-   * @param templateId
-   * @param url
-   * @param data
+   * @param openid 接收粉丝openid
+   * @param templateId 模板消息id
+   * @param url 跳转链接
+   * @param data 模板数据
    * @param callback
-   * @param callback2
    */
-  this.sendTemplate = function(openid, templateId, url, data, callback, callback2){
+  this.sendTemplate = function(openid, templateId, url, data, callback){
     api.sendTemplate(openid, templateId, url, data, (err, obj)=>{
       callback(err, obj);
     })

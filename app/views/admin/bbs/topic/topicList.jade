@@ -1,6 +1,8 @@
-//
-  Created by danne on 2015/10/24.
 extends ../layout
+block header
+  link(rel="stylesheet", href="#{theme}/plugins/select2/select2.min.css")
+  link(rel="stylesheet", href="#{theme}/plugins/datepicker/datetimepicker.min.css")
+  //- link(rel="stylesheet",href="//cdn.bootcss.com/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css")
 block pageTitle
   h1  论坛帖子管理
     small 添加，删除，更新系统中帖子信息
@@ -21,53 +23,159 @@ block main
           i.fa.fa-fw.fa-plus
           | 发布新帖子
     .box-body
-      each topic in topics
-        .post
-          .user-block.clearfix
-            img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:''}", alt='user image')
-            span.username
-              a(href='#') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.username:"")}
-            span.description  #{topic.createdAt ? moment(topic.createdAt).format("YYYY-MM-DD HH:mm:ss") : ""}
-          p=topic.content
-          ul.list-inline.clearfix
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/edit/#{topic._id}")
-                i.fa.fa-edit.margin-r-5
-                | 编辑
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/del/#{topic._id}")
-                i.fa.fa-times.margin-r-5
-                | 删除
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/block/#{topic._id}")
-                i.fa.fa-ban.margin-r-5
-                | 屏蔽
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/top/#{topic._id}")
-                i.fa.fa-arrow-up.margin-r-5
-                | 置顶
-            li.pull-right
-              a.link-black(href="#{baseUrl}/topic/hot/#{topic._id}")
-                i.fa.fa-fire.margin-r-5
-                | 热帖
-            li.pull-right
-              a.link-black(href='#')
-                i.fa.fa-thumbs-o-up.margin-r-5
-                | 赞 (#{topic.likeCount ? topic.likeCount : 0})
-            li.pull-right
-              a.link-black(href='#')
-                i.fa.fa-comments-o.margin-r-5
-                | 评 (#{topic.commentCount ? topic.commentCount : 0})
-          form.form-horizontal.comment
-            .form-group.margin-bottom-none
-              .col-sm-10
-                input.form-control.input-sm(name="content", placeholder='输入文字快速回复帖子 ～～～')
-              .col-sm-2
-                button.btn.btn-danger.pull-right.btn-sm(type='submit') 
-                  i.fa.fa-fw.fa-reply
-                  | 回复
+      form.form-inline(action="") 
+        .form-group
+          label.control-label 版块：
+          select#node.form-control(name='node')
+            option(value="") 请选择
+            each n in nodes
+              if(n._id == node)
+                option(value="#{n._id}", selected="selected") #{n.title}
+              else
+                option(value="#{n._id}") #{n.title}
+        .form-group
+          label.control-label 日期：
+          .input-group#datetime
+            input#dateStart.date.form-control(name='dateStart', value="#{dateStart?dateStart:''}")
+            .input-group-addon
+              span - 
+            input#dateEnd.date.form-control(name='dateEnd', value="#{dateEnd?dateEnd:''}")
+        .form-group
+          label.control-label 发帖者：
+          select#fans.form-control.select2(name='fans',style="width:150px" ,placeholder="输入发帖者昵称查找")
+        .form-group
+          button.btn.btn-default(type="submit") 
+            i.fa.fa-fw.fa-search
+            | 查询
+          | &nbsp;&nbsp;
+          a.btn.btn-info(href="#{baseUrl}/topic/export") 
+            i.fa.fa-fw.fa-cloud-download
+            | 导出
+      hr
+      include topicPager
+      hr
+      if(!topics || !topics.length)
+
+      else
+        each topic in topics
+          .post
+            .user-block.clearfix
+              img.img-circle.img-bordered-sm(src="#{topic.fans && topic.fans.headimgurl ? topic.fans.headimgurl:'/img/avatar.png'}", alt='user image')
+              span.username
+                a(href='#{topic.fans?topic.fans.openid:""}') #{topic.fans && topic.fans.nickname?topic.fans.nickname:(topic.user?topic.user.fullname || topic.user.username:"")}
+                .pull-right
+                  if topic.top
+                    span.label.label-info 
+                      i.fa.fa-arrow-up.margin-r-5
+                      | 顶 
+                    | &nbsp;
+                  if topic.hot
+                    span.label.label-danger 
+                      i.fa.fa-fire.margin-r-5
+                      | 热 
+                    | &nbsp;
+              span.description  #{topic.createdAt ? moment(topic.createdAt).format("YYYY-MM-DD HH:mm:ss") : ""}
+            //- p !{topic.content.replace(/\r\n/gm,'<br>').substring(0,200)} #{topic.content.length>200?'... ...':''}
+            
+            p !{topic.content.replace(/\r\n/gm,'<br>')}
+            ul.list-inline.clearfix
+              if topic.node
+                li
+                  span.label.label-info()=topic.node.title
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/edit/#{topic._id}")
+                  i.fa.fa-edit.margin-r-5
+                  | 编辑
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/del/#{topic._id}")
+                  i.fa.fa-times.margin-r-5
+                  | 删除
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/block/#{topic._id}")
+                  i.fa.fa-ban.margin-r-5
+                  | 屏蔽
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/top/#{topic._id}")
+                  i.fa.fa-arrow-up.margin-r-5
+                  | #{topic.top?'取消':''}置顶
+              li.pull-right
+                a.link-black(href="#{baseUrl}/topic/hot/#{topic._id}")
+                  i.fa.fa-fire.margin-r-5
+                  | #{topic.hot?'取消':''}热帖
+              li.pull-right
+                a.link-black(href='#')
+                  i.fa.fa-thumbs-o-up.margin-r-5
+                  | 赞 (#{topic.likeCount ? topic.likeCount : 0})
+              li.pull-right
+                a.comment(href='javascript:;',data-id="#{topic._id}")
+                  i.fa.fa-comments-o.margin-r-5
+                  | 评 (#{topic.commentCount ? topic.commentCount : 0})
+
+            .panel
+              .panel-heading
+                  b.title 最新评论 ...
+              .comment-box.panel-body.chat
+
+            form.form-horizontal.commentForm(action="#{baseUrl}/topic/comments/new/#{topic._id}")
+              input#toopenid(type="hidden" name="toopenid" value="#{topic.fans?topic.fans.openid:''}")
+              input#topicid(type="hidden" name="topicid" value="#{topic._id}")
+              input#node(type="hidden" name="node" value="#{topic.node?topic.node.title:''}")
+              
+              .form-group.margin-bottom-none
+                .col-sm-10
+                  textarea.form-control.input-sm.required(name="content", rows="4", minlength="5", maxlength="#{setting['topic.maxlength'] || 5000}", placeholder='输入文字快速回复帖子 ～～～')
+                .col-sm-2
+                  button.btnComment.btn.btn-success.pull-right.btn-block(type='submit') 
+                    i.fa.fa-fw.fa-reply
+                    |  回复
+      hr
+      include topicPager
 //应用添加的脚本在scripts block中定义
 block scripts
+  script(src='#{theme}/plugins/select2/select2.min.js')
+  script(src='#{theme}/plugins/datepicker/bootstrap-datetimepicker.min.js')
+  //- script(src='//cdn.bootcss.com/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js')
   script.
     $(document).ready(function () {
+      initSelect2("#fans","#{baseUrl}/fans");
+      $('.date').datetimepicker({
+        format: "yyyy-mm-dd hh:ii",
+        language: 'zh-CN',
+        weekStart: 1,
+        autoclose: true,
+        clearBtn: true
+      });
+      $(".commentForm").each(function(index, frm){
+        $(frm).validate({
+          submitHandler: function(form){
+            var url = $(form).attr("action");
+            var data = $(form).serialize();
+            console.log(" >>>>>>>>>>>>> form data", data);
+            $.post(url,data, function(result){
+              if(result.err){
+                bootbox.alert(result.msg);
+              }else{
+                $(form).find("textarea[name='content']").val("").focus();
+                $(form).closest('.post').find("a.comment").trigger("click");
+                //- $(that).closest('.post').find(".comment-box").append(commentHtml(result.comment));
+                toastr.success(result.msg);
+              }
+            });
+          }
+        });
+      });
+
+      function commentHtml(comment){
+        var html = "";
+        return html;
+      }
+      $('body').on("click","a.comment", function(e){
+        var that = this;
+        var topicid =$(this).data("id");
+        if(topicid){
+          $.get("#{baseUrl}/topic/comments/" + topicid, function(html){
+            $(that).closest('.post').find(".comment-box").html(html);
+          });
+        }
+      });
     });

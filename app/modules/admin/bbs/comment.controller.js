@@ -1,12 +1,8 @@
-/**
- * Created by danne on 2016/3/11.
- */
-/**
- * Created by ZhangXiao on 2015/6/11.
- */
+var moment = require('moment');
 var mongoose = require('mongoose');
 var config = require('../../../../config/config');
 
+var WechatFans = mongoose.model('WechatFans');
 var Comment = mongoose.model('Comment');
 
 exports.list = function (req, res) {
@@ -14,9 +10,34 @@ exports.list = function (req, res) {
 };
 
 exports.datatable = function (req, res) {
-  Comment.dataTable(req.query, function (err, data) {
-    res.send(data);
-  });
+  var fans = req.body.fans || req.query.fans;
+  var query = {};
+  var dateStart = req.query.dateStart || req.body.dateStart;
+  var dateEnd = req.query.dateEnd || req.body.dateEnd;
+
+  if(dateStart) {
+    if(!query.createdAt) query.createdAt = {};
+    var d = moment(dateStart, 'YYYY-MM-DD');
+    var start = d.startOf('day').toDate();
+    query.createdAt.$gte = start;
+  }
+  if(dateEnd) {
+    if(!query.createdAt) query.createdAt = {};
+    var d = moment(dateEnd, 'YYYY-MM-DD');
+    var end = d.endOf('day').toDate();
+    query.createdAt.$lte = end;
+  }
+  // console.log(" >>>>>>>>>>>>>>>>> ", query);
+  if(fans) {
+    query.fans = fans;
+    Comment.dataTable(req.query, { conditions: query }, function (err, data) {
+      res.send(data);
+    });
+  } else {
+    Comment.dataTable(req.query, { conditions: query }, function (err, data) {
+      res.send(data);
+    });
+  }
 };
 
 exports.view = function (req, res) {
@@ -80,13 +101,19 @@ exports.save = function (req, res) {
 };
 exports.del = function (req, res) {
   var ids = req.body.ids || req.params.ids;
-  Comment.remove({ '_id': ids }, function (err, result) {
-    if(err) {
-      console.log(err);
-      req.flash('error', err);
-    } else {
-      req.flash('success', '数据删除成功!');
-      res.redirect('/admin/bbs/comment');
-    }
-  });
+  if(ids) {
+    ids = ids.split(',');
+    Comment.remove({ '_id': { $in: ids } }, function (err, result) {
+      if(err) {
+        console.log(err);
+        req.flash('error', err);
+      } else {
+        req.flash('success', '数据删除成功!');
+        res.redirect('/admin/bbs/comment');
+      }
+    });
+  } else {
+    req.flash('warning', '没有选中要删除的数据!');
+    res.redirect('/admin/bbs/comment');
+  }
 };

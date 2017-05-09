@@ -1,7 +1,8 @@
 
 extends ../layouts/bbs
-block headNav
-
+block css
+  style.
+    .topic {padding: 0  0.5rem 0.5rem;}
 block content
   div.clearfix
     if(!topic)
@@ -9,23 +10,24 @@ block content
         p 帖子不存在哦,可能已经被删除 ~~~ 
     #topic.list
       .item.with-avatar
-        a(href="fans/#{topic.fans?topic.fans._id:''}") 
+        a(href="#{topic.fans?'fans/' + topic.fans._id:'javascript:;'}") 
           .avatar
             img(src='#{topic.fans?topic.fans.headimgurl:""}', alt='')
 
         .content
-          a.title(href="fans/#{topic.fans?topic.fans._id:''}") 
-            span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.username:'')}
-            span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
+          a.title(href="#{topic.fans? 'fans/' + topic.fans._id:''}") 
+            span.nickname #{topic.fans?topic.fans.nickname:(topic.user?topic.user.fullname || topic.user.username:'')}
+            //- span.label.primary.rounded(style='margin-right: 0.25rem') V. #{topic.fans?topic.fans.level:1}
             if topic.hot
-              span.label.red.rounded(style='margin-right: 0.25rem') 
+              .label.red.rounded(style='margin-right: 0.25rem') 
                 i.icon-sun
-          .subtitle.muted.no-margin  #{formatDate(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
+            .small.muted.no-margin  #{formatDatetime(topic.createdAt)} 浏览 #{topic.readCount?topic.readCount:0}
 
       .topic 
         if topic.node
           span.label.primary.rounded(style='margin-right: 0.25rem')=topic.node.title
-        | #{topic.content}
+        br
+        | !{topic.content.replace(/\r\n/gm,'<br>')}
         if(topic.images && topic.images.length>0)
           each img in topic.images
             if img
@@ -40,9 +42,10 @@ block content
           strong  评论
           small.muted (#{topic.commentCount})
       .divider.no-padding.no-margin
-      #comments.list.comments
-        include comments
-      nav.nav.justified.pager
+      #wrapper
+        #comments.list.comments
+          //- include comments
+      //- nav.nav.justified.pager
         a#pagermore(href="javascript:;")
             strong 更多评论 (#{topic.commentCount})
             span.text-link
@@ -50,7 +53,7 @@ block content
   nav.fab.affix.dock-bottom.shadow-none
     //- a.btn.circle.shadow-2.has-margin-sm.dark(href='https://github.com/easysoft/mzui/blob/master//part/examples/comments.html', target='_blank')
       i.icon-code
-    a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary-pale(title='返回', onclick='javascript:window.history.go(-1);')
+    a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary-pale(title='返回', href='home')
       i.icon.icon-chevron-left
     a.addComment.btn.circle.shadow-2.has-margin-sm.btn-lg.green.pull-right(href="javascript:;", title='评论')
       i.icon.icon-comments
@@ -61,4 +64,5 @@ block contentScripts
     var total = #{ topic.commentCount ? topic.commentCount : 0 };
     var offset = #{ offset ? offset : 0 };
     var limit = #{ limit ? limit : 5 };
-  script(src="topic.js?v=#{v_js}")
+    var url = contextFront + "/topic/comments/#{topic._id}";
+  script(src="topic.js?v=#{vjs}")

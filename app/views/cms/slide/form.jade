@@ -1,0 +1,124 @@
+extends ../layout
+block header
+  style.
+    hr{margin:10px 0}
+    .alert{padding:0}
+block right
+  if !slide.isNew
+    form#userDelForm(method='post', style='display:none', action='#{baseUrl}/del')
+      input#ids(type='hidden',name='ids',value="#{slide._id}")
+      input#_csrf(type='hidden', name='_csrf', value=_csrf)
+  form#slideForm.form-horizontal(method="post",action="#{baseUrl}/save")
+    input#_csrf(type='hidden', name='_csrf', value=_csrf)
+    if(!slide.isNew)
+      input#id(type='hidden', name='id', value="#{slide._id}")
+
+    .box(style="position:relative;")
+      .box-header.with-border
+        h3.box-title
+          span.text-info #{slide.isNew ? '创建轮播' : '轮播修改'} 【#{slide.name}】
+        .box-tools
+            a.btn.btn-default.btn-sm(href='#{baseUrl}')
+              i.fa.fa-reply
+            button#save.btn.btn-sm.btn-default(type="submit", title="保存")
+              i.fa.fa-save
+      .box-body
+        #content
+          .form-group
+            label.control-label.col-sm-2.required 类型/位置：
+            .col-sm-10
+              input#type.form-control.required(type="text",name="type",value="#{slide.type}",maxLength='5')
+          .form-group
+            label.control-label.col-sm-2.required 名称：
+            .col-sm-10
+              input#name.form-control.required(type="text",name="name",value="#{slide.name}")
+          .form-group
+            label.control-label.col-sm-2 说明：
+            .col-sm-10
+              textarea#description.form-control(name='description' ,rows="3")
+                | #{slide.description ? slide.description : ''}
+              p.help-block 填写分享或关键字回复图文信息的描述内容
+          .form-group
+            label.control-label.col-sm-2 可用：
+            .col-sm-10
+              label.checkbox
+                if (slide && slide.enabled)
+                  input#enabled.mini(type='checkbox' name='enabled' checked)
+                else
+                  input#enabled.mini(type='checkbox' name='enabled')   
+          .form-group
+            label.control-label.col-sm-2.col-md-2.col-xs-12 轮播图片：
+            .col-sm-10
+              button#images.btn.btn-success(type="button")
+                //- i.fa.fa-plus.fa-fw
+                |添加图片
+              span.text-info(style="margin-left:20px;") 上传图片会被压缩为宽640像素大小
+          .form-group
+            .col-sm-10.col-md-10.col-xs-12.col-sm-offset-2
+                div#imageList
+                  each img in slide.images
+                    .alert.fade.in
+                      hr
+                      .form-group
+                        label.control-label.col-sm-2.col-md-2.col-xs-12 图片：
+                        .col-sm-8
+                          input(type='hidden', name='url', value='#{img.url}')
+                          a(target='_blank', href='#{img.url}')
+                            img.img-thumbnail(src='#{img.url}', style='width:150px;')
+                        .col-sm-2
+                          button.close(data-dismiss='alert', aria-label='Close')
+                            span(aria-hidden='true') ×
+                      .form-group
+                        label.control-label.col-sm-2.col-md-2.col-xs-12 标题：
+                        .col-sm-10
+                          input.form-control(type='text', name='title',value='#{img.title}')
+                      .form-group
+                        label.control-label.col-sm-2.col-md-2.col-xs-12 点击跳转链接：
+                        .col-sm-10
+                          input.form-control(type='text', name='link',value='#{img.link}')
+block scripts
+  script(src="//cdn.bootcss.com/webuploader/0.1.0/webuploader.html5only.min.js")
+  script(src='#{theme}/js/fileupload.js')
+  script.
+    $(document).ready(function () {
+
+      $('#images').fileupload({type:'images', key:'640X480', callback:function (data) {
+        if (data) {
+          var html = imageList(data[0].url);
+          $("#imageList").append(html);
+        }else{
+          alert("图片上传失败!");
+        }
+      }});
+      //新增广告中的图片信息模型
+      function imageList(data) {
+        var html = "";
+        var listId = "imgInfo_" + Math.round(Math.random() * 100);
+        html += '  <div class="alert fade in" id="' + listId + '">';
+        html += '    <hr>';
+        html += '    <div class="form-group"><label class="control-label col-sm-2 col-md-2 col-xs-12">图片：</label>';
+        html += '        <div class="col-sm-8">';
+        html += '           <input type="hidden" name="url"  value="' + data + '" />';
+        html += '           <a target="_blank" href="' + data + '"><img src="'+ data + '" style="width:150px;" class="img-thumbnail"></a>';
+        html += '        </div>';
+        html += '        <div class="col-sm-2"><button data-dismiss="alert" aria-label="Close" class="close"><span aria-hidden="true">×</span></button></div>';
+        html += '    </div>';
+        html += '    <div class="form-group"><label class="control-label col-sm-2 col-md-2 col-xs-12">标题：</label>';
+        html += '        <div class="col-sm-10"><input type="text" name="title" class="form-control"></div>';
+        html += '    </div>';
+        html += '    <div class="form-group"><label class="control-label col-sm-2 col-md-2 col-xs-12">点击跳转链接：</label>';
+        html += '        <div class="col-sm-10"><input type="text" name="link" class="form-control"></div>';
+        html += '    </div>';
+        html += '  </div>';
+        return html;
+      }
+
+      //validator
+      $('#slideForm').validate({
+        rules: {
+        },
+        messages: {
+        }
+      });
+
+    });

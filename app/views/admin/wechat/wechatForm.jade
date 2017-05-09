@@ -79,14 +79,14 @@ block main
                 p.help-block 请填写微信公众平台后台的AppSecret, 只有填写这两项才能管理自定义菜单
 
             .form-group
-              label.col-xs-12.col-sm-2.col-md-2.control-label.required Token：
+              label.col-xs-12.col-sm-2.col-md-2.control-label Token：
               .col-sm-8.col-md-8.col-xs-12
-                input#token.form-control.required(name='token', placeholder='请输入Token', value="#{ info.token}")
+                input#token.form-control(name='token', placeholder='请输入Token', value="#{ info.token}")
                 p.help-block 与公众平台接入设置值一致，必须为英文或者数字，长度为3到32个字符. 请妥善保管, Token 泄露将可能被窃取或篡改平台的操作数据.
             .form-group
-              label.col-xs-12.col-sm-2.col-md-2.control-label.required EncodingAESKey：
+              label.col-xs-12.col-sm-2.col-md-2.control-label EncodingAESKey：
               .col-sm-8.col-md-8.col-xs-12
-                input#channelName.form-control.required(name='encodingAESKey', placeholder='请输入消息加解密密钥EncodingAESKey', value="#{info.encodingAESKey}")
+                input#channelName.form-control(name='encodingAESKey', placeholder='请输入消息加解密密钥EncodingAESKey', value="#{info.encodingAESKey}")
                 p.help-block 与公众平台接入设置值一致，必须为英文或者数字，长度为43个字符. 请妥善保管, EncodingAESKey 泄露将可能被窃取或篡改平台的操作数据.
 
             .form-group

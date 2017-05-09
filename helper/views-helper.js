@@ -3,7 +3,8 @@
  */
 "use strict";
 
-var url = require('url'),
+var _ = require('lodash'),
+  url = require('url'),
   qs = require('querystring'),
   moment = require('moment');
 
@@ -30,10 +31,10 @@ function helpers(name) {
     res.locals.createPagination = createPagination(req);
 
     if(typeof req.flash !== 'undefined') {
-      res.locals.info = req.flash('info');
-      res.locals.errors = req.flash('error');
-      res.locals.success = req.flash('success');
-      res.locals.warning = req.flash('warning');
+      // res.locals.info = req.flash('info');
+      // res.locals.errors = req.flash('error');
+      // res.locals.success = req.flash('success');
+      // res.locals.warning = req.flash('warning');
       // console.log("********************* req flash success ", JSON.stringify(res.locals.success), res.get('Content-Type'));
     }
 
@@ -63,8 +64,14 @@ function helpers(name) {
         res._render(template, locals, cb);
       }
     };
+    res._redirect = res.redirect;
+    res.redirect = function (uri) {
+      var url = _.startsWith(uri, 'http') ? uri : ((req.session.contextRoot || "") + uri);
+      console.log(" >>>>>>>>>>>>>>>>>.. redirect to ", url);
+      res._redirect(url);
+    };
     next();
-  }
+  };
 }
 
 module.exports = helpers;
@@ -90,7 +97,7 @@ function createPagination(req) {
       str += '<li class="' + clas + '"><a href="' + href + '">' + p + '</a></li>';
     }
     return str;
-  }
+  };
 }
 
 /**
@@ -148,5 +155,5 @@ function paddingLeft(str, char, len) {
  */
 
 function stripScript(str) {
-  return str.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+  return str.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 }

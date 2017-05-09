@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "name": "app",
+      "name": "bbs",
       "script": "app/app.js",
       "instances": 0,
       "exec_mode": "cluster",
@@ -9,6 +9,7 @@
         "COMMON_VARIABLE": "true"
       },
       "env_production": {
+        "PORT": 4000,
         "NODE_ENV": "production"
       }
     }

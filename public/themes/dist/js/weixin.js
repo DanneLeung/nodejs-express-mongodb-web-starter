@@ -19,6 +19,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * *********************************************
    */
   var W = {
+    clear: clear,
     config: config,
     getUser: getUser,
     oauthUser: oauthUser,
@@ -76,8 +77,8 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    * @param redirectUri
    */
   function oauth(appid, scope, redirectUri, state) {
-    var redirectURL = encodeURIComponent('http://9cubic.cn/wxroute/' + redirectUri.replace('https://', '').replace('http://', ''));
-    //var redirectURL = encodeURIComponent(redirectUri);
+    // var redirectURL = encodeURIComponent('http://9cubic.cn/wxroute/' + redirectUri.replace('https://', '').replace('http://', ''));
+    var redirectURL = encodeURIComponent(redirectUri);
     var oauthURL = weixinOauthURL;
     oauthURL += '?appid=' + appid;
     oauthURL += '&redirect_uri=' + (redirectURL);
@@ -159,9 +160,9 @@ var shortUrl = contextRoot + '/api/getShortUrl';
           window.location.href = removeQueryString(redirectUri, ['code', 'state']);
         });
       }
-    } else if(user && openid && openid != '' && openid != 'null') { //console.log('获取到本地用户信息');
-      console.log('获取到本地用户信息'); //console.log('获取到本地用户信息');
-      return callback(user ? JSON.parse(user) : {});
+      // } else if(user && openid && openid != '' && openid != 'null') { //console.log('获取到本地用户信息');
+      //   console.log('获取到本地用户信息'); //console.log('获取到本地用户信息');
+      //   return callback(user ? JSON.parse(user) : {});
     } else if(openid && openid != '' && openid != 'null') {
       return getUserAndSave(appid, openid, callback);
     } else if(unionid) {
@@ -208,8 +209,10 @@ var shortUrl = contextRoot + '/api/getShortUrl';
   }
 
   function userInfoLocalStorage(appid, user) {
-    if(!user)
+    if(!user) {
+      localStorage.clear();
       return user;
+    }
     //localStorage.setItem(appid + '.user.openid', (user.hasOwnProperty('openid') ? user.openid : null));
     //localStorage.setItem(appid + '.user.unionid', (user.hasOwnProperty('unionid') ? user.unionid : null));
     localStorage.setItem(appid + '.user.openid', user.openid);
@@ -313,7 +316,7 @@ var shortUrl = contextRoot + '/api/getShortUrl';
    */
   function chooseImage(count, callback) {
     if(!count) count = 1;
-    if(count > 9) count=9;
+    if(count > 9) count = 9;
     wx.chooseImage({
       count: count, // 默认9
       sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -383,6 +386,12 @@ var shortUrl = contextRoot + '/api/getShortUrl';
     $.post(shortUrl, { longUrl: longUrl }, function (data) {
       callback(data);
     });
+  }
+
+  function clear() {
+    if(localStorage) {
+      localStorage.clear();
+    }
   }
 
 })();

@@ -1,7 +1,7 @@
 /**
  * Created by ZhangXiao on 2016/4/15.
  */
-var WechatApi = require('./wechatApiUtil');
+var WechatApi = require('./wechatApi');
 
 /**
  * 用户粉丝api
@@ -9,7 +9,7 @@ var WechatApi = require('./wechatApiUtil');
  * @param appsecret
  */
 module.exports = function(appid, appsecret) {
-    var api = new WechatApi(appid, appsecret).getWechatApi();
+    var api = WechatApi(appid, appsecret);
 
     /**
      * 修改备注

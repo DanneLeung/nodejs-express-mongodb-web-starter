@@ -1,40 +1,52 @@
 extends ../layouts/bbs
+block css
+  style.
+    .topic {padding: 0  0.5rem;}
+    .topic .text{max-height:5rem;overflow:hidden;text-overflow:ellipsis;margin-bottom:0.25rem}
+    .list>.list {margin-left: 1rem;}
+    .list>.list .item{padding:0.25rem}
+    .list>.list .divider:first-child {border:none;}
+    .list .nav>a {height:1.5rem;}
+    hr {margin:0}
+
 block headNav
   header#haedNav.heading.affix.dock-top.dock-auto
-    nav#headNav.nav
-      a.brand-name(href='home', class="#{!node?'active':''}", data-page-name='index')
-        //- i.icon-home
-        | 全部
+    nav#headNav.nav.pull-left
+      //- a(href='home', class="#{!node?'active primary-pale rounded':''}", data-page-name='index')
+      //- i.icon-home
       each n in nodes
-        a(href='home/#{n._id}', class="#{n._id == node?'active':''}" data-page-name='#{n.title}')=n.title
-    .title
-    nav.nav
-      a(href='user')
+        a(href='home/#{n._id}', class="#{n._id == node?'active primary-pale rounded':''}" data-page-name='#{n.title}') #{n.title.substring(0,4)}
+    //- .title &nbsp;
+    nav.nav.dock-right
+      a(href='user?v=#{Date.now()}')
         .avatar.circle
-          img#headimgurl(src="#{user && user.headimgurl ? user.headimgurl : baseUrl + '/imgs/headimg_default.jpg'}", alt='U')
+          img#headimgurl(src="#{user && user.headimgurl ? user.headimgurl : ''}", alt='U')
 
 block content
   //- .heading
     .title 
+  if topTopics
+    #topTopics.list.space-sm
+      each topTopic in topTopics
+        if(topTopic)
+          .item.with-avatar(data-id="#{topTopic._id}")
+            .avatar.avatar-sm.circle.yellow 顶
+            .content
+              | !{topTopic.content.replace(/\r\n/gm,'<br>')}
+  #wrapper  
+    #topics
 
-  #topTopics.list.space-sm
-    each topTopic in topTopics
-      if(topTopic)
-        .item.with-avatar(data-id="#{topTopic._id}")
-          .avatar.avatar-sm.circle.yellow 顶
-          .content
-            | #{topTopic.content}
-  #topics
-
-  nav.nav.justified.pager
+  //- nav.nav.justified.pager
     a#pagermore.loading.loading-light(href='topics/#{node}')
       strong 加载更多 ...
       span.text-link
         i.icon.icon-double-angle-down
-  nav.fab.affix.dock-bottom.dock-right.shadow-none
-    a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary(title='发布新帖',href="topic/new/#{node}")
+  nav.fab.affix.dock-bottom.shadow-none
+    a#toTop.btn.circle.shadow-2.has-margin-sm.btn-lg.info(title='返回顶部')
+      i.icon.icon-arrow-up
+    a.btn.circle.shadow-2.has-margin-sm.btn-lg.primary.pull-right(title='发布新帖',href="topic/new/#{node}")
       i.icon.icon-plus
 block contentScripts
-  script(src="home.js?v=#{v_js}")
-
-
+  script.
+    var url = contextFront + "/topics/#{node?node:''}";
+  script(src="home.js?v=#{vjs}")

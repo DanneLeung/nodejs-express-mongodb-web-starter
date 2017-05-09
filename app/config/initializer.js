@@ -47,9 +47,9 @@ module.exports = function (app, express) {
             req.session.authAppid = res.locals.authAppid = wechat.appid; //认证授权使用的appid
             req.session.authWid = res.locals.authAppid = wechat.id; //认证授权使用的wid
           }
-          //console.log('****************** 应用运行在公众号', req.originalUrl, JSON.stringify(wechat));
+          console.log('****************** 应用运行在公众号', req.originalUrl, JSON.stringify(wechat));
         } else {
-          //console.warn('***************** 应用运行没有运行在公众号上，可能未配置公众号', req.session.channelId, wechatId);
+          console.warn('***************** 应用运行没有运行在公众号上，可能未配置公众号', req.session.channelId, wechatId);
           delete req.session.wechat;
           delete req.session.appid;
 
@@ -61,16 +61,17 @@ module.exports = function (app, express) {
     }, function (cb) {
       if(env == 'development') {
         //开发模式时访问本地localhost
+        var setting = res.locals.setting = req.session.setting = {};
         res.locals.contextRoot = req.session.contextRoot = '';
         res.locals.contextFront = req.session.contextFront = '/m';
         res.locals.staticRoot = req.session.staticRoot = '';
-        res.locals.themeRoot = req.session.themeRoot = "/themes";
+        res.locals.themeRoot = req.session.themeRoot = req.session.contextRoot + "/themes";
         res.locals.theme = req.session.themeRoot + "/lte";
         res.locals.themeFront = req.session.themeRoot + "/mzui";
-        return cb(null, null);
+        return cb(null, setting);
       } else {
-        if(!req.session.contextFront || !req.session.contextRoot || !req.session.staticRoot || !req.session.themeRoot) {
-          mongoose.model('Setting').getValuesByKeys(['context.root', 'context.front', 'theme.root', 'theme.front', 'static.root'], function (setting) {
+        if(!req.session.setting) {
+          mongoose.model('Setting').getAllValues((setting) => {
             // console.log("############# 读取系统参数" + JSON.stringify(setting));
             if(setting) {
               var contextRoot = setting['context.root'] || '';
@@ -101,6 +102,7 @@ module.exports = function (app, express) {
 
               res.locals.theme = req.session.themeRoot + "/lte";
               res.locals.themeFront = req.session.themeRoot + '/' + themeFront;
+              res.locals.setting = req.session.setting = setting;
               // console.log('########################## context, front, static, themeRoot ', contextRoot, contextFront, staticRoot, themeRoot);
               return cb(null, setting);
             } else {
@@ -108,6 +110,7 @@ module.exports = function (app, express) {
             }
           });
         } else {
+          var setting = res.locals.setting = req.session.setting;
           res.locals.contextRoot = req.session.contextRoot = req.session.contextRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
           res.locals.contextFront = req.session.contextFront = req.session.contextFront.replace("http://", protocol + "://").replace("https://", protocol + "://");
           res.locals.staticRoot = req.session.staticRoot = req.session.staticRoot.replace("http://", protocol + "://").replace("https://", protocol + "://");
@@ -115,11 +118,11 @@ module.exports = function (app, express) {
           res.locals.theme = req.session.themeRoot + "/lte";
           res.locals.themeFront = req.session.themeRoot + "/mzui";
           // console.log('********************** context, front, static, themeRoot in sessions.', req.session.contextRoot, req.session.contextFront, req.session.staticRoot, req.session.themeRoot);
-          return cb(null, null);
+          return cb(null, setting);
         }
       }
-    }], function (result) {
-      if(result && result.length) console.log('应用当前运行在微信公众号：', result[0]);
+    }], function (err, result) {
+      // if(result && result.length) console.log('应用当前运行在微信公众号：', result[0]);
       return next();
     });
   });

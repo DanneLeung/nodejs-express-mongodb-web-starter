@@ -1,20 +1,81 @@
+var offset = 0;
+var limit = 10;
+var end = false; // end of all topics
 var count = 0;
 var serverIds = [];
 $(document).ready(function () {
-  $("#pagermore").on("click", function (e) {
-    e.preventDefault();
-    var that = $(this);
-    if(offset > total) {
-      $(that).html('没有更多了 ...');
-      return false;
-    }
-    $(that).addClass("loading loading-light");
-    $.get(contextFront + '/topic/comments/' + topicId, { offset: offset, limit: limit }, function (html) {
-      offset = offset + limit;
-      $("#comments").append(html);
-      $(that).removeClass("loading loading-light");
-    }, 'html');
+  // dropload
+  $('#wrapper').dropload({
+    scrollArea: window,
+    domUp: {
+      domClass: 'dropload-up',
+      domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+      domUpdate: '<div class="dropload-update">↑释放更新</div>',
+      domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+    },
+    domDown: {
+      domClass: 'dropload-down',
+      domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+      domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+      domNoData: '<div class="dropload-noData">没有更多了</div>'
+    },
+    loadUpFn: function (me) {
+      offset = 0;
+      $.ajax({
+        type: 'GET',
+        url: url,
+        data: { offset: offset, limit: limit },
+        dataType: 'html',
+        success: function (data) {
+          // 每次数据加载完，必须重置
+          me.resetload();
+          // 重置页数，重新获取loadDownFn的数据
+          offset = 0 + limit;
+          // 解锁loadDownFn里锁定的情况
+          me.unlock();
+          me.noData(false);
+          $('#comments').html(data);
+        },
+        error: function (xhr, type) {
+          me.resetload();
+        }
+      });
+    },
+    loadDownFn: function (me) {
+      $.ajax({
+        type: 'GET',
+        url: url,
+        data: { offset: offset, limit: limit },
+        dataType: 'html',
+        success: function (data) {
+          if(!data) {
+            // 无数据
+            me.noData(true);
+            end = true;
+            me.resetload();
+            // 锁定
+            me.lock("down");
+          } else {
+            offset += limit;
+            me.resetload();
+            $("#comments").append(data);
+          }
+        },
+        error: function (xhr, type) {
+          me.resetload();
+        }
+      });
+    },
+    threshold: 0
   });
+
+  if(localStorage) {
+    var c = localStorage.getItem("topic.comment");
+    if(c && c != undefined) { $("#content").val(c); }
+    $("#content").on("change", function (e) {
+      localStorage.setItem("topic.comment", $(this).val());
+    });
+  }
 
   $(".addComment").on("click", function (e) {
     $("#newComment").show();
@@ -39,6 +100,7 @@ $(document).ready(function () {
     onSuccess: function (html) {
       // $("#comments").append(html);
       $("#newComment").hide();
+      localStorage.setItem("topic.comment", '');
       $("#newComment").find("textarea").val('');
     },
     onError: function (status) {

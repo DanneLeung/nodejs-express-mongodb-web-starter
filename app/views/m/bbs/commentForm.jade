@@ -2,24 +2,27 @@
   button.addComment.btn.pull-right(type="button") 
     i.icon-pencil
     |  写评论
-#newComment.space-sm(style="display:none")
+#newComment.space-sm
   //- .heading
     .title 
       strong 发表回复
   .box
     form#commentForm.no-margin(method="post" action="#{contextFront}/topic/comment/new/#{topic._id}",data-type="html")
       input#appid(type="hidden" name="appid" value="#{appid}")
-      input#openid(type="hidden" name="openid" value="")
+      //- input#openid(type="hidden" name="openid" value="")
+      //- input#nickname(type="hidden" name="nickname" value="#{topic.fans?topic.fans.nickname:''}")
+      input#toopenid(type="hidden" name="toopenid" value="#{topic.fans?topic.fans.openid:''}")
       input#topicid(type="hidden" name="topicid" value="#{topic._id}")
+      input#node(type="hidden" name="node" value="#{topic.node?topic.node.title:''}")
 
       .control
-        textarea#content.textarea(name="content", rows="4", placeholder="回复帖子:")
+        textarea#content.textarea.required(name="content", rows="6", placeholder="回复帖子:", minlength="5", maxlength="#{setting['topic.maxlength'] || 5000}", required="required")
       .clearfix.control
         div
           button#selectImg.btn(type="button")
             i.icon-picture
-          | &nbsp;
-          button.btn(type="button")
+          //- | &nbsp;
+          //- button.btn(type="button")
             i.icon-smile
           .pull-right
             button.btn.primary.outline(type='submit') 发表
