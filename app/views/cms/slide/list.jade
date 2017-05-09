@@ -4,7 +4,7 @@ extends ../layout
 block header
 block pageTitle
   h1 轮播广告管理  
-block right
+block main
   .box
     .box-header.with-border
       h3.box-title 轮播列表
@@ -52,7 +52,7 @@ block scripts
           {
             targets: -1, visible: true, sortable: false, className: 'text-center',
             render: function (data, type, row) {
-              var url = contextFront + '/slide/' + row._id + '?cid=#{req.session.channel.identity}';
+              var url = contextFront + '/slide/' + row._id;
               return "<div class='btn-group'> " +
                       "<a class='btn btn-default btn-sm' title='编辑轮播' href='#{baseUrl}/edit/" + row._id + "'><i class='fa fa-pencil'></i></a>" +
                       "<a class='btn btn-default btn-sm del' title='删除轮播'><i class='fa fa-trash'></i></a>" +

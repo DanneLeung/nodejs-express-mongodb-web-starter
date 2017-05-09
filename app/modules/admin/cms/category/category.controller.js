@@ -2,7 +2,7 @@
  * 轮播管理
  */
 var mongoose = require('mongoose');
-var config = require('../../../../config/config');
+var config = require('../../../../../config/config');
 var async = require('async');
 var moment = require('moment');
 var _ = require('lodash');
@@ -15,7 +15,7 @@ var Category = mongoose.model('CmsCategory');
  * @param res
  */
 exports.index = function (req, res) {
-  Category.find({ channel: req.session.channelId }).sort('lineage').exec(function (err, categories) {
+  Category.find({  }).sort('lineage').exec(function (err, categories) {
     if(err) {
       req.flash("error", err);
     }
@@ -31,9 +31,8 @@ exports.add = function (req, res) {
   var id = req.params.id;
   if(id) {
     Category.findOne({
-      _id: id,
-      channel: req.session.channelId
-    }, (err, category) => {     
+      _id: id
+    }, (err, category) => {
       if(!err && category) {
         res.render('cms/category/form', { category: new Category(), parent: category });
       } else {
@@ -42,7 +41,6 @@ exports.add = function (req, res) {
     })
   } else {
     Category.find({
-      channel: req.session.channelId,
       parent: null,
       enabled: true
     }, function (err, categories) {
@@ -52,27 +50,24 @@ exports.add = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-   var id = req.params.id;
+  var id = req.params.id;
   Category.findById(id).populate('parent').exec(function (err, category) {
-      console.log("*************** Category found: ", category);
-      if(handleErr(req, err)) {
-        if(category.depth && category.depth > 1) {
-          Category.find({
-            channel: req.session.channelId,
-            enabled: true,
-            parent: category.parent.parent
-          }, function(e, categories) {
-            res.render('cms/category/form', { category: category ,categories: categories });
-          })
-        } 
-        else {
-          res.render('cms/category/form', { category: category ,categories: [] });
-        }     
+    console.log("*************** Category found: ", category);
+    if(handleErr(req, err)) {
+      if(category.depth && category.depth > 1) {
+        Category.find({
+          enabled: true,
+          parent: category.parent.parent
+        }, function (e, categories) {
+          res.render('cms/category/form', { category: category, categories: categories });
+        })
+      } else {
+        res.render('cms/category/form', { category: category, categories: [] });
       }
-      else
-        res.redirect('/cms/category');
-    });
-  
+    } else
+      res.redirect('/cms/category');
+  });
+
 };
 
 exports.enable = function (req, res) {
@@ -104,7 +99,7 @@ exports.enable = function (req, res) {
  * @param res
  */
 exports.datatable = function (req, res) {
-  Category.dataTable(req.query, { conditions: { 'channel': req.session.channel._id } }, function (err, data) {
+  Category.dataTable(req.query, { conditions: {} }, function (err, data) {
     res.send(data);
   });
 };
@@ -130,7 +125,6 @@ exports.del = function (req, res) {
  */
 exports.save = function (req, res) {
   var id = req.body.id;
-  req.body.channel = req.session.channelId;
   // handle checkbox unchecked.
   if(!req.body.enabled) req.body.enabled = false;
 

@@ -2,7 +2,7 @@
  * 站点管理
  */
 var mongoose = require('mongoose');
-var config = require('../../../../config/config');
+var config = require('../../../../../config/config');
 var async = require('async');
 var ObjectId = mongoose.Types.ObjectId;
 
@@ -19,7 +19,7 @@ var Template = mongoose.model('Template');
  * @param res
  */
 exports.index = function (req, res) {
-  Site.find({ channel: req.session.channelId }, function (err, sites) {
+  Site.find({}, function (err, sites) {
     if(err) {
       req.flash("error", err);
     }
@@ -39,7 +39,6 @@ exports.add = function (req, res) {
 };
 
 exports.edit = function (req, res) {
-  var channelId = req.session.channelId;
   var id = req.params.id;
   var q = { _id: id };
   getData(req, function(result) {
@@ -115,7 +114,6 @@ exports.del = function (req, res) {
  */
 exports.save = function (req, res) {
   var id = req.body.id;
-  req.body.channel = req.session.channelId;
   // handle checkbox unchecked.Å
   if(!req.body.enabled) req.body.enabled = false;
   if(!req.body.wechat) delete req.body.wechat;
@@ -143,7 +141,6 @@ exports.save = function (req, res) {
  * @param res
  */
 exports.template = function (req, res) {
-  var channelId = req.session.channelId;
   var id = req.params.id;
   var q = { _id: id };
   async.waterfall([
@@ -154,19 +151,19 @@ exports.template = function (req, res) {
       });
     }, function (site, cb) {
       //获取模版
-      Template.find({channel: req.session.channelId}).exec(function(err, templates) {
+      Template.find({}).exec(function(err, templates) {
         return cb(err, {site: site, templates: templates});
       });
     },
     function(results, cb) {
       //获取轮播图
-      Slide.enabledList(req.session.channelId, function (err, slides) {
+      Slide.enabledList( function (err, slides) {
         results.slides = JSON.stringify(slides);
         results.slide = slides;
         cb(null, results);
       });
     }, function(results, cb) {
-      Category.find({ channel: req.session.channelId, enabled: true }).sort('lineage').exec(function (err, categories) {
+      Category.find({  enabled: true }).sort('lineage').exec(function (err, categories) {
         results.categories = JSON.stringify(categories);
         results.category = categories;
         cb(null, results);
@@ -430,7 +427,7 @@ function handleSaved(req, res, err, site, type) {
       res.render('cms/site/form', result);
     });
     // req.flash('error', err ? err : '站点保存失败!');
-    // Slide.enabledList(req.session.channelId, function (err, slides) {
+    // Slide.enabledList( function (err, slides) {
     //   res.render('cms/site/form', {
     //     viewType: type,
     //     site: site
@@ -448,12 +445,12 @@ function handleSaved(req, res, err, site, type) {
 function getData(req, callback) {
   async.parallel({
     slides: function(cb) {
-      Slide.enabledList(req.session.channelId, function (err, slides) {
+      Slide.enabledList( function (err, slides) {
         cb(null, slides);
       });
     },
     templates: function(cb) {
-      Template.find({channel: req.session.channelId}).exec(function(err, templates) {
+      Template.find({}).exec(function(err, templates) {
         return cb(null, templates);
       });
     }
@@ -466,7 +463,7 @@ function getData(req, callback) {
 function getNavData(req, id, callback) {
   async.parallel({
     site: function(cb) {
-      Site.findOne({_id: id, channel: req.session.channelId}).populate('template').exec(function(err, site) {
+      Site.findOne({_id: id, }).populate('template').exec(function(err, site) {
         if(err) {
          return cb('系统错误', null);
         }
@@ -482,13 +479,13 @@ function getNavData(req, id, callback) {
       });
     },
     slides: function(cb) {
-      Slide.enabledList(req.session.channelId, function (err, slides) {
+      Slide.enabledList( function (err, slides) {
         var slidesStr = JSON.stringify(slides);
         cb(null, {jsonData: slides, strData: slidesStr});
       });
     },
     categories: function(cb) {
-      Category.find({ channel: req.session.channelId, enabled: true }).sort('lineage').exec(function (err, categories) {
+      Category.find({  enabled: true }).sort('lineage').exec(function (err, categories) {
         var categoriesStr = JSON.stringify(categories);
         cb(null, {jsonData: categories, strData: categoriesStr});
       });

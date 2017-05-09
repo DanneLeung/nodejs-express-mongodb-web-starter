@@ -34,7 +34,6 @@ exports.login = function (req, res) {
  */
 
 exports.logout = function (req, res) {
-  req.session.channelId = null;
   delete req.session.channel;
   delete req.session.user;
   req.logout();

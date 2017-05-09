@@ -4,7 +4,7 @@
 extends ../layout
 block header
 
-block right
+block main
   if !page.isNew
     form#userDelForm(method='post', style='display:none', action='#{baseUrl}/del')
       input#ids(type='hidden',name='ids',value="#{page._id}")

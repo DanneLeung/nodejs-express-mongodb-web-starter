@@ -24,7 +24,7 @@ var fileUtil = require(config.root + '/util/file');
 exports.list = function (req, res) {
   async.parallel({
     groups: function (callback) {
-      UserGroup.all(req.session.channelId, groups => callback(null, groups))
+      UserGroup.all(groups => callback(null, groups))
     }
   }, function (err, result) {
     res.render('admin/system/users/userList', {
@@ -72,7 +72,6 @@ function getQuery(req) {
  */
 exports.edit = function (req, res) {
   var id = req.params.id;
-  var channelId = req.user.channelId;
   var branchGroup = req.session.branchGroup;
   var branchIds = req.session.branchIds;
   async.parallel({
@@ -82,7 +81,7 @@ exports.edit = function (req, res) {
       })
     },
     groups: function (callback) {
-      UserGroup.all(channelId, groups => callback(null, groups))
+      UserGroup.all( groups => callback(null, groups))
     }
   }, function (err, result) {
     res.render('admin/system/users/userForm', {
@@ -99,12 +98,11 @@ exports.edit = function (req, res) {
  * @param res
  */
 exports.add = function (req, res) {
-  var channelId = req.user.channelId;
   var branchGroup = req.session.branchGroup;
   var branchIds = req.session.branchIds;
   async.parallel({
     groups: function (callback) {
-      UserGroup.all(channelId, groups => callback(null, groups))
+      UserGroup.all( groups => callback(null, groups))
     }
   }, function (err, result) {
     res.render('admin/system/users/userForm', {
@@ -231,11 +229,10 @@ exports.autoGenerations = function (req, res) {
 exports.checkName = function (req, res) {
   var newName = req.query.username;
   var oldName = req.query.oldName;
-  var channelId = req.user.channelId;
   if (newName === oldName) {
     res.send('true');
   } else {
-    User.count({'channelId': channelId, 'username': newName}, function (err, result) {
+    User.count({'username': newName}, function (err, result) {
       if (result > 0) {
         res.send('false');
       } else {
@@ -250,11 +247,10 @@ exports.checkName = function (req, res) {
 exports.checkNo = function (req, res) {
   var newName = req.query.empNo;
   var oldName = req.query.oldNo;
-  var channelId = req.user.channelId;
   if (newName === oldName) {
     res.send('true');
   } else {
-    User.count({'channelId': channelId, 'empNo': newName}, function (err, result) {
+    User.count({'empNo': newName}, function (err, result) {
       if (result > 0) {
         res.send('false');
       } else {
@@ -493,21 +489,7 @@ exports.checkname = function (req, res) {
     });
   }
 };
-
-exports.channelSave = function (req, res) {
-  var info = new Channel(req.body);
-  info.save(function (err, result) {
-    if (err) {
-      console.log(err);
-      req.flash('error', err.message);
-    } else {
-      User.findByIdAndUpdate(req.user._id, {$set: {channelId: result._id}}, {new: true}, function () {
-        req.flash('success', '数据保存成功!');
-        res.redirect('/dashboard');
-      });
-    }
-  });
-};
+ 
 
 /**
  * 导入用户信息
@@ -515,7 +497,6 @@ exports.channelSave = function (req, res) {
  * @param res
  */
 exports.importUser = function (req, res) {
-  var channel = req.session.channelId;
   fileUtil.saveUploadFiles(req.files, req.session.channel.identity, 'award', true, function (files) {
     if (files) {
       var obj = excelUtil.readXls(files[0].path, 1);
@@ -600,7 +581,7 @@ function hanble(data, channel, callback) {
     var salt = User.makeSalt();
     var password = User.encryptPassword('123456', salt);
 
-    User.count({channelId: channel, username: uname}, function (err, result) {
+    User.count({ username: uname}, function (err, result) {
       if (result == 0) {
         async.parallel({
           branch: function (callback) {
@@ -631,7 +612,6 @@ function hanble(data, channel, callback) {
             email: email != -1 ? e[email] : '',
             numberID: numberID != -1 ? e[numberID] : '',
             verification: 1,
-            channelId: ObjectId(channel),
             enabled: true,
             hashed_password: password,
             salt: salt,
@@ -738,7 +718,6 @@ function queryMember(callback) {
 exports.export = function (req, res) {
   var label = "二级行" + "," + "网点" + "," + "用户名" + "," + "工号" + "," + "姓名" + "," + "手机号" + "," + "邮箱" + "," + "职位" + "\n";
   var query = getQuery(req);
-  query.channelId = req.session.channelId;
   label = Buffer.concat([new Buffer('\xEF\xBB\xBF', 'binary'), new Buffer(label)]);//处理乱码的格式
   getEvent(query, function (err, data) {
     if (data) {

@@ -4,7 +4,7 @@ extends ../layout
 block pageTitle
   h1 站点列表
     small
-block right
+block main
   .box
     .box-header.with-border
       h3.box-title 站点列表
@@ -24,7 +24,7 @@ block right
             th.text-center 管理
           tbody
             each s in sites
-              - var url = contextFront + '/cms/site/'+s._id+'?cid='+req.session.channel.identity
+              - var url = contextFront + '/cms/site/'+s._id
               - if(s.wechat)
                 - url += '&wid=' + s.wechat
               tr

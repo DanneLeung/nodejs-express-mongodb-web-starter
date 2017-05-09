@@ -4,7 +4,7 @@ extends ../layout
 block header
 block pageTitle
   h1 内容分类设置
-block right
+block main
   .box
     .box-header.with-border
       h3.box-title 分类列表
@@ -49,7 +49,7 @@ block scripts
           {
             targets: -2, visible: true, sortable: false, className: 'text-center',
             render: function (data, type, row) {
-              var url = contextFront + '/category/' + row._id + '?cid=#{req.session.channel.identity}';
+              var url = contextFront + '/category/' + row._id ;
               return "<div class='btn-group'> " +
                       "<a class='btn btn-default btn-sm' title='添加子分类' href='#{baseUrl}/add/" + row._id + "'><i class='fa fa-plus'></i></a>" +
                       "<a class='btn btn-default btn-sm' title='编辑分类' href='#{baseUrl}/edit/" + row._id + "'><i class='fa fa-pencil'></i></a>" +

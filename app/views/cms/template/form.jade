@@ -4,7 +4,7 @@ block header
     hr{margin:10px 0}
     .alert{padding:0}
     .link_list{border-top: 1px dotted #ddd;overflow: hidden;padding-top: 15px;}
-block right
+block main
   if !template.isNew
     form#userDelForm(method='post', style='display:none', action='#{baseUrl}/del')
       input#ids(type='hidden',name='ids',value="#{template._id}")

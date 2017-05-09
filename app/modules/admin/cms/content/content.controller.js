@@ -2,12 +2,12 @@
  * 站点管理
  */
 var mongoose = require('mongoose');
-var config = require('../../../../config/config');
+var config = require('../../../../../config/config');
 var moment = require('moment');
 var async = require('async');
 var ObjectId = mongoose.Types.ObjectId;
-var fileUtl = require('../../../../util/file');
-var imgUtil = require('../../../../util/imgutil');
+var fileUtl = require(config.root + '/util/file');
+var imgUtil = require(config.root + '/util/imgutil');
 
 var Category = mongoose.model('CmsCategory');
 var Content = mongoose.model('Content');
@@ -18,7 +18,7 @@ var Content = mongoose.model('Content');
  * @param res
  */
 exports.index = function (req, res) {
-  Content.find({ channel: req.session.channelId, trashed: false}, function (err, contents) {
+  Content.find({  trashed: false}, function (err, contents) {
     if(err) {
       req.flash("error", err);
     }
@@ -40,14 +40,14 @@ exports.trash = function (req, res) {
  * @param res
  */
 exports.add = function (req, res) {
-  Category.find({ channel: req.session.channelId, enabled: true }).sort('lineage').exec(function (err, categories) {
+  Category.find({  enabled: true }).sort('lineage').exec(function (err, categories) {
     res.render('cms/content/form', { content: new Content(), categories: categories });
   });
 };
 
 exports.edit = function (req, res) {
   var id = req.params.id;
-  Category.find({ channel: req.session.channelId, enabled: true }).sort('lineage').exec(function (err, categories) {
+  Category.find({  enabled: true }).sort('lineage').exec(function (err, categories) {
     console.log('=============categories',categories);
     Content.findById(id, function (err, content) {
       // console.log("*************** content found: ", content);
@@ -92,7 +92,7 @@ exports.publish = function (req, res) {
  * @param res
  */
 exports.datatable = function (req, res) {
-  Content.dataTable(req.query, { conditions: { 'channel': req.session.channel._id, trashed: false } }, function (err, data) {
+  Content.dataTable(req.query, { conditions: { trashed: false } }, function (err, data) {
     res.send(data);
   });
 };
@@ -103,7 +103,7 @@ exports.datatable = function (req, res) {
  * @param res
  */
 exports.trashDatatable = function (req, res) {
-  Content.dataTable(req.query, { conditions: { 'channel': req.session.channel._id, trashed: true } }, function (err, data) {
+  Content.dataTable(req.query, { conditions: { trashed: true } }, function (err, data) {
     res.send(data);
   });
 };
@@ -126,8 +126,7 @@ exports.del = function (req, res) {
   }
   if(type == 'trash') {
     Content.update({
-      '_id': { $in: ids },
-      channel: req.session.channelId
+      '_id': { $in: ids }
     }, {
       $set: {
         trashed: true
@@ -151,7 +150,6 @@ exports.del = function (req, res) {
  */
 exports.save = function (req, res) {
   var id = req.body.id;
-  req.body.channel = req.session.channelId;
   // handle checkbox unchecked.Å
   if(!req.body.published) {
     req.body.published = false;

@@ -75,7 +75,6 @@ exports.jsConfig = function (req, res) {
  * @param res
  */
 exports.getAppId = function (req, res) {
-  console.log("**************** getAppId, channelId: ", req.session.channelId);
   Wechat.getWechat(req.session.appid, function (appid) {
     if(!appid) {
       res.send({ "success": "0", "msg": "未查到渠道配置微信相关参数" });

@@ -2,7 +2,7 @@
  * 轮播管理
  */
 var mongoose = require('mongoose');
-var config = require('../../../../config/config');
+var config = require('../../../../../config/config');
 var async = require('async');
 var moment = require('moment');
 var _ = require('lodash');
@@ -15,7 +15,7 @@ var Slide = mongoose.model('Slide');
  * @param res
  */
 exports.index = function (req, res) {
-  Slide.find({ channel: req.session.channelId }, function (err, slides) {
+  Slide.find({}, function (err, slides) {
     if(err) {
       req.flash("error", err);
     }
@@ -71,7 +71,7 @@ exports.enable = function (req, res) {
  * @param res
  */
 exports.datatable = function (req, res) {
-  Slide.dataTable(req.query, { conditions: { 'channel': req.session.channel._id } }, function (err, data) {
+  Slide.dataTable(req.query, { conditions: {} }, function (err, data) {
     res.send(data);
   });
 };
@@ -96,7 +96,6 @@ exports.del = function (req, res) {
  */
 exports.save = function (req, res) {
   var id = req.body.id;
-  req.body.channel = req.session.channelId;
   // handle checkbox unchecked.
   if(!req.body.enabled) req.body.enabled = false;
 

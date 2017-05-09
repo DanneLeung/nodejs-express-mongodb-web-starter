@@ -3,7 +3,7 @@
 extends ../layout
 block header
 
-block right
+block main
   .box
     .box-header.with-border
       h3.box-title 页面列表
@@ -53,7 +53,7 @@ block scripts
           {
             targets: -1, visible: true, sortable: false, className: 'text-center',
             render: function (data, type, row) {
-              var url = contextFront + '/page/' + row._id + '?cid=#{req.session.channel.identity}';
+              var url = contextFront + '/page/' + row._id}';
               return "<div class='btn-group'> " +
                 '<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-qrcode"></i><span class="caret"></span></button>' +
                 '<div class="qrcode dropdown-menu dropdown-menu-right" style="width:210px;height: 210px;padding:4px;border:1px solid #f4f4f4" data-url="' + url + '"></div>' +
@@ -70,7 +70,7 @@ block scripts
           {data: "description", defaultContent: ''},
           {
             data: "url", class: "text-center", render: function (data, type, row, meta) {
-            var url = contextFront + '/page/' + row._id + '?cid=#{req.session.channel.identity}';
+            var url = contextFront + '/page/' + row._id;
             return '<a href="' + url + '">' + url + '</a>';
           }
           },

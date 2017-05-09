@@ -4,7 +4,7 @@ extends ../layout
 block header
 block pageTitle
   h1 内容文章管理
-block right
+block main
   .box
     .box-header.with-border
       h3.box-title 文章列表
@@ -59,7 +59,7 @@ block scripts
           {
             targets: -1, visible: true, sortable: false, className: 'text-center',
             render: function (data, type, row) {
-              var url = contextFront + '/content/' + row._id + '?cid=#{req.session.channel.identity}';
+              var url = contextFront + '/content/' + row._id;
               return "<div class='btn-group'> " +
                       //'<a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-fw fa-qrcode"></i><span class="caret"></span></a>' +
                       //"<a class='btn btn-default btn-sm' title='编辑文章' href='#{baseUrl}/edit/" + row._id + "'><i class='fa fa-pencil'></i></a>" +
@@ -79,7 +79,7 @@ block scripts
           {data: "readTimes", defaultContent: '', class: "text-right"},
           {
             data: "url", class: "text-center", render: function (data, type, row, meta) {
-            var url = contextFront + '/cms/content/' + row._id + '?cid=#{req.session.channel.identity}';
+            var url = contextFront + '/cms/content/' + row._id;
             return '<a href="' + url + '">' + url + '</a>';
           }
           },

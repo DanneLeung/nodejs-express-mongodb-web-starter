@@ -26,9 +26,7 @@ exports.index = function (req, res) {
 };
 
 exports.base = function (req, res) {
-  Channel.findOne({
-    '_id': req.session.channelId
-  }, function (err, channel) {
+  Channel.findOne({}, function (err, channel) {
     res.render('admin/system/base', {
       channel: channel
     });
@@ -36,11 +34,8 @@ exports.base = function (req, res) {
 };
 
 exports.baseSave = function (req, res) {
-  var channelId = req.session.channelId;
   var saveOrUpdate = function (id, req, callback) {
-    Channel.findOneAndUpdate({
-      '_id': channelId
-    }, req.body, {
+    Channel.findOneAndUpdate({}, req.body, {
       new: true
     }, function (err, channel) {
       req.session.channel = channel;
@@ -57,7 +52,7 @@ exports.baseSave = function (req, res) {
   };
 
   if(!req.files || req.files.length <= 0) {
-    saveOrUpdate(channelId, req, handleResult);
+    saveOrUpdate( req, handleResult);
   } else {
     fileUtl.saveUploadFiles(req.files, req.session.channel.identity, 'logo', false, function (fs) {
       // 生成缩略图
@@ -82,9 +77,9 @@ exports.baseSave = function (req, res) {
             req.body.logo = files[0].thumb;
           }
           // 更新时处理替换文件情况，新文件保存后旧文件删除
-          Channel.findById(channelId, function (err, channel) {
+          Channel.findById( function (err, channel) {
             // queue files that should be removed.
-            saveOrUpdate(channelId, req, handleResult);
+            saveOrUpdate( req, handleResult);
           });
         });
       });
@@ -93,10 +88,7 @@ exports.baseSave = function (req, res) {
 };
 
 exports.mailSetting = function (req, res) {
-  var channel = req.user.channelId; //会员所属渠道
-  Channel.findOne({
-    '_id': channel
-  }, function (err, channel) {
+  Channel.findOne({}, function (err, channel) {
     res.render('admin/system/email/emailSetting', {
       channel: channel
     });
@@ -105,10 +97,7 @@ exports.mailSetting = function (req, res) {
 };
 
 exports.saveEmail = function (req, res) {
-  var channel = req.user.channelId; //会员所属渠道
-  Channel.findOne({
-    '_id': channel
-  }, function (err, channel) {
+  Channel.findOne({}, function (err, channel) {
     if(req.body.ssl == 'on') {
       req.body.ssl = true;
     } else {

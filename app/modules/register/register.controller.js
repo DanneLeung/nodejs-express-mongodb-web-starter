@@ -34,7 +34,6 @@ exports.saveUploadImg = function (req, res) {
   }, function (e, o) {
     if (o.approvedStatus == '00' || o.approvedStatus == '03') {
       Wechat.findOne({
-        "channel": req.session.channelId
       }).populate("channel").exec(function (e, o) {
         if (e || o == null) {
           res.send({
@@ -182,7 +181,6 @@ exports.save = function (req, res) {
       res.render(__dirname + '/views/uploadHeadImg', o);
       return;
     } else {
-      member.channelId = req.session.channelId; //渠道ID
       member.approvedStatus = "00"; //待提交
       member.enabled = false; //未启用
       member.save(function (e, o) {

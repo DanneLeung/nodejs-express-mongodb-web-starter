@@ -6,20 +6,22 @@
 
 var express = require('express');
 var router = express.Router();
-var ctrl = require('./category.controller');
-
+var config = require('../../../../../config/config');
 var multer = require('multer');
-var config = require('../../../../config/config');
-
 var upload = multer({ 'dest': config.file.local + '/upload/tmp/' });
+
+var ctrl = require('./content.controller');
 
 router
   .get(['', '/list'], ctrl.index)
+  .get('/trash/list', ctrl.trash)
   .get('/datatable', ctrl.datatable)
-  .get(['/add', '/add/:id'], ctrl.add)
+  .get('/trash/datatable', ctrl.trashDatatable)
+  .get('/add', ctrl.add)
   .get('/edit/:id', ctrl.edit)
-  .get('/enable/:id', ctrl.enable)
+  .get('/publish/:id', ctrl.publish)
   .post('/del', ctrl.del)
-  .post('/save', ctrl.save);
+  .post('/save', upload.any(), ctrl.save);
+
 
 module.exports = router;

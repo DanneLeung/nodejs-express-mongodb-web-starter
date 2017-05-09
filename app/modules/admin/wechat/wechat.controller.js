@@ -91,7 +91,6 @@ exports.edit = function (req, res) {
  */
 exports.save = function (req, res) {
   var id = req.body.id;
-  var channelId = req.user.channelId;
   // 除了数据
   if(!req.body.oauthWechat) {
     req.body.oauthWechat = null;
@@ -100,10 +99,7 @@ exports.save = function (req, res) {
   var saveOrUpdate = function (id, req, callback) {
     if(!id) {
       var wechat = new Wechat(req.body);
-      if(wechat.channel == null) {
-        //TODO 渠道从上下文中取
-        wechat.channel = channelId; //渠道
-      }
+
       wechat.checked = true;
       wechat.save(function (err, result) {
         callback(err, result);

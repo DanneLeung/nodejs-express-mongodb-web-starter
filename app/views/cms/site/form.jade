@@ -2,7 +2,7 @@
   Created by pc on 2015/10/27.
 
 extends ../layout
-block right
+block main
   if !site.isNew
     form#userDelForm(method='post', style='display:none', action='/cms/site/del')
       input#ids(type='hidden',name='ids',value="#{site._id}")

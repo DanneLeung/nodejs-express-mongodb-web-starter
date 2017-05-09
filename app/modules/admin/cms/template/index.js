@@ -8,7 +8,7 @@ var express = require('express');
 var router = express.Router();
 var ctrl = require('./template.controller');
 var multer = require('multer');
-var config = require('../../../../config/config');
+var config = require('../../../../../config/config');
 
 var upload = multer({'dest': config.file.local + '/upload/tmp/'});
 

@@ -5,7 +5,7 @@ extends ../layout
 block header
   link( rel="stylesheet",href="//cdn.bootcss.com/bootstrap-daterangepicker/2.1.25/daterangepicker.min.css")
 
-block right
+block main
   if content
     if !content.isNew
       form#userDelForm(method='post', style='display:none', action='#{baseUrl}/del')

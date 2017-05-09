@@ -49,7 +49,7 @@ module.exports = function (app, express) {
           }
           console.log('****************** 应用运行在公众号', req.originalUrl, JSON.stringify(wechat));
         } else {
-          console.warn('***************** 应用运行没有运行在公众号上，可能未配置公众号', req.session.channelId, wechatId);
+          console.warn('***************** 应用运行没有运行在公众号上，可能未配置公众号', wechatId);
           delete req.session.wechat;
           delete req.session.appid;
 
