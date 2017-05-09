@@ -47,6 +47,10 @@ block main
           button.btn.btn-default(type="submit") 
             i.fa.fa-fw.fa-search
             | 查询
+          | &nbsp;&nbsp;
+          a.btn.btn-info(href="#{baseUrl}/topic/export") 
+            i.fa.fa-fw.fa-cloud-download
+            | 导出
       hr
       include topicPager
       hr

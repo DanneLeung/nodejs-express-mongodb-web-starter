@@ -37,7 +37,8 @@ router.get("/node", nodeCtrl.list)
   .get("/node/enable/:id", nodeCtrl.enable);
 
 router
-  .get(["/topic"], topicCtrl.nodes, topicCtrl.list)
+  .all(["/topic"], topicCtrl.nodes, topicCtrl.list)
+  .all(["/topic/export"], topicCtrl.export)
   .get(["/topic2"], topicCtrl.nodes, topicCtrl.list2)
   .all(["/topic/datatable", "/topic/datatable/:node"], topicCtrl.datatable)
   .post("/topic/save", topicCtrl.save)
