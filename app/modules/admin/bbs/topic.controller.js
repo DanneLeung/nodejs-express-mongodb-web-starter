@@ -37,6 +37,8 @@ exports.fans = function (req, res) {
  * list
  */
 exports.list = function (req, res) {
+  var dateStart = req.query.dateStart || req.body.dateStart;
+  var dateEnd = req.query.dateEnd || req.body.dateEnd;
   var query = getQuery(req);
   req.session.query_topics = query;
   var offset = parseInt(req.params.offset || req.query.offset);
@@ -45,9 +47,10 @@ exports.list = function (req, res) {
   if(!limit) limit = 10;
   console.log(" >>>>>>>>>>>>>>>>>>>> query ", query);
   Topic.topicsWithNodeWithTop(query, offset, limit, (total, topics) => {
-    res.render('admin/bbs/topic/topicList', { topics: topics, node: query.node, dateStart: query.dateStart, dateEnd: query.dateEnd, total: total, offset: offset, limit: limit });
+    res.render('admin/bbs/topic/topicList', { topics: topics, node: query.node, dateStart: dateStart, dateEnd: dateEnd, fans: query.fans, total: total, offset: offset, limit: limit });
   });
 };
+
 exports.export = function (req, res) {
   var sep = ",";
   var query = req.session.query_topics || getQuery(req);
@@ -102,7 +105,7 @@ function getQuery(req) {
   var dateEnd = req.query.dateEnd || req.body.dateEnd;
   var fans = req.query.fans || req.body.fans;
   var query = {
-    blocked: false,
+    // blocked: false,
   };
 
   if(node) query.node = node;
@@ -113,12 +116,14 @@ function getQuery(req) {
     var d = moment(dateStart, 'YYYY-MM-DD HH:mm');
     var start = d.toDate();
     query.createdAt.$gte = start;
+    // query.dateStart = dateStart;
   }
   if(dateEnd) {
     if(!query.createdAt) query.createdAt = {};
     var d = moment(dateEnd, 'YYYY-MM-DD HH:mm');
     var end = d.toDate();
     query.createdAt.$lt = end;
+    // query.dateEnd = dateEnd;
   }
   return query;
 }
