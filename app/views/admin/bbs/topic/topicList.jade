@@ -29,17 +29,14 @@ block main
           select#node.form-control(name='node')
             option(value="") 请选择
             each n in nodes
-              if(n._id == node)
-                option(value="#{n._id}", selected="selected") #{n.title}
-              else
-                option(value="#{n._id}") #{n.title}
+              option(value="#{n._id}", selected=node==n._id) #{n.title}
         .form-group
           label.control-label 日期：
           .input-group#datetime
-            input#dateStart.date.form-control(name='dateStart', value="#{dateStart?dateStart:''}")
+            input#dateStart.date.form-control(name='dateStart', value="#{dateStart ? dateStart:''}")
             .input-group-addon
               span - 
-            input#dateEnd.date.form-control(name='dateEnd', value="#{dateEnd?dateEnd:''}")
+            input#dateEnd.date.form-control(name='dateEnd', value="#{dateEnd ? dateEnd : ''}")
         .form-group
           label.control-label 发帖者：
           select#fans.form-control.select2(name='fans',style="width:150px" ,placeholder="输入发帖者昵称查找")

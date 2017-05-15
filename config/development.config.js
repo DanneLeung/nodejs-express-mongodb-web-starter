@@ -7,11 +7,11 @@ module.exports = function (ROOT_PATH) {
       hostname: process.env.HOSTNAME || '127.0.0.1'
     },
     database: {
-      user: 'starter',
-      password: 'starter',
+      user: 'bbs',
+      password: 'bbs',
       host: 'xcesys.com',
       port: '27017',
-      db: 'starter',
+      db: 'bbs',
       url: ''
     },
     redis: {
