@@ -1,0 +1,65 @@
+doctype html
+head
+  meta(charset='utf-8')
+  meta(name='viewport', content='width=device-width, initial-scale=1.0')
+  link(href='#{theme}/css/bootstrap.min.css', rel='stylesheet')
+  link(href='#{theme}/font-awesome/css/font-awesome.css', rel='stylesheet')
+  link(href='#{theme}/css/animate.css', rel='stylesheet')
+  link(href='#{theme}/css/style.css', rel='stylesheet')
+body
+  #wrapper
+    include incs/sidebar.jade
+    
+    #page-wrapper.gray-bg
+      .row.border-bottom
+        nav.navbar.navbar-static-top.white-bg(role='navigation', style='margin-bottom: 0')
+          .navbar-header
+            a.navbar-minimalize.minimalize-styl-2.btn.btn-primary(href='#')
+              i.fa.fa-bars
+            //- form.navbar-form-custom(role='search', method='post', action='#')
+              .form-group
+                input#top-search.form-control(type='text', placeholder='Search for something...', name='top-search')
+          ul.nav.navbar-top-links.navbar-right
+            li
+              a(href='#')
+                i.fa.fa-sign-out
+      .wrapper.wrapper-content.animated.fadeInRight
+        block main
+      include incs/footer
+  // Mainly scripts
+  script(src='#{theme}/js/jquery-2.1.1.js')
+  script(src='#{theme}/js/bootstrap.min.js')
+  script(src='#{theme}/js/plugins/metisMenu/jquery.metisMenu.js')
+  script(src='#{theme}/js/plugins/slimscroll/jquery.slimscroll.min.js')
+  // Datatables
+  script(src='//cdn.bootcss.com/datatables/1.10.13/js/jquery.dataTables.min.js')
+  script(src='//cdn.bootcss.com/datatables/1.10.13/js/dataTables.bootstrap.min.js')
+  //表单验证
+  script(src='//cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min.js')
+  script(src='//cdn.bootcss.com/jquery-validate/1.15.0/additional-methods.min.js')
+  // Custom and plugin javascript
+  script(src='#{theme}/js/inspinia.js')
+  script(src='#{theme}/js/plugins/pace/pace.min.js')
+  script(src='#{themeRoot}/dist/js/custom.js?v=#{version}')
+  // highlight error input
+  if messages.error
+    script.
+      $(document).ready(function () {
+        for err in messages.error
+          if (err.name === 'ValidationError')
+            for e in err.errors
+              $("input[name='#{e.path}']").parents(".form-group").addClass("has-error");
+      });
+  //script.
+    $(document).ajaxStart(function() { Pace.restart(); });
+  if (info&&info.length)
+    script.
+      toastr.info("!{info.join('<br/>').replace('\n\r','<br/>')}");
+  if (errors&&errors.length)
+    script.
+      toastr.error('!{errors.join('<br/>').replace(/\n/g,'<br/>')}');
+  if (success&&success.length)
+    script.
+      toastr.success('!{success.join('<br/>').replace('\n\r','<br/>')}');
+  // App scripts go here
+  block scripts

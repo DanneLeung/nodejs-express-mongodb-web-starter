@@ -11,7 +11,7 @@ block main
     .box-header.with-border
       h3.box-title 修改登录密码
     .box-body
-      form#channelForm.form-horizontal(name='channelForm', action='/system/user/changepwd', method='post')
+      form#changePwdForm.form-horizontal(name='changePwdForm', action='/system/user/changepwd', method='post')
         //新增时不能有id
         input#id(type='hidden', name='id', value="#{id}")
         input#_csrf(type='hidden', name='_csrf', value=_csrf)
@@ -36,7 +36,7 @@ block main
 block scripts
   script.
     $(document).ready(function () {
-      var form = $('#channelForm');
+      var form = $('#changePwdForm');
       form.validate({
         rules: {
           newPassWord: {

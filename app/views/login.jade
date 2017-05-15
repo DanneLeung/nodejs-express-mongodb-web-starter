@@ -9,13 +9,12 @@ block main
   .login-box
     .login-logo
       a(href='/')
-        b 九型人格学员交流社区
+        b NodeJS Express Web Starter
     // /.login-logo
     .login-box-body
       p.login-box-msg 使用用户密码登录系统
       form#loginForm(action='#{contextRoot}/login?_#{Date.now()}', method='post')
         input(type='hidden', name='_csrf', value=_csrf)
-        //input(type='hidden', name='channelId', value='#{channel._id}')
         .form-group.has-feedback
           input#username.form-control(type='text', placeholder='请使用用户名登录', name="username")
           span.glyphicon.glyphicon-envelope.form-control-feedback
@@ -39,9 +38,6 @@ block main
           button#login.btn.btn-success.btn-block.btn-flat(type="submit") 登 录
       p
         a#forget(href='/forgetPass') 忘记密码?
-      //- if(!req.session.channelId)
-        p
-          a#register.text-center(href='/register') 立即注册成为渠道商
 
     // /.login-box-body
     // /.login-box

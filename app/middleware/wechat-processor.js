@@ -10,7 +10,6 @@ var mongoose = require('mongoose'),
   WechatShareLogs = mongoose.model('WechatShareLogs'),
   WechatFans = mongoose.model('WechatFans'),
   // QrCode = mongoose.model('QrCode'),
-  // ChannelSetting = mongoose.model('ChannelSetting'),
   Setting = mongoose.model('Setting'),
   WechatBranding = mongoose.model('WechatBranding'),
   WechatToken = mongoose.model('WechatToken'),
@@ -318,119 +317,6 @@ function phoneFare(openid, originalId, res) {
 }
 
 /**
- * 查附近网点，推送5条消息
- * @param openid
- * @param originalId
- * @param x
- * @param y
- * @param res
- */
-function nearBranches(openid, originalId, x, y, res) {
-  async.waterfall([function (cb) {
-    //type:4 微信认证公众号, "type": "4"
-    Wechat.findOne({ "originalId": originalId }).populate("channel").exec(function (e, wechat) {
-      if(e || wechat == null) {
-        cb("附近无相关网点", null);
-      } else {
-        cb(null, wechat.channel);
-      }
-    });
-  }, function (channel, cb) {
-    //查渠道设置的搜索距离
-    ChannelSetting.findOne({ "channel": channel._id, "code": "maxDistance" }, function (e, o) {
-      if(e || o == null) {
-        cb(null, channel, "10"); //默认10KM范围
-      } else {
-        cb(null, channel, o.value);
-      }
-    });
-  }, function (channel, num, cb) {
-    //查系统setting设置,设置到全局变量
-    Setting.find({}, function (err, result) {
-      if(err || result == []) {
-        //设置默认数据
-        basePath = "http://xcesys.com";
-        contextFront = "/m";
-        cb(null, channel, num);
-      } else {
-        result.forEach(function (data) {
-          if(data.key == 'context.front') {
-            contextFront = data.value;
-          } else if(data.key == 'context.root') {
-            basePath = data.value;
-          }
-        });
-        cb(null, channel, num);
-      }
-    });
-  }, function (channel, num, cb) {
-    var query = { "channel": channel._id };
-    identity = channel.identity; //设置渠道标示到全局变量
-    var location = [y - 0, x - 0]; //发送位置的坐标
-    Branch.collection.geoNear(location, {
-      num: 4,
-      spherical: true,
-      query: query, //查询条件
-      distanceMultiplier: 6371,
-      maxDistance: parseInt(num) / 6371
-    }, function (err, result) {
-      if(err) {
-        cb("附近无相关网点", null);
-      } else {
-        if(result.ok == 1) {
-          var datas = [];
-          for(var i = 0; i < result.results.length; i++) {
-            var obj = result.results[i];
-            var data = obj.obj;
-            var d = Math.round(obj.dis * 100) / 100;
-            data.dis = d + 'km';
-            datas.push(data);
-          }
-          cb(null, datas);
-        } else {
-          cb("附近无相关网点", null);
-        }
-      }
-    });
-  }], function (err, result) {
-    if(err) {
-      replyText(openid, originalId, err, res);
-    } else {
-      //组织数据发图文消息
-      var articles = "";
-      if(result) {
-        var i = 0;
-        result.forEach(function (data) {
-          var logo = data.logo;
-          if(i == 0 && data.images && data.images.length > 0) {
-            logo = data.images[0];
-          }
-          articles += "<item><Title><![CDATA[" + data.name + "]]></Title>" +
-            "<Description><![CDATA[" + data.address + "]]></Description>" +
-            "<PicUrl><![CDATA[" + contextFront + logo + "]]></PicUrl>" +
-            "<Url><![CDATA[" + contextFront + "/branch/branchDetail?id=" + data._id + "&cid=" + identity + "]]></Url></item>";
-          i++;
-        });
-        articles += "<item><Title><![CDATA[查看更多网点]]></Title>" +
-          //"<Description><![CDATA[查看更多网点]]></Description>" +
-          //"<PicUrl><![CDATA[http://mmbiz.qpic.cn/mmbiz/XSP3FPZLy2eVyib2eS0jbbLP7rEBsmIusib6mSdXpuS3HO2dwicWQG2wGYicogPnsOkicjSCNjaurBF8y8vITggTXKg/0?wx_fmt=jpeg]]></PicUrl>" +
-          "<Url><![CDATA[" + contextFront + "/branch?cid=" + identity + "&lat=" + x + "&lng=" + y + "]]></Url></item>";
-        articles = "<Articles>" + articles + "</Articles>";
-      }
-
-      var xml = "<xml><ToUserName><![CDATA[" + openid + "]]></ToUserName>" +
-        "<FromUserName><![CDATA[" + originalId + "]]></FromUserName>" +
-        "<CreateTime>" + new Date().getTime() + "</CreateTime>" +
-        "<MsgType><![CDATA[news]]></MsgType>" +
-        "<ArticleCount><![CDATA[" + (result.length + 1) + "]]></ArticleCount>" + articles + "</xml>";
-      res.send(xml);
-      saveLogs(originalId, openid, xml);
-      res.end("success");
-    }
-  });
-}
-
-/**
  * 回复消息logs
  * @param originalId
  * @param openid
@@ -587,7 +473,7 @@ function updateUserInfo(openid, originalId, ticket, cb) {
               //新粉丝用ticket找到推广记录，新粉丝记录归属到此推广人员下
               userInfo.identifyNo = wb.identifyNo;
             }
-            //检查appid是否有多个配置channelWechat
+            //检查appid是否有多个配置Wechat
             Wechat.find({ "originalId": originalId }, function (e, cws) {
               async.map(cws, (we, cbb) => {
                 userInfo.wechat = we._id;
@@ -924,7 +810,6 @@ function saveWechatMessage(result) {
         cb(err, null);
       } else {
         wm.wechat = cw._id;
-        wm.channel = cw.channel;
         cb(null, wm);
       }
     });

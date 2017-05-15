@@ -8,7 +8,6 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 var AwardSchema = new Schema({
-  channel: { type: ObjectId, ref: "Channel" }, //渠道
   wechat: { type: ObjectId, index: true, ref: "Wechat" }, //使用的微信号
   type: { type: String, default: '01' }, //类型：01:实物，02.票类，03.优惠券，04.兑换码
   name: { type: String, default: '' }, //名称
@@ -26,9 +25,9 @@ var AwardSchema = new Schema({
 }, { timestamps: {} });
 AwardSchema.index({ mark: 1, name: 1 }, { unique: true });
 
-AwardSchema.statics.enabledList = function (channel, wechat, done) {
-  console.log("****************** Award.enabledList", channel, wechat);
-  mongoose.model('Award').find({ channel: channel, wechat: wechat, enabled: true }).exec(function (err, awards) {
+AwardSchema.statics.enabledList = function (wechat, done) {
+  console.log("****************** Award.enabledList", wechat);
+  mongoose.model('Award').find({ wechat: wechat, enabled: true }).exec(function (err, awards) {
     if(err) console.error(err);
     return done(awards ? awards : []);
   });

@@ -194,7 +194,6 @@ exports.copy = function (req, res) {
   Site.findById(id, function (err, site) {
     if (!err) {
       var copySite = new Site({
-        channel: site.channel, //所属渠道
         wechat: site.wechat, //使用的微信号
         template: site.template,
         name: site.name + '副本', //名称

@@ -281,7 +281,7 @@ exports.enable = function (req, res) {
       }
       if (info.isAdmin) {
         req.flash('error', "管理员本身不可禁用");
-        res.redirect('/channel/userList');
+        res.redirect('/admin/system/user');
       } else {
         User.update({'_id': id}, updata, options, function (err, info) {
           if (!err) {
@@ -461,35 +461,6 @@ exports.editPassWord = function (req, res) {
   });
 };
 
-exports.userChannelAdd = function (req, res) {
-  res.render('channel/channelForm', {
-    //viewType: "add",
-    info: new Channel()
-  })
-};
-
-exports.getChannelType = function (req, res) {
-  ChannelType.find({}, function (err, service) {
-    res.send(service);
-  });
-};
-
-exports.checkname = function (req, res) {
-  var newName = req.query.typeName;
-  var oldName = req.query.oldName;
-  if (newName === oldName) {
-    res.send('true');
-  } else {
-    ChannelType.count({'typeName': newName}, function (err, result) {
-      if (result > 0) {
-        res.send('false');
-      } else {
-        res.send('true');
-      }
-    });
-  }
-};
- 
 
 /**
  * 导入用户信息
@@ -497,7 +468,7 @@ exports.checkname = function (req, res) {
  * @param res
  */
 exports.importUser = function (req, res) {
-  fileUtil.saveUploadFiles(req.files, req.session.channel.identity, 'award', true, function (files) {
+  fileUtil.saveUploadFiles(req.files,   'user', true, function (files) {
     if (files) {
       var obj = excelUtil.readXls(files[0].path, 1);
       if (!obj || !obj.length) {
@@ -510,7 +481,7 @@ exports.importUser = function (req, res) {
         req.flash('error', "导入文件格式不正确");
         return res.redirect('/admin/system/user/list');
       } else {
-        hanble(data, channel, function (err, result) {
+        handle(data, function (err, result) {
           if (result) {
             if (err) {
               req.flash('error', err + "这些用户名已经存在！其他数据已导入成功");
@@ -530,7 +501,7 @@ exports.importUser = function (req, res) {
   })
 };
 
-function hanble(data, channel, callback) {
+function handle(data, callback) {
   var username = -1;
   var empNo = -1;
   var fullname = -1;

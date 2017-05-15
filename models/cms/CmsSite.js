@@ -38,7 +38,7 @@ var SiteSchema = mongoose.Schema({
 
 SiteSchema.pre('save', function (done) {
   var that = this;
-  Site.findOne({ name: that.name, channel: that.channel }, function (err, site) {
+  Site.findOne({ name: that.name }, function (err, site) {
     if (err) {
       done(err);
     } else if (site && !(site._id.equals(that._id))) {

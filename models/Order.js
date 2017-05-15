@@ -8,7 +8,6 @@ let Schema = mongoose.Schema;
 let ObjectId = Schema.ObjectId;
 
 let OrderSchema = mongoose.Schema({
-  channel: {type: ObjectId, ref: 'Channel'},//所属渠道
   store: {type: ObjectId, ref: 'Store'}, //店铺名称,暂时一个渠道只有一个店铺
   no: {type: String, index: true, required: true, default: ''}, //订单号
   member: {type: ObjectId, index: true, ref: 'Member'},//会员用户，非匿名购买
@@ -44,7 +43,6 @@ let OrderSchema = mongoose.Schema({
     status: {type: String, default: ''},//变更后状态
     notify: {type: Boolean, default: false},//是否要通知会员用户
     comment: {type: String, default: ''},//备注
-    user: {type: String, ref: 'channelUser'},//处理用户
     dateAdded: {type: Date, default: new Date()}//处理时间
   },//处理记录
   status: {type: String, default: ''}, //订单状态 '01'待支付、'02'已支付、'03'支付失败、'04'使用中、'05'完成、'06'退款

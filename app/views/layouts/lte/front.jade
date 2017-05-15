@@ -1,0 +1,23 @@
+doctype html
+html.app(lang='en')
+  head
+    base(href="#{req.session.contextRoot}/")
+    include incs/header
+    // iCheck
+    link(rel='stylesheet', href='//cdn.bootcss.com/iCheck/1.0.2/skins/square/blue.css')
+
+  body.register-page.hold-transition
+    include incs/flash
+    block main
+
+    // REQUIRED JS SCRIPTS jQuery 2.1.4
+    script(src='//cdn.bootcss.com/jquery/2.2.1/jquery.min.js')
+    script(src='//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js')
+    // Bootstrap 3.3.5
+    script(src='#{theme}//bootstrap/js/bootstrap.min.js')
+    // iCheck
+    script(src='//cdn.bootcss.com/iCheck/1.0.2/icheck.min.js')
+    script(src='//cdn.bootcss.com/jquery-validate/1.15.0/jquery.validate.min.js')
+    script(src='#{theme}/plugins/jquery-validation/dist/jquery.validate.messages_zh.js')
+    script(src='#{theme}/dist/js/setup_validation.js')
+    block scripts

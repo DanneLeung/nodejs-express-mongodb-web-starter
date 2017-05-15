@@ -191,7 +191,7 @@ exports.save = function (req, res) {
   if(!req.files || req.files.length <= 0) {
     saveOrUpdate(req.body);
   } else {
-    fileUtl.saveUploadFiles(req.files, req.session.channel.identity, 'template', false, function (fs) {
+    fileUtl.saveUploadFiles(req.files, 'template', false, function (fs) {
       // 生成缩略图
       console.log("********** files uploaded: " + JSON.stringify(fs));
       for(i in fs) {

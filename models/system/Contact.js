@@ -12,9 +12,7 @@ var ContactSchema = mongoose.Schema({
   title: { type: String, required: false, default: '' }, // 职称
   email: { type: String, required: false, default: '' }, // 邮箱
   note: { type: String, default: '' }, // 说明备注
-  type: { type: String, required: false, default: '' }, // 联系人类别(1,渠道商;2,服务商)
-  channelId: { type: ObjectId, ref: 'Channel' }, // 渠道商ID
-  servicesId: { type: ObjectId, ref: 'Service' } // 服务商ID
+  type: { type: String, required: false, default: '' }// 联系人类别(1,渠道商;2,服务商)
 }, { timestamps: {} });
 
 module.exports = mongoose.model('Contact', ContactSchema, 'contacts');

@@ -20,7 +20,7 @@ var CompanySchema = mongoose.Schema({
   settings: [] //设定值
 }, {timestamps: {}});
 
-CompanySchema.index({channel: 1, fullname: 1}, {unique: true});
+CompanySchema.index({ fullname: 1}, {unique: true});
 
 CompanySchema.statics.findByFullName = function (fullname, callback) {
   mongoose.model('Company').findOne({

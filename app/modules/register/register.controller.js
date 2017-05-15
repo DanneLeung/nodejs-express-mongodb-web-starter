@@ -11,7 +11,6 @@ var fs = require('fs');
 var path = require('path');
 var captcha = require(config.root + '/helper/captcha');
 
-
 /**
  * 微信端上传图片到微信服务器,下载到本地
  * @param req
@@ -22,7 +21,7 @@ var captcha = require(config.root + '/helper/captcha');
 exports.saveUploadImg = function (req, res) {
   var serverId = req.param("serverId");
   var id = req.param("id");
-  if (serverId == null || serverId == '') {
+  if(serverId == null || serverId == '') {
     res.send({
       "error": "1",
       "msg": "上传失败"
@@ -32,10 +31,9 @@ exports.saveUploadImg = function (req, res) {
   Member.findOne({
     "_id": id
   }, function (e, o) {
-    if (o.approvedStatus == '00' || o.approvedStatus == '03') {
-      Wechat.findOne({
-      }).populate("channel").exec(function (e, o) {
-        if (e || o == null) {
+    if(o.approvedStatus == '00' || o.approvedStatus == '03') {
+      Wechat.findOne({}).exec(function (e, o) {
+        if(e || o == null) {
           res.send({
             "error": "1",
             "msg": "未查到渠道配置微信相关参数"
@@ -46,11 +44,10 @@ exports.saveUploadImg = function (req, res) {
           api.registerTicketHandle(WechatJsTicket.getTicketToken, WechatJsTicket.saveTicketToken);
           //下载图片到本地
           api.getLatestToken(function (err, token) {
-            if (!err && token && token != null) {
-              var identity = o.channel.identity; //渠道标示
-              downLoadImg(token.accessToken, serverId, identity, function (file) {
+            if(!err && token && token != null) {
+              downLoadImg(token.accessToken, serverId, function (file) {
                 //记录上传图片的下载路径
-                if (file) {
+                if(file) {
                   Member.update({
                     "_id": id
                   }, {
@@ -59,8 +56,7 @@ exports.saveUploadImg = function (req, res) {
                     multi: false,
                     upsert: false
                   }, function (e, o) {
-                    console.log("update channel user headImg:", e, o);
-                    if (!e) {
+                    if(!e) {
                       res.send({
                         "success": "1",
                         "headImgs": file
@@ -90,7 +86,8 @@ exports.saveUploadImg = function (req, res) {
   });
 }
 
-function downLoadImg(token, serverId, identity, cb) {
+function downLoadImg(token, serverId, cb) {
+  var identity = "register";
   var options = {
     hostname: "file.api.weixin.qq.com",
     port: 80,
@@ -99,7 +96,7 @@ function downLoadImg(token, serverId, identity, cb) {
   };
 
   var req = http.request(options, function (res) {
-    if (res.statusCode == 200) {
+    if(res.statusCode == 200) {
       //截取header中的文件名
       var disposition = res.headers['content-disposition'];
       var start = disposition.indexOf("\"") + 1;
@@ -108,7 +105,7 @@ function downLoadImg(token, serverId, identity, cb) {
       console.log(filename);
       //根据渠道标示创建目录
       var path = "public" + config.file.local + "/" + identity;
-      if (!fs.existsSync(path)) {
+      if(!fs.existsSync(path)) {
         fs.mkdirSync(path);
       }
       //下载图片到本地服务器，文件名用serverId命名
@@ -148,7 +145,7 @@ exports.registerViewFind = function (req, res) {
   Member.findOne({
     "openid": openid
   }, function (e, o) {
-    if (!e && o != null) {
+    if(!e && o != null) {
       res.render(__dirname + '/views/registerView', o);
     } else {
       res.render(__dirname + '/views/registerView', {})
@@ -177,7 +174,7 @@ exports.save = function (req, res) {
     "openid": member.openid
   }, function (e, o) {
     //防止返回重新添加数据
-    if (o != null) {
+    if(o != null) {
       res.render(__dirname + '/views/uploadHeadImg', o);
       return;
     } else {
@@ -190,7 +187,6 @@ exports.save = function (req, res) {
     }
   });
 }
-
 
 /**
  * 验证一个openid,mobile,numberID只能注册一个账户
@@ -207,7 +203,7 @@ exports.unionCheck = function (req, res, next) {
   Member.count({
     "openid": openid
   }, function (e, count) {
-    if (count > 0) {
+    if(count > 0) {
       res.send({
         "success": "0",
         msg: "同一微信用户只能注册一个账户"
@@ -218,7 +214,7 @@ exports.unionCheck = function (req, res, next) {
       Member.findOne({
         "username": username
       }, function (e, o) {
-        if (!e && o != null) {
+        if(!e && o != null) {
           res.send({
             "success": "0",
             msg: "此用户名已被注册"
@@ -230,7 +226,7 @@ exports.unionCheck = function (req, res, next) {
             "mobile": mobile,
             "numberID": numberID
           }, function (e, o) {
-            if (o != null) {
+            if(o != null) {
               res.send({
                 "success": "0",
                 msg: "此手机和身份证号已被注册"
@@ -259,21 +255,21 @@ exports.sentValid = function (req, res) {
     "type": "register",
     "used": false
   }, function (e, o) {
-    if (e || o == null) {
+    if(e || o == null) {
       res.send({
         "success": "0",
         "msg": "验证码无效"
       });
     } else {
       var diff = o.expireAt.getTime() - new Date().getTime();
-      if (diff <= 0) {
+      if(diff <= 0) {
         new CheckCode().modifyUsed(mobile, "register");
         res.send({
           "success": "0",
           "msg": "验证码已过期"
         });
       } else {
-        if (o.code === checkCode) {
+        if(o.code === checkCode) {
           new CheckCode().modifyUsed(mobile, "register");
           res.send({
             "success": "1"
@@ -298,7 +294,7 @@ exports.sentValid = function (req, res) {
 exports.sendCheckCode = function (req, res) {
   var mobile = req.param("mobile");
   new CheckCode().sendToMobile(mobile, "register", function (o) {
-    if (o && o.success == '1') {
+    if(o && o.success == '1') {
       var code = o.data.code;
       console.log("code==========>", code);
       smsUtil.sendCheckCode2Phone(mobile, code, function (data) {

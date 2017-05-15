@@ -151,7 +151,7 @@ exports.save = function (req, res) {
       saveOrUpdate(id, req, handleResult);
     } else {
       // 先存储文件
-      fileUtl.saveUploadFiles(req.files, req.session.channel.identity, 'wechat', false, function (fs) {
+      fileUtl.saveUploadFiles(req.files, 'wechat', false, function (fs) {
         // 生成缩略图
         console.log("********** files uploaded: " + JSON.stringify(fs));
         imgUtil.thumbnail(fs, 150, function (ffs) {

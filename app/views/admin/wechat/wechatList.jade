@@ -17,7 +17,7 @@ block main
         //button.btn.btn-box-tool(data-widget="collapse")
         //  i.fa.fa-caret-left
     .box-body
-      table#channelList.table.table-hover.table-striped
+      table#wechatList.table.table-hover.table-striped
         thead
           //th.text-right(width="40") #
           //th(width="20%") 名称
@@ -79,7 +79,7 @@ block main
 block scripts
   script.
     $(document).ready(function () {
-      $("#channelList").on('click', '.del', function () {
+      $("#wechatList").on('click', '.del', function () {
         var id = $(this).data("id");
         $("#delForm #ids").val(id);
         if (id) {

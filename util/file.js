@@ -20,24 +20,24 @@ var FileToRemove = mongoose.model('FileToRemove');
  * @param files
  */
 exports.moveTmpFiles = function (files, done) {
-  if (!files && files.length < 0) {
+  if(!files && files.length < 0) {
     return done(null);
   }
   async.map(files, function (file, cb) {
-    if (file && file.lastIndexOf('tmp/')) {
+    if(file && file.lastIndexOf('tmp/')) {
       console.log("############ origin file :" + file);
       var dir = file.lastIndexOf('/') > 0 ? file.substring(0, file.lastIndexOf('/')) : file.substring(0, file.lastIndexOf('\\'));
       dir = dir.replace('tmp/', '')
         .replace(config.file.url, config.file.local)
       file = file.replace(config.file.url, config.file.local);
-      if (!dir || !file) {
+      if(!dir || !file) {
         return cb();
       }
       console.log("############ dir :" + dir + ', file:' + file);
       mkdirsSync(dir);
       //变换到文件存储目录
       fs.rename(file, file.replace('tmp/', ''), function (err) {
-        if (err)
+        if(err)
           console.error(err);
         //console.log("################## file moved: " + file);
         return cb(err);
@@ -57,10 +57,10 @@ exports.moveTmpFiles = function (files, done) {
  * @returns {boolean}
  */
 var mkdirsSync = function (dirname, mode) {
-  if (fs.existsSync(dirname)) {
+  if(fs.existsSync(dirname)) {
     return true;
   } else {
-    if (mkdirsSync(path.dirname(dirname), mode)) {
+    if(mkdirsSync(path.dirname(dirname), mode)) {
       fs.mkdirSync(dirname, mode);
       return true;
     }
@@ -75,7 +75,6 @@ exports.mkdirsSync = mkdirsSync;
 exports.removeFiles = function (files, callback) {
   FileToRemove.queue(files, callback);
 };
-
 
 /**
  * 保存文件记录到数据库，则callback中参数为保存成功的文件
@@ -102,7 +101,7 @@ exports.saveFiles = function (files, callback) {
  * @param callback
  */
 exports.normalize = normalize = function (files, callback) {
-  if (files && files.length > 0) {
+  if(files && files.length > 0) {
     async.map(files, function (f, cb) {
       //var f = new File(file);
       var tmp = 'tmp/';
@@ -110,7 +109,7 @@ exports.normalize = normalize = function (files, callback) {
       console.log('************* move file from %s to %s', f.path, f.path.replace('tmp/', ''));
       mkdirsSync(f.destination.replace(tmp, ''));
       fs.renameSync(f.path, f.path.replace(tmp, ''));
-      if (f.thumb) {
+      if(f.thumb) {
         console.log('************* move file from %s to %s', f.thumb, f.thumb.replace('tmp/', ''));
         fs.renameSync(f.thumb, f.thumb.replace(tmp, ''));
 
@@ -134,17 +133,18 @@ exports.normalize = normalize = function (files, callback) {
  * 保存上传的临时文件到临时目录，文件在保存为文件记录前，都在临时目录中操作
  *
  **/
-exports.saveUploadFiles = function (files, identity, module, temp, callback) {
-  if (!identity) {
+exports.saveUploadFiles = function (files, module, temp, callback) {
+  var identity = '';
+  if(!identity) {
     identity = "common";
   }
-  if (!module) {
+  if(!module) {
     module = '';
   }
   //存放目录
   var urlPrefix = config.file.url;
   var storeDir = config.file.local;
-  if (storeDir.lastIndexOf('/') < 0)
+  if(storeDir.lastIndexOf('/') < 0)
     storeDir += '/';
   console.log("########## Store dir %s, url prefix %s", storeDir, urlPrefix);
   //temp=true时上传保存的临时目录，只有数据真正保存后才会移动到目标目录，临时目录可以随时清除
@@ -157,10 +157,10 @@ exports.saveUploadFiles = function (files, identity, module, temp, callback) {
   uploadDir += ms + '/';
   mkdirsSync(uploadDir);
 
-  if (files) {
+  if(files) {
     async.map(files, function (file, c) {
       var newFileName = "";
-      if (!file || !file.size)
+      if(!file || !file.size)
         return c(null, null);
       var name = file.fieldname;
       // console.log(" ########## uploading file: " + JSON.stringify(file) + ', name: ' + name);
@@ -180,7 +180,7 @@ exports.saveUploadFiles = function (files, identity, module, temp, callback) {
         var path = uploadDir + newFileName; // new file path
         // console.log("******** uploading file to dir %s with name %s", uploadDir, newFileName);
         fs.renameSync(file.path, path);
-        c(null, {fieldname: name, filename: newFileName, path: path, destination: uploadDir, size: file.size});
+        c(null, { fieldname: name, filename: newFileName, path: path, destination: uploadDir, size: file.size });
       });
     }, function (err, result) {
       //console.log("********* file uploaded: " + JSON.stringify(result));
@@ -192,7 +192,7 @@ exports.saveUploadFiles = function (files, identity, module, temp, callback) {
 }
 
 exports.addSlash = addSlash = function (str) {
-  if (!str) return str;
+  if(!str) return str;
   return str.indexOf('/') == 0 ? str : '/' + str;
 };
 //

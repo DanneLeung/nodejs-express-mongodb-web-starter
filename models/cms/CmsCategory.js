@@ -86,8 +86,8 @@ CmsCategorySchema.methods.updateRefs = function (done) {
   }
 };
 
-CmsCategorySchema.statics.findByParent = function (channel, parent, done) {
-  var q = { channel: channel };
+CmsCategorySchema.statics.findByParent = function ( parent, done) {
+  var q = { };
   if (parent) {
     q.parent = parent;
   } else {

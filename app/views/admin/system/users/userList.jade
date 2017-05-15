@@ -10,7 +10,7 @@ block pageTitle
 block main
   .box
     .box-header.with-border
-      h3.box-title 用户信息
+      h5.box-title 用户信息
       .box-tools
         if req.user.isAdmin
           a.btn.btn-sm.btn-default(href="#{baseUrl}/user/add" title="添加用户")

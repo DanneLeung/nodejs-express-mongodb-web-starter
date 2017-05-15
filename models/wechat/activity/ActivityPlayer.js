@@ -12,7 +12,6 @@ var httpUtil = require(config.root + '/util/httpUtil');
 var moment = require('moment');
 
 var ActivityPlayerSchema = new Schema({
-  channel: { type: ObjectId, ref: "Channel" }, //渠道
   wechat: { type: ObjectId, index: true, ref: "Wechat" }, //使用的微信号
   activity: { type: ObjectId, index: true, ref: "Activities" }, //参与的活动
   currAwardId: { type: ObjectId, ref: "Award" }, //中奖存id
@@ -258,7 +257,6 @@ ActivityPlayerSchema.statics.pushAwards = function (user, awardInfo, done) {
               var value = award.name.slice(0, 2);
               saveFlowrate({
                 openid: user.openId,
-                channel: awardInfo.channel,
                 mobile: user.mobile,
                 wid: awardInfo.wid,
                 fansId: user.fans,
@@ -413,7 +411,6 @@ ActivityPlayerSchema.statics.pushAwards = function (user, awardInfo, done) {
           }
           var no = Date.now();
           var chargeOrder = new ChargeOrder({
-            channel: info.channel,
             clientOrderId: no, //info.clientOrderId, //playerId
             no: no,
             day: moment().format('YYYYMMDD'),

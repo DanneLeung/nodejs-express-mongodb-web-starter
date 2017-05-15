@@ -9,7 +9,6 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var ActivitiesSchema = mongoose.Schema({
-  channel: { type: ObjectId, ref: "Channel" }, //所属渠道
   wechat: { type: ObjectId, index: true, ref: "Wechat" }, //使用的微信号
   type: { type: String, required: false, default: '' }, //活动类型
   code: { type: String, required: false, default: '' }, //代号
@@ -64,7 +63,7 @@ var ActivitiesSchema = mongoose.Schema({
 
 ActivitiesSchema.pre('save', function (done) {
   var that = this;
-  mongoose.model('Activities').findOne({ name: that.name, channel: that.channel }, function (err, site) {
+  mongoose.model('Activities').findOne({ name: that.name }, function (err, site) {
     if(err) {
       done(err);
     } else if(site && !(site._id.equals(that._id))) {
@@ -76,8 +75,8 @@ ActivitiesSchema.pre('save', function (done) {
   });
 });
 
-ActivitiesSchema.statics.enabledList = function (channel, wechat, done) {
-  mongoose.model('Activities').find({ channel: channel, wechat: wechat, enabled: true }).exec(function (err, activities) {
+ActivitiesSchema.statics.enabledList = function (wechat, done) {
+  mongoose.model('Activities').find({ wechat: wechat, enabled: true }).exec(function (err, activities) {
     if(err) console.error(err);
     return done(activities ? activities : []);
   });
@@ -259,9 +258,6 @@ ActivitiesSchema.statics.take = function (id, answer, aid, wechat, user, done) {
             timesUpdateAt: new Date(),
             weekNth: moment().format('w')
           };
-          if(wechat && wechat.channel) {
-            data.channel = wechat.channel;
-          }
           if(wechat && wechat.wechat) {
             data.wechat = wechat.wechat;
           }

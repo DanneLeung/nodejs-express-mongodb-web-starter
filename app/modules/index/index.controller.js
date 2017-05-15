@@ -34,7 +34,6 @@ exports.login = function (req, res) {
  */
 
 exports.logout = function (req, res) {
-  delete req.session.channel;
   delete req.session.user;
   req.logout();
   res.redirect('/')
@@ -46,11 +45,7 @@ exports.logout = function (req, res) {
  */
 exports.register = function (req, res) {
   res.render('register', {
-    user: new Channel({
-      username: '',
-      email: '',
-      mobile: ''
-    })
+    user: {}
   });
 };
 

@@ -8,7 +8,6 @@ var mongoose = require('mongoose'),
 var shortId = require("shortid");
 
 var WechatBrandingSchema = new Schema({
-  channel: { type: ObjectId, ref: 'Channel' }, //渠道
   wechat: { type: ObjectId, ref: 'Wechat' }, //渠道下的公众号
   member: { type: ObjectId, ref: 'Memeber' }, //关联会员
   branch: { type: ObjectId, ref: 'Branch' }, //关联网点

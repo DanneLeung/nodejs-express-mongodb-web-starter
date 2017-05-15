@@ -32,16 +32,14 @@ var UserGroupSchema = mongoose.Schema({
   timestamps: {}
 });
 
-
 UserGroupSchema.statics = {
-  all: function (channel, done) {
+  all: function (done) {
     mongoose.model('UserGroup').find({
-      'channel': channel
     }, function (err, groups) {
-      if (err) {
+      if(err) {
         console.log(err);
       }
-      done(groups);
+      return done(groups);
     });
   }
 };

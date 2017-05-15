@@ -26,10 +26,7 @@ exports.index = function (req, res) {
 };
 
 exports.base = function (req, res) {
-  Channel.findOne({}, function (err, channel) {
-    res.render('admin/system/base', {
-      channel: channel
-    });
+  res.render('admin/system/base', {
   });
 };
 
@@ -52,7 +49,7 @@ exports.baseSave = function (req, res) {
   };
 
   if(!req.files || req.files.length <= 0) {
-    saveOrUpdate( req, handleResult);
+    saveOrUpdate(req, handleResult);
   } else {
     fileUtl.saveUploadFiles(req.files, req.session.channel.identity, 'logo', false, function (fs) {
       // 生成缩略图
@@ -77,9 +74,9 @@ exports.baseSave = function (req, res) {
             req.body.logo = files[0].thumb;
           }
           // 更新时处理替换文件情况，新文件保存后旧文件删除
-          Channel.findById( function (err, channel) {
+          Channel.findById(function (err, channel) {
             // queue files that should be removed.
-            saveOrUpdate( req, handleResult);
+            saveOrUpdate(req, handleResult);
           });
         });
       });

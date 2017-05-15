@@ -40,7 +40,7 @@ block main
       #roleEdit.row
         .col-md-12
 
-          form#channelForm.form-horizontal(name='channelForm', action='#{baseUrl}/user/save', method='post')
+          form#userForm.form-horizontal(name='userForm', action='#{baseUrl}/user/save', method='post')
             //新增时不能有id
             if(!user.isNew)
               input#id(type='hidden', name='id', value="#{user._id}")
@@ -111,7 +111,7 @@ block main
 block scripts
   script.
     $(document).ready(function () {
-      var form = $('#channelForm');
+      var form = $('#userForm');
       $("#save").on('click', function () {
         form.submit();
       });
